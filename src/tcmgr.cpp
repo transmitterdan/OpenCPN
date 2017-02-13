@@ -32,6 +32,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
+#include <inttypes.h>
 
 #include "chart1.h"
 #include "dychart.h"
@@ -519,7 +520,11 @@ double blend_tide (time_t t, unsigned int deriv, int first_year, double blend, I
         f += fact * w[n] * (fr[deriv-n] - fl[deriv-n]);
         fact *= (double)(deriv - n)/(n+1) * (1.0/TIDE_BLEND_TIME);
     }
-    printf(" %ld  %g     %g %g %g\n", t, blend, fr[0], fl[0], f);
+#if defined PRIu64
+	printf(" %" PRIu64 "  %g     %g %g %g\n", t, blend, fr[0], fl[0], f);
+#else
+	printf(" %ld  %g     %g %g %g\n", t, blend, fr[0], fl[0], f);
+#endif
     return f;
 }
 
@@ -1165,13 +1170,13 @@ const NV_CHAR *inferred_semi_diurnal[INFERRED_SEMI_DIURNAL_COUNT] = {
     const NV_CHAR *inferred_diurnal[INFERRED_DIURNAL_COUNT] = {
         "OO1", "M1", "J1", "RHO1", "Q1", "2Q1", "P1", "PI1", "PHI1", "PSI1"};
         NV_FLOAT32 semi_diurnal_coeff[INFERRED_SEMI_DIURNAL_COUNT] = {
-            .1759, .0341, .0219, .0235, .0066, .0248, .0035, .0251, .1151, .0064};
+            .1759f, .0341f, .0219f, .0235f, .0066f, .0248f, .0035f, .0251f, .1151f, .0064f};
             NV_FLOAT32 diurnal_coeff[INFERRED_DIURNAL_COUNT] = {
-                .0163, .0209, .0297, .0142, .0730, .0097, .1755, .0103, .0076, .0042};
+                .0163f, .0209f, .0297f, .0142f, .0730f, .0097f, .1755f, .0103f, .0076f, .0042f};
                 
                 /*  These represent M2 and O1.  */
                 
-                NV_FLOAT32 coeff[2] = {.9085, .3771};
+                NV_FLOAT32 coeff[2] = {.9085f, .3771f};
 
                 /* The following lookup tables are only used for initialization
                  *   purposes and in the pull-down menus in TideEditor.  It should be
