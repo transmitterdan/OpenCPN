@@ -1442,7 +1442,7 @@ void ChartCanvas::OnKeyDown( wxKeyEvent &event )
     // HOTKEYS
     switch( event.GetKeyCode() ) {
     case WXK_MENU:
-        int x, y, mx, my;
+        int x, y;
         event.GetPosition( &x, &y );
 
         CallPopupMenu(x, y);

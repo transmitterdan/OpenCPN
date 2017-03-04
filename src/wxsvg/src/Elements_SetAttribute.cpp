@@ -710,7 +710,7 @@ bool wxSVGExternalResourcesRequired::SetAttribute(const wxString& attrName, cons
   {
     long value;
     if (attrValue.ToLong(&value))
-      m_externalResourcesRequired.SetBaseVal((bool) value);
+      m_externalResourcesRequired.SetBaseVal(value != 0);
   }
   else 
       return false;
@@ -720,7 +720,7 @@ bool wxSVGExternalResourcesRequired::SetAttribute(const wxString& attrName, cons
 
 bool wxSVGExternalResourcesRequired::SetAnimatedValue(const wxString& attrName, const wxSVGAnimatedType& attrValue) {
   if (attrName == wxT("externalResourcesRequired")) {
-    m_externalResourcesRequired.SetAnimVal((bool) attrValue.GetLength().GetValue());
+    m_externalResourcesRequired.SetAnimVal(attrValue.GetLength().GetValue() != 0.0);
   } else {
     return false;
   }
@@ -999,7 +999,7 @@ bool wxSVGFEConvolveMatrixElement::SetAttribute(const wxString& attrName, const 
   {
     long value;
     if (attrValue.ToLong(&value))
-      m_preserveAlpha.SetBaseVal((bool) value);
+      m_preserveAlpha.SetBaseVal(value != 0);
   }
   else if (wxSVGElement::SetAttribute(attrName, attrValue));
   else if (wxSVGFilterPrimitiveStandardAttributes::SetAttribute(attrName, attrValue));
@@ -1036,7 +1036,7 @@ bool wxSVGFEConvolveMatrixElement::SetAnimatedValue(const wxString& attrName, co
   } else if (attrName == wxT("edgeMode")) {
     m_edgeMode.SetAnimVal((unsigned char) attrValue.GetLength().GetValue());
   } else if (attrName == wxT("preserveAlpha")) {
-    m_preserveAlpha.SetAnimVal((bool) attrValue.GetLength().GetValue());
+    m_preserveAlpha.SetAnimVal(attrValue.GetLength().GetValue() != 0.0);
   } else if (wxSVGFilterPrimitiveStandardAttributes::SetAnimatedValue(attrName, attrValue));
   else {
     return false;

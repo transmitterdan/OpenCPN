@@ -536,8 +536,8 @@ OCPNRegion ViewPort::GetVPRegionIntersect( const OCPNRegion &Region, size_t nPoi
         poly_x_min = INVALID_COORD, poly_y_min = INVALID_COORD;
     
     bool valid = false;
-    int npPoints = 0;
-    for( int ip=0; ip < nPoints; ip++ ) {
+    unsigned npPoints = 0;
+    for( unsigned ip=0; ip < nPoints; ip++ ) {
         wxPoint p = GetPixFromLL( pfp[0], pfp[1] );
         if(p.x == INVALID_COORD)
             continue;

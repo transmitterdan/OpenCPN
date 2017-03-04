@@ -4069,8 +4069,6 @@ int s52plib::RenderLC( ObjRazRules *rzRules, Rules *rules, ViewPort *vp )
     if( rzRules->obj->m_n_lsindex  && !rzRules->obj->m_ls_list) 
         return RenderLCLegacy(rzRules, rules, vp);
     
-    wxPoint *ptp;
-    int npt;
     wxPoint r;
     
     
@@ -4308,8 +4306,6 @@ int s52plib::RenderLCLegacy( ObjRazRules *rzRules, Rules *rules, ViewPort *vp )
     
     //  Must be cm93
         
-    wxPoint *ptp;
-    int npt;
     wxPoint r;
 
     int isym_len = rules->razRule->pos.line.bnbox_w.SYHL;
@@ -4476,7 +4472,6 @@ int s52plib::RenderLCLegacy( ObjRazRules *rzRules, Rules *rules, ViewPort *vp )
 
 int s52plib::RenderLCPlugIn( ObjRazRules *rzRules, Rules *rules, ViewPort *vp )
 {
-    int npt;
     wxPoint r;
     
     int isym_len = rules->razRule->pos.line.bnbox_w.SYHL;
@@ -4501,8 +4496,6 @@ int s52plib::RenderLCPlugIn( ObjRazRules *rzRules, Rules *rules, ViewPort *vp )
         
     if( rzRules->obj->m_ls_list_legacy )
     {
-        float *ppt;
-        
         VE_Element *pedge;
         PI_line_segment_element *ls = rzRules->obj->m_ls_list_legacy;
         
@@ -7554,7 +7547,7 @@ int s52plib::RenderToGLAC( ObjRazRules *rzRules, Rules *rules, ViewPort *vp )
             glTranslatef( -rzRules->sm_transform_parms->easting_vp_center, -rzRules->sm_transform_parms->northing_vp_center, 0 );
             //  Next, the per-object transform
 
-            float x_origin = rzRules->obj->x_origin;
+            double x_origin = rzRules->obj->x_origin;
             
             if(rzRules->obj->m_chart_context->chart) {          // not a PlugIn Chart
                 if( ( rzRules->obj->m_chart_context->chart->GetChartType() == CHART_TYPE_CM93COMP )

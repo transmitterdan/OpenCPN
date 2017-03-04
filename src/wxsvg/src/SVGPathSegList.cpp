@@ -442,8 +442,8 @@ void wxSVGPathSegList::SetValueAsString(const wxString& value) {
 				pathSeg->SetR1(numbers[pos++]);
 				pathSeg->SetR2(numbers[pos++]);
 				pathSeg->SetAngle(numbers[pos++]);
-				pathSeg->SetLargeArcFlag(numbers[pos++]);
-				pathSeg->SetSweepFlag(numbers[pos++]);
+				pathSeg->SetLargeArcFlag(numbers[pos++] != 0);
+				pathSeg->SetSweepFlag(numbers[pos++] != 0);
 				pathSeg->SetX(numbers[pos++]);
 				pathSeg->SetY(numbers[pos++]);
 				Add(pathSeg);
@@ -455,8 +455,8 @@ void wxSVGPathSegList::SetValueAsString(const wxString& value) {
 				pathSeg->SetR1(numbers[pos++]);
 				pathSeg->SetR2(numbers[pos++]);
 				pathSeg->SetAngle(numbers[pos++]);
-				pathSeg->SetLargeArcFlag(numbers[pos++]);
-				pathSeg->SetSweepFlag(numbers[pos++]);
+				pathSeg->SetLargeArcFlag(numbers[pos++] != 0);
+				pathSeg->SetSweepFlag(numbers[pos++] != 0);
 				pathSeg->SetX(numbers[pos++]);
 				pathSeg->SetY(numbers[pos++]);
 				Add(pathSeg);
