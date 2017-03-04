@@ -850,10 +850,7 @@ void RouteManagerDialog::Create()
     
     SetColorScheme();
     
-    UpdateRouteListCtrl();
-    UpdateTrkListCtrl();
-    UpdateWptListCtrl();
-    UpdateLayListCtrl();
+    UpdateLists();
     
     // This should work under Linux :-(
     //m_pNotebook->Connect(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler(RouteManagerDialog::OnTabSwitch), NULL, this);
@@ -2480,6 +2477,14 @@ void RouteManagerDialog::OnLayToggleVisibility( wxMouseEvent &event )
     event.Skip();
 }
 
+void RouteManagerDialog::UpdateLists()
+{
+    UpdateRouteListCtrl();
+    UpdateTrkListCtrl();
+    UpdateWptListCtrl();
+    UpdateLayListCtrl();
+}
+
 void RouteManagerDialog::OnLayNewClick( wxCommandEvent &event )
 {
     bool show_flag = g_bShowLayers;
@@ -2488,11 +2493,7 @@ void RouteManagerDialog::OnLayNewClick( wxCommandEvent &event )
     pConfig->UI_ImportGPX( this, true, _T("") );
     
     g_bShowLayers = show_flag;
-
-    UpdateRouteListCtrl();
-    UpdateTrkListCtrl();
-    UpdateWptListCtrl();
-    UpdateLayListCtrl();
+    UpdateLists();
     cc1->Refresh();
 }
 
@@ -2568,10 +2569,7 @@ void RouteManagerDialog::OnLayDeleteClick( wxCommandEvent &event )
 
     pLayerList->DeleteObject( layer );
 
-    UpdateRouteListCtrl();
-    UpdateTrkListCtrl();
-    UpdateWptListCtrl();
-    UpdateLayListCtrl();
+    UpdateLists();
 
     cc1->Refresh();
 
@@ -2627,11 +2625,8 @@ void RouteManagerDialog::ToggleLayerContentsOnChart( Layer *layer )
 
         node = node->GetNext();
     }
+    UpdateLists();
 
-    UpdateRouteListCtrl();
-    UpdateTrkListCtrl();
-    UpdateWptListCtrl();
-    UpdateLayListCtrl();
     UpdateLayButtons();
 
     cc1->Refresh();
@@ -2740,10 +2735,7 @@ void RouteManagerDialog::ToggleLayerContentsOnListing( Layer *layer )
         node = node->GetNext();
     }
 
-    UpdateRouteListCtrl();
-    UpdateTrkListCtrl();
-    UpdateWptListCtrl();
-    UpdateLayListCtrl();
+    UpdateLists();
 
     ::wxEndBusyCursor();
 
@@ -2829,10 +2821,7 @@ void RouteManagerDialog::OnImportClick( wxCommandEvent &event )
     
     pConfig->UI_ImportGPX( this );
     
-    UpdateRouteListCtrl();
-    UpdateTrkListCtrl();
-    UpdateWptListCtrl();
-    UpdateLayListCtrl();
+    UpdateLists();
 
     cc1->Refresh();
 }
