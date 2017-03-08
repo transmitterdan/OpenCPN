@@ -510,7 +510,7 @@ bool JobTicket::DoJob(const wxRect &rect)
     }
     
     //OK, got the bits?
-    int ssize, dim;
+    int dim;
     if(!bit_array[0] )
         return false;
     

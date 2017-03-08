@@ -1001,7 +1001,7 @@ static void AISDrawTarget( AIS_Target_Data *td, ocpnDC& dc )
     int targetscale = 100;
     if ( g_bAllowShowScaled && g_bShowScaled ){
         if (td->NavStatus <= 15){ // NavStatus > 15 is AtoN, and we don want AtoN being counted for attenuation           
-            double temp_importance, So, Tcpa, Cpa, Rang, Siz = 0.; //calc the importance of target
+            double temp_importance, So, Cpa, Rang, Siz = 0.; //calc the importance of target
             So = g_ScaledNumWeightSOG/12 * td->SOG; //0 - 12 knts gives 0 - g_ScaledNumWeightSOG weight
             if (So > g_ScaledNumWeightSOG) So = g_ScaledNumWeightSOG; 
                     

@@ -5476,7 +5476,7 @@ void options::OnOpenGLOptions(wxCommandEvent& event) {
 
 void options::OnChartDirListSelect(wxCommandEvent& event) {
     wxArrayInt sel;
-    bool selected = pActiveChartsList->GetSelections(sel);
+    bool selected = ( pActiveChartsList->GetSelections(sel) != 0 );
     m_removeBtn->Enable(selected);
     if(m_compressBtn)
         m_compressBtn->Enable(selected);
