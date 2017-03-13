@@ -5729,9 +5729,6 @@ int MyFrame::ProcessOptionsDialog( int rr, ArrayOfCDI *pNewDirArray )
 
     pConfig->UpdateSettings();
 
-    if(g_pi_manager)
-        g_pi_manager->SendConfigToAllPlugIns();
-    
     if( g_pActiveTrack ) {
         g_pActiveTrack->SetPrecision( g_nTrackPrecision );
     }
@@ -5799,6 +5796,9 @@ int MyFrame::ProcessOptionsDialog( int rr, ArrayOfCDI *pNewDirArray )
 
     cc1->SetDisplaySizeMM( g_display_size_mm );
 
+    if(g_pi_manager)
+        g_pi_manager->SendConfigToAllPlugIns();
+    
     if(g_MainToolbar){
         g_MainToolbar->SetAutoHide(g_bAutoHideToolbar);
         g_MainToolbar->SetAutoHideTimer(g_nAutoHideToolbar);
@@ -7558,7 +7558,7 @@ double MyFrame::GetBestVPScale( ChartBase *pchart )
 
         double max_underzoom_multiplier = 2.0;
         if(cc1->GetVP().b_quilt){
-            int scale_max = cc1->m_pQuilt->GetNomScaleMin(pchart->GetNativeScale(), pchart->GetChartType(), pchart->GetChartFamily());
+            double scale_max = cc1->m_pQuilt->GetNomScaleMin(pchart->GetNativeScale(), pchart->GetChartType(), pchart->GetChartFamily());
             max_underzoom_multiplier = scale_max / pchart->GetNativeScale();
         }
         
