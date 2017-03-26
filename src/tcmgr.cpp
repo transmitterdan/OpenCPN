@@ -32,7 +32,11 @@
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
-#include <inttypes.h>
+#if defined(__WXMSW__)
+    #if _MSC_VER > 1700
+        #include <inttypes.h>   // available in VS2013 and up
+    #endif
+#endif
 
 #include "chart1.h"
 #include "dychart.h"
