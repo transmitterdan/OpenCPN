@@ -1354,15 +1354,15 @@ void RouteProp::CreateControls()
       m_SplitButton->Enable( false );
       
       wxBoxSizer* itemBoxSizer16 = new wxBoxSizer( wxHORIZONTAL );
-      itemBoxSizerBottom->Add( itemBoxSizer16, 0, wxALIGN_RIGHT | wxALL, 3 );
+      itemBoxSizerBottom->Add( itemBoxSizer16, 0, wxALL, 3 );
       
       m_CancelButton = new wxButton( this, ID_ROUTEPROP_CANCEL, _("Cancel"), wxDefaultPosition,
       wxDefaultSize, 0 );
-      itemBoxSizer16->Add( m_CancelButton, 0, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL | wxALL, 1 );
+      itemBoxSizer16->Add( m_CancelButton, 0, wxALIGN_CENTER_VERTICAL | wxALL, 1 );
       
       m_OKButton = new wxButton( this, ID_ROUTEPROP_OK, _("OK"), wxDefaultPosition,
       wxDefaultSize, 0 );
-      itemBoxSizer16->Add( m_OKButton, 0, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL | wxALL, 1);
+      itemBoxSizer16->Add( m_OKButton, 0, wxALIGN_CENTER_VERTICAL | wxALL, 1);
       m_OKButton->SetDefault();
       
       //      To correct a bug in MSW commctl32, we need to catch column width drag events, and do a Refresh()
