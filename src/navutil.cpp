@@ -1482,7 +1482,7 @@ void MyConfig::LoadS57Config()
 void MyConfig::LoadNavObjects()
 {
     //      next thing to do is read tracks, etc from the NavObject XML file,
-    wxLogMessage( _T("Loading navobjects from navobj.xml") );
+    wxLogMessage( _T("Loading navobjects from ") + m_sNavObjSetFile );
     CreateRotatingNavObjBackup();
 
     if( NULL == m_pNavObjectInputSet )
@@ -1492,7 +1492,7 @@ void MyConfig::LoadNavObjects()
         m_pNavObjectInputSet->load_file( m_sNavObjSetFile.fn_str() ) )
         m_pNavObjectInputSet->LoadAllGPXObjects();
 
-    wxLogMessage( _T("Done loading navobjects") );
+    wxLogMessage( _T("Done loading navobjects from ") + m_sNavObjSetFile );
     delete m_pNavObjectInputSet;
 
     if( ::wxFileExists( m_sNavObjSetChangesFile ) ) {
@@ -1512,7 +1512,7 @@ void MyConfig::LoadNavObjects()
             ::wxRemoveFile( m_sNavObjSetChangesFile );
         
         if(size != 0){
-            wxLogMessage( _T("Applying NavObjChanges") );
+            wxLogMessage( _T("Applying changes from ") + m_sNavObjSetChangesFile );
             pNavObjectChangesSet->ApplyChanges();
             UpdateNavObj();
         }
