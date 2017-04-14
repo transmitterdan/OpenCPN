@@ -1079,13 +1079,6 @@ wxString &OCPNPlatform::GetSharedDataDir()
         wxStandardPaths& std_path = GetStdPaths();
         m_SData_Dir = std_path.GetDataDir();
 
-#ifdef __WXMSW__
-        if (IsDebuggerPresent())
-        {
-            wxFileName path(GetExePath());
-            m_SData_Dir = path.GetPath();
-        }
-#endif
         appendOSDirSlash( &m_SData_Dir );
         
 #ifdef __OCPN__ANDROID__
@@ -1138,11 +1131,6 @@ wxString &OCPNPlatform::GetPluginDir()
         m_PluginsDir = std_path.GetPluginsDir();   // linux:   {prefix}/lib/opencpn
         // Mac:     appname.app/Contents/PlugIns
 #ifdef __WXMSW__
-        if (IsDebuggerPresent())
-        {
-            wxFileName path(GetExePath());
-            m_PluginsDir = path.GetPath();
-        }
         m_PluginsDir += _T("\\plugins");             // Windows: {exe dir}/plugins
 #endif
         
