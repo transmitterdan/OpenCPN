@@ -259,7 +259,8 @@ enum
 {
       ID_DASH_PREFS = 999,
       ID_DASH_VERTICAL,
-      ID_DASH_HORIZONTAL
+      ID_DASH_HORIZONTAL,
+      ID_DASH_UNDOCK
 };
 
 class DashboardWindow : public wxWindow
