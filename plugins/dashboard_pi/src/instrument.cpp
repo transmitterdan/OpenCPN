@@ -40,7 +40,7 @@
 //
 //----------------------------------------------------------------
 
-DashboardInstrument::DashboardInstrument(wxWindow *pparent, wxWindowID id, wxString title, int cap_flag)
+DashboardInstrument::DashboardInstrument(wxWindow *pparent, wxWindowID id, wxString title, uint64_t cap_flag)
       :wxControl(pparent, id, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE)
 {
       m_title = title;
@@ -172,7 +172,7 @@ void DashboardInstrument::OnPaint( wxPaintEvent& WXUNUSED(event) )
 //
 //----------------------------------------------------------------
 
-DashboardInstrument_Single::DashboardInstrument_Single(wxWindow *pparent, wxWindowID id, wxString title, int cap_flag, wxString format)
+DashboardInstrument_Single::DashboardInstrument_Single(wxWindow *pparent, wxWindowID id, wxString title, uint64_t cap_flag, wxString format)
       :DashboardInstrument(pparent, id, title, cap_flag)
 {
       m_format = format;
@@ -263,7 +263,7 @@ void DashboardInstrument_Single::SetData(int st, double data, wxString unit)
 //
 //----------------------------------------------------------------
 
-DashboardInstrument_Position::DashboardInstrument_Position(wxWindow *pparent, wxWindowID id, wxString title, int cap_flag1, int cap_flag2)
+DashboardInstrument_Position::DashboardInstrument_Position(wxWindow *pparent, wxWindowID id, wxString title, uint64_t cap_flag1, uint64_t cap_flag2)
       :DashboardInstrument(pparent, id, title, cap_flag1 | cap_flag2)
 {
 

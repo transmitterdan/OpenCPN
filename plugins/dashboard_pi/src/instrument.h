@@ -58,46 +58,47 @@ class DashboardInstrument_Single;
 class DashboardInstrument_Position;
 class DashboardInstrument_Sun;
 
-enum
+enum : uint64_t
 {
-    OCPN_DBP_STC_LAT = 1 << 0,
-    OCPN_DBP_STC_LON = 1 << 1,
-    OCPN_DBP_STC_SOG = 1 << 2,
-    OCPN_DBP_STC_COG = 1 << 3,
-    OCPN_DBP_STC_STW = 1 << 4,
-    OCPN_DBP_STC_HDM = 1 << 5,
-    OCPN_DBP_STC_HDT = 1 << 6,
-    OCPN_DBP_STC_HMV = 1 << 7, // Magnetic variation
-    OCPN_DBP_STC_BRG = 1 << 8,
-    OCPN_DBP_STC_AWA = 1 << 9,
-    OCPN_DBP_STC_AWS = 1 << 10,
-    OCPN_DBP_STC_TWA = 1 << 11,
-    OCPN_DBP_STC_TWS = 1 << 12,
-    OCPN_DBP_STC_DPT = 1 << 13,
-    OCPN_DBP_STC_TMP = 1 << 14,
-    OCPN_DBP_STC_VMG = 1 << 15,
-    OCPN_DBP_STC_RSA = 1 << 16,
-    OCPN_DBP_STC_SAT = 1 << 17,
-    OCPN_DBP_STC_GPS = 1 << 18,
-    OCPN_DBP_STC_PLA = 1 << 19, // Cursor latitude
-    OCPN_DBP_STC_PLO = 1 << 20, // Cursor longitude
-    OCPN_DBP_STC_CLK = 1 << 21,
-    OCPN_DBP_STC_MON = 1 << 22,
-    OCPN_DBP_STC_ATMP = 1 << 23, //AirTemp
-    OCPN_DBP_STC_TWD = 1 << 24,
-    OCPN_DBP_STC_TWS2 = 1 << 25,
-    OCPN_DBP_STC_VLW1 = 1 << 26, // Trip Log
-    OCPN_DBP_STC_VLW2 = 1 << 27,  // Sum Log
-    OCPN_DBP_STC_MDA = 1 << 28,  // Bareometic pressure
-    OCPN_DBP_STC_MCOG = 1 << 29,  // Magnetic Course over Ground
-	OCPN_DBP_STC_PITCH = 1 << 30, //Pitch
-	OCPN_DBP_STC_HEEL = 1 << 31   //Heel 
+    OCPN_DBP_STC_LAT = 1ULL << 0,
+    OCPN_DBP_STC_LON = 1ULL << 1,
+    OCPN_DBP_STC_SOG = 1ULL << 2,
+    OCPN_DBP_STC_COG = 1ULL << 3,
+    OCPN_DBP_STC_STW = 1ULL << 4,
+    OCPN_DBP_STC_HDM = 1ULL << 5,
+    OCPN_DBP_STC_HDT = 1ULL << 6,
+    OCPN_DBP_STC_HMV = 1ULL << 7, // Magnetic variation
+    OCPN_DBP_STC_BRG = 1ULL << 8,
+    OCPN_DBP_STC_AWA = 1ULL << 9,
+    OCPN_DBP_STC_AWS = 1ULL << 10,
+    OCPN_DBP_STC_TWA = 1ULL << 11,
+    OCPN_DBP_STC_TWS = 1ULL << 12,
+    OCPN_DBP_STC_DPT = 1ULL << 13,
+    OCPN_DBP_STC_TMP = 1ULL << 14,
+    OCPN_DBP_STC_VMG = 1ULL << 15,
+    OCPN_DBP_STC_RSA = 1ULL << 16,
+    OCPN_DBP_STC_SAT = 1ULL << 17,
+    OCPN_DBP_STC_GPS = 1ULL << 18,
+    OCPN_DBP_STC_PLA = 1ULL << 19, // Cursor latitude
+    OCPN_DBP_STC_PLO = 1ULL << 20, // Cursor longitude
+    OCPN_DBP_STC_CLK = 1ULL << 21,
+    OCPN_DBP_STC_MON = 1ULL << 22,
+    OCPN_DBP_STC_ATMP = 1ULL << 23, //AirTemp
+    OCPN_DBP_STC_TWD = 1ULL << 24,
+    OCPN_DBP_STC_TWS2 = 1ULL << 25,
+    OCPN_DBP_STC_VLW1 = 1ULL << 26, // Trip Log
+    OCPN_DBP_STC_VLW2 = 1ULL << 27,  // Sum Log
+    OCPN_DBP_STC_MDA = 1ULL << 28,  // Bareometic pressure
+    OCPN_DBP_STC_MCOG = 1ULL << 29,  // Magnetic Course over Ground
+    OCPN_DBP_STC_PITCH = 1ULL << 30, //Pitch
+    OCPN_DBP_STC_HEEL = 1ULL << 31,   //Heel 
+    OCPN_DBP_STC_LAST = 1ULL << 32
 };
 
 class DashboardInstrument : public wxControl
 {
 public:
-      DashboardInstrument(wxWindow *pparent, wxWindowID id, wxString title, int cap_flag);
+      DashboardInstrument(wxWindow *pparent, wxWindowID id, wxString title, uint64_t cap_flag);
       ~DashboardInstrument(){}
 
       int GetCapacity();
@@ -111,7 +112,7 @@ public:
       int               instrumentTypeId;
 
 protected:
-      int               m_cap_flag;
+      uint64_t          m_cap_flag;
       int               m_TitleHeight;
       wxString          m_title;
 
@@ -123,7 +124,7 @@ private:
 class DashboardInstrument_Single : public DashboardInstrument
 {
 public:
-      DashboardInstrument_Single(wxWindow *pparent, wxWindowID id, wxString title, int cap, wxString format);
+      DashboardInstrument_Single(wxWindow *pparent, wxWindowID id, wxString title, uint64_t cap, wxString format);
       ~DashboardInstrument_Single(){}
 
       wxSize GetSize( int orient, wxSize hint );
@@ -140,7 +141,7 @@ protected:
 class DashboardInstrument_Position : public DashboardInstrument
 {
 public:
-      DashboardInstrument_Position(wxWindow *pparent, wxWindowID id, wxString title, int cap_flag1=OCPN_DBP_STC_LAT, int cap_flag2=OCPN_DBP_STC_LON);
+      DashboardInstrument_Position(wxWindow *pparent, wxWindowID id, wxString title, uint64_t cap_flag1=OCPN_DBP_STC_LAT, uint64_t cap_flag2=OCPN_DBP_STC_LON);
       ~DashboardInstrument_Position(){}
 
       wxSize GetSize( int orient, wxSize hint );
@@ -149,8 +150,8 @@ public:
 protected:
       wxString          m_data1;
       wxString          m_data2;
-      int               m_cap_flag1;
-      int               m_cap_flag2;
+      uint64_t          m_cap_flag1;
+      uint64_t          m_cap_flag2;
       int               m_DataHeight;
 
       void Draw(wxGCDC* dc);
