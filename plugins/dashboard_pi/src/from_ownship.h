@@ -49,7 +49,7 @@ public:
     DashboardInstrument_FromOwnship(wxWindow *pparent, wxWindowID id, wxString title, int cap_flag1=OCPN_DBP_STC_PLA, int cap_flag2=OCPN_DBP_STC_PLO,int cap_flag3=OCPN_DBP_STC_LAT,int cap_flag4=OCPN_DBP_STC_LON);
     ~DashboardInstrument_FromOwnship(){}
 
-    void SetData(int st, double data, wxString unit);
+    void SetData( uint64_t st, double data, wxString unit);
     wxSize GetSize( int orient, wxSize hint );
       
 protected:

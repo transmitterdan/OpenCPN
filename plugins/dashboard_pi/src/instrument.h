@@ -92,7 +92,7 @@ enum : uint64_t
     OCPN_DBP_STC_MCOG = 1ULL << 29,  // Magnetic Course over Ground
     OCPN_DBP_STC_PITCH = 1ULL << 30, //Pitch
     OCPN_DBP_STC_HEEL = 1ULL << 31,   //Heel 
-    OCPN_DBP_STC_LAST = 1ULL << 32
+    OCPN_DBP_STC_LED = 1ULL << 32
 };
 
 class DashboardInstrument : public wxControl
@@ -105,7 +105,7 @@ public:
       void OnEraseBackground(wxEraseEvent& WXUNUSED(evt));
       virtual wxSize GetSize( int orient, wxSize hint ) = 0;
       void OnPaint(wxPaintEvent& WXUNUSED(event));
-      virtual void SetData(int st, double data, wxString unit) = 0;
+      virtual void SetData(uint64_t st, double data, wxString unit) = 0;
       void SetDrawSoloInPane(bool value);
       void MouseEvent( wxMouseEvent &event );
       
@@ -128,7 +128,7 @@ public:
       ~DashboardInstrument_Single(){}
 
       wxSize GetSize( int orient, wxSize hint );
-      void SetData(int st, double data, wxString unit);
+      void SetData(uint64_t st, double data, wxString unit);
 
 protected:
       wxString          m_data;
@@ -145,7 +145,7 @@ public:
       ~DashboardInstrument_Position(){}
 
       wxSize GetSize( int orient, wxSize hint );
-      void SetData(int st, double data, wxString unit);
+      void SetData(uint64_t st, double data, wxString unit);
 
 protected:
       wxString          m_data1;

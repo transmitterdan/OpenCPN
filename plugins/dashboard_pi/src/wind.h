@@ -101,7 +101,7 @@ public:
 	DashboardInstrument_AppTrueWindAngle(wxWindow *parent, wxWindowID id, wxString title, int cap_flag);
 
 	~DashboardInstrument_AppTrueWindAngle(void){}
-	void SetData(int, double, wxString);
+	void SetData( uint64_t, double, wxString);
 
 
 private:

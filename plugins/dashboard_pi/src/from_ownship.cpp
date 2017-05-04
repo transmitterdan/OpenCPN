@@ -60,7 +60,7 @@ void DashboardInstrument_FromOwnship::Draw(wxGCDC* dc)
     dc->DrawText(m_data2, 10, m_TitleHeight + m_DataHeight);
 }
 
-void DashboardInstrument_FromOwnship::SetData(int st, double data, wxString unit)
+void DashboardInstrument_FromOwnship::SetData( uint64_t st, double data, wxString unit)
 {
     if (st == m_cap_flag1)
     {

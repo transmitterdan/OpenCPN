@@ -505,7 +505,7 @@ Provides navigation instrument display from NMEA source.");
 
 }
 
-void dashboard_pi::SendSentenceToAllInstruments( int st, double value, wxString unit )
+void dashboard_pi::SendSentenceToAllInstruments( uint64_t st, double value, wxString unit )
 {
     for( size_t i = 0; i < m_ArrayOfDashboardWindow.GetCount(); i++ ) {
         DashboardWindow *dashboard_window = m_ArrayOfDashboardWindow.Item( i )->m_pDashboardWindow;
@@ -2523,7 +2523,7 @@ void DashboardWindow::SetInstrumentList( wxArrayInt list )
     SetMinSize( itemBoxSizer->GetMinSize() );
 }
 
-void DashboardWindow::SendSentenceToAllInstruments( int st, double value, wxString unit )
+void DashboardWindow::SendSentenceToAllInstruments( uint64_t st, double value, wxString unit )
 {
     for( size_t i = 0; i < m_ArrayOfInstrument.GetCount(); i++ ) {
         if( m_ArrayOfInstrument.Item( i )->m_cap_flag & st ) m_ArrayOfInstrument.Item( i )->m_pInstrument->SetData(

@@ -156,7 +156,7 @@ public:
 private:
       bool LoadConfig(void);
       void ApplyConfig(void);
-      void SendSentenceToAllInstruments(int st, double value, wxString unit);
+      void SendSentenceToAllInstruments( uint64_t st, double value, wxString unit);
       void SendSatInfoToAllInstruments(int cnt, int seq, SAT_INFO sats[4]);
       void SendUtcTimeToAllInstruments( wxDateTime value );
 
@@ -277,7 +277,7 @@ public:
     void OnContextMenuSelect( wxCommandEvent& evt );
     bool isInstrumentListEqual( const wxArrayInt& list );
     void SetInstrumentList( wxArrayInt list );
-    void SendSentenceToAllInstruments( int st, double value, wxString unit );
+    void SendSentenceToAllInstruments( uint64_t st, double value, wxString unit );
     void SendSatInfoToAllInstruments( int cnt, int seq, SAT_INFO sats[4] );
     void SendUtcTimeToAllInstruments( wxDateTime value );
     void ChangePaneOrientation( int orient, bool updateAUImgr );

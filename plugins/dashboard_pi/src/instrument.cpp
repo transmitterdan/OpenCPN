@@ -224,7 +224,7 @@ void DashboardInstrument_Single::Draw(wxGCDC* dc)
 
 }
 
-void DashboardInstrument_Single::SetData(int st, double data, wxString unit)
+void DashboardInstrument_Single::SetData(uint64_t st, double data, wxString unit)
 {
       if (m_cap_flag & st){
             if(!wxIsNaN(data) && (data < 9999)){
@@ -321,7 +321,7 @@ void DashboardInstrument_Position::Draw(wxGCDC* dc)
 
 }
 
-void DashboardInstrument_Position::SetData(int st, double data, wxString unit)
+void DashboardInstrument_Position::SetData(uint64_t st, double data, wxString unit)
 {
       if (st == m_cap_flag1)
       {

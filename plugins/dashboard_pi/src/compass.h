@@ -60,7 +60,7 @@ class DashboardInstrument_Compass: public DashboardInstrument_Dial
 
             ~DashboardInstrument_Compass(void){}
 
-            void SetData(int, double, wxString);
+            void SetData( uint64_t, double, wxString);
 
       private:
 

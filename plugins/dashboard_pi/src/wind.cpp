@@ -106,7 +106,7 @@ void DashboardInstrument_AppTrueWindAngle::DrawBackground(wxGCDC* dc)
 	DrawBoat(dc, m_cx, m_cy, m_radius);
 }
 
-void DashboardInstrument_AppTrueWindAngle::SetData(int st, double data, wxString unit)
+void DashboardInstrument_AppTrueWindAngle::SetData( uint64_t st, double data, wxString unit)
 {
 	if (st == OCPN_DBP_STC_TWA){
 		m_MainValueTrue = data;

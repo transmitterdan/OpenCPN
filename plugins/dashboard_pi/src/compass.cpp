@@ -49,7 +49,7 @@ DashboardInstrument_Compass::DashboardInstrument_Compass( wxWindow *parent, wxWi
       SetOptionMainValue( _T("%.0f"), DIAL_POSITION_INSIDE);
 }
 
-void DashboardInstrument_Compass::SetData(int st, double data, wxString unit)
+void DashboardInstrument_Compass::SetData(uint64_t st, double data, wxString unit)
 {
       if (st == m_MainValueCap)
       {
