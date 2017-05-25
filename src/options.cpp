@@ -6033,7 +6033,6 @@ void options::OnApplyClick(wxCommandEvent& event) {
   if (m_bVisitLang) {
     wxString new_canon = _T("en_US");
     wxString lang_sel = m_itemLangListBox->GetStringSelection();
-
     int nLang = sizeof(lang_list) / sizeof(int);
     for (int it = 0; it < nLang; it++) {
       const wxLanguageInfo* pli = wxLocale::GetLanguageInfo(lang_list[it]);
@@ -6335,7 +6334,10 @@ void options::DoOnPageChange(size_t page) {
       m_itemLangListBox->Append(_T("English (U.S.)"));
 
       wxString lang_dir = g_Platform->GetSharedDataDir() + _T("share/locale/");
+      int it_flag = 0;
       for (int it = 1; it < nLang; it++) {
+          if ( it > 200 )
+              it_flag = true;
         if (wxLocale::IsAvailable(lang_list[it])) {
           wxLocale ltest(lang_list[it], 0);
           ltest.AddCatalog(_T("opencpn"));
@@ -6620,6 +6622,9 @@ wxString GetOCPNKnownLanguage(wxString lang_canonical, wxString& lang_dir) {
   } else if (lang_canonical == _T("gl_ES")) {
     dir_suffix = _T("gl_ES");
     return_string = wxString("Galician", wxConvUTF8);
+  } else if ( lang_canonical == _T( "vi_VN" ) ) {
+      dir_suffix = _T( "vi_VN" );
+      return_string = wxString( "Vietnamese", wxConvUTF8 );
   } else {
     dir_suffix = lang_canonical;
     const wxLanguageInfo* info = wxLocale::FindLanguageInfo(lang_canonical);
