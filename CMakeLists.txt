@@ -2044,6 +2044,7 @@ GETTEXT_BUILD_MO(po/opencpn_zh_TW.po zh_TW)
 GETTEXT_BUILD_MO(po/opencpn_hu_HU.po hu_HU)
 GETTEXT_BUILD_MO(po/opencpn_gl_ES.po gl_ES)
 GETTEXT_BUILD_MO(po/opencpn_ca_ES.po ca_ES)
+GETTEXT_BUILD_MO(po/opencpn_vi_VN.po vi_VN)
 ADD_CUSTOM_TARGET(i18n COMMENT "i18n: Done." DEPENDS ${_gmoFiles})
 
 IF(NOT QT_ANDROID)

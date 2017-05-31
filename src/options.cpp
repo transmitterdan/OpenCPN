@@ -7153,6 +7153,9 @@ wxString GetOCPNKnownLanguage(wxString lang_canonical, wxString& lang_dir) {
   } else if (lang_canonical == _T("gl_ES")) {
     dir_suffix = _T("gl_ES");
     return_string = wxString("Galician", wxConvUTF8);
+  } else if ( lang_canonical == _T( "vi_VN" ) ) {
+      dir_suffix = _T( "vi_VN" );
+      return_string = wxString( "Tiếng Việt", wxConvUTF8 );
   } else {
     dir_suffix = lang_canonical;
     const wxLanguageInfo* info = wxLocale::FindLanguageInfo(lang_canonical);

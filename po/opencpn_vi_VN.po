@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-03-04 11:14-0500\n"
-"PO-Revision-Date: 2017-03-07 13:53-0500\n"
+"PO-Revision-Date: 2017-05-30 07:30-0500\n"
 "Last-Translator: nohal <pavel@kalian.cz>\n"
 "Language-Team: Vietnamese\n"
 "Language: vi_VN\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: crowdin.com\n"
+"X-Generator: Poedit 2.0.2\n"
 "X-Crowdin-Project: opencpn\n"
 "X-Crowdin-Language: vi\n"
 "X-Crowdin-File: /po/opencpn.pot\n"
@@ -77,12 +77,12 @@ msgstr "Thông tin điểm chọn"
 #: src/canvasMenu.cpp:1342 src/canvasMenu.cpp:1354
 #: src/routemanagerdialog.cpp:1462 src/routemanagerdialog.cpp:2369
 msgid "Send to GPS"
-msgstr ""
+msgstr "Gửi đến GPS"
 
 #: include/TrackPropDlg.h:179 src/TrackPropDlg.cpp:1085
 #: src/TrackPropDlg.cpp:1098
 msgid "Track properties"
-msgstr ""
+msgstr "Cấu hình tra cứu hành trình"
 
 #: src/about.cpp:205 src/about.cpp:255 src/about.cpp:388
 #: src/AISTargetListDialog.cpp:301 src/chart1.cpp:1374 src/chart1.cpp:6009
@@ -96,119 +96,119 @@ msgstr ""
 #: src/TCWin.cpp:78 src/TCWin.cpp:187 src/toolbar.cpp:2705
 #: src/TrackPropDlg.cpp:109 src/TrackPropDlg.cpp:240 src/TrackPropDlg.cpp:548
 msgid "Dialog"
-msgstr ""
+msgstr "Hộp thoại"
 
 #: src/about.cpp:385
 msgid "The Open Source Chart Plotter/Navigator"
-msgstr ""
+msgstr "Nguồn Hải đồ"
 
 #: src/about.cpp:404
 msgid "Copy Log File to Clipboard"
-msgstr ""
+msgstr "Sao chép tệp nhật ký vào Clipboard"
 
 #: src/about.cpp:405
 msgid "Copy Settings File to Clipboard"
-msgstr ""
+msgstr "Sao chép tập tin cài đặt vào Clipboard"
 
 #: src/about.cpp:419
 msgid "About"
-msgstr ""
+msgstr "Giới thiệu"
 
 #: src/about.cpp:433
 msgid "Authors"
-msgstr ""
+msgstr "Tác giả"
 
 #: src/about.cpp:447
 msgid "License"
-msgstr ""
+msgstr "Giấy phép"
 
 #: src/about.cpp:461
 msgid "Help"
-msgstr ""
+msgstr "Giúp đỡ"
 
 #: src/about.cpp:467 src/AISTargetListDialog.cpp:679
 msgid "Close"
-msgstr ""
+msgstr "Đóng"
 
 #: src/ais.cpp:152
 msgid "Underway"
-msgstr ""
+msgstr "Đang hành trình"
 
 #: src/ais.cpp:153
 msgid "At Anchor"
-msgstr ""
+msgstr "Đang neo"
 
 #: src/ais.cpp:154
 msgid "Not Under Command"
-msgstr ""
+msgstr "Mất khả năng điều động"
 
 #: src/ais.cpp:155
 msgid "Restricted Manoeuvrability"
-msgstr ""
+msgstr "Hạn chế khả năng điều động"
 
 #: src/ais.cpp:156
 msgid "Constrained by draught"
-msgstr ""
+msgstr "Trở ngại bởi mớn nước"
 
 #: src/ais.cpp:157
 msgid "Moored"
-msgstr ""
+msgstr "Bỏ neo"
 
 #: src/ais.cpp:158
 msgid "Aground"
-msgstr ""
+msgstr "Mắc cạn"
 
 #: src/ais.cpp:159
 msgid "Engaged in Fishing"
-msgstr ""
+msgstr "Đang đánh bắt"
 
 #: src/ais.cpp:160
 msgid "Under way sailing"
-msgstr ""
+msgstr "Đang điều động"
 
 #: src/ais.cpp:161 src/ais.cpp:190
 msgid "High Speed Craft"
-msgstr ""
+msgstr "Tàu cao tốc"
 
 #: src/ais.cpp:162
 msgid "Wing In Ground Effect"
-msgstr ""
+msgstr "Tàu khí động học"
 
 #: src/ais.cpp:163
 msgid "Power-driven vessel towing astern (regional use)"
-msgstr ""
+msgstr "Tàu lai kéo"
 
 #: src/ais.cpp:164
 msgid "Power-driven vessel pushing ahead or towing alongside (regional use)"
-msgstr ""
+msgstr "Tàu lai đẩy"
 
 #: src/ais.cpp:165
 msgid "Reserved 13"
-msgstr ""
+msgstr "Dự trữ  13"
 
 #: src/ais.cpp:166
 msgid "Reserved 14"
-msgstr ""
+msgstr "Dự trữ  14"
 
 #: src/ais.cpp:167 src/AIS_Target_Data.cpp:401
 msgid "Undefined"
-msgstr ""
+msgstr "Không xác định"
 
 #: src/ais.cpp:168
 msgid "Virtual"
-msgstr ""
+msgstr "Không có thực"
 
 #: src/ais.cpp:169
 msgid "Virtual (On Position)"
-msgstr ""
+msgstr "Không có thực (mở vị trí)"
 
 #: src/ais.cpp:170
 msgid "Virtual (Off Position)"
-msgstr ""
+msgstr "Không có thực (tắt vị trí)"
 
 #: src/ais.cpp:171
 msgid "Real"
-msgstr ""
+msgstr "Có thực"
 
 #: src/ais.cpp:172
 msgid "Real (On Position)"
@@ -220,209 +220,209 @@ msgstr ""
 
 #: src/ais.cpp:182
 msgid "Vessel Fishing"
-msgstr ""
+msgstr "Tàu cá"
 
 #: src/ais.cpp:183
 msgid "Vessel Towing"
-msgstr ""
+msgstr "Tàu kéo"
 
 #: src/ais.cpp:184
 msgid "Vessel Towing, Long"
-msgstr ""
+msgstr "Tàu kéo"
 
 #: src/ais.cpp:185
 msgid "Vessel Dredging"
-msgstr ""
+msgstr "Tàu lưới vét"
 
 #: src/ais.cpp:186
 msgid "Vessel Diving"
-msgstr ""
+msgstr "Tàu lặn"
 
 #: src/ais.cpp:187
 msgid "Military Vessel"
-msgstr ""
+msgstr "Tàu quân sự"
 
 #: src/ais.cpp:188
 msgid "Sailing Vessel"
-msgstr ""
+msgstr "Thuyền buồm"
 
 #: src/ais.cpp:189
 msgid "Pleasure craft"
-msgstr ""
+msgstr "Du thuyền"
 
 #: src/ais.cpp:191
 msgid "Pilot Vessel"
-msgstr ""
+msgstr "Tàu hoa tiêu"
 
 #: src/ais.cpp:192
 msgid "Search and Rescue Vessel"
-msgstr ""
+msgstr "Tàu tìm kiếm cứu nạn"
 
 #: src/ais.cpp:193 src/ais.cpp:258
 msgid "Tug"
-msgstr ""
+msgstr "Tàu lai kéo"
 
 #: src/ais.cpp:194
 msgid "Port Tender"
-msgstr ""
+msgstr "Tàu đón trả khách vào cảng"
 
 #: src/ais.cpp:195
 msgid "Pollution Control Vessel"
-msgstr ""
+msgstr "Tàu kiểm soát ô nhiễm"
 
 #: src/ais.cpp:196
 msgid "Law Enforcement Vessel"
-msgstr ""
+msgstr "Tàu chấp pháp"
 
 #: src/ais.cpp:197
 msgid "Medical Transport"
-msgstr ""
+msgstr "Tàu vận chuyển y tế"
 
 #: src/ais.cpp:198
 msgid "Passenger Ship"
-msgstr "Tàu chở khách"
+msgstr "Tàu khách"
 
 #: src/ais.cpp:199
 msgid "Cargo Ship"
-msgstr "Tàu chở hàng"
+msgstr "Tàu chở hàng"
 
 #: src/ais.cpp:200 src/AIS_Decoder.cpp:256
 msgid "Tanker"
-msgstr "Tàu chở dầu"
+msgstr "Tàu chở dầu"
 
 #: src/ais.cpp:201 src/AIS_Target_Data.cpp:387 src/AIS_Target_Data.cpp:672
 #: src/AIS_Target_Data.cpp:732 src/AIS_Target_Data.cpp:906
 #: src/chartdbs.cpp:1279
 msgid "Unknown"
-msgstr "Không rõ"
+msgstr "Chưa nhận dạng"
 
 #: src/ais.cpp:202
 msgid "Unspecified"
-msgstr "Không xác định"
+msgstr "Chưa xác định"
 
 #: src/ais.cpp:203
 msgid "Reference Point"
-msgstr "Điểm tham chiếu"
+msgstr "Điểm chuẩn"
 
 #: src/ais.cpp:204 src/ais.cpp:270
 msgid "RACON"
-msgstr "RACON"
+msgstr "Radar beacon"
 
 #: src/ais.cpp:205
 msgid "Fixed Structure"
-msgstr "Công trình cố định"
+msgstr "Cấu trúc cố định"
 
 #: src/ais.cpp:206
 msgid "Spare"
-msgstr "Phụ tùng"
+msgstr "Dự phòng"
 
 #: src/ais.cpp:207
 msgid "Light"
-msgstr "Đèn biển "
+msgstr "Đèn"
 
 #: src/ais.cpp:208
 msgid "Light w/Sectors"
-msgstr ""
+msgstr "Đèn chiếu sáng theo cung"
 
 #: src/ais.cpp:209
 msgid "Leading Light Front"
-msgstr ""
+msgstr "Đèn chỉ hướng phía trước"
 
 #: src/ais.cpp:210
 msgid "Leading Light Rear"
-msgstr ""
+msgstr "Đèn chỉ hướng phía sau"
 
 #: src/ais.cpp:211
 msgid "Cardinal N Beacon"
-msgstr ""
+msgstr "Beacon hướng chính Bắc"
 
 #: src/ais.cpp:212
 msgid "Cardinal E Beacon"
-msgstr ""
+msgstr "Beacon hướng chính Đông"
 
 #: src/ais.cpp:213
 msgid "Cardinal S Beacon"
-msgstr ""
+msgstr "Beacon hướng chính Nam"
 
 #: src/ais.cpp:214
 msgid "Cardinal W Beacon"
-msgstr ""
+msgstr "Beacon hướng chính Tây"
 
 #: src/ais.cpp:215
 msgid "Beacon, Port Hand"
-msgstr ""
+msgstr "Beacon, Phía trái"
 
 #: src/ais.cpp:216
 msgid "Beacon, Starboard Hand"
-msgstr ""
+msgstr "Beacon, Phía phải"
 
 #: src/ais.cpp:217
 msgid "Beacon, Preferred Channel Port Hand"
-msgstr ""
+msgstr "Beacon, ưu tiên bên trái luông"
 
 #: src/ais.cpp:218
 msgid "Beacon, Preferred Channel Starboard Hand"
-msgstr ""
+msgstr "Beacon, ưu tiên bên phải luồng"
 
 #: src/ais.cpp:219
 msgid "Beacon, Isolated Danger"
-msgstr ""
+msgstr "Beacon,Phân chia vùng nguy hiểm"
 
 #: src/ais.cpp:220
 msgid "Beacon, Safe Water"
-msgstr ""
+msgstr "Beacon, Vùng nước an toàn"
 
 #: src/ais.cpp:221
 msgid "Beacon, Special Mark"
-msgstr ""
+msgstr "Beacon, Điểm đánh dấu đặc biệt"
 
 #: src/ais.cpp:222
 msgid "Cardinal Mark N"
-msgstr ""
+msgstr "Điểm dấu chính Bắc"
 
 #: src/ais.cpp:223
 msgid "Cardinal Mark E"
-msgstr ""
+msgstr "Điểm dấu chính Đông"
 
 #: src/ais.cpp:224
 msgid "Cardinal Mark S"
-msgstr ""
+msgstr "Điểm dấu chính Nam"
 
 #: src/ais.cpp:225
 msgid "Cardinal Mark W"
-msgstr ""
+msgstr "Điểm dấu chính Tây"
 
 #: src/ais.cpp:226
 msgid "Port Hand Mark"
-msgstr ""
+msgstr "Đánh dấu bên trái"
 
 #: src/ais.cpp:227
 msgid "Starboard Hand Mark"
-msgstr ""
+msgstr "Đánh dấu bên phải"
 
 #: src/ais.cpp:228
 msgid "Preferred Channel Port Hand"
-msgstr ""
+msgstr "ưu tiên bên trái luông"
 
 #: src/ais.cpp:229
 msgid "Preferred Channel Starboard Hand"
-msgstr ""
+msgstr "ưu tiên bên phải luồng"
 
 #: src/ais.cpp:230
 msgid "Isolated Danger"
-msgstr ""
+msgstr "Phân chia vùng nguy hiểm"
 
 #: src/ais.cpp:231 src/ais.cpp:286 src/ais.cpp:297
 msgid "Safe Water"
-msgstr ""
+msgstr "Vùng nước an toàn"
 
 #: src/ais.cpp:232
 msgid "Special Mark"
-msgstr ""
+msgstr "Điểm đánh dấu đặc biệt"
 
 #: src/ais.cpp:233
 msgid "Light Vessel/Rig"
-msgstr ""
+msgstr "Đèn cột"
 
 #: src/ais.cpp:234
 msgid "GpsGate Buddy"
@@ -430,19 +430,19 @@ msgstr ""
 
 #: src/ais.cpp:235
 msgid "Position Report"
-msgstr ""
+msgstr "Báo cáo vị trí"
 
 #: src/ais.cpp:236 src/ais.cpp:302
 msgid "Distress"
-msgstr ""
+msgstr "Tai hoạ"
 
 #: src/ais.cpp:237
 msgid "ARPA radar target"
-msgstr ""
+msgstr "Mục tiêu radar ARPA"
 
 #: src/ais.cpp:238 src/AIS_Target_Data.cpp:903
 msgid "APRS Position Report"
-msgstr ""
+msgstr "Báo cáo vị trí APRS"
 
 #: src/ais.cpp:247
 msgid "F/V"
@@ -450,15 +450,15 @@ msgstr ""
 
 #: src/ais.cpp:248
 msgid "Tow"
-msgstr ""
+msgstr "Lai dắt"
 
 #: src/ais.cpp:249
 msgid "Long Tow"
-msgstr ""
+msgstr "Lai dắt dài"
 
 #: src/ais.cpp:250
 msgid "Dredge"
-msgstr ""
+msgstr "Kéo lưới vét"
 
 #: src/ais.cpp:251
 msgid "D/V"
@@ -490,7 +490,7 @@ msgstr ""
 
 #: src/ais.cpp:259
 msgid "Tender"
-msgstr ""
+msgstr "Tàu tiếp tế"
 
 #: src/ais.cpp:260
 msgid "PC/V"
@@ -566,15 +566,15 @@ msgstr ""
 
 #: src/ais.cpp:281 src/options.cpp:1703
 msgid "Port"
-msgstr ""
+msgstr "Mạn trái"
 
 #: src/ais.cpp:282
 msgid "Stbd"
-msgstr ""
+msgstr "Mạn phải"
 
 #: src/ais.cpp:283 src/ais.cpp:284 src/ais.cpp:294 src/ais.cpp:295
 msgid "Pref. Chnl"
-msgstr ""
+msgstr "Luồng ưu tiên"
 
 #: src/ais.cpp:285 src/ais.cpp:296
 msgid "Isol. Dngr"
@@ -582,15 +582,15 @@ msgstr ""
 
 #: src/ais.cpp:287 src/ais.cpp:298
 msgid "Special"
-msgstr ""
+msgstr "Ddạc biệt"
 
 #: src/ais.cpp:292
 msgid "Port Hand"
-msgstr ""
+msgstr "Tay trái"
 
 #: src/ais.cpp:293
 msgid "Stbd Hand"
-msgstr ""
+msgstr "Tay phải"
 
 #: src/ais.cpp:299
 msgid "LtV/Rig"
@@ -614,91 +614,91 @@ msgstr ""
 
 #: src/ais.cpp:311
 msgid "Caution Area: Marine mammals habitat (implies whales NOT observed)"
-msgstr ""
+msgstr "Khu vực cảnh báo: Môi trường sống động vật có vú biển (Ngụ ý cá voi KHÔNG quan sát thấy)"
 
 #: src/ais.cpp:312
 msgid "Caution Area: Marine mammals in area - reduce speed"
-msgstr ""
+msgstr "Khu vực Cảnh báo: Động vật có vú ở biển trong khu vực - giảm tốc độ"
 
 #: src/ais.cpp:313
 msgid "Caution Area: Marine mammals in area - stay clear"
-msgstr ""
+msgstr "Khu vực Cảnh báo: Động vật có vú ở biển trong khu vực - ở rõ ràng"
 
 #: src/ais.cpp:314
 msgid "Caution Area: Marine mammals in area - report sightings"
-msgstr ""
+msgstr "Khu vực Cảnh báo: Động vật có vú ở biển trong khu vực - báo cáo nhìn thấy"
 
 #: src/ais.cpp:315
 msgid "Caution Area: Protected habitat - reduce speed"
-msgstr ""
+msgstr "Khu vực Cảnh báo: Môi trường sống được bảo vệ - giảm tốc độ"
 
 #: src/ais.cpp:316
 msgid "Caution Area: Protected habitat - stay clear"
-msgstr ""
+msgstr "Khu vực Cảnh báo: Môi trường sống được bảo vệ - ở rõ ràng"
 
 #: src/ais.cpp:317
 msgid "Caution Area: Protected habitat - no fishing or anchoring"
-msgstr ""
+msgstr "Khu vực cảnh báo: Môi trường sống được bảo vệ - không đánh bắt hoặc neo đậu"
 
 #: src/ais.cpp:318
 msgid "Caution Area: Derelicts (drifting objects)"
-msgstr ""
+msgstr "Khu vực Cảnh báo:  vật trôi vô chủ"
 
 #: src/ais.cpp:319
 msgid "Caution Area: Traffic congestion"
-msgstr ""
+msgstr "Khu vực Cảnh báo: Tắc nghẽn giao thông"
 
 #: src/ais.cpp:320
 msgid "Caution Area: Marine event"
-msgstr ""
+msgstr "Khu vực Cảnh báo: Sự kiện trên biển"
 
 #: src/ais.cpp:321
 msgid "Caution Area: Divers down"
-msgstr ""
+msgstr "Khu vực Cảnh báo: Có thợ lặn xuống nước"
 
 #: src/ais.cpp:322
 msgid "Caution Area: Swim area"
-msgstr ""
+msgstr "Khu vực Cảnh báo: Khu Bơi lội"
 
 #: src/ais.cpp:323
 msgid "Caution Area: Dredge operations"
-msgstr ""
+msgstr "Khu vực Cảnh báo: Các hoạt động nạo vét"
 
 #: src/ais.cpp:324
 msgid "Caution Area: Survey operations"
-msgstr ""
+msgstr "Khu vực Cảnh báo: Hoạt động khảo sát"
 
 #: src/ais.cpp:325
 msgid "Caution Area: Underwater operation"
-msgstr ""
+msgstr "Khu vực Cảnh báo: Hoạt động dưới nước"
 
 #: src/ais.cpp:326
 msgid "Caution Area: Seaplane operations"
-msgstr ""
+msgstr "Khu vực Cảnh báo: Các hoạt động của Hải quân"
 
 #: src/ais.cpp:327
 msgid "Caution Area: Fishery - nets in water"
-msgstr ""
+msgstr "Khu vực Cảnh báo: Ngư cụ - lưới trong nước"
 
 #: src/ais.cpp:328
 msgid "Caution Area: Cluster of fishing vessels"
-msgstr ""
+msgstr "Khu vực Cảnh báo: Cụm tàu cá"
 
 #: src/ais.cpp:329
 msgid "Caution Area: Fairway closed"
-msgstr ""
+msgstr "Khu vực Cảnh báo: Kênh đào đã đóng"
 
 #: src/ais.cpp:330
 msgid "Caution Area: Harbour closed"
-msgstr ""
+msgstr "Khu vực Cảnh báo: Cảng đã đóng"
 
 #: src/ais.cpp:331
 msgid "Caution Area: Risk (define in Associated text field)"
-msgstr ""
+msgstr "Khu vực Cảnh báo: Rủi ro"
 
 #: src/ais.cpp:332
 msgid "Caution Area: Underwater vehicle operation"
-msgstr ""
+msgstr "Khu vực Cảnh báo: Phương tiện vận hành dưới nước"
 
 #: src/ais.cpp:333 src/ais.cpp:342 src/ais.cpp:350 src/ais.cpp:357
 #: src/ais.cpp:358 src/ais.cpp:359 src/ais.cpp:360 src/ais.cpp:361
@@ -710,575 +710,575 @@ msgstr ""
 #: src/ais.cpp:427 src/ais.cpp:428 src/ais.cpp:429 src/ais.cpp:430
 #: src/ais.cpp:434 src/ais.cpp:435
 msgid "(reserved for future use)"
-msgstr ""
+msgstr "(Chưa sử dụng)"
 
 #: src/ais.cpp:334
 msgid "Environmental Caution Area: Storm front (line squall)"
-msgstr ""
+msgstr "Khu vực cảnh báo về môi trường: Bão phía trước (luồng gió mạnh)"
 
 #: src/ais.cpp:335
 msgid "Environmental Caution Area: Hazardous sea ice"
-msgstr ""
+msgstr "Khu vực cảnh báo về môi trường: băng biển nguy hiểm"
 
 #: src/ais.cpp:336
 msgid "Environmental Caution Area: Storm warning (storm cell or line of storms)"
-msgstr ""
+msgstr "Khu vực cảnh báo về môi trường: Cảnh báo bão (bão tố hoặc đường đi của bão)"
 
 #: src/ais.cpp:337
 msgid "Environmental Caution Area: High wind"
-msgstr ""
+msgstr "Khu vực cảnh báo về môi trường: Gió mạnh"
 
 #: src/ais.cpp:338
 msgid "Environmental Caution Area: High waves"
-msgstr ""
+msgstr "Khu vực cảnh báo về môi trường: Sóng cao"
 
 #: src/ais.cpp:339
 msgid "Environmental Caution Area: Restricted visibility (fog, rain, etc.)"
-msgstr ""
+msgstr "Khu vực Cảnh báo Môi trường: Hạn chế tầm nhìn (sương mù, mưa ...)"
 
 #: src/ais.cpp:340
 msgid "Environmental Caution Area: Strong currents"
-msgstr ""
+msgstr "Khu vực cảnh báo về môi trường: dòng chảy mạnh"
 
 #: src/ais.cpp:341
 msgid "Environmental Caution Area: Heavy icing"
-msgstr ""
+msgstr "Khu vực cảnh báo về môi trường: Đóng băng nặng"
 
 #: src/ais.cpp:343
 msgid "Restricted Area: Fishing prohibited"
-msgstr ""
+msgstr "Khu vực hạn chế: Nghề cá bị cấm"
 
 #: src/ais.cpp:344
 msgid "Restricted Area: No anchoring."
-msgstr ""
+msgstr "Khu vực hạn chế: Không neo đậu."
 
 #: src/ais.cpp:345
 msgid "Restricted Area: Entry approval required prior to transit"
-msgstr ""
+msgstr "Vùng Hạn Chế: Cần phê duyệt trước khi quá cảnh"
 
 #: src/ais.cpp:346
 msgid "Restricted Area: Entry prohibited"
-msgstr ""
+msgstr "Khu vực hạn chế:  Cấm Nhập cảnh"
 
 #: src/ais.cpp:347
 msgid "Restricted Area: Active military OPAREA"
-msgstr ""
+msgstr "Khu vực bị hạn chế: Hoạt động quân sự OPAREA"
 
 #: src/ais.cpp:348
 msgid "Restricted Area: Firing - danger area."
-msgstr ""
+msgstr "Vùng Hạn Chế: Khu vực đang cháy - nguy hiểm."
 
 #: src/ais.cpp:349
 msgid "Restricted Area: Drifting Mines"
-msgstr ""
+msgstr "Khu vực hạn chế: Mìn trôi"
 
 #: src/ais.cpp:351
 msgid "Anchorage Area: Anchorage open"
-msgstr ""
+msgstr "Khu vực neo đậu: Mở cửa khu neo đậu"
 
 #: src/ais.cpp:352
 msgid "Anchorage Area: Anchorage closed"
-msgstr ""
+msgstr "Khu vực neo đậu: Đóng cửa khu neo đậu"
 
 #: src/ais.cpp:353
 msgid "Anchorage Area: Anchoring prohibited"
-msgstr ""
+msgstr "Khu vực neo đậu: Cấm neo đậu"
 
 #: src/ais.cpp:354
 msgid "Anchorage Area: Deep draft anchorage"
-msgstr ""
+msgstr "Khu vực neo đậu: Khu neo đậu mớn nước sâu"
 
 #: src/ais.cpp:355
 msgid "Anchorage Area: Shallow draft anchorage"
-msgstr ""
+msgstr "Khu vực neo đậu: Khu neo đậu mớn nước nông"
 
 #: src/ais.cpp:356
 msgid "Anchorage Area: Vessel transfer operations"
-msgstr ""
+msgstr "Khu vực neo đậu: Chuyển đổi tàu"
 
 #: src/ais.cpp:367
 msgid "Security Alert - Level 1"
-msgstr ""
+msgstr "Cảnh báo Bảo mật - Cấp 1"
 
 #: src/ais.cpp:368
 msgid "Security Alert - Level 2"
-msgstr ""
+msgstr "Cảnh báo Bảo mật - Cấp 2"
 
 #: src/ais.cpp:369
 msgid "Security Alert - Level 3"
-msgstr ""
+msgstr "Cảnh báo Bảo mật - Cấp 3"
 
 #: src/ais.cpp:375
 msgid "Distress Area: Vessel disabled and adrift"
-msgstr ""
+msgstr "Khu vực cần trợ giúp : Tàu bị tàn phá và trôi dạt"
 
 #: src/ais.cpp:376
 msgid "Distress Area: Vessel sinking"
-msgstr ""
+msgstr "Khu vực  cần trợ giúp : Tàu chìm"
 
 #: src/ais.cpp:377
 msgid "Distress Area: Vessel abandoning ship"
-msgstr ""
+msgstr "Khu vực  cần trợ giúp : Tàu phá bỏ"
 
 #: src/ais.cpp:378
 msgid "Distress Area: Vessel requests medical assistance"
-msgstr ""
+msgstr "Khu vực  cần trợ giúp: Tàu thuyền yêu cầu trợ giúp y tế"
 
 #: src/ais.cpp:379
 msgid "Distress Area: Vessel flooding"
-msgstr ""
+msgstr "Khu vực cần trợ giúp: Tàu bị ngập nước"
 
 #: src/ais.cpp:380
 msgid "Distress Area: Vessel fire/explosion"
-msgstr ""
+msgstr "Khu vực cần trợ giúp: Tàu cháy / nổ"
 
 #: src/ais.cpp:381
 msgid "Distress Area: Vessel grounding"
-msgstr ""
+msgstr "Khu vực cần trợ giúp: Tàu bị mắc cạn"
 
 #: src/ais.cpp:382
 msgid "Distress Area: Vessel collision"
-msgstr ""
+msgstr "Khu vực cần trợ giúp: Tàu bị đâm va"
 
 #: src/ais.cpp:383
 msgid "Distress Area: Vessel listing/capsizing"
-msgstr ""
+msgstr "Khu vực cần trợ giúp: Tàu bị nghiêng lật"
 
 #: src/ais.cpp:384
 msgid "Distress Area: Vessel under assault"
-msgstr ""
+msgstr "Khu vực cần trợ giúp: Tàu bị tấn công"
 
 #: src/ais.cpp:385
 msgid "Distress Area: Person overboard"
-msgstr ""
+msgstr "Khu vực cần trợ giúp: Có người rơi xuống nước"
 
 #: src/ais.cpp:386
 msgid "Distress Area: SAR area"
-msgstr ""
+msgstr "Khu vực cần trợ giúp: Khu vực tìm kiếm cứu nạn"
 
 #: src/ais.cpp:387
 msgid "Distress Area: Pollution response area"
-msgstr ""
+msgstr "Khu vực cần trợ giúp: Khu vực phản ứng sự cố ô nhiễm"
 
 #: src/ais.cpp:391
 msgid "Instruction: Contact VTS at this point/juncture"
-msgstr ""
+msgstr "Chỉ dẫn: Liên hệ với VTS tại điểm này"
 
 #: src/ais.cpp:392
 msgid "Instruction: Contact Port Administration at this point/juncture"
-msgstr ""
+msgstr "Chỉ dẫn: Liên hệ Quản lý Cảng ở điểm này"
 
 #: src/ais.cpp:393
 msgid "Instruction: Do not proceed beyond this point/juncture"
-msgstr ""
+msgstr "Chỉ dẫn: Không tiến xa hơn thời điểm / thời điểm này"
 
 #: src/ais.cpp:394
 msgid "Instruction: Await instructions prior to proceeding beyond this point/juncture"
-msgstr ""
+msgstr "Chỉ dẫn: chờ đợi hướng dẫn trước khi tiến hành vượt quá điểm này"
 
 #: src/ais.cpp:395
 msgid "Proceed to this location - await instructions"
-msgstr ""
+msgstr "Tiến tới vị trí này - chờ đợi các hướng dẫn"
 
 #: src/ais.cpp:396
 msgid "Clearance granted - proceed to berth"
-msgstr ""
+msgstr "Khoảng trống cho phép - tiếp tục đến bến"
 
 #: src/ais.cpp:399
 msgid "Information: Pilot boarding position"
-msgstr ""
+msgstr "Thông tin: Vị trí đón hoa tiêu lên tàu"
 
 #: src/ais.cpp:400
 msgid "Information: Icebreaker waiting area"
-msgstr ""
+msgstr "Thông tin: Khu vực chờ phá băng"
 
 #: src/ais.cpp:401
 msgid "Information: Places of refuge"
-msgstr ""
+msgstr "Thông tin: Nơi trú ẩn"
 
 #: src/ais.cpp:402
 msgid "Information: Position of icebreakers"
-msgstr ""
+msgstr "Thông tin: Vị trí của tàu phá băng"
 
 #: src/ais.cpp:403
 msgid "Information: Location of response units"
-msgstr ""
+msgstr "Thông tin: Vị trí của các đơn vị phản ứng sự cố"
 
 #: src/ais.cpp:404
 msgid "VTS active target"
-msgstr ""
+msgstr "Biển báo hệ thống VTS có hiệu lực"
 
 #: src/ais.cpp:405
 msgid "Rogue or suspicious vessel"
-msgstr ""
+msgstr "Tàu giả mạo hoặc khả nghi"
 
 #: src/ais.cpp:406
 msgid "Vessel requesting non-distress assistance"
-msgstr ""
+msgstr "Tàu yêu cầu sự hỗ trợ"
 
 #: src/ais.cpp:407
 msgid "Chart Feature: Sunken vessel"
-msgstr ""
+msgstr "Kí hiệu hải đồ: Tàu đắm"
 
 #: src/ais.cpp:408
 msgid "Chart Feature: Submerged object"
-msgstr ""
+msgstr "Kí hiệu hải đồ: Tàu ngập nước"
 
 #: src/ais.cpp:409
 msgid "Chart Feature: Semi-submerged object"
-msgstr ""
+msgstr "Kí hiệu hải đồ: Đối tượng bán ngập nước"
 
 #: src/ais.cpp:410
 msgid "Chart Feature: Shoal area"
-msgstr ""
+msgstr "Kí hiệu hải đồ: Vùng nước cạn"
 
 #: src/ais.cpp:411
 msgid "Chart Feature: Shoal area due north"
-msgstr ""
+msgstr "Kí hiệu hải đồ: Vùng nước cạn về phía bắc"
 
 #: src/ais.cpp:412
 msgid "Chart Feature: Shoal area due east"
-msgstr ""
+msgstr "Kí hiệu hải đồ: Vùng nước cạn về phía Đông"
 
 #: src/ais.cpp:413
 msgid "Chart Feature: Shoal area due south"
-msgstr ""
+msgstr "Kí hiệu hải đồ: Vùng nước cạn về phía Nam"
 
 #: src/ais.cpp:414
 msgid "Chart Feature: Shoal area due west"
-msgstr ""
+msgstr "Kí hiệu hải đồ: Vùng nước cạn về phía Tây"
 
 #: src/ais.cpp:415
 msgid "Chart Feature: Channel obstruction"
-msgstr ""
+msgstr "Kí hiệu hải đồ: Vật chướng ngại trong luồng"
 
 #: src/ais.cpp:416
 msgid "Chart Feature: Reduced vertical clearance"
-msgstr ""
+msgstr "Kí hiệu hải đồ: Khoảng trống giảm theo chiều dọc"
 
 #: src/ais.cpp:417
 msgid "Chart Feature: Bridge closed"
-msgstr ""
+msgstr "Kí hiệu hải đồ: Cầu đã đóng"
 
 #: src/ais.cpp:418
 msgid "Chart Feature: Bridge partially open"
-msgstr ""
+msgstr "Kí hiệu hải đồ: Cầu mở một phần"
 
 #: src/ais.cpp:419
 msgid "Chart Feature: Bridge fully open"
-msgstr ""
+msgstr "Đặc điểm biểu đồ: Cầu mở toàn phần"
 
 #: src/ais.cpp:423
 msgid "Report from ship: Icing info"
-msgstr ""
+msgstr "Báo cáo từ tàu: Thông tin băng"
 
 #: src/ais.cpp:425
 msgid "Report from ship: Miscellaneous information - define in Associated text field"
-msgstr ""
+msgstr "Báo cáo từ tàu: Thông tin tổng hợp"
 
 #: src/ais.cpp:431
 msgid "Route: Recommended route"
-msgstr ""
+msgstr "Tuyến đường: Tuyến được đề nghị"
 
 #: src/ais.cpp:432
 msgid "Route: Alternative route"
-msgstr ""
+msgstr "Tuyến đường: Tuyến thay thế"
 
 #: src/ais.cpp:433
 msgid "Route: Recommended route through ice"
-msgstr ""
+msgstr "Tuyến đường: Khuyến nghị tuyến đườngđi qua băng"
 
 #: src/ais.cpp:436
 msgid "Other - Define in associated text field"
-msgstr ""
+msgstr "Khác"
 
 #: src/ais.cpp:437
 msgid "Cancellation - cancel area as identified by Message Linkage ID"
-msgstr ""
+msgstr "Hủy bỏ - hủy khu vực như được xác định bởi Message Linkage ID"
 
 #: src/ais.cpp:438
 msgid "Undefined (default)"
-msgstr ""
+msgstr "(Chưa định nghĩa)"
 
 #: src/ais.cpp:1690 src/ais.cpp:1691
 msgid "AIS Target Name"
-msgstr ""
+msgstr "Tên mục tiêu AIS"
 
 #: src/AIS_Decoder.cpp:193
 msgid "Vessel, type unknown"
-msgstr ""
+msgstr "Tàu thuyền chưa rõ kiểu loại"
 
 #: src/AIS_Decoder.cpp:194
 msgid "Freightbarge"
-msgstr ""
+msgstr "Sà lan vận tải"
 
 #: src/AIS_Decoder.cpp:195
 msgid "Tankbarge"
-msgstr ""
+msgstr "Xà lan chở dầu"
 
 #: src/AIS_Decoder.cpp:196
 msgid "Tankbarge, dry cargo as if liquid (e.g. cement)"
-msgstr ""
+msgstr "Xà lan thùng, hàng khô như thể lỏng (ví dụ xi măng)"
 
 #: src/AIS_Decoder.cpp:197
 msgid "Service vessel, police patrol, port service"
-msgstr ""
+msgstr "Tàu dịch vụ, tuần tra cảnh sát, dịch vụ cảng"
 
 #: src/AIS_Decoder.cpp:198 src/AIS_Decoder.cpp:244
 msgid "Pushboat, single"
-msgstr ""
+msgstr "Xuồng đẩy"
 
 #: src/AIS_Decoder.cpp:199
 msgid "Object, not otherwise specified"
-msgstr ""
+msgstr "Đối tượng không được xác định chính xác khác"
 
 #: src/AIS_Decoder.cpp:200
 msgid "Object, towed, not otherwise specified"
-msgstr ""
+msgstr "Đối tượng, phương tiện kéo không được quy định cụ thể"
 
 #: src/AIS_Decoder.cpp:201
 msgid "Bunkership"
-msgstr ""
+msgstr "Tàu có hầm chứa"
 
 #: src/AIS_Decoder.cpp:202
 msgid "Motor freighter"
-msgstr ""
+msgstr "Tàu vận tải"
 
 #: src/AIS_Decoder.cpp:203
 msgid "Motor tanker"
-msgstr ""
+msgstr "Tàu chở dầu"
 
 #: src/AIS_Decoder.cpp:204
 msgid "Motor tanker, liquid cargo, type N"
-msgstr ""
+msgstr "Tàu chở dầu, hàng lỏng, loại N"
 
 #: src/AIS_Decoder.cpp:205
 msgid "Motor tanker, liquid cargo, type C"
-msgstr ""
+msgstr "Tàu chở dầu, hàng lỏng, loại C"
 
 #: src/AIS_Decoder.cpp:206
 msgid "Motor tanker, dry cargo as if liquid (e.g. cement)"
-msgstr ""
+msgstr "Tàu chở dầu, hàng khô như thể lỏng (ví dụ xi măng)"
 
 #: src/AIS_Decoder.cpp:207
 msgid "Container vessel"
-msgstr ""
+msgstr "Tàu container"
 
 #: src/AIS_Decoder.cpp:208
 msgid "Gas tanker"
-msgstr ""
+msgstr "Tàu chở khí"
 
 #: src/AIS_Decoder.cpp:209
 msgid "Motor freighter, tug"
-msgstr ""
+msgstr "Tàu chở hàng, kéo"
 
 #: src/AIS_Decoder.cpp:210
 msgid "Motor tanker, tug"
-msgstr ""
+msgstr "Tàu chở dầu, kéo"
 
 #: src/AIS_Decoder.cpp:211
 msgid "Motor freighter with one or more ships alongside"
-msgstr ""
+msgstr "Tàu chở hàng với một hoặc nhiều tàu cập mạn"
 
 #: src/AIS_Decoder.cpp:212
 msgid "Motor freighter with tanker"
-msgstr ""
+msgstr "Tàu chở hàng có xi-téc"
 
 #: src/AIS_Decoder.cpp:213
 msgid "Motor freighter pushing one or more freighters"
-msgstr ""
+msgstr "Tàu chở hàng đẩy một hoặc nhiều tàu chở hàng"
 
 #: src/AIS_Decoder.cpp:214
 msgid "Motor freighter pushing at least one tank-ship"
-msgstr ""
+msgstr "Tàu chở hàng đẩy ít nhất 1 tàu chở dầu"
 
 #: src/AIS_Decoder.cpp:215
 msgid "Tug, freighter"
-msgstr ""
+msgstr "Kéo, chở hàng"
 
 #: src/AIS_Decoder.cpp:216
 msgid "Tug, tanker"
-msgstr ""
+msgstr "Kéo, chở  dầu"
 
 #: src/AIS_Decoder.cpp:217
 msgid "Tug freighter, coupled"
-msgstr ""
+msgstr "Tàu kéo, chở hàng áp mạn"
 
 #: src/AIS_Decoder.cpp:218
 msgid "Tug, freighter/tanker, coupled"
-msgstr ""
+msgstr "Tàu kéo, chở hàng, tàu dầu áp mạn"
 
 #: src/AIS_Decoder.cpp:219
 msgid "Tankbarge, liquid cargo, type N"
-msgstr ""
+msgstr "Xà lan chở dầu, hàng lỏng, loại N"
 
 #: src/AIS_Decoder.cpp:220
 msgid "Tankbarge, liquid cargo, type C"
-msgstr ""
+msgstr "Xà lan chở dầu, hàng lỏng, loại N"
 
 #: src/AIS_Decoder.cpp:221
 msgid "Freightbarge with containers"
-msgstr ""
+msgstr "Xà lan vận chuyển container"
 
 #: src/AIS_Decoder.cpp:222
 msgid "Tankbarge, gas"
-msgstr ""
+msgstr "Xà lan dầu, khí"
 
 #: src/AIS_Decoder.cpp:223
 msgid "Pushtow, one cargo barge"
-msgstr ""
+msgstr "Lai dắt 1 xà lan chở hàng"
 
 #: src/AIS_Decoder.cpp:224
 msgid "Pushtow, two cargo barges"
-msgstr ""
+msgstr "Lai dắt 2 xà lan chở hàng"
 
 #: src/AIS_Decoder.cpp:225
 msgid "Pushtow, three cargo barges"
-msgstr ""
+msgstr "Lai dắt 3 xà lan chở hàng"
 
 #: src/AIS_Decoder.cpp:226
 msgid "Pushtow, four cargo barges"
-msgstr ""
+msgstr "Lai dắt 4 xà lan chở hàng"
 
 #: src/AIS_Decoder.cpp:227
 msgid "Pushtow, five cargo barges"
-msgstr ""
+msgstr "Lai dắt 5 xà lan chở hàng"
 
 #: src/AIS_Decoder.cpp:228
 msgid "Pushtow, six cargo barges"
-msgstr ""
+msgstr "Lai dắt 6 xà lan chở hàng"
 
 #: src/AIS_Decoder.cpp:229
 msgid "Pushtow, seven cargo barges"
-msgstr ""
+msgstr "Lai dắt 7 xà lan chở hàng"
 
 #: src/AIS_Decoder.cpp:230
 msgid "Pushtow, eight cargo barges"
-msgstr ""
+msgstr "Lai dắt 8 xà lan chở hàng"
 
 #: src/AIS_Decoder.cpp:231
 msgid "Pushtow, nine or more barges"
-msgstr ""
+msgstr "Lai dắt nhiều hơn 9 xà lan chở hàng"
 
 #: src/AIS_Decoder.cpp:232
 msgid "Pushtow, one tank/gas barge"
-msgstr ""
+msgstr "Lai dắt 1 xà lan chở dầu/khí"
 
 #: src/AIS_Decoder.cpp:233
 msgid "Pushtow, two barges at least one tanker or gas barge"
-msgstr ""
+msgstr "Lai dắt 2 xà lan, trong đó ít nhất 1 tàu chở dầu/khí"
 
 #: src/AIS_Decoder.cpp:234
 msgid "Pushtow, three barges at least one tanker or gas barge"
-msgstr ""
+msgstr "Lai dắt 3 xà lan, trong đó ít nhất 1 tàu chở dầu/khí"
 
 #: src/AIS_Decoder.cpp:235
 msgid "Pushtow, four barges at least one tanker or gas barge"
-msgstr ""
+msgstr "Lai dắt 4 xà lan, trong đó ít nhất 1 tàu chở dầu/khí"
 
 #: src/AIS_Decoder.cpp:236
 msgid "Pushtow, five barges at least one tanker or gas barge"
-msgstr ""
+msgstr "Lai dắt 5 xà lan, trong đó ít nhất 1 tàu chở dầu/khí"
 
 #: src/AIS_Decoder.cpp:237
 msgid "Pushtow, six barges at least one tanker or gas barge"
-msgstr ""
+msgstr "Lai dắt 6 xà lan, trong đó ít nhất 1 tàu chở dầu/khí"
 
 #: src/AIS_Decoder.cpp:238
 msgid "Pushtow, seven barges at least one tanker or gas barge"
-msgstr ""
+msgstr "Lai dắt 7 xà lan, trong đó ít nhất 1 tàu chở dầu/khí"
 
 #: src/AIS_Decoder.cpp:239
 msgid "Pushtow, eight barges at least one tanker or gas barge"
-msgstr ""
+msgstr "Lai dắt 8 xà lan, trong đó ít nhất 1 tàu chở dầu/khí"
 
 #: src/AIS_Decoder.cpp:240
 msgid "Pushtow, nine or more barges at least one tanker or gas barge"
-msgstr ""
+msgstr "Lai dắt 9 hoặc nhiều hơn 9 xà lan, trong đó ít nhất 1 tàu chở dầu/khí"
 
 #: src/AIS_Decoder.cpp:241
 msgid "Tug, single"
-msgstr ""
+msgstr "Tàu kéo dây đơn"
 
 #: src/AIS_Decoder.cpp:242
 msgid "Tug, one or more tows"
-msgstr ""
+msgstr "Tàu kéo, một hoặc nhiều dây kéo"
 
 #: src/AIS_Decoder.cpp:243
 msgid "Tug, assisting a vessel or linked combination"
-msgstr ""
+msgstr "Tug, trợ giúp một tàu hoặc liên kết hợp nhất"
 
 #: src/AIS_Decoder.cpp:245
 msgid "Passenger ship, ferry, cruise ship, red cross ship"
-msgstr ""
+msgstr "Tàu chở khách, phà, tàu du lịch, tàu nhân đạo"
 
 #: src/AIS_Decoder.cpp:246
 msgid "Ferry"
-msgstr ""
+msgstr "Phà"
 
 #: src/AIS_Decoder.cpp:247
 msgid "Red cross ship"
-msgstr ""
+msgstr "Tàu y tế"
 
 #: src/AIS_Decoder.cpp:248
 msgid "Cruise ship"
-msgstr ""
+msgstr "Tàu du lịch"
 
 #: src/AIS_Decoder.cpp:249
 msgid "Passenger ship without accomodation"
-msgstr ""
+msgstr "Tàu chở khách không có chỗ ở"
 
 #: src/AIS_Decoder.cpp:250
 msgid "Vessel, work maintainance craft, floating derrick, cable-ship, buoy-ship, dredge"
-msgstr ""
+msgstr "Tàu thuyền làm công việc duy trì , phao nổi, cáp treo, buoy-ship, nạo vét"
 
 #: src/AIS_Decoder.cpp:251
 msgid "Fishing boat"
-msgstr ""
+msgstr "Xuồng đánh cá"
 
 #: src/AIS_Decoder.cpp:252
 msgid "Barge, tanker, chemical"
-msgstr ""
+msgstr "Xà lan, tàu dầu, tàu chở hoá chất"
 
 #: src/AIS_Decoder.cpp:253
 msgid "General cargo Vessel maritime"
-msgstr ""
+msgstr "Tàu chở Hàng hóa tổng hợp đường biển"
 
 #: src/AIS_Decoder.cpp:254
 msgid "Unit carrier maritime"
-msgstr ""
+msgstr "Đơn vị vận chuyển đường biển"
 
 #: src/AIS_Decoder.cpp:255
 msgid "Bulk carrier maritime"
-msgstr ""
+msgstr "Vận chuyển hàng rời đường biển"
 
 #: src/AIS_Decoder.cpp:257
 msgid "Liquified gas tanker"
-msgstr ""
+msgstr "Tàu chở dầu khí hoá lỏng"
 
 #: src/AIS_Decoder.cpp:258
 msgid "Pleasure craft, longer than 20 metres"
-msgstr ""
+msgstr "Xuồng du lịch, dài hơn 20 mét"
 
 #: src/AIS_Decoder.cpp:259
 msgid "Fast ship"
-msgstr ""
+msgstr "Tàu nhanh"
 
 #: src/AIS_Decoder.cpp:260
 msgid "Hydrofoil"
-msgstr ""
+msgstr "Tàu cánh ngầm"
 
 #: src/AIS_Decoder.cpp:2429
 msgid "AIS Alert"
-msgstr ""
+msgstr "Cảnh báo AIS"
 
 #: src/AISTargetAlertDialog.cpp:158 src/AISTargetAlertDialog.cpp:249
 msgid "AISTargetAlert"
-msgstr ""
+msgstr "Cảnh báo mục tiêu AIS"
 
 #: src/AISTargetAlertDialog.cpp:200
 msgid "&Silence Alert"
-msgstr ""
+msgstr "Báo động đã im lặng"
 
 #: src/AISTargetAlertDialog.cpp:207
 msgid "&Acknowledge"
@@ -1291,12 +1291,12 @@ msgstr ""
 #: src/AISTargetAlertDialog.cpp:219 src/AISTargetQueryDialog.cpp:302
 #: src/undo.cpp:81
 msgid "Create Waypoint"
-msgstr ""
+msgstr "Tạo 1 điểm"
 
 #: src/AIS_Target_Data.cpp:339 src/AIS_Target_Data.cpp:714
 #: src/OCPNListCtrl.cpp:109
 msgid "SAR Aircraft"
-msgstr ""
+msgstr "Máy bay tìm kiểm cứu nạn"
 
 #: src/AIS_Target_Data.cpp:343 src/AIS_Target_Data.cpp:352
 #: src/AISTargetListDialog.cpp:511 src/options.cpp:435 src/options.cpp:736
@@ -1306,7 +1306,7 @@ msgstr ""
 #: src/AIS_Target_Data.cpp:344 src/AIS_Target_Data.cpp:353
 #: src/AISTargetListDialog.cpp:519
 msgid "Class"
-msgstr ""
+msgstr "Lớp"
 
 #: src/AIS_Target_Data.cpp:345
 msgid "IMO"
@@ -1314,23 +1314,23 @@ msgstr ""
 
 #: src/AIS_Target_Data.cpp:359
 msgid "Flag"
-msgstr ""
+msgstr "Cờ quốc tịch"
 
 #: src/AIS_Target_Data.cpp:369 src/AIS_Target_Data.cpp:750
 #: src/AISTargetListDialog.cpp:141 src/AISTargetListDialog.cpp:153
 #: src/OCPNListCtrl.cpp:123
 msgid "Active"
-msgstr ""
+msgstr "Kích hoạt"
 
 #: src/AIS_Target_Data.cpp:370 src/AIS_Target_Data.cpp:751
 #: src/AISTargetListDialog.cpp:142 src/AISTargetListDialog.cpp:154
 #: src/OCPNListCtrl.cpp:124
 msgid "Testing"
-msgstr ""
+msgstr "Kiểm tra"
 
 #: src/AIS_Target_Data.cpp:417
 msgid "Safety Broadcast Message"
-msgstr ""
+msgstr "Phát thông điệp an toàn"
 
 #: src/AIS_Target_Data.cpp:490
 msgid " (Last Known)"
@@ -1339,11 +1339,11 @@ msgstr ""
 #: src/AIS_Target_Data.cpp:496 src/GoToPositionDialog.cpp:116
 #: src/routeprintout.cpp:107 src/routeprintout.cpp:370
 msgid "Position"
-msgstr ""
+msgstr "Vị trí"
 
 #: src/AIS_Target_Data.cpp:497
 msgid "Report Age"
-msgstr ""
+msgstr "Báo cáo theo thời gian"
 
 #: src/AIS_Target_Data.cpp:518
 msgid "Report as of"
@@ -1352,7 +1352,7 @@ msgstr ""
 #: src/AIS_Target_Data.cpp:525 src/routeprop.cpp:661 src/routeprop.cpp:833
 #: src/routeprop.cpp:1189 src/TrackPropDlg.cpp:277 src/TrackPropDlg.cpp:1203
 msgid "Destination"
-msgstr ""
+msgstr "Đích đến"
 
 #: src/AIS_Target_Data.cpp:527
 msgid "ETA (UTC)"
@@ -1366,43 +1366,43 @@ msgstr ""
 
 #: src/AIS_Target_Data.cpp:584 src/AIS_Target_Data.cpp:587
 msgid "Right"
-msgstr ""
+msgstr "Bên phải"
 
 #: src/AIS_Target_Data.cpp:585 src/AIS_Target_Data.cpp:588
 msgid "Left"
-msgstr ""
+msgstr "Bên trái"
 
 #: src/AIS_Target_Data.cpp:620 src/options.cpp:3890 src/options.cpp:3998
 #: src/routeprop.cpp:1099 src/routeprop.cpp:1393 src/TrackPropDlg.cpp:450
 #: src/TrackPropDlg.cpp:722 src/TrackPropDlg.cpp:1205
 msgid "Speed"
-msgstr ""
+msgstr "Tốc độ"
 
 #: src/AIS_Target_Data.cpp:621 src/routeprintout.cpp:110
 #: src/routeprintout.cpp:377 src/routeprop.cpp:1104 src/routeprop.cpp:1398
 msgid "Course"
-msgstr ""
+msgstr "Hướng vết đi"
 
 #: src/AIS_Target_Data.cpp:623
 msgid "Heading"
-msgstr ""
+msgstr "Hướng mũi tàu"
 
 #: src/AIS_Target_Data.cpp:634
 msgid "Turn Rate"
-msgstr ""
+msgstr "Tốc độ chuyển hướng"
 
 #: src/AIS_Target_Data.cpp:637 src/AISTargetListDialog.cpp:551
 msgid "Range"
-msgstr ""
+msgstr "Khoảng cách"
 
 #: src/AIS_Target_Data.cpp:638 src/routeprop.cpp:1092 src/routeprop.cpp:1386
 #: src/TrackPropDlg.cpp:446 src/TrackPropDlg.cpp:718
 msgid "Bearing"
-msgstr ""
+msgstr "Phương vị"
 
 #: src/AIS_Target_Data.cpp:650
 msgid "in "
-msgstr ""
+msgstr "trong "
 
 #: src/AIS_Target_Data.cpp:652 src/AIS_Target_Data.cpp:793
 #: src/AISTargetListDialog.cpp:574
@@ -1411,31 +1411,31 @@ msgstr ""
 
 #: src/AIS_Target_Data.cpp:659 src/AIS_Target_Data.cpp:662
 msgid "Inland Blue Flag"
-msgstr ""
+msgstr "Cờ vùng nội thuỷ"
 
 #: src/AIS_Target_Data.cpp:660
 msgid "Clear"
-msgstr ""
+msgstr "Xoá"
 
 #: src/AIS_Target_Data.cpp:663
 msgid "Set"
-msgstr ""
+msgstr "Đặt"
 
 #: src/AIS_Target_Data.cpp:674
 msgid "Altitude"
-msgstr ""
+msgstr "Độ cao"
 
 #: src/AIS_Target_Data.cpp:784 src/AIS_Target_Data.cpp:788
 msgid " COG Unavailable"
-msgstr ""
+msgstr " Hướng đi không được phép"
 
 #: src/AIS_Target_Data.cpp:794 src/navutil.cpp:3807
 msgid "in"
-msgstr ""
+msgstr "trong"
 
 #: src/AIS_Target_Data.cpp:795
 msgid "min"
-msgstr ""
+msgstr "phút"
 
 #: src/AIS_Target_Data.cpp:884
 msgid "A"
@@ -1447,15 +1447,15 @@ msgstr ""
 
 #: src/AIS_Target_Data.cpp:888
 msgid "Aid to Navigation"
-msgstr ""
+msgstr "Phương tiện trợ giúp hàng hải"
 
 #: src/AIS_Target_Data.cpp:890 src/options.cpp:3101 src/options.cpp:3315
 msgid "Base"
-msgstr ""
+msgstr "Căn cứ"
 
 #: src/AIS_Target_Data.cpp:890
 msgid "Base Station"
-msgstr ""
+msgstr "Trạm cơ sở"
 
 #: src/AIS_Target_Data.cpp:892
 msgid "GPSGate Buddy"
@@ -1471,7 +1471,7 @@ msgstr ""
 
 #: src/AIS_Target_Data.cpp:899
 msgid "SART"
-msgstr ""
+msgstr "Bộ phát đáp TKCN"
 
 #: src/AIS_Target_Data.cpp:906
 msgid "Unk"
@@ -2521,7 +2521,8 @@ msgid "Record Track"
 msgstr ""
 
 #: src/AISTargetQueryDialog.cpp:173
-msgid "The recently captured track of this target has been recorded.\n"
+msgid ""
+"The recently captured track of this target has been recorded.\n"
 "Do you want to continue recording until the end of the current OpenCPN session?"
 msgstr ""
 
@@ -2544,7 +2545,8 @@ msgid "Stop Tracking"
 msgstr ""
 
 #: src/androidUTIL.cpp:1767
-msgid "Your android device has an internal GPS, but it is disabled.\n"
+msgid ""
+"Your android device has an internal GPS, but it is disabled.\n"
 "                       Please visit android Settings/Location dialog to enable GPS"
 msgstr ""
 
@@ -2836,11 +2838,16 @@ msgid "OpenCPN Track Delete"
 msgstr ""
 
 #: src/chart1.cpp:823
-msgid "\n"
-"OpenCPN is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n"
-"See the GNU General Public License for more details.\n\n"
-"OpenCPN must only be used in conjunction with approved paper charts and traditional methods of navigation.\n\n"
-"DO NOT rely upon OpenCPN for safety of life or property.\n\n"
+msgid ""
+"\n"
+"OpenCPN is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
+"\n"
+"See the GNU General Public License for more details.\n"
+"\n"
+"OpenCPN must only be used in conjunction with approved paper charts and traditional methods of navigation.\n"
+"\n"
+"DO NOT rely upon OpenCPN for safety of life or property.\n"
+"\n"
 "Please click \"OK\" to agree and proceed, \"Cancel\" to quit.\n"
 msgstr ""
 
@@ -2930,7 +2937,8 @@ msgid "OpenCPN Chart Update"
 msgstr ""
 
 #: src/chart1.cpp:2247
-msgid "No Charts Installed.\n"
+msgid ""
+"No Charts Installed.\n"
 "Please select chart folders in Options > Charts."
 msgstr ""
 
@@ -3197,7 +3205,8 @@ msgid "Show This Chart"
 msgstr ""
 
 #: src/chart1.cpp:8735 src/routeprintout.cpp:470
-msgid "There was a problem printing.\n"
+msgid ""
+"There was a problem printing.\n"
 "Perhaps your current printer is not set correctly?"
 msgstr ""
 
@@ -3234,15 +3243,20 @@ msgid "OpenCPN requires access to serial ports to use serial NMEA data.\n"
 msgstr ""
 
 #: src/chart1.cpp:11063
-msgid "No Serial Ports can be found on this system.\n"
+msgid ""
+"No Serial Ports can be found on this system.\n"
 "You must install a serial port (modprobe correct kernel module) or plug in a usb serial device.\n"
 msgstr ""
 
 #: src/chart1.cpp:11085
-msgid "You do currently not have permission to access the serial ports on this system.\n\n"
+msgid ""
+"You do currently not have permission to access the serial ports on this system.\n"
+"\n"
 "It is suggested that you exit OpenCPN now,\n"
-"and add yourself to the correct group to enable serial port access.\n\n"
-"You may do so by executing the following command from the linux command line:\n\n"
+"and add yourself to the correct group to enable serial port access.\n"
+"\n"
+"You may do so by executing the following command from the linux command line:\n"
+"\n"
 "                sudo usermod -a -G "
 msgstr ""
 
@@ -3412,7 +3426,9 @@ msgid "For this leg the Great Circle route is "
 msgstr ""
 
 #: src/chcanv.cpp:5588 src/chcanv.cpp:5996
-msgid " shorter than rhumbline.\n\n"
+msgid ""
+" shorter than rhumbline.\n"
+"\n"
 msgstr ""
 
 #: src/chcanv.cpp:5589 src/chcanv.cpp:5997
@@ -3429,7 +3445,9 @@ msgid "Layer"
 msgstr ""
 
 #: src/chcanv.cpp:6871
-msgid "There is an existing waypoint at the same location as the one you are pasting. Would you like to merge the pasted data with it?\n\n"
+msgid ""
+"There is an existing waypoint at the same location as the one you are pasting. Would you like to merge the pasted data with it?\n"
+"\n"
 msgstr ""
 
 #: src/chcanv.cpp:6872
@@ -3441,7 +3459,9 @@ msgid "Merge waypoint?"
 msgstr ""
 
 #: src/chcanv.cpp:6930
-msgid "There are existing waypoints at the same location as some of the ones you are pasting. Would you like to just merge the pasted data into them?\n\n"
+msgid ""
+"There are existing waypoints at the same location as some of the ones you are pasting. Would you like to just merge the pasted data into them?\n"
+"\n"
 msgstr ""
 
 #: src/chcanv.cpp:6931
@@ -3942,7 +3962,8 @@ msgid "This MMSI is my Follower - No CPA Alert"
 msgstr ""
 
 #: src/options.cpp:533
-msgid "An MMSI Id is generally a number of nine digits.\n"
+msgid ""
+"An MMSI Id is generally a number of nine digits.\n"
 "Please check your entries and cancel if necessary."
 msgstr ""
 
@@ -4597,7 +4618,8 @@ msgid "Vector"
 msgstr ""
 
 #: src/options.cpp:2978
-msgid "With a lower value, the same zoom level shows a less detailed chart.\n"
+msgid ""
+"With a lower value, the same zoom level shows a less detailed chart.\n"
 "With a higher value, the same zoom level shows a more detailed chart."
 msgstr ""
 
@@ -4897,7 +4919,8 @@ msgid "WMM Plugin calculated magnetic variation"
 msgstr ""
 
 #: src/options.cpp:4075
-msgid " To set the magnetic variation manually,\n"
+msgid ""
+" To set the magnetic variation manually,\n"
 " you must disable the WMM plugin."
 msgstr ""
 
@@ -5126,27 +5149,32 @@ msgid "Add a directory containing chart files"
 msgstr ""
 
 #: src/options.cpp:5746
-msgid "\n"
+msgid ""
+"\n"
 " - your ship's length must be > 0"
 msgstr ""
 
 #: src/options.cpp:5748
-msgid "\n"
+msgid ""
+"\n"
 " - your ship's beam must be > 0"
 msgstr ""
 
 #: src/options.cpp:5751
-msgid "\n"
+msgid ""
+"\n"
 " - your GPS offset from midship must be within your ship's beam"
 msgstr ""
 
 #: src/options.cpp:5755
-msgid "\n"
+msgid ""
+"\n"
 " - your GPS offset from bow must be within your ship's length"
 msgstr ""
 
 #: src/options.cpp:5757
-msgid "\n"
+msgid ""
+"\n"
 " - your minimum ship icon size must be between 1 and 100 mm"
 msgstr ""
 
@@ -5159,7 +5187,8 @@ msgid "OpenCPN info"
 msgstr ""
 
 #: src/options.cpp:6572
-msgid "Compression will alter chart files on disk.\n"
+msgid ""
+"Compression will alter chart files on disk.\n"
 "This may make them incompatible with other programs or older versions of OpenCPN.\n"
 "Compressed charts may take slightly longer to load and display on some systems.\n"
 "They can be decompressed again using unxz or 7 zip programs."
@@ -5179,7 +5208,8 @@ msgstr ""
 
 #: src/options.cpp:6666
 #, c-format
-msgid "compressed %ld charts\n"
+msgid ""
+"compressed %ld charts\n"
 "from %.1fMB to %.1fMB\n"
 "saved %.1fMB (%.1f%%)"
 msgstr ""
@@ -5217,10 +5247,12 @@ msgid "Enter the NMEA sentence"
 msgstr ""
 
 #: src/options.cpp:8372
-msgid "An NMEA sentence is generally 3 characters long (like RMC, GGA etc.)\n"
+msgid ""
+"An NMEA sentence is generally 3 characters long (like RMC, GGA etc.)\n"
 "           It can also have a two letter prefix identifying the source, or TALKER, of the message.\n"
 "           The whole sentences then looks like GPGGA or AITXT.\n"
-"           You may filter out all the sentences with certain TALKER prefix (like GP, AI etc.).\n\n"
+"           You may filter out all the sentences with certain TALKER prefix (like GP, AI etc.).\n"
+"\n"
 "           The filter accepts just these three formats."
 msgstr ""
 
@@ -5287,7 +5319,8 @@ msgstr ""
 
 #: src/pluginmanager.cpp:1126
 #, c-format
-msgid "PlugIn %s (%s), version %i.%i was detected.\n"
+msgid ""
+"PlugIn %s (%s), version %i.%i was detected.\n"
 " This version is known to be unstable and will not be loaded.\n"
 " Please update this PlugIn at the opencpn.org website."
 msgstr ""
@@ -5298,7 +5331,8 @@ msgstr ""
 
 #: src/pluginmanager.cpp:1132
 #, c-format
-msgid "PlugIn %s (%s), version %i.%i was detected.\n"
+msgid ""
+"PlugIn %s (%s), version %i.%i was detected.\n"
 " This version is known to be unstable.\n"
 " Please update this PlugIn at the opencpn.org website."
 msgstr ""
@@ -5509,7 +5543,8 @@ msgid "&Copy as text"
 msgstr ""
 
 #: src/routemanagerdialog.cpp:1528
-msgid "Select the maximum error allowed (in meters)\n"
+msgid ""
+"Select the maximum error allowed (in meters)\n"
 "after data reduction:"
 msgstr ""
 
@@ -5519,12 +5554,14 @@ msgstr ""
 
 #: src/routemanagerdialog.cpp:1548
 #, c-format
-msgid "The amount of data used by the track\n"
+msgid ""
+"The amount of data used by the track\n"
 " was reduced by %d%%."
 msgstr ""
 
 #: src/routemanagerdialog.cpp:1647
-msgid "The currently running Track was not merged.\n"
+msgid ""
+"The currently running Track was not merged.\n"
 "You can merge it later when it is completed."
 msgstr ""
 
@@ -5553,7 +5590,8 @@ msgid "Are you sure you want to delete <ALL> waypoints?"
 msgstr ""
 
 #: src/routemanagerdialog.cpp:2387
-msgid "There are some waypoints used in routes or anchor alarms.\n"
+msgid ""
+"There are some waypoints used in routes or anchor alarms.\n"
 " Do you want to delete them as well?\n"
 " This will change the routes and disable the anchor alarms.\n"
 " Answering No keeps the waypoints used in routes or alarms."
@@ -5584,7 +5622,9 @@ msgid "You are trying to delete an active AIS MOB route, are you REALLY sure?"
 msgstr ""
 
 #: src/routeman.cpp:1006
-msgid "Waypoints can be renamed to reflect the new order, the names will be '001', '002' etc.\n\n"
+msgid ""
+"Waypoints can be renamed to reflect the new order, the names will be '001', '002' etc.\n"
+"\n"
 "Do you want to rename the waypoints?"
 msgstr ""
 
@@ -5748,7 +5788,7 @@ msgstr ""
 #: src/routeprop.cpp:926 src/routeprop.cpp:1274 src/routeprop.cpp:2615
 #: src/TrackPropDlg.cpp:375 src/TrackPropDlg.cpp:614
 msgid "Black"
-msgstr ""
+msgstr "Đen"
 
 #: src/routeprop.cpp:926 src/routeprop.cpp:1274 src/routeprop.cpp:2615
 #: src/TrackPropDlg.cpp:375 src/TrackPropDlg.cpp:614
@@ -5793,37 +5833,37 @@ msgstr ""
 #: src/routeprop.cpp:928 src/routeprop.cpp:1276 src/routeprop.cpp:2617
 #: src/TrackPropDlg.cpp:377 src/TrackPropDlg.cpp:616
 msgid "Red"
-msgstr ""
+msgstr "Đỏ"
 
 #: src/routeprop.cpp:928 src/routeprop.cpp:1276 src/routeprop.cpp:2617
 #: src/TrackPropDlg.cpp:377 src/TrackPropDlg.cpp:616
 msgid "Green"
-msgstr ""
+msgstr "Xanh"
 
 #: src/routeprop.cpp:928 src/routeprop.cpp:1276 src/routeprop.cpp:2617
 #: src/TrackPropDlg.cpp:377 src/TrackPropDlg.cpp:616
 msgid "Yellow"
-msgstr ""
+msgstr "Vàng"
 
 #: src/routeprop.cpp:928 src/routeprop.cpp:1276 src/routeprop.cpp:2617
 #: src/TrackPropDlg.cpp:377 src/TrackPropDlg.cpp:616
 msgid "Blue"
-msgstr ""
+msgstr "Xanh dương"
 
 #: src/routeprop.cpp:929 src/routeprop.cpp:1277 src/routeprop.cpp:2618
 #: src/TrackPropDlg.cpp:378 src/TrackPropDlg.cpp:617
 msgid "Magenta"
-msgstr ""
+msgstr "Đỏ tươi"
 
 #: src/routeprop.cpp:929 src/routeprop.cpp:1277 src/routeprop.cpp:2618
 #: src/TrackPropDlg.cpp:378 src/TrackPropDlg.cpp:617
 msgid "Cyan"
-msgstr ""
+msgstr "Lục lam"
 
 #: src/routeprop.cpp:929 src/routeprop.cpp:1277 src/routeprop.cpp:2618
 #: src/TrackPropDlg.cpp:378 src/TrackPropDlg.cpp:617
 msgid "White"
-msgstr ""
+msgstr "Trắng"
 
 #: src/routeprop.cpp:936 src/routeprop.cpp:1284 src/TrackPropDlg.cpp:385
 #: src/TrackPropDlg.cpp:623
@@ -6062,7 +6102,8 @@ msgid "Paste lat/long"
 msgstr ""
 
 #: src/s57chart.cpp:4610
-msgid "S57 Cell Update chain incomplete.\n"
+msgid ""
+"S57 Cell Update chain incomplete.\n"
 "ENC features may be incomplete or inaccurate.\n"
 "Check the logfile for details."
 msgstr ""
@@ -6132,7 +6173,8 @@ msgid "Tomorrow"
 msgstr ""
 
 #: src/toolbar.cpp:1067
-msgid "You can't hide the last tool from the toolbar\n"
+msgid ""
+"You can't hide the last tool from the toolbar\n"
 "as this would make it inaccessible."
 msgstr ""
 
@@ -6153,7 +6195,8 @@ msgid "Yes, hide it."
 msgstr ""
 
 #: src/toolbar.cpp:2626
-msgid "The Man Over Board button could be an important safety feature.\n"
+msgid ""
+"The Man Over Board button could be an important safety feature.\n"
 "Are you sure you want to hide it?"
 msgstr ""
 
@@ -6276,4 +6319,3 @@ msgstr ""
 #: src/undo.cpp:87
 msgid "Move Waypoint"
 msgstr ""
-
