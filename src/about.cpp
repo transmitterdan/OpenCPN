@@ -285,7 +285,11 @@ void about::Populate( void )
     wxString config_string = _T("<br><br>Config file location: ") + g_Platform->GetConfigFileName();
     config_string.Replace(_T("/"), _T("/ "));      // allow line breaks, in a cheap way...
     aboutText.Append( config_string );
-    
+
+    wxString plugin_string = _T( "<br><br>Plugin files location: " ) + g_Platform->GetPluginDir();
+    plugin_string.Replace( _T( "/" ), _T( "/ " ) );      // allow line breaks, in a cheap way...
+    aboutText.Append( plugin_string );
+
     if(wxFONTSTYLE_ITALIC == dFont->GetStyle())
         aboutText.Append( _T("</i>") );
 
