@@ -53,6 +53,7 @@ public:
     wxSize GetSize( int orient, wxSize hint );
     void SetData(int, double, wxString);
     virtual void SetUtcTime(wxDateTime value);
+    wxString GetDisplayTime( wxDateTime UTCtime );
 };
 
 class DashboardInstrument_Moon : public DashboardInstrument_Clock
