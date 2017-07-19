@@ -275,7 +275,8 @@ s52plib::s52plib( const wxString& PLib, bool b_forceLegacy )
     m_VersionMinor = 2;
 
     canvas_pix_per_mm = 3.;
-
+    m_rv_scale_factor = 1.0;
+    
     //        Set up some default flags
     m_bDeClutterText = false;
     m_bShowAtonText = true;
@@ -318,6 +319,24 @@ s52plib::~s52plib()
 
     delete HPGL;
 }
+
+void s52plib::SetPPMM( float ppmm )
+{ 
+    canvas_pix_per_mm = ppmm;
+    
+    // We need a supplemental scale factor for HPGL vector symbol rendering.
+    //  This will cause raster and vector symbols to be rendered harmoniously
+    
+    //  We do this by making an arbitrary measurement and declaration:
+    // We declare that the nominal size of a "flare" light rendered as HPGL vector should be roughly twice the
+    // size of a simplified lateral bouy rendered as raster.
+    
+    // Referring to the chartsymbols.xml file, we find that the dimension of a flare light is 810 units, 
+    // and a raster BOYLAT is 16 pix.
+    
+    m_rv_scale_factor = 2.0 * (1600. / (810 * ppmm));
+    
+}    
 
 //      Various static helper methods
 
@@ -2119,12 +2138,12 @@ bool s52plib::TextRenderCheck( ObjRazRules *rzRules )
             || ( rzRules->obj->m_chart_context->chart->GetChartType() == CHART_TYPE_CM93COMP ) ) {
             if( !strncmp( rzRules->obj->FeatureName, "BUAARE", 6 ) )
                 return false;
-            else
-                if( !strncmp( rzRules->obj->FeatureName, "SEAARE", 6 ) )
-                    return false;
-                else
-                    if( !strncmp( rzRules->obj->FeatureName, "LNDRGN", 6 ) )
-                        return false;
+            else if( !strncmp( rzRules->obj->FeatureName, "SEAARE", 6 ) )
+                return false;
+            else if( !strncmp( rzRules->obj->FeatureName, "LNDRGN", 6 ) )
+                return false;
+            else if( !strncmp( rzRules->obj->FeatureName, "LNDARE", 6 ) )
+                return false;
         }
     }
 
@@ -2405,7 +2424,7 @@ bool s52plib::RenderHPGL( ObjRazRules *rzRules, Rule *prule, wxPoint &r, ViewPor
 
     if( !m_pdc ) { // OpenGL Mode, do a direct render
         HPGL->SetTargetOpenGl();
-        HPGL->Render( str, col, r, pivot, origin, xscale, render_angle );
+        HPGL->Render( str, col, r, pivot, origin, xscale, render_angle, true );
 
     } else {
 
@@ -2432,7 +2451,7 @@ bool s52plib::RenderHPGL( ObjRazRules *rzRules, Rule *prule, wxPoint &r, ViewPor
         wxMemoryDC &gdc( mdc );
         HPGL->SetTargetDC( &gdc );
 #endif
-        HPGL->Render( str, col, r0, pivot, origin, xscale, (double) rot_angle );
+        HPGL->Render( str, col, r0, pivot, origin, xscale, (double) rot_angle, true );
 
         int bm_width = ( gdc.MaxX() - gdc.MinX() ) + 4;
         int bm_height = ( gdc.MaxY() - gdc.MinY() ) + 4;
@@ -2460,7 +2479,7 @@ bool s52plib::RenderHPGL( ObjRazRules *rzRules, Rule *prule, wxPoint &r, ViewPor
         wxGCDC targetGcdc( targetDc );
         r0 -= wxPoint( bm_orgx, bm_orgy );
         HPGL->SetTargetGCDC( &targetGcdc );
-        HPGL->Render( str, col, r0, pivot,origin, xscale, (double) rot_angle );
+        HPGL->Render( str, col, r0, pivot,origin, xscale, (double) rot_angle, true );
 #else
         //  We can use the bitmap already rendered
         //  Get smallest containing bitmap
@@ -3123,6 +3142,48 @@ int s52plib::RenderGLLS( ObjRazRules *rzRules, Rules *rules, ViewPort *vp )
     glColor3ub( c->R, c->G, c->B );
     
     //    Set drawing width
+    float lineWidth = w;
+    
+    if( w > 1 ) {
+        GLint parms[2];
+        glGetIntegerv( GL_ALIASED_LINE_WIDTH_RANGE, &parms[0] );
+        if( w > parms[1] )
+            lineWidth = wxMax(g_GLMinCartographicLineWidth, parms[1]);
+        else
+            lineWidth = wxMax(g_GLMinCartographicLineWidth, w);
+    } else
+        lineWidth = wxMax(g_GLMinCartographicLineWidth, 1);
+
+    // Manage super high density displays
+    if(GetPPMM() > 8){               // arbitrary
+        float target_w_mm = ((float)w) / 4.0;  // Target width in mm
+                                               //  The value "w" comes from S52 library CNSY procedures, in "nominal" pixels
+                                               // the value "4" comes from semi-standard LCD display densities
+                                               // or something like 0.25 mm pitch, or 4 pix per mm.
+        lineWidth =  wxMax(g_GLMinCartographicLineWidth, target_w_mm * GetPPMM());
+    }
+
+    glLineWidth(lineWidth);
+    
+#ifndef ocpnUSE_GLES // linestipple is emulated poorly
+    if( !strncmp( str, "DASH", 4 ) ) {
+        glLineStipple( 1, 0x3F3F );
+        glEnable( GL_LINE_STIPPLE );
+    }
+    else if( !strncmp( str, "DOTT", 4 ) ) {
+        glLineStipple( 1, 0x3333 );
+        glEnable( GL_LINE_STIPPLE );
+    }
+    else
+        glDisable( GL_LINE_STIPPLE );
+#endif
+
+    if(lineWidth > 2){
+         glEnable( GL_LINE_SMOOTH );
+         glEnable( GL_BLEND );
+    }
+
+///
     if( w > 1 ) {
         GLint parms[2];
         glGetIntegerv( GL_ALIASED_LINE_WIDTH_RANGE, &parms[0] );
@@ -3150,7 +3211,7 @@ int s52plib::RenderGLLS( ObjRazRules *rzRules, Rules *rules, ViewPort *vp )
          glEnable( GL_LINE_SMOOTH );
          glEnable( GL_BLEND );
     }
-        
+///        
     glPushMatrix();
     
     // Set up the OpenGL transform matrix for this object
@@ -4703,7 +4764,7 @@ void s52plib::draw_lc_poly( wxDC *pdc, wxColor &color, int width, wxPoint *ptp, 
 
                         HPGL->SetTargetDC( pdc );
                         theta = atan2f( dy, dx );
-                        HPGL->Render( str, col, r, pivot, pivot, 1.0, theta * 180. / PI );
+                        HPGL->Render( str, col, r, pivot, pivot, 1.0, theta * 180. / PI, false );
 
                         xs += sym_len * dx / seg_len * sym_factor;
                         ys += sym_len * dy / seg_len * sym_factor;
@@ -4810,7 +4871,7 @@ next_seg_dc:
 
                         HPGL->SetTargetOpenGl();
                         theta = atan2f( dy, dx );
-                        HPGL->Render( str, col, r, pivot, pivot, 1.0, theta * 180. / PI );
+                        HPGL->Render( str, col, r, pivot, pivot, 1.0, theta * 180. / PI, false );
 
                         xs += sym_len * dx / seg_len * sym_factor;
                         ys += sym_len * dy / seg_len * sym_factor;
@@ -8240,7 +8301,7 @@ render_canvas_parms* s52plib::CreatePatternBufferSpec( ObjRazRules *rzRules, Rul
                         (int) ( ( pivot_y - box.GetMinY() ) / fsf ) + 1 );
 
             HPGL->SetTargetDC( &mdc );
-            HPGL->Render( str, col, r0, pivot, origin, 1.0, 0 );
+            HPGL->Render( str, col, r0, pivot, origin, 1.0, 0, false);
         } else {
             pbm = new wxBitmap( 2, 2 );       // substitute small, blank pattern
             mdc.SelectObject( *pbm );
@@ -9185,7 +9246,7 @@ void RenderFromHPGL::RotatePoint( wxPoint& point, wxPoint origin, double angle )
     point.y = (int) yp + origin.y;
 }
 
-bool RenderFromHPGL::Render( char *str, char *col, wxPoint &r, wxPoint &pivot, wxPoint origin, float scale, double rot_angle )
+bool RenderFromHPGL::Render( char *str, char *col, wxPoint &r, wxPoint &pivot, wxPoint origin, float scale, double rot_angle, bool bSymbol )
 {
 //      int width = 1;
 //      double radius = 0.0;
@@ -9201,6 +9262,9 @@ bool RenderFromHPGL::Render( char *str, char *col, wxPoint &r, wxPoint &pivot, w
     scaleFactor = 100.0 / plib->GetPPMM();
     scaleFactor /= scale;
     scaleFactor /= g_scaminScale;
+    
+    if(bSymbol)
+        scaleFactor /= plib->GetRVScaleFactor();
     
     // SW is not always defined, cf. US/US4CA17M/US4CA17M.000
     penWidth = 1;
