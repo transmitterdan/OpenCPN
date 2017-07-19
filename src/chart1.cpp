@@ -673,7 +673,8 @@ bool                      g_bserial_access_checked;
 wxString                  g_uiStyle;
 
 //      Values returned from WMM_PI for variation computation request
-double                    gQueryVar;
+//      Initialize to invalid value so we don't use if if WMM hasn't updated yet
+double                    gQueryVar = 361.0;
 
 
 char bells_sound_file_name[2][12] = { "1bells.wav", "2bells.wav" };
@@ -1741,13 +1742,17 @@ bool MyApp::OnInit()
     pWayPointMan = NULL;
 
     g_display_size_mm = wxMax(100, g_Platform->GetDisplaySizeMM());
-
+    wxString msg;
+    msg.Printf(_T("Detected display size (horizontal): %d mm"), (int) g_display_size_mm);
+    wxLogMessage(msg);
+    
     // User override....
     if((g_config_display_size_mm > 0) &&(g_config_display_size_manual)){
         g_display_size_mm = g_config_display_size_mm;
         wxString msg;
         msg.Printf(_T("Display size (horizontal) config override: %d mm"), (int) g_display_size_mm);
         wxLogMessage(msg);
+        g_Platform->SetDisplaySizeMM(g_display_size_mm);
     }
 
     if(g_btouch){
@@ -2881,7 +2886,9 @@ void MyFrame::SetAndApplyColorScheme( ColorScheme cs )
     if( g_pRouteMan ) g_pRouteMan->SetColorScheme( cs );
 
     if( pMarkPropDialog ) pMarkPropDialog->SetColorScheme( cs );
-
+    
+    if( pRoutePropDialog ) pRoutePropDialog->SetColorScheme( cs );
+    
     //    For the AIS target query dialog, we must rebuild it to incorporate the style desired for the colorscheme selected
     if( g_pais_query_dialog_active ) {
         bool b_isshown = g_pais_query_dialog_active->IsShown();
@@ -3368,6 +3375,13 @@ void MyFrame::SetGPSCompassScale()
 
 }
 
+
+void MyFrame::FastClose(){
+    
+    FrameTimer1.Stop();
+    quitflag++;                             // signal to the timer loop
+    FrameTimer1.Start(1);                    // real quick now...
+}
 
 // Intercept menu commands
 void MyFrame::OnExit( wxCommandEvent& event )
@@ -5529,7 +5543,9 @@ int MyFrame::DoOptionsDialog()
         return 0;
 
     g_boptionsactive = true;
-
+    int last_ChartScaleFactorExp = g_ChartScaleFactor;
+        
+    
     if(NULL == g_options) {
         g_Platform->ShowBusySpinner();
         g_options = new options( this, -1, _("Options") );
@@ -5612,8 +5628,13 @@ int MyFrame::DoOptionsDialog()
     Raise();                      // I dunno why...
 #endif
 
+    
     bool ret_val = false;
     rr = g_options->GetReturnCode();
+    
+    if(last_ChartScaleFactorExp != g_ChartScaleFactor)
+        rr |= S52_CHANGED;
+    
     if( rr ) {
         ProcessOptionsDialog( rr,  g_options->GetWorkDirListPtr() );
         ChartData->GetChartDirArray() = *(g_options->GetWorkDirListPtr()); // Perform a deep copy back to main database.
@@ -5729,6 +5750,13 @@ int MyFrame::ProcessOptionsDialog( int rr, ArrayOfCDI *pNewDirArray )
         LoadHarmonics();
     }
 
+    //  S52_CHANGED is a byproduct of a change in the chart object render scale
+    //  So, applies to RoutePoint icons also
+    if( rr & S52_CHANGED){
+        //  Reload Icons
+        pWayPointMan->SetColorScheme( global_color_scheme );
+    }
+    
     pConfig->UpdateSettings();
 
     if( g_pActiveTrack ) {
@@ -7073,6 +7101,7 @@ double MyFrame::GetMag(double a)
 
 double MyFrame::GetMag(double a, double lat, double lon)
 {
+    double Variance = wxIsNaN( gVar ) ? g_UserVar : gVar;
     if(g_pi_manager && g_pi_manager->IsPlugInAvailable(_T("WMM"))){
             
         // Request variation at a specific lat/lon
@@ -7082,24 +7111,13 @@ double MyFrame::GetMag(double a, double lat, double lon)
         // In the case of rollover windows, the value is requested continuously, so will be correct very soon.
         wxDateTime now = wxDateTime::Now();
         SendJSON_WMM_Var_Request(lat, lon, now);
-            
-        if((a - gQueryVar) >360.)
-            return (a - gQueryVar - 360.);
-        else
-            return ((a - gQueryVar) >= 0.) ? (a - gQueryVar) : (a - gQueryVar + 360.);
+        if ( abs(gQueryVar) < 360.0 )   // Don't use WMM variance if not updated yet
+            Variance = gQueryVar;
     }
-    else if(!wxIsNaN(gVar)){
-        if((a - gVar) >360.)
-            return (a - gVar - 360.);
-        else
-            return ((a - gVar) >= 0.) ? (a - gVar) : (a - gVar + 360.);
-    }
-    else{
-        if((a - g_UserVar) >360.)
-            return (a - g_UserVar - 360.);
-        else
-            return ((a - g_UserVar) >= 0.) ? (a - g_UserVar) : (a - g_UserVar + 360.);
-    }
+    if((a - Variance ) > 360.)
+        return (a - Variance - 360.);
+    else
+        return ((a - Variance) >= 0.) ? (a - Variance) : (a - Variance + 360.);
 }
 
 bool MyFrame::SendJSON_WMM_Var_Request(double lat, double lon, wxDateTime date)
