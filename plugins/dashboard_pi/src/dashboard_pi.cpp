@@ -84,10 +84,10 @@ enum {
     ID_DBP_I_POS, ID_DBP_I_SOG, ID_DBP_D_SOG, ID_DBP_I_COG, ID_DBP_D_COG, ID_DBP_I_STW,
     ID_DBP_I_HDT, ID_DBP_D_AW, ID_DBP_D_AWA, ID_DBP_I_AWS, ID_DBP_D_AWS, ID_DBP_D_TW,
     ID_DBP_I_DPT, ID_DBP_D_DPT, ID_DBP_I_TMP, ID_DBP_I_VMG, ID_DBP_D_VMG, ID_DBP_I_RSA,
-    ID_DBP_D_RSA, ID_DBP_I_SAT, ID_DBP_D_GPS, ID_DBP_I_PTR, ID_DBP_I_CLK, ID_DBP_I_SUN,
+    ID_DBP_D_RSA, ID_DBP_I_SAT, ID_DBP_D_GPS, ID_DBP_I_PTR, ID_DBP_I_GPSUTC, ID_DBP_I_SUN,
     ID_DBP_D_MON, ID_DBP_I_ATMP, ID_DBP_I_AWA, ID_DBP_I_TWA, ID_DBP_I_TWD, ID_DBP_I_TWS,
     ID_DBP_D_TWD, ID_DBP_I_HDM, ID_DBP_D_HDT, ID_DBP_D_WDH, ID_DBP_I_VLW1, ID_DBP_I_VLW2, ID_DBP_D_MDA, ID_DBP_I_MDA,ID_DBP_D_BPH, ID_DBP_I_FOS,
-	ID_DBP_M_COG, ID_DBP_I_PITCH, ID_DBP_I_HEEL, ID_DBP_D_AWA_TWA,
+	ID_DBP_M_COG, ID_DBP_I_PITCH, ID_DBP_I_HEEL, ID_DBP_D_AWA_TWA, ID_DBP_I_GPSLCL, ID_DBP_I_CPUCLK,
     ID_DBP_LAST_ENTRY //this has a reference in one of the routines; defining a "LAST_ENTRY" and setting the reference to it, is one codeline less to change (and find) when adding new instruments :-)
 };
 
@@ -168,8 +168,8 @@ wxString getInstrumentCaption( unsigned int id )
             return _("GPS Status");
         case ID_DBP_I_PTR:
             return _("Cursor");
-        case ID_DBP_I_CLK:
-            return _("Clock");
+        case ID_DBP_I_GPSUTC:
+            return _("GPS Clock");
         case ID_DBP_I_SUN:
             return _("Sunrise/Sunset");
         case ID_DBP_D_MON:
@@ -188,6 +188,10 @@ wxString getInstrumentCaption( unsigned int id )
 			return _("Pitch");
 		case ID_DBP_I_HEEL:
 			return _("Heel");
+        case ID_DBP_I_GPSLCL:
+            return _( "Local GPS Clock" );
+        case ID_DBP_I_CPUCLK:
+            return _( "Local CPU Clock" );
     }
     return _T("");
 }
@@ -217,7 +221,9 @@ void getListItemForInstrument( wxListItem &item, unsigned int id )
         case ID_DBP_I_RSA:
         case ID_DBP_I_SAT:
         case ID_DBP_I_PTR:
-        case ID_DBP_I_CLK:
+        case ID_DBP_I_GPSUTC:
+        case ID_DBP_I_GPSLCL:
+        case ID_DBP_I_CPUCLK:
         case ID_DBP_I_SUN:
         case ID_DBP_I_VLW1:
         case ID_DBP_I_VLW2:
@@ -2500,7 +2506,7 @@ void DashboardWindow::SetInstrumentList( wxArrayInt list )
                 instrument = new DashboardInstrument_Position( this, wxID_ANY,
                         getInstrumentCaption( id ), OCPN_DBP_STC_PLA, OCPN_DBP_STC_PLO );
                 break;
-            case ID_DBP_I_CLK:
+            case ID_DBP_I_GPSUTC:
                 instrument = new DashboardInstrument_Clock( this, wxID_ANY,
                         getInstrumentCaption( id ) );
                 break;
@@ -2531,7 +2537,15 @@ void DashboardWindow::SetInstrumentList( wxArrayInt list )
 			case ID_DBP_I_HEEL:
 				instrument = new DashboardInstrument_Single(this, wxID_ANY,
 					getInstrumentCaption(id), OCPN_DBP_STC_HEEL, _T("%2.1f"));
-		}
+                break;
+            case ID_DBP_I_GPSLCL:
+                instrument = new DashboardInstrument_LCL( this, wxID_ANY,
+                    getInstrumentCaption( id ) );
+                break;
+            case ID_DBP_I_CPUCLK:
+                instrument = new DashboardInstrument_CPUClock( this, wxID_ANY,
+                    getInstrumentCaption( id ) );
+        }
         if( instrument ) {
             instrument->instrumentTypeId = id;
             m_ArrayOfInstrument.Add(

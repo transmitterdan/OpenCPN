@@ -67,25 +67,66 @@ void DashboardInstrument_Clock::SetData( int, double, wxString )
 
 void DashboardInstrument_Clock::SetUtcTime( wxDateTime data )
 {
-
     if (data.IsValid())
-        m_data = GetDisplayTime( data );
+        m_data = GetDisplayTime( data, true );  // always display UTC
 }
 
-wxString DashboardInstrument_Clock::GetDisplayTime( wxDateTime UTCtime )
+wxString DashboardInstrument_Clock::GetDisplayTime( wxDateTime UTCtime, bool bUTC )
 {
     wxString result( _T( "---" ) );
     if ( UTCtime.IsValid() ) {
-        if ( g_iUTCOffset != 0 ) {
+        if ( !bUTC && g_iUTCOffset != 0 ) {
             wxTimeSpan offset( 0, g_iUTCOffset * 30, 0 );
             wxDateTime displayData = UTCtime.Add( offset );
-            result = displayData.FormatISOTime().Append( _( " LCL" ) );
+            result = displayData.FormatISOTime().Append( _T( " LCL" ) );
         }
         else
-            result = UTCtime.FormatISOTime().Append( _( " UTC" ) );
+            result = UTCtime.FormatISOTime().Append( _T( " UTC" ) );
     }
     return result;
 }
+
+DashboardInstrument_LCL::DashboardInstrument_LCL( wxWindow *parent, wxWindowID id, wxString title ) :
+    DashboardInstrument_Clock( parent, id, title, OCPN_DBP_STC_LAT | OCPN_DBP_STC_LON | OCPN_DBP_STC_CLK )
+{ }
+
+void DashboardInstrument_LCL::SetUtcTime( wxDateTime data )
+{
+    if ( data.IsValid() )
+        m_data = GetDisplayTime( data );
+}
+
+DashboardInstrument_CPUClock::DashboardInstrument_CPUClock( wxWindow *parent, wxWindowID id, wxString title ) :
+    DashboardInstrument_Clock( parent, id, title, OCPN_DBP_STC_LAT | OCPN_DBP_STC_LON | OCPN_DBP_STC_CLK )
+{ }
+
+void DashboardInstrument_CPUClock::SetData( int, double, wxString )
+{
+    // Nothing to do here but we want to override the default    
+}
+
+void DashboardInstrument_CPUClock::SetUtcTime( wxDateTime data )
+{
+    wxString format( "%H:%M:%S" );
+    wxDateTime now = wxDateTime::Now();
+    m_data = now.Format( format ).Append( _T( " CPU" ) );
+}
+
+wxString DashboardInstrument_CPUClock::GetDisplayTime( wxDateTime UTCtime, bool bUTC )
+{
+    wxString result( _T( "---" ) );
+    if ( UTCtime.IsValid() ) {
+        if ( !bUTC && g_iUTCOffset != 0 ) {
+            wxTimeSpan offset( 0, g_iUTCOffset * 30, 0 );
+            wxDateTime displayData = UTCtime.Add( offset );
+            result = displayData.FormatISOTime().Append( _T( " LCL" ) );
+        }
+        else
+            result = UTCtime.FormatISOTime().Append( _T( " UTC" ) );
+    }
+    return result;
+}
+
 DashboardInstrument_Moon::DashboardInstrument_Moon( wxWindow *parent, wxWindowID id, wxString title ) :
       DashboardInstrument_Clock( parent, id, title, OCPN_DBP_STC_CLK|OCPN_DBP_STC_LAT, _T("%i/4 %c") )
 {
