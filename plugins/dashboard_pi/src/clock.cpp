@@ -79,17 +79,15 @@ wxString DashboardInstrument_Clock::GetDisplayTime( wxDateTime UTCtime, bool bUT
             result = UTCtime.FormatISOTime().Append( _T( " UTC" ) );
             return result;
         }
-        
+        wxDateTime displayTime;
         if ( g_iUTCOffset != 0 ) {
             wxTimeSpan offset( 0, g_iUTCOffset * 30, 0 );
-            wxDateTime displayTime = UTCtime.Add( offset );
-            result = displayTime.FormatISOTime().Append( _T( " LCL" ) );
-            return result;
+            displayTime = UTCtime.Add( offset );
         }
-
-        wxDateTime displayTime = UTCtime.FromTimezone( wxDateTime::UTC );
+        else {
+            displayTime = UTCtime.FromTimezone( wxDateTime::UTC );
+        }
         result = displayTime.FormatISOTime().Append( _T( " LCL" ) );
-        return result;
     }
     return result;
 }
@@ -101,7 +99,7 @@ DashboardInstrument_LCL::DashboardInstrument_LCL( wxWindow *parent, wxWindowID i
 void DashboardInstrument_LCL::SetUtcTime( wxDateTime data )
 {
     if ( data.IsValid() )
-        m_data = GetDisplayTime( data );
+        m_data = GetDisplayTime( data, false );
 }
 
 DashboardInstrument_CPUClock::DashboardInstrument_CPUClock( wxWindow *parent, wxWindowID id, wxString title ) :
@@ -115,24 +113,7 @@ void DashboardInstrument_CPUClock::SetData( int, double, wxString )
 
 void DashboardInstrument_CPUClock::SetUtcTime( wxDateTime data )
 {
-    wxString format( "%H:%M:%S" );
-    wxDateTime now = wxDateTime::Now();
-    m_data = now.Format( format ).Append( _T( " CPU" ) );
-}
-
-wxString DashboardInstrument_CPUClock::GetDisplayTime( wxDateTime UTCtime, bool bUTC )
-{
-    wxString result( _T( "---" ) );
-    if ( UTCtime.IsValid() ) {
-        if ( !bUTC && g_iUTCOffset != 0 ) {
-            wxTimeSpan offset( 0, g_iUTCOffset * 30, 0 );
-            wxDateTime displayData = UTCtime.Add( offset );
-            result = displayData.FormatISOTime().Append( _T( " LCL" ) );
-        }
-        else
-            result = UTCtime.FormatISOTime().Append( _T( " UTC" ) );
-    }
-    return result;
+    m_data = wxDateTime::Now().FormatISOTime().Append( _T( " CPU" ) );
 }
 
 DashboardInstrument_Moon::DashboardInstrument_Moon( wxWindow *parent, wxWindowID id, wxString title ) :
@@ -341,11 +322,11 @@ void DashboardInstrument_Sun::SetUtcTime( wxDateTime data )
         wxDateTime sunrise, sunset;
         calculateSun(m_lat, m_lon, sunrise, sunset);
         if (sunrise.GetYear() != 999)
-            m_sunrise = GetDisplayTime( sunrise );
+            m_sunrise = GetDisplayTime( sunrise, false );
         else
             m_sunrise = _T("---");
         if ( sunset.GetYear() != 999 )
-            m_sunset = GetDisplayTime( sunset );
+            m_sunset = GetDisplayTime( sunset, false );
         else
             m_sunset = _T("---");
     }

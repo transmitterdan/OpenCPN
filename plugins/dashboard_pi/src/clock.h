@@ -116,8 +116,6 @@ public:
     void SetData( int, double, wxString );
 
     void SetUtcTime( wxDateTime value );
-
-    wxString GetDisplayTime( wxDateTime UTCtime, bool bUTC = false );
 };
 #endif // __CLOCK_H__
 
