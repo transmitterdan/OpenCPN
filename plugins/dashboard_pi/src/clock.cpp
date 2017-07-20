@@ -75,13 +75,21 @@ wxString DashboardInstrument_Clock::GetDisplayTime( wxDateTime UTCtime, bool bUT
 {
     wxString result( _T( "---" ) );
     if ( UTCtime.IsValid() ) {
-        if ( !bUTC && g_iUTCOffset != 0 ) {
-            wxTimeSpan offset( 0, g_iUTCOffset * 30, 0 );
-            wxDateTime displayData = UTCtime.Add( offset );
-            result = displayData.FormatISOTime().Append( _T( " LCL" ) );
-        }
-        else
+        if ( bUTC ) {
             result = UTCtime.FormatISOTime().Append( _T( " UTC" ) );
+            return result;
+        }
+        
+        if ( g_iUTCOffset != 0 ) {
+            wxTimeSpan offset( 0, g_iUTCOffset * 30, 0 );
+            wxDateTime displayTime = UTCtime.Add( offset );
+            result = displayTime.FormatISOTime().Append( _T( " LCL" ) );
+            return result;
+        }
+
+        wxDateTime displayTime = UTCtime.FromTimezone( wxDateTime::UTC );
+        result = displayTime.FormatISOTime().Append( _T( " LCL" ) );
+        return result;
     }
     return result;
 }
