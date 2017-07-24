@@ -26,7 +26,6 @@
  */
 
 #include "clock.h"
-extern int g_iUTCOffset;
 
 // For compilers that support precompilation, includes "wx/wx.h".
 #include <wx/wxprec.h>
@@ -67,25 +66,12 @@ void DashboardInstrument_Clock::SetData( int, double, wxString )
 
 void DashboardInstrument_Clock::SetUtcTime( wxDateTime data )
 {
-
     if (data.IsValid())
-        m_data = GetDisplayTime( data );
+    {
+        m_data = data.FormatISOTime().Append(_T(" UTC"));
+    }
 }
 
-wxString DashboardInstrument_Clock::GetDisplayTime( wxDateTime UTCtime )
-{
-    wxString result( _T( "---" ) );
-    if ( UTCtime.IsValid() ) {
-        if ( g_iUTCOffset != 0 ) {
-            wxTimeSpan offset( 0, g_iUTCOffset * 30, 0 );
-            wxDateTime displayData = UTCtime.Add( offset );
-            result = displayData.FormatISOTime().Append( _( " LCL" ) );
-        }
-        else
-            result = UTCtime.FormatISOTime().Append( _( " UTC" ) );
-    }
-    return result;
-}
 DashboardInstrument_Moon::DashboardInstrument_Moon( wxWindow *parent, wxWindowID id, wxString title ) :
       DashboardInstrument_Clock( parent, id, title, OCPN_DBP_STC_CLK|OCPN_DBP_STC_LAT, _T("%i/4 %c") )
 {
@@ -288,15 +274,15 @@ void DashboardInstrument_Sun::SetUtcTime( wxDateTime data )
 {
     if (data.IsValid())
     {
-//        m_dt = data;
+        m_dt = data;
         wxDateTime sunrise, sunset;
         calculateSun(m_lat, m_lon, sunrise, sunset);
         if (sunrise.GetYear() != 999)
-            m_sunrise = GetDisplayTime( sunrise );
+            m_sunrise = sunrise.FormatISOTime().Append(_T(" UTC"));
         else
             m_sunrise = _T("---");
-        if ( sunset.GetYear() != 999 )
-            m_sunset = GetDisplayTime( sunset );
+        if (sunset.GetYear() != 999)
+            m_sunset = sunset.FormatISOTime().Append(_T(" UTC"));
         else
             m_sunset = _T("---");
     }
@@ -312,6 +298,21 @@ void DashboardInstrument_Sun::SetData( int st, double data, wxString unit )
       {
             m_lon = data;
       }
+      else return;
+
+      if (m_lat == 999.9 || m_lon == 999.9)
+            return;
+
+      wxDateTime sunset, sunrise;
+      calculateSun(m_lat, m_lon, sunrise, sunset);
+      if (sunrise.GetYear() != 999)
+            m_sunrise = sunrise.FormatISOTime().Append(_T(" UTC"));
+      else
+            m_sunrise = _T("---");
+      if (sunset.GetYear() != 999)
+            m_sunset = sunset.FormatISOTime().Append(_T(" UTC"));
+      else
+            m_sunset = _T("---");
 }
 
 void DashboardInstrument_Sun::calculateSun(double latit, double longit, wxDateTime &sunrise, wxDateTime &sunset){
