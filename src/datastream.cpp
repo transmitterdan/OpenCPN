@@ -517,7 +517,8 @@ void DataStream::OnSocketEvent(wxSocketEvent& event)
 {
     //#define RD_BUF_SIZE    200
     #define RD_BUF_SIZE    4096 // Allows handling of high volume data streams, such as a National AIS stream with 100s of msgs a second.
-
+    if ( g_bquiting )
+        return;
     switch(event.GetSocketEvent())
     {
         case wxSOCKET_INPUT :                     // from gpsd Daemon
@@ -665,7 +666,9 @@ void DataStream::OnSocketEvent(wxSocketEvent& event)
 
 void DataStream::OnServerSocketEvent(wxSocketEvent& event)
 {
-    
+    if ( g_bquiting )
+        return;
+
     switch(event.GetSocketEvent())
     {
         case wxSOCKET_CONNECTION :

@@ -246,6 +246,9 @@ void Multiplexer::SetGPSHandler(wxEvtHandler *handler)
 
 void Multiplexer::OnEvtStream(OCPN_DataStreamEvent& event)
 {
+    if ( g_bquiting )
+        return;
+
     wxString message = event.ProcessNMEA4Tags();
     
     DataStream *stream = event.GetStream();

@@ -3455,15 +3455,20 @@ void MyFrame::OnCloseWindow( wxCloseEvent& event )
     cc1->Refresh( true );
     cc1->Update();
 
-    //  Clear some global arrays, lists, and hash maps...
-    for ( size_t i = 0; i < g_pConnectionParams->Count(); i++ )
-    {
-        ConnectionParams *cp = g_pConnectionParams->Item( i );
-        delete cp;
+    if ( g_pMUX ) {
+        delete g_pMUX;
+        g_pMUX = NULL;
     }
-    delete g_pConnectionParams;
-    g_pConnectionParams = NULL;
-
+    //  Clear some global arrays, lists, and hash maps...
+    if ( g_pConnectionParams ) {
+        for ( size_t i = 0; i < g_pConnectionParams->Count(); i++ )
+        {
+            ConnectionParams *cp = g_pConnectionParams->Item( i );
+            delete cp;
+        }
+        delete g_pConnectionParams;
+        g_pConnectionParams = NULL;
+    }
 
     wxYield();
 
@@ -3657,10 +3662,6 @@ void MyFrame::OnCloseWindow( wxCloseEvent& event )
         delete g_pAIS;
         g_pAIS = NULL;
     }
-
-    delete g_pMUX;
-    g_pMUX = NULL;
-    
 
     if(pLayerList){
         LayerList::iterator it;
