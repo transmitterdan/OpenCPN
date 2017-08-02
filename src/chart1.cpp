@@ -3464,8 +3464,9 @@ void MyFrame::OnCloseWindow( wxCloseEvent& event )
     delete g_pConnectionParams;
     g_pConnectionParams = NULL;
 
-
-    wxYield();
+    
+    //  This yield is not necessary, since the Update() proceeds syncronously...
+    //wxYield();
 
     //   Save the saved Screen Brightness
     RestoreScreenBrightness();
