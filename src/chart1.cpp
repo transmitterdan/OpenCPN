@@ -6401,6 +6401,7 @@ void MyFrame::OnInitTimer(wxTimerEvent& event)
             // Load the waypoints.. both of these routines are very slow to execute which is why
             // they have been to defered until here
             pWayPointMan = new WayPointman();
+            pWayPointMan->SetColorScheme( global_color_scheme );
             
             // Reload the ownship icon from UserIcons, if present
             if(cc1->SetUserOwnship())
@@ -11512,6 +11513,25 @@ void SetSystemColors( ColorScheme cs )
         RestoreSystemColors();
     }
 #endif
+}
+
+wxColor GetDimColor(wxColor c)
+{
+    if( (global_color_scheme == GLOBAL_COLOR_SCHEME_DAY) || (global_color_scheme == GLOBAL_COLOR_SCHEME_DAY))
+        return c;
+    
+    float factor = 1.0;
+    if(global_color_scheme == GLOBAL_COLOR_SCHEME_DUSK)
+        factor = 0.5;
+    if(global_color_scheme == GLOBAL_COLOR_SCHEME_NIGHT)
+        factor = 0.25;
+    
+    wxImage::RGBValue rgb( c.Red(), c.Green(), c.Blue() );
+    wxImage::HSVValue hsv = wxImage::RGBtoHSV( rgb );
+    hsv.value = hsv.value * factor;
+    wxImage::RGBValue nrgb = wxImage::HSVtoRGB( hsv );
+
+    return wxColor( nrgb.red, nrgb.green, nrgb.blue );
 }
 
 class  OCPNMessageDialog: public wxDialog
