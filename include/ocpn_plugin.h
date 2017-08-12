@@ -1214,6 +1214,6 @@ extern WXDLLIMPEXP_CORE const wxEventType wxEVT_DOWNLOAD_EVENT;
 
 /* Allow drawing of objects onto other OpenGL canvases */
 extern DECL_EXP void PlugInAISDrawGL( wxGLCanvas* glcanvas, const PlugIn_ViewPort& vp );
-extern DECL_EXP bool PlugInSetFontColor( const wxString TextElement, const wxColour color );
+extern DECL_EXP bool PlugInSetFontColor(const wxString TextElement, const wxColour color);
 
 #endif //_PLUGIN_H_
