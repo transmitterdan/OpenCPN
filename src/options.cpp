@@ -5864,9 +5864,7 @@ void options::OnApplyClick(wxCommandEvent& event) {
 
   long filter_val = 1;
   m_tFilterSec->GetValue().ToLong(&filter_val);
-  g_COGFilterSec =
-      wxMin(static_cast<int>(filter_val), MAX_COGSOG_FILTER_SECONDS);
-  g_COGFilterSec = wxMax(g_COGFilterSec, 1);
+  g_COGFilterSec = wxMax(filter_val, 1);
   g_SOGFilterSec = g_COGFilterSec;
 
   g_bMagneticAPB = m_cbAPBMagnetic->GetValue();
@@ -5989,7 +5987,7 @@ void options::OnApplyClick(wxCommandEvent& event) {
 
   long update_val = 1;
   pCOGUPUpdateSecs->GetValue().ToLong(&update_val);
-  g_COGAvgSec = wxMin(static_cast<int>(update_val), MAX_COG_AVERAGE_SECONDS);
+  g_COGAvgSec = static_cast<int>( update_val );
 
   if (g_bCourseUp != pCBCourseUp->GetValue()) gFrame->ToggleCourseUp();
 

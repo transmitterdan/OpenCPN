@@ -1024,6 +1024,7 @@ SET(HDRS
 		include/about.h
 		include/ais.h
 		include/pluginmanager.h
+		include/iirfilter.h
 		include/ocpn_plugin.h
 		include/gpxdocument.h
 		include/wx/json_defs.h
@@ -1118,6 +1119,7 @@ SET(SRCS
 		src/about.cpp
 		src/ais.cpp
 		src/pluginmanager.cpp
+		src/iirfilter.cpp
 		src/gpxdocument.cpp
 		src/wxJSON/jsonwriter.cpp
 		src/wxJSON/jsonreader.cpp
