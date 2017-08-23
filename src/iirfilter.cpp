@@ -19,13 +19,13 @@ double iirfilter::filter(double data) {
                 break;
 
             case IIRFILTER_TYPE_DEG:
-                unwrapDeg(data);
-                accum = accum * b1 + a0 * (oldDeg + 360.0*wraps);
+                unwrap(data);
+                accum = accum * b1 + a0 * (oldAng + 360.0*wraps);
                 break;
                    
             case IIRFILTER_TYPE_RAD:
-                unwrapRad(data);
-                accum = accum * b1 + a0 * (oldRad + 2.0*M_PI*wraps);
+                unwrap(data);
+                accum = accum * b1 + a0 * (oldAng + 2.0*M_PI*wraps);
                 break;
                     
             default:
@@ -39,8 +39,7 @@ double iirfilter::filter(double data) {
 
 void iirfilter::reset(double a) {
     accum = a;
-    oldDeg = NAN;
-    oldRad = NAN;
+    oldAng = NAN;
     wraps = 0;
 }
 
@@ -50,30 +49,25 @@ void iirfilter::setFC(double fc) {
     else {
         reset();
         b1 = exp(-2.0 * 3.1415926535897932384626433832795 * fc);
-        a0 = 1 - b1;
+        a0 = 1.0 - b1;
     }
 }
 
-void iirfilter::setType(int tp)
+void iirfilter::setType(filterType tp)
 {
     wxASSERT(tp == IIRFILTER_TYPE_DEG || tp == IIRFILTER_TYPE_LINEAR || tp == IIRFILTER_TYPE_RAD);
     type = tp;
 }
 
-double iirfilter::getFc(void)
+double iirfilter::getFc(void) const
 {
     if (wxIsNaN(b1))
         return 0.0;
-    double fc = log(b1) / (-2.0 * 3.1415926535897932384626433832795);
+    double fc = log(b1) / (-2.0 * M_PI);
     return fc;
 }
 
-int iirfilter::getType(void)
-{
-    return type;
-}
-
-double iirfilter::get(void) {
+double iirfilter::get(void) const {
     if (wxIsNaN(accum))
         return accum;
     double res = accum;
@@ -91,22 +85,23 @@ double iirfilter::get(void) {
     return res;
 }
 
-void iirfilter::unwrapDeg(double deg) {
-    if (deg - oldDeg > 180) {
-        wraps--;
+void iirfilter::unwrap(double ang) {
+    double pi;
+    switch ( type ) {
+    case IIRFILTER_TYPE_DEG:
+        pi = 180;
+        break;
+    case IIRFILTER_TYPE_RAD:
+        pi = M_PI;
+        break;
+    default:
+        return;
     }
-    else if (deg - oldDeg < -180) {
+    if ( ang - oldAng > pi ) {
+            wraps--;
+    }
+    else if ( ang - oldAng < -pi ) {
         wraps++;
     }
-    oldDeg = deg;
-}
-
-void iirfilter::unwrapRad(double rad) {
-    if (rad - oldRad > M_PI) {
-        wraps--;
-    }
-    else if (rad - oldRad < M_PI) {
-        wraps++;
-    }
-    oldRad = rad;
+    oldAng = ang;
 }

@@ -359,6 +359,10 @@ int                       g_GUIScaleFactor;
 int                       g_ChartScaleFactor;
 float                     g_ChartScaleFactorExp;
 
+iirfilter                 *m_SOGFilter;
+iirfilter                 *m_COGFilter;
+iirfilter                 *m_COGUpFilter;
+
 #ifdef USE_S57
 s52plib                   *ps52plib;
 S57ClassRegistrar         *g_poRegistrar;
@@ -2669,9 +2673,11 @@ MyFrame::MyFrame( wxFrame *frame, const wxString& title, const wxPoint& pos, con
     nBlinkerTick = 0;
 
     m_bdefer_resize = false;
-
-    m_COGFilter.setType( IIRFILTER_TYPE_DEG );
-    m_COGUpFilter.setType( IIRFILTER_TYPE_DEG );
+    m_COGFilter = new iirfilter;
+    m_SOGFilter = new iirfilter;
+    m_COGUpFilter = new iirfilter;
+    m_COGFilter->setType( IIRFILTER_TYPE_DEG );
+    m_COGUpFilter->setType( IIRFILTER_TYPE_DEG );
 
     m_last_bGPSValid = false;
 
@@ -2754,6 +2760,10 @@ MyFrame::~MyFrame()
         node = node->GetNext();
     }
     delete pRouteList;
+
+    delete m_COGFilter;
+    delete m_SOGFilter;
+    delete m_COGUpFilter;
 }
 
 void MyFrame::OnEraseBackground( wxEraseEvent& event )
@@ -4889,7 +4899,7 @@ void MyFrame::ToggleCourseUp( void )
     g_bCourseUp = !g_bCourseUp;
 
     if( g_bCourseUp ) {
-        m_COGUpFilter.reset( wxIsNaN( gCog ) ? 0 : gCog );
+        m_COGUpFilter->reset( wxIsNaN( gCog ) ? 0 : gCog );
         gFrame->FrameCOGTimer.Start( 100, wxTIMER_CONTINUOUS );
     } else {
         if ( !g_bskew_comp && (fabs(cc1->GetVPSkew()) > 0.0001))
@@ -5223,9 +5233,9 @@ void MyFrame::ApplyGlobalSettings( bool bFlyingUpdate, bool bnewtoolbar )
 
     if( bnewtoolbar ) UpdateToolbar( global_color_scheme );
 
-    m_COGUpFilter.setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
-    m_SOGFilter.setFC( g_COGAvgSec ? 1.0 / ( 2.0*g_COGAvgSec ) : 0.0 );
-    m_COGFilter.setFC( g_COGAvgSec ? 1.0 / ( 2.0*g_COGAvgSec ) : 0.0 );
+    m_COGUpFilter->setFC( g_COGAvgSec ? 1.0 / ( 10.0*g_COGAvgSec ) : 0.0 );
+    m_SOGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
+    m_COGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
 
 }
 
@@ -5761,13 +5771,13 @@ int MyFrame::ProcessOptionsDialog( int rr, ArrayOfCDI *pNewDirArray )
         SetupQuiltMode();
     }
 
-    m_COGUpFilter.setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
-    m_SOGFilter.setFC( g_COGAvgSec ? 1.0 / ( 2.0*g_COGAvgSec ) : 0.0 );
-    m_COGFilter.setFC( g_COGAvgSec ? 1.0 / ( 2.0*g_COGAvgSec ) : 0.0 );
+    m_COGUpFilter->setFC( g_COGAvgSec ? 1.0 / ( 10.0*g_COGAvgSec ) : 0.0 );
+    m_SOGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
+    m_COGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
 
     if( g_bCourseUp ) {
         //    Stuff the COGAvg table in case COGUp is selected
-        m_COGUpFilter.reset( wxIsNaN( gCog ) ? 0.0 : gCog );
+        m_COGUpFilter->reset( wxIsNaN( gCog ) ? 0.0 : gCog );
 
         DoCOGSet();
     }
@@ -9379,10 +9389,10 @@ void MyFrame::PostProcessNNEA( bool pos_valid, bool cog_sog_valid, const wxStrin
 {
     if(cog_sog_valid) {
         //    Maintain average COG all the time for Course Up Mode
-        g_COGAvg = m_COGUpFilter.filter( gCog );
+        g_COGAvg = m_COGUpFilter->filter( gCog );
         if ( g_bfilter_cogsog ) {
-            gCog = m_COGFilter.filter( gCog );
-            gSog = m_SOGFilter.filter( gSog );
+            gCog = m_COGFilter->filter( gCog );
+            gSog = m_SOGFilter->filter( gSog );
         }
     }
 

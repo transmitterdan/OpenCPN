@@ -498,10 +498,6 @@ class MyFrame: public wxFrame
     
     void FastClose();
     
-    iirfilter           m_SOGFilter;
-    iirfilter           m_COGFilter;
-    iirfilter           m_COGUpFilter;
-
   private:
     void ODoSetSize(void);
     void DoCOGSet(void);

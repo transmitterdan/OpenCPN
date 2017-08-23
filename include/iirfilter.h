@@ -58,32 +58,27 @@ class iirfilter
 {
 public:
 
-//    iirfilter() {setFC(0.5); type = IIRFILTER_TYPE_LINEAR; reset();};
-
     iirfilter(double fc = 0.5, filterType tp = IIRFILTER_TYPE_LINEAR);
-    ~iirfilter(){};
     double filter(double data); // Return filtered data given new data point
     void reset(double a = 0.0); // Clear filter
-    void setFC(double fc = 0.1);// Set cutoff frequency
-    void setType(int tp);       // Set type of filter (linear or angle type)
-    double getFc(void);         // Return cutoff frequency
-    int getType(void);          // Return type of filter
-    double get(void);           // Return the current filtered data
+    void setFC(double fc = 0.5);// Set cutoff frequency
+    void setType(filterType tp);       // Set type of filter (linear or angle type)
+    double getFc(void) const;         // Return cutoff frequency
+    filterType getType( void ) const { return type; };    // Return type of filter
+    double get(void) const;           // Return the current filtered data
 
 protected:
 
-    void unwrapDeg(double deg);
-    void unwrapRad(double rad);
+    void unwrap(double ang);
 
 private:
 
     double a0;
     double b1;
     double accum;
-    double oldDeg;
-    double oldRad;
+    double oldAng;
     int wraps;
-    int type;
+    filterType type;
 };
 
 #endif
