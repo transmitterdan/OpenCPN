@@ -359,6 +359,10 @@ int                       g_GUIScaleFactor;
 int                       g_ChartScaleFactor;
 float                     g_ChartScaleFactorExp;
 
+iirfilter                 *m_SOGFilter;
+iirfilter                 *m_COGFilter;
+iirfilter                 *m_COGUpFilter;
+
 #ifdef USE_S57
 s52plib                   *ps52plib;
 S57ClassRegistrar         *g_poRegistrar;
@@ -2669,12 +2673,12 @@ MyFrame::MyFrame( wxFrame *frame, const wxString& title, const wxPoint& pos, con
     nBlinkerTick = 0;
 
     m_bdefer_resize = false;
+    m_COGFilter = new iirfilter;
+    m_SOGFilter = new iirfilter;
+    m_COGUpFilter = new iirfilter;
+    m_COGFilter->setType( IIRFILTER_TYPE_DEG );
+    m_COGUpFilter->setType( IIRFILTER_TYPE_DEG );
 
-    //    Clear the NMEA Filter tables
-    for( int i = 0; i < MAX_COGSOG_FILTER_SECONDS; i++ ) {
-        COGFilterTable[i] = NAN;
-        SOGFilterTable[i] = NAN;
-    }
     m_last_bGPSValid = false;
 
     gHdt = NAN;
@@ -2682,9 +2686,6 @@ MyFrame::MyFrame( wxFrame *frame, const wxString& title, const wxPoint& pos, con
     gVar = NAN;
     gSog = NAN;
     gCog = NAN;
-
-    for (int i = 0; i < MAX_COG_AVERAGE_SECONDS; i++ )
-        COGTable[i] = NAN;
 
     m_fixtime = 0;
 
@@ -2759,6 +2760,10 @@ MyFrame::~MyFrame()
         node = node->GetNext();
     }
     delete pRouteList;
+
+    delete m_COGFilter;
+    delete m_SOGFilter;
+    delete m_COGUpFilter;
 }
 
 void MyFrame::OnEraseBackground( wxEraseEvent& event )
@@ -4894,15 +4899,7 @@ void MyFrame::ToggleCourseUp( void )
     g_bCourseUp = !g_bCourseUp;
 
     if( g_bCourseUp ) {
-        //    Stuff the COGAvg table in case COGUp is selected
-        double stuff = 0;
-        if( !wxIsNaN(gCog) ) stuff = gCog;
-
-        if( g_COGAvgSec > 0) {
-            for( int i = 0; i < g_COGAvgSec; i++ )
-                COGTable[i] = stuff;
-        }
-        g_COGAvg = stuff;
+        m_COGUpFilter->reset( wxIsNaN( gCog ) ? 0 : gCog );
         gFrame->FrameCOGTimer.Start( 100, wxTIMER_CONTINUOUS );
     } else {
         if ( !g_bskew_comp && (fabs(cc1->GetVPSkew()) > 0.0001))
@@ -5236,6 +5233,9 @@ void MyFrame::ApplyGlobalSettings( bool bFlyingUpdate, bool bnewtoolbar )
 
     if( bnewtoolbar ) UpdateToolbar( global_color_scheme );
 
+    m_COGUpFilter->setFC( g_COGAvgSec ? 1.0 / ( 10.0*g_COGAvgSec ) : 0.0 );
+    m_SOGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
+    m_COGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
 }
 
 
@@ -5770,32 +5770,18 @@ int MyFrame::ProcessOptionsDialog( int rr, ArrayOfCDI *pNewDirArray )
         SetupQuiltMode();
     }
 
+    m_COGUpFilter->setFC( g_COGAvgSec ? 1.0 / ( 10.0*g_COGAvgSec ) : 0.0 );
+    m_SOGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
+    m_COGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
+
     if( g_bCourseUp ) {
         //    Stuff the COGAvg table in case COGUp is selected
-        double stuff = NAN;
-        if( !wxIsNaN(gCog) ) stuff = gCog;
-        if( g_COGAvgSec > 0 ) {
-            for( int i = 0; i < g_COGAvgSec; i++ )
-                COGTable[i] = stuff;
-        }
-
-        g_COGAvg = stuff;
+        m_COGUpFilter->reset( wxIsNaN( gCog ) ? 0.0 : gCog );
 
         DoCOGSet();
     }
 
     g_pRouteMan->SetColorScheme(global_color_scheme);           // reloads pens and brushes
-
-    //    Stuff the Filter tables
-    double stuffcog = NAN;
-    double stuffsog = NAN;
-    if( !wxIsNaN(gCog) ) stuffcog = gCog;
-    if( !wxIsNaN(gSog) ) stuffsog = gSog;
-
-    for( int i = 0; i < MAX_COGSOG_FILTER_SECONDS; i++ ) {
-        COGFilterTable[i] = stuffcog;
-        SOGFilterTable[i] = stuffsog;
-    }
 
     SetChartUpdatePeriod( cc1->GetVP() );              // Pick up changes to skew compensator
 
@@ -9401,42 +9387,12 @@ void MyFrame::OnEvtOCPN_NMEA( OCPN_DataStreamEvent & event )
 void MyFrame::PostProcessNNEA( bool pos_valid, bool cog_sog_valid, const wxString &sfixtime )
 {
     if(cog_sog_valid) {
-        //    Maintain average COG for Course Up Mode
-        if( !wxIsNaN(gCog) ) {
-            if( g_COGAvgSec > 0 ) {
-                //    Make a hole
-                for( int i = g_COGAvgSec - 1; i > 0; i-- )
-                    COGTable[i] = COGTable[i - 1];
-                COGTable[0] = gCog;
-
-                double sum = 0., count=0;
-                for( int i = 0; i < g_COGAvgSec; i++ ) {
-                    double adder = COGTable[i];
-                    if(wxIsNaN(adder))
-                        continue;
-
-                    if( fabs( adder - g_COGAvg ) > 180. ) {
-                        if( ( adder - g_COGAvg ) > 0. ) adder -= 360.;
-                        else
-                            adder += 360.;
-                    }
-
-                    sum += adder;
-                    count++;
-                }
-                sum /= count;
-
-                if( sum < 0. ) sum += 360.;
-                else
-                    if( sum >= 360. ) sum -= 360.;
-
-                g_COGAvg = sum;
-            }
-            else
-                g_COGAvg = gCog;
+        //    Maintain average COG all the time for Course Up Mode
+        g_COGAvg = m_COGUpFilter->filter( gCog );
+        if ( g_bfilter_cogsog ) {
+            gCog = m_COGFilter->filter( gCog );
+            gSog = m_SOGFilter->filter( gSog );
         }
-
-        FilterCogSog();
     }
 
     //    If gSog is greater than some threshold, we determine that we are "cruising"
@@ -9612,66 +9568,7 @@ void MyFrame::PostProcessNNEA( bool pos_valid, bool cog_sog_valid, const wxStrin
 
 void MyFrame::FilterCogSog( void )
 {            
-    if( g_bfilter_cogsog ) {
-        //    Simple averaging filter for COG
-        double cog_last = gCog;       // most recent reported value
-
-        //    Make a hole in array
-        for( int i = g_COGFilterSec - 1; i > 0; i-- )
-            COGFilterTable[i] = COGFilterTable[i - 1];
-        COGFilterTable[0] = cog_last;
-
-        //    If the lastest data is undefined, leave it
-        if( !wxIsNaN(cog_last) ) {
-            //
-            double sum = 0., count = 0;
-            for( int i = 0; i < g_COGFilterSec; i++ ) {
-                double adder = COGFilterTable[i];
-                if(wxIsNaN(adder))
-                    continue;
-
-                if( fabs( adder - cog_last ) > 180. ) {
-                    if( ( adder - cog_last ) > 0. ) adder -= 360.;
-                    else
-                        adder += 360.;
-                }
-
-                sum += adder;
-                count++;
-            }
-            sum /= count;
-
-            if( sum < 0. ) sum += 360.;
-            else
-                if( sum >= 360. ) sum -= 360.;
-
-            gCog = sum;
-        }
-
-        //    Simple averaging filter for SOG
-        double sog_last = gSog;       // most recent reported value
-
-        //    Make a hole in array
-        for( int i = g_SOGFilterSec - 1; i > 0; i-- )
-            SOGFilterTable[i] = SOGFilterTable[i - 1];
-        SOGFilterTable[0] = sog_last;
-
-        
-        //    If the data are undefined, leave the array intact
-        if( !wxIsNaN(gSog) ) {
-            double sum = 0., count = 0;
-            for( int i = 0; i < g_SOGFilterSec; i++ ) {
-                if(wxIsNaN(SOGFilterTable[i]))
-                    continue;
-
-                sum += SOGFilterTable[i];
-                count++;
-            }
-            sum /= count;
-
-            gSog = sum;
-        }
-    }
+    //TODO: Can be removed?
 }
 
 void MyFrame::StopSockets( void )

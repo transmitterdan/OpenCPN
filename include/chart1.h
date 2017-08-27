@@ -42,6 +42,7 @@
 #include "nmea0183.h"
 #include "chartdbs.h"
 #include "s52s57.h"
+#include "iirfilter.h"
 
 #ifdef USE_S57
 #include "mygdal/cpl_error.h"
@@ -244,8 +245,6 @@ enum
 //    So maybe 5 minute updates should provide sufficient oversampling
 #define TIMER_TC_VALUE_SECONDS      300
 
-#define MAX_COG_AVERAGE_SECONDS        60
-#define MAX_COGSOG_FILTER_SECONDS      60
 //----------------------------------------------------------------------------
 // fwd class declarations
 //----------------------------------------------------------------------------
@@ -539,17 +538,12 @@ class MyFrame: public wxFrame
     wxString         m_last_reported_chart_name;
     wxString         m_last_reported_chart_pubdate;
 
-    double           COGTable[MAX_COG_AVERAGE_SECONDS];
-
     wxString         m_lastAISiconName;
 
     bool             m_toolbar_scale_tools_shown;
 
     //      Plugin Support
     int                 m_next_available_plugin_tool_id;
-
-    double              COGFilterTable[MAX_COGSOG_FILTER_SECONDS];
-    double              SOGFilterTable[MAX_COGSOG_FILTER_SECONDS];
 
     bool                m_bpersistent_quilt;
     int                 m_ChartUpdatePeriod;
@@ -568,7 +562,7 @@ class MyFrame: public wxFrame
     bool                b_autofind;
     
     time_t              m_last_track_rotation_ts;
-    
+
     DECLARE_EVENT_TABLE()
 };
 
