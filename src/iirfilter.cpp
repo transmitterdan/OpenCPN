@@ -43,11 +43,12 @@ void iirfilter::reset(double a) {
     wraps = 0;
 }
 
-void iirfilter::setFC(double fc) {
+void iirfilter::setFC(double fc, bool resetAccum) {
     if (wxIsNaN(fc) || fc <= 0.0)
         a0 = b1 = NAN;  // NAN means no filtering will be done
     else {
-        reset();
+        if ( resetAccum )
+            reset();
         b1 = exp(-2.0 * 3.1415926535897932384626433832795 * fc);
         a0 = 1.0 - b1;
     }
@@ -57,6 +58,7 @@ void iirfilter::setType(filterType tp)
 {
     wxASSERT(tp == IIRFILTER_TYPE_DEG || tp == IIRFILTER_TYPE_LINEAR || tp == IIRFILTER_TYPE_RAD);
     type = tp;
+    reset();
 }
 
 double iirfilter::getFc(void) const

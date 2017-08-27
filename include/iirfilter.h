@@ -61,7 +61,7 @@ public:
     iirfilter(double fc = 0.5, filterType tp = IIRFILTER_TYPE_LINEAR);
     double filter(double data); // Return filtered data given new data point
     void reset(double a = 0.0); // Clear filter
-    void setFC(double fc = 0.5);// Set cutoff frequency
+    void setFC(double fc = 0.5, bool resetAccum=false);// Set cutoff frequency
     void setType(filterType tp);       // Set type of filter (linear or angle type)
     double getFc(void) const;         // Return cutoff frequency
     filterType getType( void ) const { return type; };    // Return type of filter

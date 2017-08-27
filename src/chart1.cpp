@@ -5236,7 +5236,6 @@ void MyFrame::ApplyGlobalSettings( bool bFlyingUpdate, bool bnewtoolbar )
     m_COGUpFilter->setFC( g_COGAvgSec ? 1.0 / ( 10.0*g_COGAvgSec ) : 0.0 );
     m_SOGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
     m_COGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
-
 }
 
 
