@@ -9733,7 +9733,9 @@ Route *pAISMOBRoute;
 
 void MyFrame::ActivateAISMOBRoute( AIS_Target_Data *ptarget )
 {
-    if(!ptarget)
+    // We can't have a MOB route unless we have a valid target
+    // and the electronic NAV system is up and running
+    if( !ptarget || !( bGPSValid && !wxIsNaN( gCog ) && !wxIsNaN( gSog ) ) )
         return;
 
     //    The MOB point
@@ -9749,38 +9751,36 @@ void MyFrame::ActivateAISMOBRoute( AIS_Target_Data *ptarget )
     pConfig->AddNewWayPoint( pWP_MOB, -1 );       // use auto next num
 
 
-    if( bGPSValid && !wxIsNaN(gCog) && !wxIsNaN(gSog) ) {
-        RoutePoint *pWP_src = new RoutePoint( gLat, gLon, g_default_wp_icon,
-                                              wxString( _( "Own ship" ) ), GPX_EMPTY_STRING );
-        pSelect->AddSelectableRoutePoint( gLat, gLon, pWP_src );
+    RoutePoint *pWP_src = new RoutePoint( gLat, gLon, g_default_wp_icon,
+                                            wxString( _( "Own ship" ) ), GPX_EMPTY_STRING );
+    pSelect->AddSelectableRoutePoint( gLat, gLon, pWP_src );
 
-        pAISMOBRoute = new Route();
-        pRouteList->Append( pAISMOBRoute );
+    pAISMOBRoute = new Route();
+    pRouteList->Append( pAISMOBRoute );
 
-        pAISMOBRoute->AddPoint( pWP_src );
-        pAISMOBRoute->AddPoint( pWP_MOB );
+    pAISMOBRoute->AddPoint( pWP_src );
+    pAISMOBRoute->AddPoint( pWP_MOB );
 
-        pSelect->AddSelectableRouteSegment(ptarget->Lat, ptarget->Lon, gLat, gLon, pWP_src, pWP_MOB, pAISMOBRoute );
+    pSelect->AddSelectableRouteSegment(ptarget->Lat, ptarget->Lon, gLat, gLon, pWP_src, pWP_MOB, pAISMOBRoute );
 
-        pAISMOBRoute->m_RouteNameString = _("Temporary AISMOB Route");
-        pAISMOBRoute->m_RouteStartString = _("Present own ship");
-        pAISMOBRoute->m_RouteEndString = mob_label;
+    pAISMOBRoute->m_RouteNameString = _("Temporary AISMOB Route");
+    pAISMOBRoute->m_RouteStartString = _("Present own ship");
+    pAISMOBRoute->m_RouteEndString = mob_label;
 
-        pAISMOBRoute->m_bDeleteOnArrival = false;
+    pAISMOBRoute->m_bDeleteOnArrival = false;
 
-        pAISMOBRoute->SetRouteArrivalRadius( -1.0 );                    // never arrives
+    pAISMOBRoute->SetRouteArrivalRadius( -1.0 );                    // never arrives
 
-        pAISMOBRoute->RebuildGUIDList();         // ensure the GUID list is intact and good
+    pAISMOBRoute->RebuildGUIDList();         // ensure the GUID list is intact and good
 
-        if( g_pRouteMan->GetpActiveRoute() )
-            g_pRouteMan->DeactivateRoute();
-        //       g_pRouteMan->ActivateRoute( pAISMOBRoute, pWP_MOB );
+    if( g_pRouteMan->GetpActiveRoute() )
+        g_pRouteMan->DeactivateRoute();
+    //       g_pRouteMan->ActivateRoute( pAISMOBRoute, pWP_MOB );
 
-        wxJSONValue v;
-        v[_T("GUID")] = pAISMOBRoute->m_GUID;
-        wxString msg_id( _T("OCPN_MAN_OVERBOARD") );
-        g_pi_manager->SendJSONMessageToAllPlugins( msg_id, v );
-    }
+    wxJSONValue v;
+    v[_T("GUID")] = pAISMOBRoute->m_GUID;
+    wxString msg_id( _T("OCPN_MAN_OVERBOARD") );
+    g_pi_manager->SendJSONMessageToAllPlugins( msg_id, v );
 
     if( pRouteManagerDialog && pRouteManagerDialog->IsShown() ) {
         pRouteManagerDialog->UpdateRouteListCtrl();
