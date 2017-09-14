@@ -1098,7 +1098,7 @@ ChartDldrPanelImpl::~ChartDldrPanelImpl()
 }
 
 ChartDldrPanelImpl::ChartDldrPanelImpl( chartdldr_pi* plugin, wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style )
-    : ChartDldrPanel( parent, id, pos, size, style )
+    : ChartDldrPanel( parent, id, pos, size, style | wxRESIZE_BORDER)
 {
     m_bDeleteSource->Disable();
     m_bUpdateChartList->Disable();
