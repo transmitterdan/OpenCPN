@@ -5233,7 +5233,7 @@ void MyFrame::ApplyGlobalSettings( bool bFlyingUpdate, bool bnewtoolbar )
 
     if( bnewtoolbar ) UpdateToolbar( global_color_scheme );
 
-    m_COGUpFilter->setFC( g_COGAvgSec ? 1.0 / ( 10.0*g_COGAvgSec ) : 0.0 );
+    m_COGUpFilter->setFC( g_COGAvgSec ? 1.0 / (20.0*g_COGAvgSec ) : 0.0 );
     m_SOGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
     m_COGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
 }
@@ -5770,7 +5770,7 @@ int MyFrame::ProcessOptionsDialog( int rr, ArrayOfCDI *pNewDirArray )
         SetupQuiltMode();
     }
 
-    m_COGUpFilter->setFC( g_COGAvgSec ? 1.0 / ( 10.0*g_COGAvgSec ) : 0.0 );
+    m_COGUpFilter->setFC( g_COGAvgSec ? 1.0 / ( 20.0*g_COGAvgSec ) : 0.0 );
     m_SOGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
     m_COGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
 
@@ -7233,7 +7233,7 @@ void MyFrame::DoCOGSet( void )
         return;
 
     double old_VPRotate = g_VPRotate;
-    g_VPRotate = -g_COGAvg * PI / 180.;
+    g_VPRotate = -nearbyint( g_COGAvg * 0.1 ) * 10.0 * PI / 180.;
 
     cc1->SetVPRotation( g_VPRotate );
     bool bnew_chart = DoChartUpdate();
@@ -8088,14 +8088,7 @@ bool MyFrame::DoChartUpdate( void )
 
         // on lookahead mode, adjust the vp center point
         if( g_bLookAhead ) {
-            double angle = g_COGAvg + ( cc1->GetVPRotation() * 180. / PI );
-
-            double pixel_deltay = fabs( cos( angle * PI / 180. ) ) * cc1->GetCanvasHeight() / 4;
-            double pixel_deltax = fabs( sin( angle * PI / 180. ) ) * cc1->GetCanvasWidth() / 4;
-
-            double pixel_delta_tent = sqrt(
-                    ( pixel_deltay * pixel_deltay ) + ( pixel_deltax * pixel_deltax ) );
-
+            double pixel_delta_tent = cc1->GetCanvasHeight() / 4;
             double pixel_delta = 0;
 
             //    The idea here is to cancel the effect of LookAhead for slow gSog, to avoid
@@ -8110,7 +8103,7 @@ bool MyFrame::DoChartUpdate( void )
 
             double meters_to_shift = cos( gLat * PI / 180. ) * pixel_delta / cc1->GetVPScale();
 
-            double dir_to_shift = g_COGAvg;
+            double dir_to_shift = cc1->GetVPRotation() * -180. / PI;
 
             ll_gc_ll( gLat, gLon, dir_to_shift, meters_to_shift / 1852., &vpLat, &vpLon );
         }
@@ -9388,7 +9381,7 @@ void MyFrame::PostProcessNNEA( bool pos_valid, bool cog_sog_valid, const wxStrin
 {
     if(cog_sog_valid) {
         //    Maintain average COG all the time for Course Up Mode
-        g_COGAvg = m_COGUpFilter->filter( gCog );
+        g_COGAvg = m_COGUpFilter->filter( wxIsNaN( gCog ) ? 0 : gCog );
         if ( g_bfilter_cogsog ) {
             gCog = m_COGFilter->filter( gCog );
             gSog = m_SOGFilter->filter( gSog );
@@ -9461,8 +9454,12 @@ void MyFrame::PostProcessNNEA( bool pos_valid, bool cog_sog_valid, const wxStrin
             if( wxIsNaN(gCog) )
                 cogs.Printf( wxString( "COG ---\u00B0", wxConvUTF8 ) );
             else {
-                if( g_bShowTrue )
+                if( g_bShowTrue ) {
                     cogs << wxString::Format( wxString("COG %03d°  ", wxConvUTF8 ), (int)gCog );
+#ifndef NDEBUG
+                    cogs << wxString::Format( wxString( "VPR %03.2f°  ", wxConvUTF8 ), cc1->GetVPRotation() * 180. / PI);
+#endif/* NDEBUG */
+                }
                 if( g_bShowMag )
                     cogs << wxString::Format( wxString("COG %03d°(M)  ", wxConvUTF8 ), (int)gFrame->GetMag( gCog ) );
             }
