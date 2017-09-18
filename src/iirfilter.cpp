@@ -7,12 +7,17 @@ iirfilter::iirfilter(double fc, filterType tp) {
     setFC(fc);
     type = tp;
     reset();
+    initialized = false;
 }
 
 double iirfilter::filter(double data) {
     if (!wxIsNaN(data) && !wxIsNaN(b1)) {
         if (wxIsNaN(accum))
             accum = 0.0;
+        else if ( !initialized ) {
+            accum = data;
+            initialized = true;
+        }
         switch (type) {
             case IIRFILTER_TYPE_LINEAR:
                 accum = accum * b1 + a0 * data;
@@ -41,6 +46,7 @@ void iirfilter::reset(double a) {
     accum = a;
     oldAng = NAN;
     wraps = 0;
+    initialized = true;
 }
 
 void iirfilter::setFC(double fc, bool resetAccum) {

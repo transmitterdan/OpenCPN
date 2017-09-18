@@ -2672,11 +2672,9 @@ MyFrame::MyFrame( wxFrame *frame, const wxString& title, const wxPoint& pos, con
     nBlinkerTick = 0;
 
     m_bdefer_resize = false;
-    m_COGFilter = new iirfilter;
+    m_COGFilter = new iirfilter(0.5, IIRFILTER_TYPE_DEG);
     m_SOGFilter = new iirfilter;
-    m_COGUpFilter = new iirfilter;
-    m_COGFilter->setType( IIRFILTER_TYPE_DEG );
-    m_COGUpFilter->setType( IIRFILTER_TYPE_DEG );
+    m_COGUpFilter = new iirfilter(0.5, IIRFILTER_TYPE_DEG);
 
     m_last_bGPSValid = false;
 

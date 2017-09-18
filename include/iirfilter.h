@@ -79,6 +79,7 @@ private:
     double oldAng;
     int wraps;
     filterType type;
+    bool initialized;
 };
 
 #endif
