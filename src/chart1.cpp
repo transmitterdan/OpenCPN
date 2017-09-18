@@ -437,7 +437,6 @@ int                       g_nCacheLimit;
 int                       g_memCacheLimit;
 bool                      g_bGDAL_Debug;
 
-double                    g_VPRotate; // Viewport rotation angle, used on "Course Up" mode
 bool                      g_bCourseUp;
 int                       g_COGAvgSec; // COG average period (sec.) for Course Up Mode
 double                    g_COGAvg;
@@ -5233,7 +5232,7 @@ void MyFrame::ApplyGlobalSettings( bool bFlyingUpdate, bool bnewtoolbar )
 
     if( bnewtoolbar ) UpdateToolbar( global_color_scheme );
 
-    m_COGUpFilter->setFC( g_COGAvgSec ? 1.0 / (20.0*g_COGAvgSec ) : 0.0 );
+    m_COGUpFilter->setFC( g_COGAvgSec ? 1.0 / (200.0*g_COGAvgSec ) : 0.0 );
     m_SOGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
     m_COGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
 }
@@ -5770,7 +5769,7 @@ int MyFrame::ProcessOptionsDialog( int rr, ArrayOfCDI *pNewDirArray )
         SetupQuiltMode();
     }
 
-    m_COGUpFilter->setFC( g_COGAvgSec ? 1.0 / ( 20.0*g_COGAvgSec ) : 0.0 );
+    m_COGUpFilter->setFC( g_COGAvgSec ? 1.0 / ( 200.0*g_COGAvgSec ) : 0.0 );
     m_SOGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
     m_COGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
 
@@ -7232,13 +7231,16 @@ void MyFrame::DoCOGSet( void )
     if (wxIsNaN(g_COGAvg))
         return;
 
-    double old_VPRotate = g_VPRotate;
-    g_VPRotate = -nearbyint( g_COGAvg * 0.1 ) * 10.0 * PI / 180.;
+    // Only rotate chart surface if g_COGAvg is more than 2.5 degrees away from
+    // existing rotation angle. This cuts down on the jerkiness of the chart display
+    // when vessel COG is a bit noisy which is almost always the case.
+    double old_VPRotate = cc1->GetVPRotation() * 180.0 / PI;
+    double new_VPRotate = nearbyint( g_COGAvg * 0.4 ) * 2.5 * PI / 180.0;
+    cc1->SetVPRotation( -new_VPRotate );
 
-    cc1->SetVPRotation( g_VPRotate );
     bool bnew_chart = DoChartUpdate();
 
-    if( ( bnew_chart ) || ( old_VPRotate != g_VPRotate ) )
+    if( ( bnew_chart ) || ( old_VPRotate != new_VPRotate ) )
         cc1->ReloadVP();
 }
 
