@@ -5987,7 +5987,7 @@ void options::OnApplyClick(wxCommandEvent& event) {
 
   long update_val = 1;
   pCOGUPUpdateSecs->GetValue().ToLong(&update_val);
-  g_COGAvgSec = static_cast<int>( update_val );
+  g_COGAvgSec = wxMax(static_cast<int>( update_val ), 1);
 
   if (g_bCourseUp != pCBCourseUp->GetValue()) gFrame->ToggleCourseUp();
 

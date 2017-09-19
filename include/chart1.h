@@ -511,7 +511,6 @@ class MyFrame: public wxFrame
 
     bool CheckAndAddPlugInTool(ocpnToolBarSimple *tb);
     bool AddDefaultPositionPlugInTools(ocpnToolBarSimple *tb);
-    void FilterCogSog(void);
     void SetChartUpdatePeriod(ViewPort &vp);
 
     void ApplyGlobalColorSchemetoStatusBar(void);

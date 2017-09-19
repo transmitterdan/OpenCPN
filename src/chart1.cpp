@@ -5230,9 +5230,9 @@ void MyFrame::ApplyGlobalSettings( bool bFlyingUpdate, bool bnewtoolbar )
 
     if( bnewtoolbar ) UpdateToolbar( global_color_scheme );
 
-    m_COGUpFilter->setFC( g_COGAvgSec ? 1.0 / (200.0*g_COGAvgSec ) : 0.0 );
-    m_SOGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
-    m_COGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
+    m_COGUpFilter->setFC(  0.01 * g_COGAvgSec );
+    m_SOGFilter->setFC( 0.5 * g_SOGFilterSec );
+    m_COGFilter->setFC( 0.5 * g_COGFilterSec );
 }
 
 
@@ -5767,9 +5767,9 @@ int MyFrame::ProcessOptionsDialog( int rr, ArrayOfCDI *pNewDirArray )
         SetupQuiltMode();
     }
 
-    m_COGUpFilter->setFC( g_COGAvgSec ? 1.0 / ( 200.0*g_COGAvgSec ) : 0.0 );
-    m_SOGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
-    m_COGFilter->setFC( g_COGFilterSec ? 1.0 / ( 2.0*g_COGFilterSec ) : 0.0 );
+    m_COGUpFilter->setFC( 0.01 *g_COGAvgSec );
+    m_SOGFilter->setFC( 0.5 * g_COGFilterSec );
+    m_COGFilter->setFC( 0.5 * g_COGFilterSec );
 
     if( g_bCourseUp ) {
         //    Stuff the COGAvg table in case COGUp is selected
@@ -9454,12 +9454,8 @@ void MyFrame::PostProcessNNEA( bool pos_valid, bool cog_sog_valid, const wxStrin
             if( wxIsNaN(gCog) )
                 cogs.Printf( wxString( "COG ---\u00B0", wxConvUTF8 ) );
             else {
-                if( g_bShowTrue ) {
+                if( g_bShowTrue )
                     cogs << wxString::Format( wxString("COG %03d°  ", wxConvUTF8 ), (int)gCog );
-#ifndef NDEBUG
-                    cogs << wxString::Format( wxString( "VPR %03.2f°  ", wxConvUTF8 ), cc1->GetVPRotation() * 180. / PI);
-#endif/* NDEBUG */
-                }
                 if( g_bShowMag )
                     cogs << wxString::Format( wxString("COG %03d°(M)  ", wxConvUTF8 ), (int)gFrame->GetMag( gCog ) );
             }
@@ -9561,11 +9557,6 @@ void MyFrame::PostProcessNNEA( bool pos_valid, bool cog_sog_valid, const wxStrin
     }               // if valid time
 
 #endif            //ocpnUPDATE_SYSTEM_TIME
-}
-
-void MyFrame::FilterCogSog( void )
-{            
-    //TODO: Can be removed?
 }
 
 void MyFrame::StopSockets( void )
