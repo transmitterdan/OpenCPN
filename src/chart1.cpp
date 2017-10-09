@@ -466,6 +466,7 @@ bool                      g_bQuiltEnable;
 bool                      g_bQuiltStart;
 
 bool                      g_bportable;
+bool                      g_bpluginDebug;
 
 bool                      g_bdisable_opengl;
 
@@ -913,6 +914,7 @@ void MyApp::OnInitCmdLine( wxCmdLineParser& parser )
     //    Add some OpenCPN specific command line options
     parser.AddSwitch( _T("h"), _T("help"), _("Show usage syntax."), wxCMD_LINE_OPTION_HELP );
     parser.AddSwitch( _T("p"), wxEmptyString, _("Run in portable mode.") );
+    parser.AddSwitch( _T("d"), wxEmptyString, _("Run in plugin debug mode.") );
     parser.AddSwitch( _T("fullscreen"), wxEmptyString, _("Switch to full screen mode on start.") );
     parser.AddSwitch( _T("no_opengl"), wxEmptyString, _("Disable OpenGL video acceleration. This setting will be remembered.") );
     parser.AddSwitch( _T("rebuild_gl_raster_cache"), wxEmptyString, _T("Rebuild OpenGL raster cache on start.") );
@@ -924,6 +926,7 @@ bool MyApp::OnCmdLineParsed( wxCmdLineParser& parser )
 {
     long number;
     g_bportable = parser.Found( _T("p") );
+    g_bpluginDebug = parser.Found( _T("d") );
     g_start_fullscreen = parser.Found( _T("fullscreen") );
     g_bdisable_opengl = parser.Found( _T("no_opengl") );
     g_rebuild_gl_cache = parser.Found( _T("rebuild_gl_raster_cache") );
@@ -2051,6 +2054,9 @@ bool MyApp::OnInit()
         myframe_window_title += g_Platform->GetHomeDir();
         myframe_window_title += _T("]");
     }
+
+    if ( g_bpluginDebug )
+        myframe_window_title += _(" -- [Plugin Debug mode (-d)]");
 
     wxString fmsg;
     fmsg.Printf(_T("Creating MyFrame...size(%d, %d)  position(%d, %d)"), new_frame_size.x, new_frame_size.y, position.x, position.y);
@@ -6478,8 +6484,6 @@ void MyFrame::OnInitTimer(wxTimerEvent& event)
 
         case 2:
         {
-            if (m_initializing)
-                break;
             m_initializing = true;
             g_pi_manager->LoadAllPlugIns( g_Platform->GetPluginDir(), true, false );
 
@@ -6503,6 +6507,7 @@ void MyFrame::OnInitTimer(wxTimerEvent& event)
                 wxAuiPaneInfo pane = pane_array_val.Item( i );
                 if( perspective.Find( pane.name ) == wxNOT_FOUND ) {
                     bno_load = true;
+                    m_initializing = false;
                     break;
                 }
             }
@@ -6524,12 +6529,17 @@ void MyFrame::OnInitTimer(wxTimerEvent& event)
                 bFirstAuto = true;
                 b_reloadForPlugins = true;
             }
-                
+
+            m_initializing = false;
             break;
         }
 
         case 3:
         {
+            if (m_initializing) {
+                m_iInitCount--;
+                break;
+            }
             if(g_MainToolbar){
                 g_MainToolbar->SetAutoHide(g_bAutoHideToolbar);
                 g_MainToolbar->SetAutoHideTimer(g_nAutoHideToolbar);

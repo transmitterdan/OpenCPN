@@ -240,6 +240,7 @@ extern s52plib* ps52plib;
 
 extern wxString g_locale;
 extern bool g_bportable;
+extern bool g_bpluginDebug;
 extern bool g_bdisable_opengl;
 extern wxString* pHome_Locn;
 

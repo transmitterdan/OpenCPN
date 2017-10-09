@@ -268,6 +268,8 @@ void chartdldr_pi::OnSetupOptions( void )
 void chartdldr_pi::OnCloseToolboxPanel( int page_sel, int ok_apply_cancel )
 {
     /* TODO: Seth */
+    if (m_dldrpanel == NULL)
+        return;
     m_dldrpanel->CancelDownload();
 #ifndef __OCPN__ANDROID__
     OCPN_cancelDownloadFileBackground( 0 ); //Stop the thread, is something like this needed on Android as well?

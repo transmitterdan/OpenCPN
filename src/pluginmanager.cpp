@@ -127,7 +127,7 @@ extern ocpnFloatingToolbarDialog *g_MainToolbar;
 extern int              g_chart_zoom_modifier;
 extern int              g_chart_zoom_modifier_vector;
 extern double           g_display_size_mm;
-
+extern bool             g_bpluginDebug;
 unsigned int      gs_plib_flags;
 
 enum
@@ -930,6 +930,12 @@ bool PlugInManager::CheckPluginCompatibility(wxString plugin_file)
     bool b_compat = true;
 
 #ifdef __WXMSW__
+    if ( g_bpluginDebug ) {
+        wxString boxString = wxString::Format(_T("Shall we load plugin file - %s"), plugin_file.c_str());
+        int answer = wxMessageBox(boxString, _T("Confirm"), wxYES_NO | wxCANCEL | wxNO_DEFAULT);
+        if (answer != wxYES)
+            return false;
+    }
     char strver[22]; //Enough space even for very big integers...
     sprintf(strver, "%i%i", wxMAJOR_VERSION, wxMINOR_VERSION);
     LPCWSTR fNmae = plugin_file.wc_str();
