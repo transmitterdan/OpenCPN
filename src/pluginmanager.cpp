@@ -400,7 +400,7 @@ bool PlugInManager::LoadAllPlugIns(const wxString &plugin_dir, bool load_enabled
             
         if(m_benable_blackdialog && !b_compat)
         {
-            wxLogMessage(wxString::Format(_T("    %s: %s")), _T("Incompatible plugin detected"), file_name.c_str());
+            wxLogMessage(wxString::Format(_T("    %s: %s"), _T("Incompatible plugin detected"), file_name.c_str()));
             OCPNMessageBox( NULL, wxString::Format(_("The plugin %s is not compatible with this version of OpenCPN, please get an updated version."), plugin_file.c_str()), wxString(_("OpenCPN Info")), wxICON_INFORMATION | wxOK, 10 );
         }
             
@@ -413,33 +413,56 @@ bool PlugInManager::LoadAllPlugIns(const wxString &plugin_dir, bool load_enabled
         {
             if(pic->m_pplugin)
             {
-                plugin_array.Add(pic);
-                    
-                //    The common name is available without initialization and startup of the PlugIn
-                pic->m_common_name = pic->m_pplugin->GetCommonName();
-                    
-                pic->m_plugin_filename = plugin_file;
-                pic->m_plugin_modification = plugin_modification;
-                pic->m_bEnabled = enabled;
-                if(pic->m_bEnabled)
-                {
-                    wxStopWatch sw;
-                    pic->m_cap_flag = pic->m_pplugin->Init();
-#ifdef __WXGTK__ // 10 milliseconds is very slow at least on linux
-                    if(sw.Time() > 10)
-                        wxLogMessage(_T("PlugInManager: ") + pic->m_common_name
-                                     + _T(" has loaded very slowly: %ld ms"),
-                                     sw.Time());
-#endif
-                    pic->m_bInitState = true;
-                }
-                    
-                pic->m_short_description = pic->m_pplugin->GetShortDescription();
-                pic->m_long_description = pic->m_pplugin->GetLongDescription();
-                pic->m_version_major = pic->m_pplugin->GetPlugInVersionMajor();
-                pic->m_version_minor = pic->m_pplugin->GetPlugInVersionMinor();
-                pic->m_bitmap = pic->m_pplugin->GetPlugInBitmap();
+                try {
+                    //    The common name is available without initialization and startup of the PlugIn
+                    pic->m_common_name = pic->m_pplugin->GetCommonName();
 
+                    pic->m_plugin_filename = plugin_file;
+                    pic->m_plugin_modification = plugin_modification;
+                    pic->m_bEnabled = enabled;
+                    if ( pic->m_bEnabled )
+                    {
+                        wxStopWatch sw;
+                        pic->m_cap_flag = pic->m_pplugin->Init();
+#ifdef __WXGTK__ // 10 milliseconds is very slow at least on linux
+                        if(sw.Time() > 10)
+                            wxLogMessage(_T("PlugInManager: ") + pic->m_common_name
+                                + _T(" has loaded very slowly: %ld ms"),
+                                sw.Time());
+#endif
+                        pic->m_bInitState = true;
+                    }
+                    pic->m_short_description = pic->m_pplugin->GetShortDescription();
+                    pic->m_long_description = pic->m_pplugin->GetLongDescription();
+                    pic->m_version_major = pic->m_pplugin->GetPlugInVersionMajor();
+                    pic->m_version_minor = pic->m_pplugin->GetPlugInVersionMinor();
+                    pic->m_bitmap = pic->m_pplugin->GetPlugInBitmap();
+
+                }
+                catch ( const std::exception &e ) {
+                    msg.Printf( _T( "    PlugInManager::LoadAllPlugins->Exception[%s]: Unloading invalid Plugin, %s " ), e.what(), plugin_file.c_str() );
+                    wxLogMessage( msg );
+                    OCPNMessageBox( NULL, msg, wxString( _( "OpenCPN Info" ) ), wxICON_INFORMATION | wxOK, 60 );  // 60 second timeout
+                    if ( pic != NULL ) {
+                        pic->m_destroy_fn( pic->m_pplugin );
+                        delete pic;
+                        pic = NULL;
+                        throw;
+                    }
+                }
+                catch ( ... ) {
+                    msg.Printf( _T( "    PlugInManager::LoadAllPlugins->Exception[unknown]: Unloading invalid Plugin, %s " ), plugin_file.c_str() );
+                    wxLogMessage( msg );
+                    OCPNMessageBox( NULL, msg, wxString( _( "OpenCPN Info" ) ), wxICON_INFORMATION | wxOK, 60 );  // 60 second timeout
+                    if ( pic != NULL ) {
+                        pic->m_destroy_fn( pic->m_pplugin );
+                        delete pic;
+                        pic = NULL;
+                        throw;
+                    }
+                }
+
+                plugin_array.Add( pic );
                 ret = true;
             }
             else        // not loaded
@@ -931,9 +954,9 @@ bool PlugInManager::CheckPluginCompatibility(wxString plugin_file)
 
 #ifdef __WXMSW__
     if ( g_bpluginDebug ) {
-        wxString boxString = wxString::Format(_T("Shall we load plugin file - %s"), plugin_file.c_str());
-        int answer = wxMessageBox(boxString, _T("Confirm"), wxYES_NO | wxCANCEL | wxNO_DEFAULT);
-        if (answer != wxYES)
+        wxString boxString = wxString::Format(_("Shall we load plugin file - %s"), plugin_file.c_str());
+        int answer = OCPNMessageBox( NULL, boxString, wxString( _( "OpenCPN Info" ) ), wxICON_INFORMATION | wxYES_NO | wxCANCEL, 10 );  // 10 second timeout
+        if (answer != wxID_YES)
             return false;
     }
     char strver[22]; //Enough space even for very big integers...
@@ -1247,24 +1270,50 @@ PlugInContainer *PlugInManager::LoadPlugIn(wxString plugin_file)
         delete pic;
         return NULL;
     }
+    opencpn_plugin *plug_in = NULL;
+    int api_ver = 0;
+    int api_major = 0;
+    int api_minor = 0;
+    int pi_ver = 0;
+    int pi_major = 0;
+    int pi_minor = 0;
 
-
+    // try to catch a "bad" plugin in case it throws a runtime exception
+    try {
     // create an instance of the plugin class
-    opencpn_plugin* plug_in = create_plugin(this);
+        plug_in = create_plugin(this);
+        api_major = plug_in->GetAPIVersionMajor();
+        api_minor = plug_in->GetAPIVersionMinor();
+        api_ver = (api_major * 100) + api_minor;
+        pic->m_api_version = api_ver;
 
-    int api_major = plug_in->GetAPIVersionMajor();
-    int api_minor = plug_in->GetAPIVersionMinor();
-    int api_ver = (api_major * 100) + api_minor;
-    pic->m_api_version = api_ver;
+        pi_major = plug_in->GetPlugInVersionMajor();
+        pi_minor = plug_in->GetPlugInVersionMinor();
+        pi_ver = (pi_major * 100) + pi_minor;
 
-    int pi_major = plug_in->GetPlugInVersionMajor();
-    int pi_minor = plug_in->GetPlugInVersionMinor();
-    int pi_ver = (pi_major * 100) + pi_minor;
-    
-    if ( CheckBlacklistedPlugin(plug_in) ) {
+    }
+    catch ( const std::exception &e ) {
+        msg.Printf( _T( "    PlugInManager::LoadPlugin->Exception[%s]: Unloading invalid Plugin, %s " ), e.what(), plugin_file.c_str() );
+        wxLogMessage( msg );
+        OCPNMessageBox( NULL, msg, wxString( _( "OpenCPN Info" ) ), wxICON_INFORMATION | wxOK, 60 );  // 60 second timeout
         delete plugin;
         delete pic;
-        return NULL;
+        pic = NULL;
+        throw;
+    }
+    catch ( ... ) {
+        msg.Printf( _T( "    PlugInManager::LoadPlugin->Exception[unknown]: Unloading invalid Plugin, %s " ), plugin_file.c_str() );
+        wxLogMessage( msg );
+        OCPNMessageBox( NULL, msg, wxString( _( "OpenCPN Info" ) ), wxICON_INFORMATION | wxOK, 60 );  // 60 second timeout
+        delete plugin;
+        delete pic;
+        pic = NULL;
+        throw;
+    }
+    if ( CheckBlacklistedPlugin(plug_in) ) {
+            delete plugin;
+            delete pic;
+            return NULL;
     }
 
     switch(api_ver)
@@ -1292,11 +1341,11 @@ PlugInContainer *PlugInManager::LoadPlugIn(wxString plugin_file)
     case 110:
         pic->m_pplugin = dynamic_cast<opencpn_plugin_110*>(plug_in);
         break;
-        
+
     case 111:
         pic->m_pplugin = dynamic_cast<opencpn_plugin_111*>(plug_in);
         break;
-        
+
     case 112:
         pic->m_pplugin = dynamic_cast<opencpn_plugin_112*>(plug_in);
         break;
@@ -1308,7 +1357,7 @@ PlugInContainer *PlugInManager::LoadPlugIn(wxString plugin_file)
     case 114:
         pic->m_pplugin = dynamic_cast<opencpn_plugin_114*>(plug_in);
         break;
-        
+
     default:
         break;
     }
