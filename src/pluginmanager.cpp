@@ -985,8 +985,10 @@ bool PlugInManager::CheckPluginCompatibility(wxString plugin_file)
             //wxMessageBox(wxString::Format(_T("%s"), libname[i]));
             if (strstr(libname[i], "wx") != NULL)
             {
-                if (strstr(libname[i], strver) == NULL)
+                if (strstr(libname[i], strver) == NULL) {
                     b_compat = false;
+                    wxLogMessage( wxString::Format(_("Incompatible library %s used by %s."), libname[i], plugin_file) );
+                }
                 break;
             }
             pImportDescriptor++; //advance to next IMAGE_IMPORT_DESCRIPTOR
