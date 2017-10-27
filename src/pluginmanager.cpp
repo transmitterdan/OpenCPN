@@ -127,7 +127,9 @@ extern ocpnFloatingToolbarDialog *g_MainToolbar;
 extern int              g_chart_zoom_modifier;
 extern int              g_chart_zoom_modifier_vector;
 extern double           g_display_size_mm;
+#ifdef __WXMSW__
 extern bool             g_bpluginDebug;
+#endif
 unsigned int      gs_plib_flags;
 
 enum

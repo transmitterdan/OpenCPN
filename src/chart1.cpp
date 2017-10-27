@@ -466,7 +466,9 @@ bool                      g_bQuiltEnable;
 bool                      g_bQuiltStart;
 
 bool                      g_bportable;
+#ifdef __WXMSW__
 bool                      g_bpluginDebug;
+#endif
 
 bool                      g_bdisable_opengl;
 
@@ -926,7 +928,9 @@ bool MyApp::OnCmdLineParsed( wxCmdLineParser& parser )
 {
     long number;
     g_bportable = parser.Found( _T("p") );
+#ifdef __WXMSW__
     g_bpluginDebug = parser.Found( _T("d") );
+#endif
     g_start_fullscreen = parser.Found( _T("fullscreen") );
     g_bdisable_opengl = parser.Found( _T("no_opengl") );
     g_rebuild_gl_cache = parser.Found( _T("rebuild_gl_raster_cache") );
@@ -2055,8 +2059,10 @@ bool MyApp::OnInit()
         myframe_window_title += _T("]");
     }
 
+#ifdef __WXMSW__
     if ( g_bpluginDebug )
         myframe_window_title += _(" -- [Plugin Debug mode (-d)]");
+#endif
 
     wxString fmsg;
     fmsg.Printf(_T("Creating MyFrame...size(%d, %d)  position(%d, %d)"), new_frame_size.x, new_frame_size.y, position.x, position.y);
