@@ -132,10 +132,27 @@ IF(NOT UNIX)
             src/bzip2/decompress.c
             src/bzip2/huffman.c
             src/bzip2/randtable.c
+			
+			src/zlib-1.2.11/adler32.c
+			src/zlib-1.2.11/compress.c
+			src/zlib-1.2.11/crc32.c
+			src/zlib-1.2.11/deflate.c
+			src/zlib-1.2.11/gzclose.c
+			src/zlib-1.2.11/gzlib.c
+			src/zlib-1.2.11/gzread.c
+            src/zlib-1.2.11/gzwrite.c
+			src/zlib-1.2.11/infback.c
+			src/zlib-1.2.11/inflate.c
+			src/zlib-1.2.11/inftrees.c
+			src/zlib-1.2.11/inffast.c
+			src/zlib-1.2.11/trees.c
+			src/zlib-1.2.11/uncompr.c
+			src/zlib-1.2.11/zutil.c
+
     )
     ADD_LIBRARY(LIB_BZIP ${SRC_BZIP})
 
-    INCLUDE_DIRECTORIES(${PLUGIN_SOURCE_DIR}/src/zlib-1.2.3)
+    INCLUDE_DIRECTORIES(${PLUGIN_SOURCE_DIR}/src/zlib-1.2.11)
     INCLUDE_DIRECTORIES(${PLUGIN_SOURCE_DIR}/src/bzip2)
 ENDIF(NOT UNIX)
 
