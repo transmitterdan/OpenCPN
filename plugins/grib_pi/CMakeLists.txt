@@ -132,7 +132,11 @@ IF(NOT UNIX)
             src/bzip2/decompress.c
             src/bzip2/huffman.c
             src/bzip2/randtable.c
-			
+    )
+    ADD_LIBRARY(LIB_BZIP ${SRC_BZIP})
+    INCLUDE_DIRECTORIES(${PLUGIN_SOURCE_DIR}/src/bzip2)
+
+    SET(SRC_ZLIB
 			src/zlib-1.2.11/adler32.c
 			src/zlib-1.2.11/compress.c
 			src/zlib-1.2.11/crc32.c
@@ -148,12 +152,10 @@ IF(NOT UNIX)
 			src/zlib-1.2.11/trees.c
 			src/zlib-1.2.11/uncompr.c
 			src/zlib-1.2.11/zutil.c
-
-    )
-    ADD_LIBRARY(LIB_BZIP ${SRC_BZIP})
-
+	)
+    ADD_LIBRARY(LIB_ZLIB ${SRC_ZLIB})
     INCLUDE_DIRECTORIES(${PLUGIN_SOURCE_DIR}/src/zlib-1.2.11)
-    INCLUDE_DIRECTORIES(${PLUGIN_SOURCE_DIR}/src/bzip2)
+
 ENDIF(NOT UNIX)
 
 
@@ -238,7 +240,7 @@ IF(WIN32)
       "-L${wxWidgets_ROOT_DIR}/lib -lwxzlib-2.8")
   ENDIF(MSVC)
 
-  TARGET_LINK_LIBRARIES( ${PACKAGE_NAME} LIB_BZIP ${OPENCPN_IMPORT_LIB})
+  TARGET_LINK_LIBRARIES( ${PACKAGE_NAME} LIB_BZIP LIB_ZLIB ${OPENCPN_IMPORT_LIB})
   ADD_DEPENDENCIES(${PACKAGE_NAME} ${PARENT})
 ENDIF(WIN32)
 
