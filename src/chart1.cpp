@@ -570,6 +570,7 @@ int                       g_track_rotate_time_type;
 bool                      g_bHighliteTracks;
 int                       g_route_line_width;
 int                       g_track_line_width;
+wxColour                  g_colourTrackLineColour;
 wxString                  g_default_wp_icon;
 
 ActiveTrack              *g_pActiveTrack;
@@ -580,9 +581,9 @@ int                       g_nTrackPrecision;
 int                       g_total_NMEAerror_messages;
 
 int                       g_cm93_zoom_factor;
-CM93DSlide                *pCM93DetailSlider;
-bool                      g_bShowCM93DetailSlider;
-int                       g_cm93detail_dialog_x, g_cm93detail_dialog_y;
+PopUpDSlide                *pPopupDetailSlider;
+bool                      g_bShowDetailSlider;
+int                       g_detailslider_dialog_x, g_detailslider_dialog_y;
 
 bool                      g_bUseGreenShip;
 
@@ -1499,7 +1500,7 @@ bool MyApp::OnInit()
 {
     if( !wxApp::OnInit() ) return false;
 
-#if defined(__WXGTK__) && defined(__arm__) && defined(ocpnUSE_GLES)
+#if defined(__WXGTK__)  && defined(ocpnUSE_GLES) && defined(__ARM_ARCH)
     // There is a race condition between cairo which is used for text rendering
     // by gtk and EGL which without the below code causes a bus error and the
     // program aborts before startup
@@ -5525,7 +5526,10 @@ void MyFrame::JumpToPosition( double lat, double lon, double scale )
     }
 */
     if( !cc1->GetQuiltMode() ) {
-        cc1->SetViewPoint( lat, lon, scale, Current_Ch->GetChartSkew() * PI / 180., cc1->GetVPRotation() );
+        double skew = 0;
+        if(Current_Ch)
+            skew = Current_Ch->GetChartSkew() * PI / 180.;
+        cc1->SetViewPoint( lat, lon, scale, skew, cc1->GetVPRotation() );
     } else {
         cc1->SetViewPoint( lat, lon, scale, 0, cc1->GetVPRotation() );
     }
@@ -8181,9 +8185,10 @@ bool MyFrame::DoChartUpdate( void )
                 if( !cc1->IsChartQuiltableRef( initial_db_index ) ) {
                     // If it is not quiltable, then walk the stack up looking for a satisfactory chart
                     // i.e. one that is quiltable and of the same type
+                    // XXX if there's none?
                     int stack_index = g_restore_stackindex;
 
-                    while( ( stack_index < pCurrentStack->nEntry - 1 ) && ( stack_index >= 0 ) ) {
+                    if ( stack_index >= 0 ) while( ( stack_index < pCurrentStack->nEntry - 1 ) ) {
                         int test_db_index = pCurrentStack->GetDBIndex( stack_index );
                         if( cc1->IsChartQuiltableRef( test_db_index )
                                 && ( initial_type == ChartData->GetDBChartType( initial_db_index ) ) ) {
@@ -8194,23 +8199,10 @@ bool MyFrame::DoChartUpdate( void )
                     }
                 }
 
-                if( ChartData ) {
-                    ChartBase *pc = ChartData->OpenChartFromDB( initial_db_index, FULL_INIT );
-                    if( pc ) {
-                        cc1->SetQuiltRefChart( initial_db_index );
-                        pCurrentStack->SetCurrentEntryFromdbIndex( initial_db_index );
-                    }
-                }
-
-                //  Try to bound the initial Viewport scale to something reasonable for the selected reference chart
-                //  Use the last shutdown value if possible
-                if( ChartData ) {
-                    ChartBase *pc = ChartData->OpenChartFromDB( initial_db_index, FULL_INIT );
-                    
-                    if( pc ) {
-                        double best_scale_ppm = GetBestVPScale( pc );
-                        double best_proposed_scale_onscreen = cc1->GetCanvasScaleFactor() / best_scale_ppm;
-                    }
+                ChartBase *pc = ChartData->OpenChartFromDB( initial_db_index, FULL_INIT );
+                if( pc ) {
+                    cc1->SetQuiltRefChart( initial_db_index );
+                    pCurrentStack->SetCurrentEntryFromdbIndex( initial_db_index );
                 }
             }
 
