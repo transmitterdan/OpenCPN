@@ -359,6 +359,9 @@ int                       g_GUIScaleFactor;
 int                       g_ChartScaleFactor;
 float                     g_ChartScaleFactorExp;
 
+bool                      g_bShowTide;
+bool                      g_bShowCurrent;
+
 #ifdef USE_S57
 s52plib                   *ps52plib;
 S57ClassRegistrar         *g_poRegistrar;
@@ -1173,6 +1176,22 @@ void LoadS57()
         
         if(cc1)
             ps52plib->SetPPMM( cc1->GetPixPerMM() );
+ 
+#ifdef ocpnUSE_GL
+            
+        // Setup PLIB OpenGL options, if enabled
+        extern bool g_b_EnableVBO;    
+        extern GLenum  g_texture_rectangle_format;
+        if(g_bopengl )   
+            ps52plib->SetGLOptions(glChartCanvas::s_b_useStencil,
+                                   glChartCanvas::s_b_useStencilAP,
+                                   glChartCanvas::s_b_useScissorTest,
+                                   glChartCanvas::s_b_useFBO,
+                                   g_b_EnableVBO,
+                                   g_texture_rectangle_format);
+#endif
+            
+            
     } else {
         wxLogMessage( _T("   S52PLIB Initialization failed, disabling Vector charts.") );
         delete ps52plib;
@@ -2421,6 +2440,10 @@ extern ocpnGLOptions g_GLOptions;
         g_MainToolbar->Raise();
 #endif
 
+    // Setup Tides/Currents to settings present at last shutdown
+    gFrame->ShowTides( g_bShowTide );
+    gFrame->ShowCurrents( g_bShowCurrent );
+ 
     // Start delayed initialization chain after 100 milliseconds
     gFrame->InitTimer.Start( 100, wxTIMER_CONTINUOUS );
 
@@ -4277,68 +4300,18 @@ void MyFrame::OnToolLeftClick( wxCommandEvent& event )
 
         case ID_MENU_SHOW_CURRENTS:
         case ID_CURRENT: {
-            LoadHarmonics();
-
-            if( ptcmgr->IsReady() ) {
-                cc1->SetbShowCurrent( !cc1->GetbShowCurrent() );
-                SetToolbarItemState( ID_CURRENT, cc1->GetbShowCurrent() );
-                wxString tip = _("Show Currents");
-                if(cc1->GetbShowCurrent())
-                    tip = _("Hide Currents");
-                if( g_MainToolbar )
-                    g_MainToolbar->SetToolShortHelp( ID_CURRENT, tip );
-
-                SetMenubarItemState( ID_MENU_SHOW_CURRENTS, cc1->GetbShowCurrent() );
-                cc1->ReloadVP();
-            } else {
-                wxLogMessage( _T("Chart1::Event...TCMgr Not Available") );
-                cc1->SetbShowCurrent( false );
-                SetToolbarItemState( ID_CURRENT, false );
-                SetMenubarItemState( ID_MENU_SHOW_CURRENTS, false );
-            }
-
-            if( cc1->GetbShowCurrent() ) {
-                FrameTCTimer.Start( TIMER_TC_VALUE_SECONDS * 1000, wxTIMER_CONTINUOUS );
-                cc1->SetbTCUpdate( true );                        // force immediate update
-            } else
-                FrameTCTimer.Stop();
-
+            ShowCurrents( !cc1->GetbShowCurrent() );
+            cc1->ReloadVP();
             cc1->Refresh( false );
-
             break;
 
         }
 
         case ID_MENU_SHOW_TIDES:
         case ID_TIDE: {
-            LoadHarmonics();
-
-            if( ptcmgr->IsReady() ) {
-                cc1->SetbShowTide( !cc1->GetbShowTide() );
-                SetToolbarItemState( ID_TIDE, cc1->GetbShowTide() );
-                wxString tip = _("Show Tides");
-                if(cc1->GetbShowTide())
-                    tip = _("Hide Tides");
-                if( g_MainToolbar )
-                    g_MainToolbar->SetToolShortHelp( ID_TIDE, tip );
-
-                SetMenubarItemState( ID_MENU_SHOW_TIDES, cc1->GetbShowTide() );
-                cc1->ReloadVP();
-            } else {
-                wxLogMessage( _("Chart1::Event...TCMgr Not Available") );
-                cc1->SetbShowTide( false );
-                SetToolbarItemState( ID_TIDE, false );
-                SetMenubarItemState( ID_MENU_SHOW_TIDES, false );
-            }
-
-            if( cc1->GetbShowTide() ) {
-                FrameTCTimer.Start( TIMER_TC_VALUE_SECONDS * 1000, wxTIMER_CONTINUOUS );
-                cc1->SetbTCUpdate( true );                        // force immediate update
-            } else
-                FrameTCTimer.Stop();
-
+            ShowTides( !cc1->GetbShowTide() );
+            cc1->ReloadVP();
             cc1->Refresh( false );
-
             break;
 
         }
@@ -4516,6 +4489,65 @@ void MyFrame::OnToolLeftClick( wxCommandEvent& event )
     }         // switch
 
 }
+
+void MyFrame::ShowTides(bool bShow)
+{
+    LoadHarmonics();
+
+    if( ptcmgr->IsReady() ) {
+        cc1->SetbShowTide( bShow );
+        SetToolbarItemState( ID_TIDE, bShow );
+        wxString tip = _("Show Tides");
+        if(bShow)
+            tip = _("Hide Tides");
+        if( g_MainToolbar )
+            g_MainToolbar->SetToolShortHelp( ID_TIDE, tip );
+
+        SetMenubarItemState( ID_MENU_SHOW_TIDES, bShow );
+    } else {
+        wxLogMessage( _T("Chart1::Event...TCMgr Not Available") );
+        cc1->SetbShowTide( false );
+        SetToolbarItemState( ID_TIDE, false );
+        SetMenubarItemState( ID_MENU_SHOW_TIDES, false );
+    }
+
+    if( cc1->GetbShowTide() ) {
+        FrameTCTimer.Start( TIMER_TC_VALUE_SECONDS * 1000, wxTIMER_CONTINUOUS );
+        cc1->SetbTCUpdate( true );                        // force immediate update
+    } else
+        FrameTCTimer.Stop();
+
+}
+
+void MyFrame::ShowCurrents(bool bShow)
+{
+    LoadHarmonics();
+
+    if( ptcmgr->IsReady() ) {
+        cc1->SetbShowCurrent( bShow );
+        SetToolbarItemState( ID_CURRENT, bShow );
+        wxString tip = _("Show Currents");
+        if(bShow)
+            tip = _("Hide Currents");
+        if( g_MainToolbar )
+            g_MainToolbar->SetToolShortHelp( ID_CURRENT, tip );
+
+        SetMenubarItemState( ID_MENU_SHOW_CURRENTS, bShow );
+    } else {
+        wxLogMessage( _T("Chart1::Event...TCMgr Not Available") );
+        cc1->SetbShowCurrent( false );
+        SetToolbarItemState( ID_CURRENT, false );
+        SetMenubarItemState( ID_MENU_SHOW_CURRENTS, false );
+    }
+
+    if( cc1->GetbShowCurrent() ) {
+        FrameTCTimer.Start( TIMER_TC_VALUE_SECONDS * 1000, wxTIMER_CONTINUOUS );
+        cc1->SetbTCUpdate( true );                        // force immediate update
+    } else
+        FrameTCTimer.Stop();
+
+}
+
 
 void MyFrame::SetAISDisplayStyle(int StyleIndx)
 {
@@ -5953,6 +5985,7 @@ void MyFrame::ChartsRefresh( int dbi_hint, ViewPort &vp, bool b_purge )
 
     FrameTimer1.Stop();                  // stop other asynchronous activity
 
+    double old_scale = cc1->GetVPScale();
     cc1->InvalidateQuilt();
     cc1->SetQuiltRefChart( -1 );
 
@@ -6004,6 +6037,13 @@ void MyFrame::ChartsRefresh( int dbi_hint, ViewPort &vp, bool b_purge )
 
     //    Validate the correct single chart, or set the quilt mode as appropriate
     SetupQuiltMode();
+    if( !cc1->GetQuiltMode() && Current_Ch == 0) {
+        // use a dummy like in DoChartUpdate
+        if (NULL == pDummyChart ) 
+            pDummyChart = new ChartDummy;
+        Current_Ch = pDummyChart;
+        cc1->SetVPScale( old_scale );
+    }
 
     cc1->ReloadVP();
 
@@ -6488,6 +6528,12 @@ void MyFrame::OnInitTimer(wxTimerEvent& event)
             g_pi_manager->LoadAllPlugIns( g_Platform->GetPluginDir(), true, false );
 
             RequestNewToolbar();
+            
+            // A Plugin (e.g. Squiddio) may have redefined some routepoint icons...
+            // Reload all icons, to be sure.
+            if(pWayPointMan)
+                pWayPointMan->ReloadRoutepointIcons();
+            
             if( g_MainToolbar )
                 g_MainToolbar->EnableTool( ID_SETTINGS, false );
 
@@ -6528,7 +6574,7 @@ void MyFrame::OnInitTimer(wxTimerEvent& event)
                 bFirstAuto = true;
                 b_reloadForPlugins = true;
             }
-                
+            
             break;
         }
 
@@ -8211,8 +8257,8 @@ bool MyFrame::DoChartUpdate( void )
                     cc1->GetVPRotation() );
 
         }
-
-        bNewView |= cc1->SetViewPoint( vpLat, vpLon, cc1->GetVPScale(), 0, cc1->GetVPRotation() );
+        // else
+            bNewView |= cc1->SetViewPoint( vpLat, vpLon, cc1->GetVPScale(), 0, cc1->GetVPRotation() );
 
         goto update_finish;
 

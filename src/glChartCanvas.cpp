@@ -233,6 +233,8 @@ int g_uncompressed_tile_size;
 bool glChartCanvas::s_b_useScissorTest;
 bool glChartCanvas::s_b_useStencil;
 bool glChartCanvas::s_b_useStencilAP;
+bool glChartCanvas::s_b_useFBO;
+
 //static int s_nquickbind;
 
 
@@ -971,9 +973,31 @@ void glChartCanvas::SetupOpenGL()
         for(int dim=tex_dim; dim>0; dim/=2)
             max_level++;
         g_mipmap_max_level = max_level - 1;
-    }   
+    } 
+    
+    s_b_useFBO = m_b_BuiltFBO;
+    
+    //  Inform the S52 PLIB of options determined
+    if(ps52plib)
+        ps52plib->SetGLOptions(s_b_useStencil, s_b_useStencilAP, s_b_useScissorTest,  s_b_useFBO, g_b_EnableVBO, g_texture_rectangle_format);
+       
+    SendJSONConfigMessage();    
 }
 
+void glChartCanvas::SendJSONConfigMessage()
+{
+    if(g_pi_manager){
+        wxJSONValue v;
+        v[_T("useStencil")] =  s_b_useStencil;
+        v[_T("useStencilAP")] =  s_b_useStencilAP;
+        v[_T("useScissorTest")] =  s_b_useScissorTest;
+        v[_T("useFBO")] =  s_b_useFBO;
+        v[_T("useVBO")] =  g_b_EnableVBO;
+        v[_T("TextureRectangleFormat")] =  g_texture_rectangle_format;
+        wxString msg_id( _T("OCPN_OPENGL_CONFIG") );
+        g_pi_manager->SendJSONMessageToAllPlugins( msg_id, v );
+    }
+}
 void glChartCanvas::SetupCompression()
 {
     int dim = g_GLOptions.m_iTextureDimension;
@@ -1515,18 +1539,11 @@ void glChartCanvas::GridDraw( )
     float startlon = ceil( wlon / gridlonMajor ) * gridlonMajor;
     float curved_step = wxMin(sqrt(5e-3 / vp.view_scale_ppm), 3);
 
+    ocpnDC gldc( *this );
+    wxPen *pen = wxThePenList->FindOrCreatePen( GridColor, g_GLMinSymbolLineWidth, wxPENSTYLE_SOLID );
+    gldc.SetPen( *pen );
+    
     // Draw Major latitude grid lines and text
-#ifndef __OCPN__ANDROID__
-    glEnable( GL_BLEND );
-    glEnable( GL_LINE_SMOOTH );
-#endif
-    
-    glColor3ub(GridColor.Red(), GridColor.Green(), GridColor.Blue());
-
-    glLineWidth( g_GLMinSymbolLineWidth );
-    
-    // First draw the grid then tphe text
-    glBegin(GL_LINES);
 
     // calculate position of first major latitude grid line
     float lon_step = elon - wlon;
@@ -1540,8 +1557,7 @@ void glChartCanvas::GridDraw( )
         for(lon = wlon; lon < elon+lon_step/2; lon += lon_step) {
             cc1->GetDoubleCanvasPointPix( lat, lon, &r );
             if(!wxIsNaN(s.m_x) && !wxIsNaN(r.m_x)) {
-                glVertex2d(s.m_x, s.m_y);
-                glVertex2d(r.m_x, r.m_y);
+                gldc.DrawLine( s.m_x, s.m_y, r.m_x, r.m_y, true );
             }
             s = r;
         }
@@ -1553,10 +1569,9 @@ void glChartCanvas::GridDraw( )
         
             wxPoint r;
             cc1->GetCanvasPointPix( lat, ( elon + wlon ) / 2, &r );
-            glVertex2i(0, r.y);
-            glVertex2i(10, r.y);
-            glVertex2i(w - 10, r.y);
-            glVertex2i(w, r.y);
+            gldc.DrawLine( 0, r.y, 10, r.y, true );
+            gldc.DrawLine( w - 10, r.y, w, r.y, true );
+            
             lat = lat + gridlatMinor;
         }
     }
@@ -1573,9 +1588,7 @@ void glChartCanvas::GridDraw( )
             cc1->GetDoubleCanvasPointPix( lat, lon, &r );
 
             if(!wxIsNaN(s.m_x) && !wxIsNaN(r.m_x)) {
-                glVertex2d(s.m_x, s.m_y);
-                glVertex2d(r.m_x, r.m_y);
-                
+                gldc.DrawLine( s.m_x, s.m_y, r.m_x, r.m_y, true );
             }
             s = r;
         }
@@ -1586,20 +1599,15 @@ void glChartCanvas::GridDraw( )
         for(lon = ceil( wlon / gridlonMinor ) * gridlonMinor; lon < elon; lon += gridlonMinor) {
             wxPoint r;
             cc1->GetCanvasPointPix( ( nlat + slat ) / 2, lon, &r );
-            glVertex2i(r.x, 0);
-            glVertex2i(r.x, 10);
-            glVertex2i(r.x, h-10);
-            glVertex2i(r.x, h);
+            gldc.DrawLine( r.x, 0, r.x, 10, true );
+            gldc.DrawLine( r.x, h-10, r.x, h, true );
         }
     }
 
-    glEnd();
-
-    glDisable( GL_LINE_SMOOTH );
-    glEnable( GL_BLEND );
     
     // draw text labels
     glEnable(GL_TEXTURE_2D);
+    glEnable( GL_BLEND );
     for(lat = startlat; lat < nlat; lat += gridlatMajor) {
         if( fabs( lat - wxRound( lat ) ) < 1e-5 )
             lat = wxRound( lat );
@@ -1724,6 +1732,7 @@ void glChartCanvas::GridDraw( )
 
     glDisable( GL_BLEND );
 }
+
 
 void glChartCanvas::DrawEmboss( emboss_data *emboss  )
 {
@@ -1988,6 +1997,10 @@ void glChartCanvas::ShipDraw(ocpnDC& dc)
                 scale_factor_y = (log(g_ChartScaleFactorExp) + 1.0) * 1.1;   
             }
         
+        // Set the size of the little circle showing the GPS reference position
+        // Set a default early, adjust later based on render type
+            float gps_circle_radius = 3.0;
+
             glScalef(scale_factor_x, scale_factor_y, 1);
 
             if( g_OwnShipIconType < 2 ) { // Bitmap
@@ -1996,10 +2009,19 @@ void glChartCanvas::ShipDraw(ocpnDC& dc)
                 glBindTexture(GL_TEXTURE_2D, ownship_tex);
                 glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
             
+                float nominal_ownship_size_mm = cc1->m_display_size_mm / 44.0;
+                nominal_ownship_size_mm = wxMin(nominal_ownship_size_mm, 15.0);
+                nominal_ownship_size_mm = wxMax(nominal_ownship_size_mm, 7.0);
+            
+                float nominal_ownship_size_pixels = wxMax(20.0, cc1->GetPixPerMM() * nominal_ownship_size_mm);             // nominal length, but not less than 20 pixel
+                float h = nominal_ownship_size_pixels * scale_factor_y;
+                float w = nominal_ownship_size_pixels * scale_factor_x * ownship_size.x / ownship_size.y ;
                 float glw = ownship_tex_size.x, glh = ownship_tex_size.y;
                 float u = ownship_size.x/glw, v = ownship_size.y/glh;
-                float w = ownship_size.x, h = ownship_size.y;
-            
+
+            // tweak GPS reference point indicator size
+                gps_circle_radius = w / 5;
+
                 glBegin(GL_QUADS);
                 glTexCoord2f(0, 0), glVertex2f(-w/2, -h/2);
                 glTexCoord2f(u, 0), glVertex2f(+w/2, -h/2);
@@ -2027,6 +2049,19 @@ void glChartCanvas::ShipDraw(ocpnDC& dc)
 
             img_height = ownShipLength * scale_factor_y;
         
+#if 1
+        //      Reference point, where the GPS antenna is
+        if( cc1->m_pos_image_user ) gps_circle_radius = 1;
+ 
+        float cx = lGPSPoint.x, cy = lGPSPoint.y;
+        wxPen ppPen1( GetGlobalColor( _T ( "UBLCK" ) ), 1, wxPENSTYLE_SOLID );
+        dc.SetPen( ppPen1 );
+        dc.SetBrush( wxBrush( GetGlobalColor( _T ( "UWHIT" ) ) ) );
+
+        dc.StrokeCircle(cx, cy, gps_circle_radius);
+
+    }
+#else    
             //      Reference point, where the GPS antenna is
             int circle_rad = 3;
             if( cc1->m_pos_image_user ) circle_rad = 1;
@@ -2051,6 +2086,7 @@ void glChartCanvas::ShipDraw(ocpnDC& dc)
             glColor4ub(255, 255, 255, 255);
             glDrawArrays(GL_TRIANGLE_FAN, v, v);
         }
+#endif        
 
         glDisableClientState(GL_VERTEX_ARRAY);
         glDisable( GL_LINE_SMOOTH );
