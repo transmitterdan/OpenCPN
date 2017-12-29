@@ -42,11 +42,12 @@
 
 #include "ocpCursor.h"
 #include "GoToPositionDialog.h"
-#include "CM93DSlide.h"
+#include "DetailSlider.h"
 #include "RolloverWin.h"
 #include "timers.h"
 #include "emboss_data.h"
 #include "S57Sector.h"
+#include "gshhs.h"
 
 class wxGLContext;
 class GSHHSChart;
@@ -164,6 +165,7 @@ public:
       
       void CancelMouseRoute();
       void SetDisplaySizeMM( double size );
+      double GetDisplaySizeMM(){ return m_display_size_mm; }
       
       bool SetVPScale(double sc, bool b_refresh = true);
       bool SetVPProjection(int projection);
@@ -225,6 +227,7 @@ public:
       double GetCanvasTrueScale(){return m_true_scale_ppm;}
       double GetAbsoluteMinScalePpm(){ return m_absolute_min_scale_ppm; }
       ViewPort &GetVP();
+      ViewPort *GetpVP(){ return &VPoint; }
       void SetVP(ViewPort &);
       ChartBase* GetChartAtCursor();
       ChartBase* GetOverlayChartAtCursor();
@@ -233,6 +236,7 @@ public:
       bool isMarkEditing( void ){ return m_bMarkEditing && m_pRoutePointEditTarget; }
       
       GSHHSChart* GetWorldBackgroundChart() { return pWorldBackgroundChart; }
+      void ResetWorldBackgroundChart() { pWorldBackgroundChart->Reset(); }
 
       void  SetbTCUpdate(bool f){ m_bTCupdate = f;}
       bool  GetbTCUpdate(){ return m_bTCupdate;}
@@ -359,12 +363,9 @@ private:
                                   float &scale_factor_x, float &scale_factor_y);
 
       void ShipDrawLargeScale( ocpnDC& dc, wxPoint lShipMidPoint );
-      void ShipIndicatorsDraw( ocpnDC& dc, float lpp,
-                               wxPoint GPSOffsetPixels,
-                               wxPoint lGPSPoint, wxPoint lHeadPoint,
-                                      float img_height, float cog_rad,
-                               wxPoint lPredPoint, bool b_render_hdt,
-          wxPoint lShipMidPoint);
+      void ShipIndicatorsDraw( ocpnDC& dc, int img_height,
+                               wxPoint GPSOffsetPixels, wxPoint lGPSPoint);
+                               
       ChInfoWin   *m_pCIWin;
 
       bool        m_bShowCurrent;
@@ -649,7 +650,8 @@ private:
       bool        m_disable_edge_pan;
       wxFont      *m_pgridFont;
       
-      
+      bool        m_dragoffsetSet;
+
 DECLARE_EVENT_TABLE()
 };
 

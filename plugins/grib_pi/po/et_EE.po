@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-26 22:16-0500\n"
-"PO-Revision-Date: 2017-03-07 13:51-0500\n"
+"POT-Creation-Date: 2017-08-04 09:52-0400\n"
+"PO-Revision-Date: 2017-08-04 22:35-0400\n"
 "Last-Translator: nohal <pavel@kalian.cz>\n"
 "Language-Team: Estonian\n"
 "Language: et_EE\n"
@@ -30,6 +30,10 @@ msgstr "Joonista soovitud ala\n"
 msgid "Valid Area and Continue"
 msgstr "Korrektne ala ja jätka"
 
+#: src/GribUIDialog.cpp:425
+msgid "File: "
+msgstr "Fail: "
+
 #: src/GribUIDialog.cpp:430
 msgid "Error! "
 msgstr "Viga! "
@@ -37,6 +41,10 @@ msgstr "Viga! "
 #: src/GribUIDialog.cpp:430
 msgid " contains no valid data!"
 msgstr " sisaldab kehtetuid andmeid!"
+
+#: src/GribUIDialog.cpp:455
+msgid "No valid GRIB file"
+msgstr "Kehtivat GRIB-faili ei ole"
 
 #: src/GribUIDialog.cpp:648 src/GribUIDialog.cpp:841
 msgid "Hide data at cursor"
@@ -46,11 +54,11 @@ msgstr "Peida andmed kursori juures"
 msgid "Show data at cursor"
 msgstr "Kuva andmed kursori juures"
 
-#: src/GribUIDialog.cpp:649 src/GribUIDialog.cpp:844 src/GribUIDialog.cpp:1197
+#: src/GribUIDialog.cpp:649 src/GribUIDialog.cpp:844 src/GribUIDialog.cpp:1199
 msgid "Start play back"
 msgstr "Käivita taasesitus"
 
-#: src/GribUIDialog.cpp:798 src/grib_pi.cpp:382 src/CursorData.cpp:577
+#: src/GribUIDialog.cpp:798 src/grib_pi.cpp:383 src/CursorData.cpp:577
 msgid "Menu"
 msgstr "Menuu"
 
@@ -68,7 +76,7 @@ msgstr "Nüüd"
 msgid "Zoom To Center"
 msgstr "Suumi keskele"
 
-#: src/GribUIDialog.cpp:844 src/GribUIDialog.cpp:1161
+#: src/GribUIDialog.cpp:844 src/GribUIDialog.cpp:1163
 msgid "Stop play back"
 msgstr "Lõpeta taasesitus"
 
@@ -90,15 +98,15 @@ msgstr "Joonista soovitud ala või klikka siin päringu peatamiseks"
 msgid "Close"
 msgstr "Sulge"
 
-#: src/GribUIDialog.cpp:1420 src/GribUIDialog.cpp:1440
+#: src/GribUIDialog.cpp:1422 src/GribUIDialog.cpp:1443
 msgid "Select a GRIB file"
 msgstr "Vali GRIB-i fail"
 
-#: src/GribUIDialog.cpp:1679
+#: src/GribUIDialog.cpp:1682
 msgid " files don't exist!"
 msgstr " faile pole olemas!"
 
-#: src/GribUIDialog.cpp:1701
+#: src/GribUIDialog.cpp:1704
 msgid " can't be read!"
 msgstr " ei ole loetav!"
 
@@ -168,7 +176,7 @@ msgstr "j/kg"
 
 #: src/GribSettingsDialog.cpp:47 src/GribUIDialogBase.cpp:417
 #: src/GribUIDialogBase.cpp:899 src/GribUIDialogBase.cpp:1747
-#: src/GribOverlayFactory.cpp:1119 src/GribTable.cpp:136
+#: src/GribOverlayFactory.cpp:1128 src/GribTable.cpp:136
 msgid "Wind"
 msgstr "Tuul"
 
@@ -283,7 +291,7 @@ msgstr "Oled otsustanud lubada interpolatsiooni.\n"
 "See võib vähendada täpsust!"
 
 #: src/GribSettingsDialog.cpp:890 src/GribSettingsDialog.cpp:936
-#: src/grib_pi.cpp:680 src/GribRequestDialog.cpp:628
+#: src/grib_pi.cpp:681 src/GribRequestDialog.cpp:628
 msgid "Warning!"
 msgstr "Hoiatus!"
 
@@ -580,19 +588,19 @@ msgstr "Üldised valikud"
 
 #: src/GribUIDialogBase.cpp:1388
 msgid "Use High Definition Graphics"
-msgstr "Kasuta kõrgresulutsioonil graafikat"
+msgstr "kasuta kõrgresulutsiooni graafikat"
 
 #: src/GribUIDialogBase.cpp:1391
 msgid "Use Gradual Colors"
-msgstr "Kasuta astmelisi värve"
+msgstr "kasuta astmelisi värve"
 
 #: src/GribUIDialogBase.cpp:1394
 msgid "Copy First Cumulative Missing Record"
-msgstr "Kopeeri esimene puuduv koondkirje"
+msgstr "kopeeri esimene puuduv koondkirje"
 
 #: src/GribUIDialogBase.cpp:1397
 msgid "Copy Missing Wave Records"
-msgstr "Kopeeri puuduvad lainekirjed"
+msgstr "kopeeri puuduvad lainekirjed"
 
 #: src/GribUIDialogBase.cpp:1406
 msgid "Load the More Recent File in Directory"
@@ -814,45 +822,45 @@ msgstr "Kirjuta ja saada e-kirja päring"
 msgid "Grib Data Table"
 msgstr "GRIB-andmete tabel"
 
-#: src/grib_pi.h:104 src/grib_pi.cpp:398 src/GribRequestDialog.cpp:127
+#: src/grib_pi.h:104 src/grib_pi.cpp:399 src/GribRequestDialog.cpp:127
 #: src/GribRequestDialog.cpp:198 src/GribRequestDialog.cpp:456
 #: src/CursorData.cpp:155
 msgid "Dialog"
 msgstr "Dialoog"
 
-#: src/GribOverlayFactory.cpp:518
+#: src/GribOverlayFactory.cpp:527
 msgid "Warning : Data at Geopotential Height"
 msgstr "Hoiatus: andmed geopotentsiaalkõrgusel"
 
-#: src/GribOverlayFactory.cpp:1119
+#: src/GribOverlayFactory.cpp:1128
 msgid "Building Isobar map"
 msgstr "Loon isobaaride kaarti"
 
-#: src/GribOverlayFactory.cpp:1437
+#: src/GribOverlayFactory.cpp:1446
 msgid "Overlays not supported by this graphics hardware (Disable OpenGL)"
 msgstr "Ülekatted ei ole selle graafilise riistvaraga toetatud (keela OpenGL)"
 
-#: src/GribOverlayFactory.cpp:1447
+#: src/GribOverlayFactory.cpp:1456
 msgid "Overlays too wide and can't be displayed:"
 msgstr "Ülekate on liiga lai ja ei ole võimalik kuvada:"
 
-#: src/GribOverlayFactory.cpp:1456
+#: src/GribOverlayFactory.cpp:1465
 msgid "overlays suppressed if not north-up in DC mode (enable OpenGL)"
 msgstr "ülekatted on tõkestatud kui pole DC-mooduses N-ülal (luba OpenGL)"
 
-#: src/GribOverlayFactory.cpp:1473
+#: src/GribOverlayFactory.cpp:1482
 msgid "Please Zoom or Scale Out to view invisible overlays:"
 msgstr "Palun vähenda mõõtkava nägemaks peidetud kihte:"
 
-#: src/grib_pi.cpp:136
+#: src/grib_pi.cpp:137
 msgid "Grib"
 msgstr "Grib"
 
-#: src/grib_pi.cpp:204
+#: src/grib_pi.cpp:205
 msgid "GRIB PlugIn for OpenCPN"
 msgstr "GRIB'i plugin OpenCPN-ile"
 
-#: src/grib_pi.cpp:210
+#: src/grib_pi.cpp:211
 msgid "GRIB PlugIn for OpenCPN\n"
 "Provides basic GRIB file overlay capabilities for several GRIB file types\n"
 "and a request function to get GRIB files by eMail.\n\n"
@@ -882,11 +890,11 @@ msgstr "GRIB plugin OpenCPN-ile\n"
 "- soojusjuhtiv saadaval olev potentsiaalne energia (CAPE)\n"
 "- tuul, kõrgus, temperatuur ja suhteline niiskus 300, 500, 700 850 hPa juures."
 
-#: src/grib_pi.cpp:380
+#: src/grib_pi.cpp:381
 msgid "Weather table"
 msgstr "Ilmatabel"
 
-#: src/grib_pi.cpp:679
+#: src/grib_pi.cpp:680
 msgid "You have chosen to authorize interpolation.\n"
 "Don't forget that data displayed at current time will not be real but Recomputed\n"
 "This can decrease accuracy!"

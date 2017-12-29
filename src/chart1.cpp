@@ -229,7 +229,7 @@ bool                      bDrawCurrentValues;
 
 wxString                  ChartListFileName;
 wxString                  AISTargetNameFileName;
-wxString                  *pWorldMapLocation;
+wxString                  gWorldMapLocation;
 wxString                  *pInit_Chart_Dir;
 wxString                  g_csv_locn;
 wxString                  g_SENCPrefix;
@@ -315,11 +315,12 @@ bool                      g_bConfirmObjectDelete;
 // Set default color scheme
 ColorScheme               global_color_scheme = GLOBAL_COLOR_SCHEME_DAY;
 
-int                       Usercolortable_index;
-wxArrayPtrVoid            *UserColorTableArray;
-wxArrayPtrVoid            *UserColourHashTableArray;
+static int                Usercolortable_index;
 
-wxColorHashMap            *pcurrent_user_color_hash;
+static wxArrayPtrVoid     *UserColorTableArray;
+static wxArrayPtrVoid     *UserColourHashTableArray;
+
+static wxColorHashMap     *pcurrent_user_color_hash;
 
 int                       gps_watchdog_timeout_ticks;
 int                       sat_watchdog_timeout_ticks;
@@ -359,6 +360,9 @@ int                       g_GUIScaleFactor;
 int                       g_ChartScaleFactor;
 float                     g_ChartScaleFactorExp;
 
+bool                      g_bShowTide;
+bool                      g_bShowCurrent;
+
 #ifdef USE_S57
 s52plib                   *ps52plib;
 S57ClassRegistrar         *g_poRegistrar;
@@ -386,6 +390,11 @@ extern HINSTANCE          s_hGLU_DLL; // Handle to DLL
 
 double                    g_ownship_predictor_minutes;
 double                    g_ownship_HDTpredictor_miles;
+
+bool                      g_own_ship_sog_cog_calc;
+int                       g_own_ship_sog_cog_calc_damp_sec;
+wxDateTime                last_own_ship_sog_cog_calc_ts;
+double                    last_own_ship_sog_cog_calc_lat, last_own_ship_sog_cog_calc_lon;
 
 int                       g_current_arrow_scale;
 int                       g_tide_rectangle_scale;
@@ -570,6 +579,7 @@ int                       g_track_rotate_time_type;
 bool                      g_bHighliteTracks;
 int                       g_route_line_width;
 int                       g_track_line_width;
+wxColour                  g_colourTrackLineColour;
 wxString                  g_default_wp_icon;
 
 ActiveTrack              *g_pActiveTrack;
@@ -580,9 +590,9 @@ int                       g_nTrackPrecision;
 int                       g_total_NMEAerror_messages;
 
 int                       g_cm93_zoom_factor;
-CM93DSlide                *pCM93DetailSlider;
-bool                      g_bShowCM93DetailSlider;
-int                       g_cm93detail_dialog_x, g_cm93detail_dialog_y;
+PopUpDSlide                *pPopupDetailSlider;
+bool                      g_bShowDetailSlider;
+int                       g_detailslider_dialog_x, g_detailslider_dialog_y;
 
 bool                      g_bUseGreenShip;
 
@@ -673,7 +683,8 @@ bool                      g_bserial_access_checked;
 wxString                  g_uiStyle;
 
 //      Values returned from WMM_PI for variation computation request
-double                    gQueryVar;
+//      Initialize to invalid value so we don't use if if WMM hasn't updated yet
+double                    gQueryVar = 361.0;
 
 
 char bells_sound_file_name[2][12] = { "1bells.wav", "2bells.wav" };
@@ -709,6 +720,8 @@ int              g_maxWPNameLength;
 
 bool             g_bAdvanceRouteWaypointOnArrivalOnly;
 
+bool             g_bSpaceDropMark;
+
 wxArrayString    g_locale_catalog_array;
 bool             b_reloadForPlugins;
 
@@ -741,9 +754,11 @@ static const long long lNaN = 0xfff8000000000000;
 
 //    Some static helpers
 void appendOSDirSlash( wxString* pString );
-void InitializeUserColors( void );
-void DeInitializeUserColors( void );
-void SetSystemColors( ColorScheme cs );
+
+static void InitializeUserColors( void );
+static void DeInitializeUserColors( void );
+static void SetSystemColors( ColorScheme cs );
+
 extern "C" bool CheckSerialAccess( void );
 
 
@@ -1169,6 +1184,22 @@ void LoadS57()
         
         if(cc1)
             ps52plib->SetPPMM( cc1->GetPixPerMM() );
+ 
+#ifdef ocpnUSE_GL
+            
+        // Setup PLIB OpenGL options, if enabled
+        extern bool g_b_EnableVBO;    
+        extern GLenum  g_texture_rectangle_format;
+        if(g_bopengl )   
+            ps52plib->SetGLOptions(glChartCanvas::s_b_useStencil,
+                                   glChartCanvas::s_b_useStencilAP,
+                                   glChartCanvas::s_b_useScissorTest,
+                                   glChartCanvas::s_b_useFBO,
+                                   g_b_EnableVBO,
+                                   g_texture_rectangle_format);
+#endif
+            
+            
     } else {
         wxLogMessage( _T("   S52PLIB Initialization failed, disabling Vector charts.") );
         delete ps52plib;
@@ -1252,7 +1283,7 @@ static double chart_dist(int index)
     float  clat;
     const ChartTableEntry &cte = ChartData->GetChartTableEntry(index);
     // if the chart contains ownship position set the distance to 0
-    if (cte.GetBBox().Contains(gLon, gLat))
+    if (cte.GetBBox().Contains(gLat, gLon))
         d = 0.;
     else {
         // find the nearest edge 
@@ -1397,6 +1428,8 @@ void ParseAllENC()
             wxString filename = ct_array.Item(j).chart_path;
             double distance = ct_array.Item(j).distance;
             int index = ChartData->FinddbIndex(filename);
+            if (index < 0) 
+                continue;
             const ChartTableEntry &cte = ChartData->GetChartTableEntry(index);
             Extent ext;
             ext.NLAT = cte.GetLatMax();
@@ -1496,7 +1529,9 @@ bool MyApp::OnInit()
 {
     if( !wxApp::OnInit() ) return false;
 
-#if defined(__WXGTK__) && defined(__arm__) && defined(ocpnUSE_GLES)
+    last_own_ship_sog_cog_calc_ts = wxInvalidDateTime;
+
+#if defined(__WXGTK__)  && defined(ocpnUSE_GLES) && defined(__ARM_ARCH)
     // There is a race condition between cairo which is used for text rendering
     // by gtk and EGL which without the below code causes a bus error and the
     // program aborts before startup
@@ -1739,13 +1774,17 @@ bool MyApp::OnInit()
     pWayPointMan = NULL;
 
     g_display_size_mm = wxMax(100, g_Platform->GetDisplaySizeMM());
-
+    wxString msg;
+    msg.Printf(_T("Detected display size (horizontal): %d mm"), (int) g_display_size_mm);
+    wxLogMessage(msg);
+    
     // User override....
     if((g_config_display_size_mm > 0) &&(g_config_display_size_manual)){
         g_display_size_mm = g_config_display_size_mm;
         wxString msg;
         msg.Printf(_T("Display size (horizontal) config override: %d mm"), (int) g_display_size_mm);
         wxLogMessage(msg);
+        g_Platform->SetDisplaySizeMM(g_display_size_mm);
     }
 
     if(g_btouch){
@@ -1914,9 +1953,11 @@ bool MyApp::OnInit()
     }
 
 //      Establish the GSHHS Dataset location
-    pWorldMapLocation = new wxString( _T("gshhs") );
-    pWorldMapLocation->Prepend( g_Platform->GetSharedDataDir() );
-    pWorldMapLocation->Append( wxFileName::GetPathSeparator() );
+    if( gWorldMapLocation == wxEmptyString ) {
+        gWorldMapLocation = "gshhs";
+        gWorldMapLocation.Prepend( g_Platform->GetSharedDataDir() );
+        gWorldMapLocation.Append( wxFileName::GetPathSeparator() );
+    }
 
     //  Check the global Tide/Current data source array
     //  If empty, preset one default (US) Ascii data source
@@ -2413,6 +2454,10 @@ extern ocpnGLOptions g_GLOptions;
         g_MainToolbar->Raise();
 #endif
 
+    // Setup Tides/Currents to settings present at last shutdown
+    gFrame->ShowTides( g_bShowTide );
+    gFrame->ShowCurrents( g_bShowCurrent );
+ 
     // Start delayed initialization chain after 100 milliseconds
     gFrame->InitTimer.Start( 100, wxTIMER_CONTINUOUS );
 
@@ -2498,7 +2543,6 @@ int MyApp::OnExit()
 
     delete phost_name;
     delete pInit_Chart_Dir;
-    delete pWorldMapLocation;
 
     delete g_pRouteMan;
     delete pWayPointMan;
@@ -2879,7 +2923,9 @@ void MyFrame::SetAndApplyColorScheme( ColorScheme cs )
     if( g_pRouteMan ) g_pRouteMan->SetColorScheme( cs );
 
     if( pMarkPropDialog ) pMarkPropDialog->SetColorScheme( cs );
-
+    
+    if( pRoutePropDialog ) pRoutePropDialog->SetColorScheme( cs );
+    
     //    For the AIS target query dialog, we must rebuild it to incorporate the style desired for the colorscheme selected
     if( g_pais_query_dialog_active ) {
         bool b_isshown = g_pais_query_dialog_active->IsShown();
@@ -3367,6 +3413,13 @@ void MyFrame::SetGPSCompassScale()
 }
 
 
+void MyFrame::FastClose(){
+    
+    FrameTimer1.Stop();
+    quitflag++;                             // signal to the timer loop
+    FrameTimer1.Start(1);                    // real quick now...
+}
+
 // Intercept menu commands
 void MyFrame::OnExit( wxCommandEvent& event )
 {
@@ -3438,7 +3491,9 @@ void MyFrame::OnCloseWindow( wxCloseEvent& event )
 
     cc1->Refresh( true );
     cc1->Update();
-    wxYield();
+    
+    //  This yield is not necessary, since the Update() proceeds syncronously...
+    //wxYield();
 
     //   Save the saved Screen Brightness
     RestoreScreenBrightness();
@@ -4258,68 +4313,18 @@ void MyFrame::OnToolLeftClick( wxCommandEvent& event )
 
         case ID_MENU_SHOW_CURRENTS:
         case ID_CURRENT: {
-            LoadHarmonics();
-
-            if( ptcmgr->IsReady() ) {
-                cc1->SetbShowCurrent( !cc1->GetbShowCurrent() );
-                SetToolbarItemState( ID_CURRENT, cc1->GetbShowCurrent() );
-                wxString tip = _("Show Currents");
-                if(cc1->GetbShowCurrent())
-                    tip = _("Hide Currents");
-                if( g_MainToolbar )
-                    g_MainToolbar->SetToolShortHelp( ID_CURRENT, tip );
-
-                SetMenubarItemState( ID_MENU_SHOW_CURRENTS, cc1->GetbShowCurrent() );
-                cc1->ReloadVP();
-            } else {
-                wxLogMessage( _T("Chart1::Event...TCMgr Not Available") );
-                cc1->SetbShowCurrent( false );
-                SetToolbarItemState( ID_CURRENT, false );
-                SetMenubarItemState( ID_MENU_SHOW_CURRENTS, false );
-            }
-
-            if( cc1->GetbShowCurrent() ) {
-                FrameTCTimer.Start( TIMER_TC_VALUE_SECONDS * 1000, wxTIMER_CONTINUOUS );
-                cc1->SetbTCUpdate( true );                        // force immediate update
-            } else
-                FrameTCTimer.Stop();
-
+            ShowCurrents( !cc1->GetbShowCurrent() );
+            cc1->ReloadVP();
             cc1->Refresh( false );
-
             break;
 
         }
 
         case ID_MENU_SHOW_TIDES:
         case ID_TIDE: {
-            LoadHarmonics();
-
-            if( ptcmgr->IsReady() ) {
-                cc1->SetbShowTide( !cc1->GetbShowTide() );
-                SetToolbarItemState( ID_TIDE, cc1->GetbShowTide() );
-                wxString tip = _("Show Tides");
-                if(cc1->GetbShowTide())
-                    tip = _("Hide Tides");
-                if( g_MainToolbar )
-                    g_MainToolbar->SetToolShortHelp( ID_TIDE, tip );
-
-                SetMenubarItemState( ID_MENU_SHOW_TIDES, cc1->GetbShowTide() );
-                cc1->ReloadVP();
-            } else {
-                wxLogMessage( _("Chart1::Event...TCMgr Not Available") );
-                cc1->SetbShowTide( false );
-                SetToolbarItemState( ID_TIDE, false );
-                SetMenubarItemState( ID_MENU_SHOW_TIDES, false );
-            }
-
-            if( cc1->GetbShowTide() ) {
-                FrameTCTimer.Start( TIMER_TC_VALUE_SECONDS * 1000, wxTIMER_CONTINUOUS );
-                cc1->SetbTCUpdate( true );                        // force immediate update
-            } else
-                FrameTCTimer.Stop();
-
+            ShowTides( !cc1->GetbShowTide() );
+            cc1->ReloadVP();
             cc1->Refresh( false );
-
             break;
 
         }
@@ -4497,6 +4502,65 @@ void MyFrame::OnToolLeftClick( wxCommandEvent& event )
     }         // switch
 
 }
+
+void MyFrame::ShowTides(bool bShow)
+{
+    LoadHarmonics();
+
+    if( ptcmgr->IsReady() ) {
+        cc1->SetbShowTide( bShow );
+        SetToolbarItemState( ID_TIDE, bShow );
+        wxString tip = _("Show Tides");
+        if(bShow)
+            tip = _("Hide Tides");
+        if( g_MainToolbar )
+            g_MainToolbar->SetToolShortHelp( ID_TIDE, tip );
+
+        SetMenubarItemState( ID_MENU_SHOW_TIDES, bShow );
+    } else {
+        wxLogMessage( _T("Chart1::Event...TCMgr Not Available") );
+        cc1->SetbShowTide( false );
+        SetToolbarItemState( ID_TIDE, false );
+        SetMenubarItemState( ID_MENU_SHOW_TIDES, false );
+    }
+
+    if( cc1->GetbShowTide() ) {
+        FrameTCTimer.Start( TIMER_TC_VALUE_SECONDS * 1000, wxTIMER_CONTINUOUS );
+        cc1->SetbTCUpdate( true );                        // force immediate update
+    } else
+        FrameTCTimer.Stop();
+
+}
+
+void MyFrame::ShowCurrents(bool bShow)
+{
+    LoadHarmonics();
+
+    if( ptcmgr->IsReady() ) {
+        cc1->SetbShowCurrent( bShow );
+        SetToolbarItemState( ID_CURRENT, bShow );
+        wxString tip = _("Show Currents");
+        if(bShow)
+            tip = _("Hide Currents");
+        if( g_MainToolbar )
+            g_MainToolbar->SetToolShortHelp( ID_CURRENT, tip );
+
+        SetMenubarItemState( ID_MENU_SHOW_CURRENTS, bShow );
+    } else {
+        wxLogMessage( _T("Chart1::Event...TCMgr Not Available") );
+        cc1->SetbShowCurrent( false );
+        SetToolbarItemState( ID_CURRENT, false );
+        SetMenubarItemState( ID_MENU_SHOW_CURRENTS, false );
+    }
+
+    if( cc1->GetbShowCurrent() ) {
+        FrameTCTimer.Start( TIMER_TC_VALUE_SECONDS * 1000, wxTIMER_CONTINUOUS );
+        cc1->SetbTCUpdate( true );                        // force immediate update
+    } else
+        FrameTCTimer.Stop();
+
+}
+
 
 void MyFrame::SetAISDisplayStyle(int StyleIndx)
 {
@@ -4681,8 +4745,6 @@ void MyFrame::ActivateMOB( void )
         temp_route->m_bDeleteOnArrival = false;
 
         temp_route->SetRouteArrivalRadius( -1.0 );                    // never arrives
-
-        temp_route->RebuildGUIDList();         // ensure the GUID list is intact and good
 
         if( g_pRouteMan->GetpActiveRoute() ) g_pRouteMan->DeactivateRoute();
         g_pRouteMan->ActivateRoute( temp_route, pWP_MOB );
@@ -4877,7 +4939,7 @@ void MyFrame::ToggleCourseUp( void )
 
     if( g_bCourseUp ) {
         //    Stuff the COGAvg table in case COGUp is selected
-        double stuff = NAN;
+        double stuff = 0;
         if( !wxIsNaN(gCog) ) stuff = gCog;
 
         if( g_COGAvgSec > 0) {
@@ -5507,7 +5569,10 @@ void MyFrame::JumpToPosition( double lat, double lon, double scale )
     }
 */
     if( !cc1->GetQuiltMode() ) {
-        cc1->SetViewPoint( lat, lon, scale, Current_Ch->GetChartSkew() * PI / 180., cc1->GetVPRotation() );
+        double skew = 0;
+        if(Current_Ch)
+            skew = Current_Ch->GetChartSkew() * PI / 180.;
+        cc1->SetViewPoint( lat, lon, scale, skew, cc1->GetVPRotation() );
     } else {
         cc1->SetViewPoint( lat, lon, scale, 0, cc1->GetVPRotation() );
     }
@@ -5527,7 +5592,9 @@ int MyFrame::DoOptionsDialog()
         return 0;
 
     g_boptionsactive = true;
-
+    int last_ChartScaleFactorExp = g_ChartScaleFactor;
+        
+    
     if(NULL == g_options) {
         g_Platform->ShowBusySpinner();
         g_options = new options( this, -1, _("Options") );
@@ -5610,8 +5677,13 @@ int MyFrame::DoOptionsDialog()
     Raise();                      // I dunno why...
 #endif
 
+    
     bool ret_val = false;
     rr = g_options->GetReturnCode();
+    
+    if(last_ChartScaleFactorExp != g_ChartScaleFactor)
+        rr |= S52_CHANGED;
+    
     if( rr ) {
         ProcessOptionsDialog( rr,  g_options->GetWorkDirListPtr() );
         ChartData->GetChartDirArray() = *(g_options->GetWorkDirListPtr()); // Perform a deep copy back to main database.
@@ -5727,6 +5799,13 @@ int MyFrame::ProcessOptionsDialog( int rr, ArrayOfCDI *pNewDirArray )
         LoadHarmonics();
     }
 
+    //  S52_CHANGED is a byproduct of a change in the chart object render scale
+    //  So, applies to RoutePoint icons also
+    if( rr & S52_CHANGED){
+        //  Reload Icons
+        pWayPointMan->ReloadAllIcons( );
+    }
+    
     pConfig->UpdateSettings();
 
     if( g_pActiveTrack ) {
@@ -5917,6 +5996,7 @@ void MyFrame::ChartsRefresh( int dbi_hint, ViewPort &vp, bool b_purge )
 
     FrameTimer1.Stop();                  // stop other asynchronous activity
 
+    double old_scale = cc1->GetVPScale();
     cc1->InvalidateQuilt();
     cc1->SetQuiltRefChart( -1 );
 
@@ -5968,6 +6048,13 @@ void MyFrame::ChartsRefresh( int dbi_hint, ViewPort &vp, bool b_purge )
 
     //    Validate the correct single chart, or set the quilt mode as appropriate
     SetupQuiltMode();
+    if( !cc1->GetQuiltMode() && Current_Ch == 0) {
+        // use a dummy like in DoChartUpdate
+        if (NULL == pDummyChart ) 
+            pDummyChart = new ChartDummy;
+        Current_Ch = pDummyChart;
+        cc1->SetVPScale( old_scale );
+    }
 
     cc1->ReloadVP();
 
@@ -6020,10 +6107,16 @@ bool MyFrame::UpdateChartDatabaseInplace( ArrayOfCDI &DirArray, bool b_force, bo
     
     wxLogMessage( _T("   ") );
     wxLogMessage( _T("Starting chart database Update...") );
+    wxString gshhg_chart_loc = gWorldMapLocation;
     ChartData->Update( DirArray, b_force, pprog );
     ChartData->SaveBinary(ChartListFileName);
     wxLogMessage( _T("Finished chart database Update") );
     wxLogMessage( _T("   ") );
+
+    if( cc1 && gWorldMapLocation != gshhg_chart_loc )
+    {
+        cc1->ResetWorldBackgroundChart();
+    }
 
     delete pprog;
 
@@ -6369,13 +6462,12 @@ void MyFrame::OnInitTimer(wxTimerEvent& event)
             // Load the waypoints.. both of these routines are very slow to execute which is why
             // they have been to defered until here
             pWayPointMan = new WayPointman();
+            pWayPointMan->SetColorScheme( global_color_scheme );
             
             // Reload the ownship icon from UserIcons, if present
             if(cc1->SetUserOwnship())
                 cc1->SetColorScheme(global_color_scheme);
-            
             pConfig->LoadNavObjects();
-
             //    Re-enable anchor watches if set in config file
             if( !g_AW1GUID.IsEmpty() ) {
                 pAnchorWatchPoint1 = pWayPointMan->FindRoutePointByGUID( g_AW1GUID );
@@ -6393,7 +6485,6 @@ void MyFrame::OnInitTimer(wxTimerEvent& event)
                 wxString laymsg;
                 laymsg.Printf( wxT("Getting .gpx layer files from: %s"), layerdir.c_str() );
                 wxLogMessage( laymsg );
-
                 pConfig->LoadLayers(layerdir);
             }
 
@@ -6451,6 +6542,12 @@ void MyFrame::OnInitTimer(wxTimerEvent& event)
             g_pi_manager->LoadAllPlugIns( g_Platform->GetPluginDir(), true, false );
 
             RequestNewToolbar();
+            
+            // A Plugin (e.g. Squiddio) may have redefined some routepoint icons...
+            // Reload all icons, to be sure.
+            if(pWayPointMan)
+                pWayPointMan->ReloadRoutepointIcons();
+            
             if( g_MainToolbar )
                 g_MainToolbar->EnableTool( ID_SETTINGS, false );
 
@@ -6491,7 +6588,7 @@ void MyFrame::OnInitTimer(wxTimerEvent& event)
                 bFirstAuto = true;
                 b_reloadForPlugins = true;
             }
-                
+            
             break;
         }
 
@@ -6527,6 +6624,7 @@ void MyFrame::OnInitTimer(wxTimerEvent& event)
             
             if(b_reloadForPlugins)
                 ChartsRefresh(g_restore_dbindex, cc1->GetVP(), false);
+
             break;
         }
     }   // switch
@@ -6715,7 +6813,7 @@ void MyFrame::OnFrameTimer1( wxTimerEvent& event )
 
 //      Listen for quitflag to be set, requesting application close
     if( quitflag ) {
-        wxLogMessage( _T("Got quitflag from SIGUSR1") );
+        wxLogMessage( _T("Got quitflag from SIGNAL") );
         FrameTimer1.Stop();
         Close();
         return;
@@ -7071,6 +7169,7 @@ double MyFrame::GetMag(double a)
 
 double MyFrame::GetMag(double a, double lat, double lon)
 {
+    double Variance = wxIsNaN( gVar ) ? g_UserVar : gVar;
     if(g_pi_manager && g_pi_manager->IsPlugInAvailable(_T("WMM"))){
             
         // Request variation at a specific lat/lon
@@ -7080,24 +7179,13 @@ double MyFrame::GetMag(double a, double lat, double lon)
         // In the case of rollover windows, the value is requested continuously, so will be correct very soon.
         wxDateTime now = wxDateTime::Now();
         SendJSON_WMM_Var_Request(lat, lon, now);
-            
-        if((a - gQueryVar) >360.)
-            return (a - gQueryVar - 360.);
-        else
-            return ((a - gQueryVar) >= 0.) ? (a - gQueryVar) : (a - gQueryVar + 360.);
+        if ( fabs(gQueryVar) < 360.0 )   // Don't use WMM variance if not updated yet
+            Variance = gQueryVar;
     }
-    else if(!wxIsNaN(gVar)){
-        if((a - gVar) >360.)
-            return (a - gVar - 360.);
-        else
-            return ((a - gVar) >= 0.) ? (a - gVar) : (a - gVar + 360.);
-    }
-    else{
-        if((a - g_UserVar) >360.)
-            return (a - g_UserVar - 360.);
-        else
-            return ((a - g_UserVar) >= 0.) ? (a - g_UserVar) : (a - g_UserVar + 360.);
-    }
+    if((a - Variance ) > 360.)
+        return (a - Variance - 360.);
+    else
+        return ((a - Variance) >= 0.) ? (a - Variance) : (a - Variance + 360.);
 }
 
 bool MyFrame::SendJSON_WMM_Var_Request(double lat, double lon, wxDateTime date)
@@ -7964,6 +8052,8 @@ void MyFrame::selectChartDisplay( int type, int family)
             int stack_index = -1;
             for(int i = 0; i < pCurrentStack->nEntry ; i++){
                 int check_dbIndex = pCurrentStack->GetDBIndex( i );
+                if (check_dbIndex < 0)
+                    continue;
                 const ChartTableEntry &cte = ChartData->GetChartTableEntry( check_dbIndex );
                 if(type == cte.GetChartType()){
                     stack_index = i;
@@ -8158,9 +8248,10 @@ bool MyFrame::DoChartUpdate( void )
                 if( !cc1->IsChartQuiltableRef( initial_db_index ) ) {
                     // If it is not quiltable, then walk the stack up looking for a satisfactory chart
                     // i.e. one that is quiltable and of the same type
+                    // XXX if there's none?
                     int stack_index = g_restore_stackindex;
 
-                    while( ( stack_index < pCurrentStack->nEntry - 1 ) && ( stack_index >= 0 ) ) {
+                    if ( stack_index >= 0 ) while( ( stack_index < pCurrentStack->nEntry - 1 ) ) {
                         int test_db_index = pCurrentStack->GetDBIndex( stack_index );
                         if( cc1->IsChartQuiltableRef( test_db_index )
                                 && ( initial_type == ChartData->GetDBChartType( initial_db_index ) ) ) {
@@ -8171,23 +8262,10 @@ bool MyFrame::DoChartUpdate( void )
                     }
                 }
 
-                if( ChartData ) {
-                    ChartBase *pc = ChartData->OpenChartFromDB( initial_db_index, FULL_INIT );
-                    if( pc ) {
-                        cc1->SetQuiltRefChart( initial_db_index );
-                        pCurrentStack->SetCurrentEntryFromdbIndex( initial_db_index );
-                    }
-                }
-
-                //  Try to bound the initial Viewport scale to something reasonable for the selected reference chart
-                //  Use the last shutdown value if possible
-                if( ChartData ) {
-                    ChartBase *pc = ChartData->OpenChartFromDB( initial_db_index, FULL_INIT );
-                    
-                    if( pc ) {
-                        double best_scale_ppm = GetBestVPScale( pc );
-                        double best_proposed_scale_onscreen = cc1->GetCanvasScaleFactor() / best_scale_ppm;
-                    }
+                ChartBase *pc = ChartData->OpenChartFromDB( initial_db_index, FULL_INIT );
+                if( pc ) {
+                    cc1->SetQuiltRefChart( initial_db_index );
+                    pCurrentStack->SetCurrentEntryFromdbIndex( initial_db_index );
                 }
             }
 
@@ -8196,8 +8274,8 @@ bool MyFrame::DoChartUpdate( void )
                     cc1->GetVPRotation() );
 
         }
-
-        bNewView |= cc1->SetViewPoint( vpLat, vpLon, cc1->GetVPScale(), 0, cc1->GetVPRotation() );
+        // else
+            bNewView |= cc1->SetViewPoint( vpLat, vpLon, cc1->GetVPScale(), 0, cc1->GetVPRotation() );
 
         goto update_finish;
 
@@ -8763,6 +8841,8 @@ void MyFrame::DoPrint( void )
     #endif
 }
 
+wxDateTime gTimeSource;
+
 void MyFrame::OnEvtPlugInMessage( OCPN_MsgEvent & event )
 {
     wxString message_ID = event.GetID();
@@ -8823,7 +8903,18 @@ void MyFrame::OnEvtPlugInMessage( OCPN_MsgEvent & event )
         gQueryVar = decl_val;
     }
     
-
+    if(message_ID == _T("GRIB_TIMELINE"))
+    {
+        wxJSONReader r;
+        wxJSONValue v;
+        r.Parse(message_JSONText, &v);
+        if (v[_T("Day")].AsInt() == -1)
+            gTimeSource = wxInvalidDateTime;
+        else
+            gTimeSource.Set (v[_T("Day")].AsInt(), (wxDateTime::Month)v[_T("Month")].AsInt(), 
+                    v[_T("Year")].AsInt(), v[_T("Hour")].AsInt(), v[_T("Minute")].AsInt(), 
+                    v[_T("Second")].AsInt());
+    }
     if(message_ID == _T("OCPN_TRACK_REQUEST"))
     {
         wxJSONValue  root;
@@ -9103,6 +9194,27 @@ bool MyFrame::EvalPriority(const wxString & message, DataStream *pDS )
     return bret;
 }
 
+static void UpdatePositionCalculatedSogCog()                                                                         
+{
+    wxDateTime now = wxDateTime::Now();
+    if( last_own_ship_sog_cog_calc_ts.IsValid() ) {
+        wxLongLong time_diff = now.Subtract(last_own_ship_sog_cog_calc_ts).GetMilliseconds();
+        if( time_diff / 1000 >= g_own_ship_sog_cog_calc_damp_sec ) {
+            double brg, dist;
+            DistanceBearingMercator( gLat, gLon, last_own_ship_sog_cog_calc_lat, last_own_ship_sog_cog_calc_lon, &brg, &dist );
+            gCog = brg;
+            gSog = dist / (time_diff.ToDouble() / 3600000.);
+            last_own_ship_sog_cog_calc_lat = gLat;
+            last_own_ship_sog_cog_calc_lon = gLon;
+            last_own_ship_sog_cog_calc_ts = now;
+        }
+    } else {
+        last_own_ship_sog_cog_calc_lat = gLat;
+        last_own_ship_sog_cog_calc_lon = gLon;
+        last_own_ship_sog_cog_calc_ts = now;
+    }
+}
+
 static bool ParsePosition(const LATLONG &Position)
 {
     bool ll_valid = true;
@@ -9131,6 +9243,10 @@ static bool ParsePosition(const LATLONG &Position)
     }
     else
         ll_valid = false;
+
+    if( ll_valid && g_own_ship_sog_cog_calc ) {
+        UpdatePositionCalculatedSogCog();
+    }
 
     return ll_valid;
 }
@@ -9204,7 +9320,7 @@ void MyFrame::OnEvtOCPN_NMEA( OCPN_DataStreamEvent & event )
                     // but also my gps occasionally outputs RMC
                     // messages with valid lat and lon but
                     // 0.0 for speed and course which messes up the filter
-                    if(m_NMEA0183.Rmc.SpeedOverGroundKnots > 0) {
+                    if(!g_own_ship_sog_cog_calc && m_NMEA0183.Rmc.SpeedOverGroundKnots > 0) {
                         gSog = m_NMEA0183.Rmc.SpeedOverGroundKnots;
                         gCog = m_NMEA0183.Rmc.TrackMadeGoodDegreesTrue;
                         cog_sog_valid = true;
@@ -9260,11 +9376,11 @@ void MyFrame::OnEvtOCPN_NMEA( OCPN_DataStreamEvent & event )
 
             case VTG:
                 // should we allow either Sog or Cog but not both to be valid?
-                if( !wxIsNaN(m_NMEA0183.Vtg.SpeedKnots) )
+                if( !g_own_ship_sog_cog_calc && !wxIsNaN(m_NMEA0183.Vtg.SpeedKnots) )
                     gSog = m_NMEA0183.Vtg.SpeedKnots;
-                if( !wxIsNaN(m_NMEA0183.Vtg.TrackDegreesTrue) )
+                if( !g_own_ship_sog_cog_calc && !wxIsNaN(m_NMEA0183.Vtg.TrackDegreesTrue) )
                     gCog = m_NMEA0183.Vtg.TrackDegreesTrue;
-                if( !wxIsNaN(m_NMEA0183.Vtg.SpeedKnots) &&
+                if( !g_own_ship_sog_cog_calc && !wxIsNaN(m_NMEA0183.Vtg.SpeedKnots) &&
                     !wxIsNaN(m_NMEA0183.Vtg.TrackDegreesTrue) ) {
                     gCog = m_NMEA0183.Vtg.TrackDegreesTrue;
                     cog_sog_valid = true;
@@ -9328,9 +9444,13 @@ void MyFrame::OnEvtOCPN_NMEA( OCPN_DataStreamEvent & event )
                 gLat = gpd.kLat;
             if( !wxIsNaN(gpd.kLon) )
                 gLon = gpd.kLon;
-            
-            gCog = gpd.kCog;
-            gSog = gpd.kSog;
+
+            if( !g_own_ship_sog_cog_calc ) {
+                gCog = gpd.kCog;
+                gSog = gpd.kSog;
+            } else {
+                UpdatePositionCalculatedSogCog();
+            }
             cog_sog_valid = true;
 
             if( !wxIsNaN(gpd.kHdt) )
@@ -9589,7 +9709,7 @@ void MyFrame::PostProcessNNEA( bool pos_valid, bool cog_sog_valid, const wxStrin
 
 void MyFrame::FilterCogSog( void )
 {            
-    if( g_bfilter_cogsog ) {
+    if( g_bfilter_cogsog && !g_own_ship_sog_cog_calc ) {
         //    Simple averaging filter for COG
         double cog_last = gCog;       // most recent reported value
 
@@ -9746,8 +9866,6 @@ void MyFrame::ActivateAISMOBRoute( AIS_Target_Data *ptarget )
         pAISMOBRoute->m_bDeleteOnArrival = false;
 
         pAISMOBRoute->SetRouteArrivalRadius( -1.0 );                    // never arrives
-
-        pAISMOBRoute->RebuildGUIDList();         // ensure the GUID list is intact and good
 
         if( g_pRouteMan->GetpActiveRoute() )
             g_pRouteMan->DeactivateRoute();
@@ -10520,7 +10638,7 @@ int paternFilter (const struct dirent * dir) {
   fd = open(devname, O_RDWR|O_NDELAY|O_NOCTTY);
 
   // device name is pointing to a real device
-  if(fd > 0) {
+  if(fd >= 0) {
     close (fd);
     return 1;
   }
@@ -11131,7 +11249,8 @@ wxColour GetGlobalColor(wxString colorName)
         ret_color.Set( 128, 128, 128 );  // Simple Grey
         wxLogMessage(_T("Warning: Color not found ") + colorName);
         // Avoid duplicate warnings:
-        ( *pcurrent_user_color_hash )[colorName] = ret_color;
+        if (pcurrent_user_color_hash)
+            ( *pcurrent_user_color_hash )[colorName] = ret_color;
     }
 
     return ret_color;
@@ -11291,7 +11410,7 @@ int get_static_line( char *d, const char **p, int index, int n )
     return strlen( d );
 }
 
-void InitializeUserColors( void )
+static void InitializeUserColors( void )
 {
     const char **p = usercolors;
     char buf[80];
@@ -11381,7 +11500,7 @@ void InitializeUserColors( void )
     pcurrent_user_color_hash = (wxColorHashMap *) UserColourHashTableArray->Item( 0 );
 }
 
-void DeInitializeUserColors( void )
+static void DeInitializeUserColors( void )
 {
     unsigned int i;
     for( i = 0; i < UserColorTableArray->GetCount(); i++ ) {
@@ -11490,6 +11609,25 @@ void SetSystemColors( ColorScheme cs )
         RestoreSystemColors();
     }
 #endif
+}
+
+wxColor GetDimColor(wxColor c)
+{
+    if( (global_color_scheme == GLOBAL_COLOR_SCHEME_DAY) || (global_color_scheme == GLOBAL_COLOR_SCHEME_DAY))
+        return c;
+    
+    float factor = 1.0;
+    if(global_color_scheme == GLOBAL_COLOR_SCHEME_DUSK)
+        factor = 0.5;
+    if(global_color_scheme == GLOBAL_COLOR_SCHEME_NIGHT)
+        factor = 0.25;
+    
+    wxImage::RGBValue rgb( c.Red(), c.Green(), c.Blue() );
+    wxImage::HSVValue hsv = wxImage::RGBtoHSV( rgb );
+    hsv.value = hsv.value * factor;
+    wxImage::RGBValue nrgb = wxImage::HSVtoRGB( hsv );
+
+    return wxColor( nrgb.red, nrgb.green, nrgb.blue );
 }
 
 class  OCPNMessageDialog: public wxDialog

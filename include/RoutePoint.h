@@ -41,7 +41,7 @@ public:
       RoutePoint(double lat, double lon, const wxString& icon_ident, const wxString& name, const wxString &pGUID = GPX_EMPTY_STRING, bool bAddToList = true);
       RoutePoint( RoutePoint* orig );
       RoutePoint();
-      ~RoutePoint(void);
+      virtual ~RoutePoint(void);
       void Draw(ocpnDC& dc, wxPoint *rpn = NULL);
       void ReLoadIcon(void);
       
@@ -57,7 +57,7 @@ public:
       void SetVisible(bool viz = true){ m_bIsVisible = viz; }
       void SetListed(bool viz = true){ m_bIsListed = viz; }
       void SetNameShown(bool viz = true) { m_bShowName = viz; }
-      wxString GetName(void){ return m_MarkName; }
+      virtual wxString GetName(void){ return m_MarkName; }
       wxString GetDescription(void) { return m_MarkDescription; }
 
       wxDateTime GetCreateTime(void);
@@ -96,8 +96,13 @@ public:
       void  SetWaypointRangeRingsColour( wxColour wxc_WaypointRangeRingsColour ) { m_wxcWaypointRangeRingsColour = wxc_WaypointRangeRingsColour; };
 
       bool SendToGPS(const wxString& com_name, wxGauge *pProgress);
-
-
+      void EnableDragHandle(bool bEnable);
+      bool IsDragHandleEnabled(){ return m_bDrawDragHandle; }
+      wxPoint2DDouble GetDragHandlePoint( ViewPort &vp);
+      void SetPointFromDraghandlePoint(ViewPort &vp, double lat, double lon);
+      void SetPointFromDraghandlePoint(ViewPort &vp, int x, int y);
+      void PresetDragOffset( int x, int y);
+      
       double            m_lat, m_lon;
       double             m_seg_len;              // length in NMI to this point
                                                 // undefined for starting point
@@ -162,8 +167,9 @@ public:
 
       wxString          m_timestring;
 
-private:
       wxDateTime        m_CreateTimeX;
+private:
+      wxPoint2DDouble computeDragHandlePoint(ViewPort &vp);
 
       wxString          m_MarkName;
       wxBitmap          *m_pbmIcon;
@@ -174,6 +180,18 @@ private:
 
       float             m_IconScaleFactor;
       wxBitmap          m_ScaledBMP;
+      bool              m_bPreScaled;
+      bool              m_bDrawDragHandle;
+      wxBitmap          m_dragIcon;
+      int               m_drag_line_length_man, m_drag_icon_offset;
+      double            m_dragHandleLat, m_dragHandleLon;
+      int               m_draggingOffsetx, m_draggingOffsety;
+ 
+#ifdef ocpnUSE_GL
+      unsigned int      m_dragIconTexture;
+      int               m_dragIconTextureWidth, m_dragIconTextureHeight;
+#endif
+      
 };
 
 WX_DECLARE_LIST(RoutePoint, RoutePointList);// establish class as list member

@@ -294,8 +294,8 @@ GRIBUICtrlBar::~GRIBUICtrlBar()
            wxString key;
            long dummy;
            for( int i = 0; i < iFileMax; i++ ) {
-               pConf->GetFirstEntry( key, dummy );
-               pConf->DeleteEntry( key, false );
+               if (pConf->GetFirstEntry( key, dummy ))
+                   pConf->DeleteEntry( key, false );
            }
         }
 
@@ -422,7 +422,7 @@ void GRIBUICtrlBar::OpenFile(bool newestFile)
 
     if( m_bGRIBActiveFile->IsOK() ) {
         wxFileName fn( m_bGRIBActiveFile->GetFileNames()[0] );
-        title = ( _T("File: ") );
+        title = ( _("File: ") );
         title.Append( fn.GetFullName() );
         if( rsa->GetCount() == 0 ) {                        //valid but empty file
             delete m_bGRIBActiveFile;
@@ -452,7 +452,7 @@ void GRIBUICtrlBar::OpenFile(bool newestFile)
     } else {
         delete m_bGRIBActiveFile;
         m_bGRIBActiveFile = NULL;
-        title = _T("No valid GRIB file");
+        title = _("No valid GRIB file");
     }
     pPlugIn->GetGRIBOverlayFactory()->SetMessage( title );
     SetTitle( title );
@@ -947,6 +947,8 @@ void GRIBUICtrlBar::OnClose( wxCloseEvent& event )
             m_ZoneSelMode = START_SELECTION;
             //SetRequestBitmap( m_ZoneSelMode );
         }
+    pPlugIn->SendTimelineMessage(wxInvalidDateTime );
+
     pPlugIn->OnGribCtrlBarClose();
 }
 
@@ -1320,6 +1322,8 @@ wxDateTime GRIBUICtrlBar::MinTime()
 
 GribTimelineRecordSet* GRIBUICtrlBar::GetTimeLineRecordSet(wxDateTime time)
 {
+    if (m_bGRIBActiveFile == NULL)
+        return NULL;
     ArrayOfGribRecordSets *rsa = m_bGRIBActiveFile->GetRecordSetArrayPtr();
 
     if(rsa->GetCount() == 0)
@@ -1736,6 +1740,8 @@ GRIBFile::GRIBFile( const wxArrayString & file_names, bool CumRec, bool WaveRec,
 
     GribRecord *pRec;
     bool isOK(false);
+    bool polarWind(false);
+
     //    Get the map of GribRecord vectors
     std::map<std::string, std::vector<GribRecord *>*> *p_map = m_pGribReader->getGribMap();
 
@@ -1753,6 +1759,9 @@ GRIBFile::GRIBFile( const wxArrayString & file_names, bool CumRec, bool WaveRec,
                 if( m_GribRecordSetArray.Item( j ).m_Reference_Time == thistime ) {
                     int idx = -1, mdx = -1;
                     switch(pRec->getDataType()) {
+                    case GRB_WIND_DIR:
+                        polarWind = true;
+                        // fall through
                     case GRB_WIND_VX:
                         if(pRec->getLevelType() == LV_ISOBARIC){
                             switch(pRec->getLevelValue()){
@@ -1764,6 +1773,9 @@ GRIBFile::GRIBFile( const wxArrayString & file_names, bool CumRec, bool WaveRec,
                         } else
                             idx = Idx_WIND_VX;
                         break;
+                    case GRB_WIND_SPEED:
+                        polarWind = true;
+                        // fall through
                     case GRB_WIND_VY:
                         if(pRec->getLevelType() == LV_ISOBARIC){
                             switch(pRec->getLevelValue()){
@@ -1825,15 +1837,73 @@ GRIBFile::GRIBFile( const wxArrayString & file_names, bool CumRec, bool WaveRec,
                         break;
 
                     }
+                    if(idx == -1) {
+                        // XXX bug ?
+                        break;
+                    }
 
+                    bool skip = false;
 
-                    if(idx != -1) {
+                    if (m_GribRecordSetArray.Item( j ).m_GribRecordPtrArray[idx]) {
+                        // already one
+                        GribRecord *oRec = m_GribRecordSetArray.Item( j ).m_GribRecordPtrArray[idx];
+                        if (polarWind) {
+                            // we favor UV over DIR/SPEED
+                            if (oRec->getDataType() == GRB_WIND_VY || oRec->getDataType() == GRB_WIND_VX)
+                                skip = true;
+                        }
+                        // favor average aka timeRange == 3 (HRRR subhourly subsets have both 3 and 0 records for winds)
+                        if (!skip && (oRec->getTimeRange() == 3)) {
+                            skip = true;
+                        }
+                    }
+                    if (!skip) {
                         m_GribRecordSetArray.Item( j ).m_GribRecordPtrArray[idx]= pRec;
                         if(m_GribIdxArray.Index(idx) == wxNOT_FOUND ) m_GribIdxArray.Add(idx, 1);
                         if(mdx != -1 && m_GribIdxArray.Index(mdx) == wxNOT_FOUND ) m_GribIdxArray.Add(mdx, 1);
                     }
                     break;
                 }
+            }
+        }
+    }
+
+    if (polarWind) {
+        for( unsigned int j = 0; j < m_GribRecordSetArray.GetCount(); j++ ) {
+            for(unsigned int i=0; i<Idx_COUNT; i++) {
+                GribRecord *GR1 = NULL, *GR2 = NULL;
+                int idx = -1;
+                GribRecord *pRec = m_GribRecordSetArray.Item( j ).m_GribRecordPtrArray[i];
+
+                if ( pRec == 0 || pRec->getDataType() != GRB_WIND_DIR) {
+                    continue;
+                }
+                switch( i ) {
+                case Idx_WIND_VX300:
+                    idx = Idx_WIND_VY300;
+                    break;
+                case Idx_WIND_VX500:
+                    idx = Idx_WIND_VY500;
+                    break;
+                case Idx_WIND_VX700:
+                    idx = Idx_WIND_VY700;
+                    break;
+                case Idx_WIND_VX850:
+                    idx = Idx_WIND_VY850;
+                    break;
+                case Idx_WIND_VX:
+                    idx = Idx_WIND_VY;
+                    break;
+                default:
+                    break;
+                }
+                if (idx == -1)
+                    continue;
+                GribRecord *pRec1 = m_GribRecordSetArray.Item( j ).m_GribRecordPtrArray[idx];
+                if (pRec1 == 0 || pRec1->getDataType() != GRB_WIND_SPEED) {
+                    continue;
+                }
+                GribRecord::Polar2UV(pRec, pRec1);
             }
         }
     }

@@ -52,6 +52,7 @@ int g_iDashSOGDamp;
 int g_iDashDepthUnit;
 int g_iDashDistanceUnit;
 int g_iDashWindSpeedUnit;
+int g_iUTCOffset;
 
 #if !defined(NAN)
 static const long long lNaN = 0xfff8000000000000;
@@ -83,10 +84,10 @@ enum {
     ID_DBP_I_POS, ID_DBP_I_SOG, ID_DBP_D_SOG, ID_DBP_I_COG, ID_DBP_D_COG, ID_DBP_I_STW,
     ID_DBP_I_HDT, ID_DBP_D_AW, ID_DBP_D_AWA, ID_DBP_I_AWS, ID_DBP_D_AWS, ID_DBP_D_TW,
     ID_DBP_I_DPT, ID_DBP_D_DPT, ID_DBP_I_TMP, ID_DBP_I_VMG, ID_DBP_D_VMG, ID_DBP_I_RSA,
-    ID_DBP_D_RSA, ID_DBP_I_SAT, ID_DBP_D_GPS, ID_DBP_I_PTR, ID_DBP_I_CLK, ID_DBP_I_SUN,
+    ID_DBP_D_RSA, ID_DBP_I_SAT, ID_DBP_D_GPS, ID_DBP_I_PTR, ID_DBP_I_GPSUTC, ID_DBP_I_SUN,
     ID_DBP_D_MON, ID_DBP_I_ATMP, ID_DBP_I_AWA, ID_DBP_I_TWA, ID_DBP_I_TWD, ID_DBP_I_TWS,
     ID_DBP_D_TWD, ID_DBP_I_HDM, ID_DBP_D_HDT, ID_DBP_D_WDH, ID_DBP_I_VLW1, ID_DBP_I_VLW2, ID_DBP_D_MDA, ID_DBP_I_MDA,ID_DBP_D_BPH, ID_DBP_I_FOS,
-	ID_DBP_M_COG, ID_DBP_I_PITCH, ID_DBP_I_HEEL, ID_DBP_D_AWA_TWA,
+	ID_DBP_M_COG, ID_DBP_I_PITCH, ID_DBP_I_HEEL, ID_DBP_D_AWA_TWA, ID_DBP_I_GPSLCL, ID_DBP_I_CPULCL, ID_DBP_I_SUNLCL,
     ID_DBP_LAST_ENTRY //this has a reference in one of the routines; defining a "LAST_ENTRY" and setting the reference to it, is one codeline less to change (and find) when adding new instruments :-)
 };
 
@@ -167,8 +168,8 @@ wxString getInstrumentCaption( unsigned int id )
             return _("GPS Status");
         case ID_DBP_I_PTR:
             return _("Cursor");
-        case ID_DBP_I_CLK:
-            return _("Clock");
+        case ID_DBP_I_GPSUTC:
+            return _("GPS Clock");
         case ID_DBP_I_SUN:
             return _("Sunrise/Sunset");
         case ID_DBP_D_MON:
@@ -187,6 +188,12 @@ wxString getInstrumentCaption( unsigned int id )
 			return _("Pitch");
 		case ID_DBP_I_HEEL:
 			return _("Heel");
+        case ID_DBP_I_GPSLCL:
+            return _( "Local GPS Clock" );
+        case ID_DBP_I_CPULCL:
+            return _( "Local CPU Clock" );
+        case ID_DBP_I_SUNLCL:
+            return _( "Local Sunrise/Sunset" );
     }
     return _T("");
 }
@@ -216,8 +223,11 @@ void getListItemForInstrument( wxListItem &item, unsigned int id )
         case ID_DBP_I_RSA:
         case ID_DBP_I_SAT:
         case ID_DBP_I_PTR:
-        case ID_DBP_I_CLK:
+        case ID_DBP_I_GPSUTC:
+        case ID_DBP_I_GPSLCL:
+        case ID_DBP_I_CPULCL:
         case ID_DBP_I_SUN:
+        case ID_DBP_I_SUNLCL:
         case ID_DBP_I_VLW1:
         case ID_DBP_I_VLW2:
         case ID_DBP_I_FOS:
@@ -1064,7 +1074,8 @@ void dashboard_pi::SetNMEASentence( wxString &sentence )
                     }
                     // XDR Pitch (=Nose up/down) or Heel (stb/port)
                     if (m_NMEA0183.Xdr.TransducerInfo[i].TransducerType == _T("A")) {
-                        if (m_NMEA0183.Xdr.TransducerInfo[i].TransducerName == _T("PTCH")) {
+                        if (m_NMEA0183.Xdr.TransducerInfo[i].TransducerName == _T("PTCH")
+                            || m_NMEA0183.Xdr.TransducerInfo[i].TransducerName == _T("PITCH")) {
                             if (m_NMEA0183.Xdr.TransducerInfo[i].MeasurementData > 0) {
                                 xdrunit = _T("\u00B0 Nose up");
                             }
@@ -1421,6 +1432,7 @@ bool dashboard_pi::LoadConfig( void )
         pConf->Read( _T("DistanceUnit"), &g_iDashDistanceUnit, 0 );
         pConf->Read( _T("WindSpeedUnit"), &g_iDashWindSpeedUnit, 0 );
 
+        pConf->Read( _T("UTCOffset"), &g_iUTCOffset, 0 );
 
         int d_cnt;
         pConf->Read( _T("DashboardCount"), &d_cnt, -1 );
@@ -1517,6 +1529,7 @@ bool dashboard_pi::SaveConfig( void )
         pConf->Write( _T("DepthUnit"), g_iDashDepthUnit );
         pConf->Write( _T("DistanceUnit"), g_iDashDistanceUnit );
         pConf->Write( _T("WindSpeedUnit"), g_iDashWindSpeedUnit );
+        pConf->Write( _T("UTCOffset"), g_iUTCOffset );
 
         pConf->Write( _T("DashboardCount" ), (int) m_ArrayOfDashboardWindow.GetCount() );
         for( unsigned int i = 0; i < m_ArrayOfDashboardWindow.GetCount(); i++ ) {
@@ -1557,8 +1570,8 @@ void dashboard_pi::ApplyConfig( void )
         } else if( !cont->m_pDashboardWindow ) {
             // A new dashboard is created
             cont->m_pDashboardWindow = new DashboardWindow( GetOCPNCanvasWindow(), wxID_ANY,
-                    m_pauimgr, this, orient, cont );
-            cont->m_pDashboardWindow->SetInstrumentList( cont->m_aInstrumentList );
+                    m_pauimgr, this, cont );
+            cont->m_pDashboardWindow->SetInstrumentList( cont->m_aInstrumentList, orient );
             bool vertical = orient == wxVERTICAL;
             wxSize sz = cont->m_pDashboardWindow->GetMinSize();
 // Mac has a little trouble with initial Layout() sizing...
@@ -1577,14 +1590,9 @@ void dashboard_pi::ApplyConfig( void )
         } else {
             wxAuiPaneInfo& pane = m_pauimgr->GetPane( cont->m_pDashboardWindow );
             pane.Caption( cont->m_sCaption ).Show( cont->m_bIsVisible );
-            if( !cont->m_pDashboardWindow->isInstrumentListEqual( cont->m_aInstrumentList ) ) {
-                cont->m_pDashboardWindow->SetInstrumentList( cont->m_aInstrumentList );
-                wxSize sz = cont->m_pDashboardWindow->GetMinSize();
-                pane.MinSize( sz ).BestSize( sz ).FloatingSize( sz );
-            }
-            if( cont->m_pDashboardWindow->GetSizerOrientation() != orient ) {
+            if(cont->m_pDashboardWindow->GetSizerOrientation() != orient ||
+               !cont->m_pDashboardWindow->isInstrumentListEqual( cont->m_aInstrumentList ))
                 cont->m_pDashboardWindow->ChangePaneOrientation( orient, false );
-            }
         }
     }
     m_pauimgr->Update();
@@ -1821,6 +1829,26 @@ DashboardPreferencesDialog::DashboardPreferencesDialog( wxWindow *parent, wxWind
     itemFlexGridSizer04->Add(itemStaticText11, 0, wxEXPAND | wxALL, border_size);
     m_pSpinCOGDamp = new wxSpinCtrl(itemPanelNotebook02, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 0, 100, g_iDashCOGDamp);
     itemFlexGridSizer04->Add(m_pSpinCOGDamp, 0, wxALIGN_RIGHT | wxALL, 0);
+
+    wxStaticText* itemStaticText12 = new wxStaticText( itemPanelNotebook02, wxID_ANY, _( "Local Time Offset From UTC:" ),
+        wxDefaultPosition, wxDefaultSize, 0 );
+    itemFlexGridSizer04->Add( itemStaticText12, 0, wxEXPAND | wxALL, border_size );
+    wxString m_UTCOffsetChoices[] = {
+        _T( "-12:00" ), _T( "-11:30" ), _T( "-11:00" ), _T( "-10:30" ), _T( "-10:00" ), _T( "-09:30" ),
+        _T( "-09:00" ), _T( "-08:30" ), _T( "-08:00" ), _T( "-07:30" ), _T( "-07:00" ), _T( "-06:30" ),
+        _T( "-06:00" ), _T( "-05:30" ), _T( "-05:00" ), _T( "-04:30" ), _T( "-04:00" ), _T( "-03:30" ),
+        _T( "-03:00" ), _T( "-02:30" ), _T( "-02:00" ), _T( "-01:30" ), _T( "-01:00" ), _T( "-00:30" ),
+        _T( " 00:00" ), _T( " 00:30" ), _T( " 01:00" ), _T( " 01:30" ), _T( " 02:00" ), _T( " 02:30" ),
+        _T( " 03:00" ), _T( " 03:30" ), _T( " 04:00" ), _T( " 04:30" ), _T( " 05:00" ), _T( " 05:30" ),
+        _T( " 06:00" ), _T( " 06:30" ), _T( " 07:00" ), _T( " 07:30" ), _T( " 08:00" ), _T( " 08:30" ),
+        _T( " 09:00" ), _T( " 09:30" ), _T( " 10:00" ), _T( " 10:30" ), _T( " 11:00" ), _T( " 11:30" ),
+        _T( " 12:00" )
+    };
+    int m_UTCOffsetNChoices = sizeof( m_UTCOffsetChoices ) / sizeof( wxString );
+    m_pChoiceUTCOffset = new wxChoice( itemPanelNotebook02, wxID_ANY, wxDefaultPosition, wxDefaultSize, m_UTCOffsetNChoices, m_UTCOffsetChoices, 0 );
+    m_pChoiceUTCOffset->SetSelection( g_iUTCOffset + 24 );
+    itemFlexGridSizer04->Add( m_pChoiceUTCOffset, 0, wxALIGN_RIGHT | wxALL, 0 );
+
     wxStaticText* itemStaticText09 = new wxStaticText( itemPanelNotebook02, wxID_ANY, _("Boat speed units:"),
             wxDefaultPosition, wxDefaultSize, 0 );
     itemFlexGridSizer04->Add( itemStaticText09, 0, wxEXPAND | wxALL, border_size );
@@ -1866,6 +1894,9 @@ DashboardPreferencesDialog::DashboardPreferencesDialog( wxWindow *parent, wxWind
         m_pListCtrlDashboards->InsertItem( i, 0 );
         // Using data to store m_Config index for managing deletes
         m_pListCtrlDashboards->SetItemData( i, i );
+
+        if(m_Config[i]->m_pDashboardWindow == parent)
+            m_pListCtrlDashboards->SetItemState(i, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
     }
     m_pListCtrlDashboards->SetColumnWidth( 0, wxLIST_AUTOSIZE );
 
@@ -1886,6 +1917,7 @@ void DashboardPreferencesDialog::SaveDashboardConfig()
     g_iDashSpeedMax = m_pSpinSpeedMax->GetValue();
     g_iDashCOGDamp = m_pSpinCOGDamp->GetValue();
     g_iDashSOGDamp = m_pSpinSOGDamp->GetValue();
+    g_iUTCOffset = m_pChoiceUTCOffset->GetSelection() - 24;
     g_iDashSpeedUnit = m_pChoiceSpeedUnit->GetSelection() - 1;
     g_iDashDepthUnit = m_pChoiceDepthUnit->GetSelection() + 3;
     g_iDashDistanceUnit = m_pChoiceDistanceUnit->GetSelection() - 1;
@@ -2111,7 +2143,7 @@ unsigned int AddInstrumentDlg::GetInstrumentAdded()
 
 // wxWS_EX_VALIDATE_RECURSIVELY required to push events to parents
 DashboardWindow::DashboardWindow( wxWindow *pparent, wxWindowID id, wxAuiManager *auimgr,
-        dashboard_pi* plugin, int orient, DashboardWindowContainer* mycont ) :
+        dashboard_pi* plugin, DashboardWindowContainer* mycont ) :
         wxWindow( pparent, id, wxDefaultPosition, wxDefaultSize, wxBORDER_NONE,
                 _T("Dashboard") )
 {
@@ -2119,10 +2151,8 @@ DashboardWindow::DashboardWindow( wxWindow *pparent, wxWindowID id, wxAuiManager
     m_plugin = plugin;
     m_Container = mycont;
 
-//wx2.9      itemBoxSizer = new wxWrapSizer( orient );
-    itemBoxSizer = new wxBoxSizer( orient );
-    SetSizer( itemBoxSizer );
-    Connect( wxEVT_SIZE, wxSizeEventHandler( DashboardWindow::OnSize ), NULL, this );
+    itemSizer = NULL;
+
     Connect( wxEVT_CONTEXT_MENU, wxContextMenuEventHandler( DashboardWindow::OnContextMenu ), NULL,
             this );
     Connect( wxEVT_COMMAND_MENU_SELECTED,
@@ -2136,18 +2166,18 @@ DashboardWindow::~DashboardWindow()
         delete pdic;
     }
 }
-
+#if 0
 void DashboardWindow::OnSize( wxSizeEvent& event )
 {
     event.Skip();
     for( unsigned int i=0; i<m_ArrayOfInstrument.size(); i++ ) {
         DashboardInstrument* inst = m_ArrayOfInstrument.Item(i)->m_pInstrument;
-        inst->SetMinSize( inst->GetSize( itemBoxSizer->GetOrientation(), GetClientSize() ) );
+        inst->SetMinSize( inst->GetSize( itemSizer->GetOrientation(), GetClientSize() ) );
     }
     Layout();
     Refresh();
 }
-
+#endif
 void DashboardWindow::OnContextMenu( wxContextMenuEvent& event )
 {
     wxMenu* contextMenu = new wxMenu();
@@ -2157,9 +2187,9 @@ void DashboardWindow::OnContextMenu( wxContextMenuEvent& event )
         contextMenu->Append( ID_DASH_UNDOCK, _( "Undock" ) );
     }
     wxMenuItem* btnVertical = contextMenu->AppendRadioItem( ID_DASH_VERTICAL, _("Vertical") );
-    btnVertical->Check( itemBoxSizer->GetOrientation() == wxVERTICAL );
+    btnVertical->Check( GetSizerOrientation() == wxVERTICAL );
     wxMenuItem* btnHorizontal = contextMenu->AppendRadioItem( ID_DASH_HORIZONTAL, _("Horizontal") );
-    btnHorizontal->Check( itemBoxSizer->GetOrientation() == wxHORIZONTAL );
+    btnHorizontal->Check( GetSizerOrientation() == wxHORIZONTAL );
     contextMenu->AppendSeparator();
 
     m_plugin->PopulateContextMenu( contextMenu );
@@ -2215,6 +2245,7 @@ void DashboardWindow::SetColorScheme( PI_ColorScheme cs )
 
 void DashboardWindow::ChangePaneOrientation( int orient, bool updateAUImgr )
 {
+    wxPoint p = m_pauimgr->GetPane( this ).floating_pos;
     m_pauimgr->DetachPane( this );
     SetSizerOrientation( orient );
     bool vertical = orient == wxVERTICAL;
@@ -2225,27 +2256,19 @@ void DashboardWindow::ChangePaneOrientation( int orient, bool updateAUImgr )
     m_pauimgr->AddPane( this, wxAuiPaneInfo().Name( m_Container->m_sName ).Caption(
         m_Container->m_sCaption ).CaptionVisible( true ).TopDockable( !vertical ).BottomDockable(
         !vertical ).LeftDockable( vertical ).RightDockable( vertical ).MinSize( sz ).BestSize(
-        sz ).FloatingSize( sz ).FloatingPosition( 100, 100 ).Float().Show( m_Container->m_bIsVisible ) );
+            sz ).FloatingSize( sz ).FloatingPosition( p ).Float().Show( m_Container->m_bIsVisible ) );
     if ( updateAUImgr ) m_pauimgr->Update();
 }
 
 void DashboardWindow::SetSizerOrientation( int orient )
 {
-    itemBoxSizer->SetOrientation( orient );
-    /* We must reset all MinSize to ensure we start with new default */
-    wxWindowListNode* node = GetChildren().GetFirst();
-    while(node) {
-        node->GetData()->SetMinSize( wxDefaultSize );
-        node = node->GetNext();
-    }
-    SetMinSize( wxDefaultSize );
-    Fit();
-    SetMinSize( itemBoxSizer->GetMinSize() );
+    
+    SetInstrumentList( m_Container->m_aInstrumentList, orient );
 }
 
 int DashboardWindow::GetSizerOrientation()
 {
-    return itemBoxSizer->GetOrientation();
+    return itemSizer->GetRows() == 1 ? wxHORIZONTAL : wxVERTICAL;
 }
 
 bool isArrayIntEqual( const wxArrayInt& l1, const wxArrayOfInstrument &l2 )
@@ -2263,7 +2286,7 @@ bool DashboardWindow::isInstrumentListEqual( const wxArrayInt& list )
     return isArrayIntEqual( list, m_ArrayOfInstrument );
 }
 
-void DashboardWindow::SetInstrumentList( wxArrayInt list )
+void DashboardWindow::SetInstrumentList( wxArrayInt list, int orient )
 {
     /* options
      ID_DBP_D_SOG: config max value, show STW optional
@@ -2278,7 +2301,16 @@ void DashboardWindow::SetInstrumentList( wxArrayInt list )
 
      */
     m_ArrayOfInstrument.Clear();
-    itemBoxSizer->Clear( true );
+    if(itemSizer)
+        itemSizer->Clear(true);
+
+    itemSizer = new wxFlexGridSizer( orient==wxHORIZONTAL, orient==wxVERTICAL, 0, 5);
+    itemSizer->SetFlexibleDirection(wxBOTH);
+    if(orient==wxHORIZONTAL)
+        itemSizer->AddGrowableRow(0);
+    else
+        itemSizer->AddGrowableCol(0);
+
     for( size_t i = 0; i < list.GetCount(); i++ ) {
         int id = list.Item( i );
         DashboardInstrument *instrument = NULL;
@@ -2482,7 +2514,7 @@ void DashboardWindow::SetInstrumentList( wxArrayInt list )
                 instrument = new DashboardInstrument_Position( this, wxID_ANY,
                         getInstrumentCaption( id ), OCPN_DBP_STC_PLA, OCPN_DBP_STC_PLO );
                 break;
-            case ID_DBP_I_CLK:
+            case ID_DBP_I_GPSUTC:
                 instrument = new DashboardInstrument_Clock( this, wxID_ANY,
                         getInstrumentCaption( id ) );
                 break;
@@ -2513,21 +2545,38 @@ void DashboardWindow::SetInstrumentList( wxArrayInt list )
 			case ID_DBP_I_HEEL:
 				instrument = new DashboardInstrument_Single(this, wxID_ANY,
 					getInstrumentCaption(id), OCPN_DBP_STC_HEEL, _T("%2.1f"));
-		}
+                break;
+             // any clock display with "LCL" in the format string is converted from UTC to local TZ
+            case ID_DBP_I_SUNLCL:
+                instrument = new DashboardInstrument_Sun( this, wxID_ANY,
+                    getInstrumentCaption( id ), _T( "%02i:%02i:%02i LCL" ) );
+                break;
+            case ID_DBP_I_GPSLCL:
+                instrument = new DashboardInstrument_Clock( this, wxID_ANY,
+                    getInstrumentCaption( id ), OCPN_DBP_STC_CLK, _T( "%02i:%02i:%02i LCL" ) );
+                break;
+            case ID_DBP_I_CPULCL:
+                instrument = new DashboardInstrument_CPUClock( this, wxID_ANY,
+                    getInstrumentCaption( id ), _T( "%02i:%02i:%02i LCL" ) );
+        }
         if( instrument ) {
             instrument->instrumentTypeId = id;
             m_ArrayOfInstrument.Add(
                     new DashboardInstrumentContainer( id, instrument,
-                            instrument->GetCapacity() ) );
-            itemBoxSizer->Add( instrument, 0, wxEXPAND, 0 );
-            if( itemBoxSizer->GetOrientation() == wxHORIZONTAL ) {
-                itemBoxSizer->AddSpacer( 5 );
+                                                      instrument->GetCapacity() ) );
+            itemSizer->Add( instrument, 0, wxEXPAND, 0 );
+            if(instrument->CanExpand()) {
+                if(GetSizerOrientation() == wxVERTICAL)
+                    itemSizer->AddGrowableRow(i);
+                else
+                    itemSizer->AddGrowableCol(i);
             }
         }
     }
+    SetSizer( itemSizer );
     Fit();
     Layout();
-    SetMinSize( itemBoxSizer->GetMinSize() );
+    SetMinSize( itemSizer->GetMinSize() );
 }
 
 void DashboardWindow::SendSentenceToAllInstruments( int st, double value, wxString unit )

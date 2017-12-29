@@ -47,11 +47,13 @@ public:
       Route();
       ~Route();
 
+      virtual void Draw(ocpnDC& dc, ViewPort &pvp, const LLBBox &box);
+      virtual int GetnPoints(void) { return pRoutePointList->GetCount(); }
+      
       void AddPoint(RoutePoint *pNewPoint,
                     bool b_rename_in_sequence = true,
                     bool b_deferBoxCalc = false);
 
-      void AddTentativePoint(const wxString& GUID);
       RoutePoint *GetPoint(int nPoint);
       RoutePoint *GetPoint ( const wxString &guid );
       int GetIndexOf(RoutePoint *prp);
@@ -59,7 +61,6 @@ public:
       RoutePoint *InsertPointAfter(RoutePoint *pRP, double rlat, double rlon, bool bRenamePoints = false);
       void DrawPointWhich(ocpnDC& dc, int iPoint, wxPoint *rpn);
       void DrawSegment(ocpnDC& dc, wxPoint *rp1, wxPoint *rp2, ViewPort &vp, bool bdraw_arrow);
-      void Draw(ocpnDC& dc, ViewPort &pvp, const LLBBox &box);
       void DrawGLLines( ViewPort &vp, ocpnDC *dc );
       void DrawGL( ViewPort &vp );
       void DrawGLRouteLines( ViewPort &vp );
@@ -71,7 +72,6 @@ public:
       void UpdateSegmentDistance( RoutePoint *prp0, RoutePoint *prp, double planspeed = -1.0 );
       void UpdateSegmentDistances(double planspeed = -1.0);
       void CalculateDCRect(wxDC& dc_route, wxRect *prect);
-      int GetnPoints(void){ return pRoutePointList->GetCount(); }
       LLBBox &GetBBox();
       void SetHiLite( int width ) {m_hiliteWidth = width; }
       void Reverse(bool bRenamePoints = false);
@@ -123,13 +123,12 @@ public:
       wxString    m_TimeDisplayFormat;
 
       RoutePointList     *pRoutePointList;
-      wxArrayString      RoutePointGUIDList;
 
       wxRect      active_pt_rect;
       wxString    m_Colour;
       bool        m_btemp;
       int         m_hiliteWidth;
-
+      
 private:
       LLBBox     RBBox;
 

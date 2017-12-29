@@ -127,8 +127,11 @@ void GRIBTable::InitGribTable( int zone, ArrayOfGribRecordSets *rsa )
 
         nrows = 2;
 
-        m_pTimeset = m_pGDialog->GetTimeLineRecordSet(time);
-        GribRecord **RecordArray = m_pTimeset->m_GribRecordPtrArray;
+        GribTimelineRecordSet *pTimeset = m_pGDialog->GetTimeLineRecordSet(time);
+        if (pTimeset == 0)
+            continue;
+
+        GribRecord **RecordArray = pTimeset->m_GribRecordPtrArray;
 
         //create and polulate wind data row
         if(m_pGDialog->m_bGRIBActiveFile->m_GribIdxArray.Index(Idx_WIND_VX) != wxNOT_FOUND &&
@@ -207,7 +210,7 @@ void GRIBTable::InitGribTable( int zone, ArrayOfGribRecordSets *rsa )
                 m_pGribTable->SetCellBackgroundColour(nrows, i, m_pDataCellsColour);
                 nrows++;
         }
-
+        delete pTimeset;
         m_pGribTable->AutoSizeColumn(i, false);
 
     }
@@ -216,6 +219,8 @@ void GRIBTable::InitGribTable( int zone, ArrayOfGribRecordSets *rsa )
 
     this->Fit();
     this->Refresh();
+    singledatarow->DecRef();    // Give up pointer control to Grid
+    doubledatarow->DecRef();
 }
 
 void GRIBTable::OnClose( wxCloseEvent& event )
@@ -263,6 +268,7 @@ void GRIBTable::AddDataRow( int num_rows, int num_cols, wxString label, wxGridCe
     if(m_pGribTable->GetNumberRows() == num_rows) {
         m_pGribTable->AppendRows(1);
         m_pGribTable->SetRowLabelValue(num_rows, label);
+        row_attr->IncRef();
         m_pGribTable->SetRowAttr(num_rows, row_attr);
     }
     m_pDataCellsColour = m_pGribTable->GetCellBackgroundColour(num_rows, num_cols);  //set default colour
@@ -499,6 +505,7 @@ wxString GRIBTable::GetTimeRowsStrings( wxDateTime date_time, int time_zone, int
             case 1:
                 return t.Format( _T(" %a-%d-%b-%Y  "), wxDateTime::Local);
             }
+            break;
         case 1:
             switch( type ){
             case 0:
@@ -506,7 +513,7 @@ wxString GRIBTable::GetTimeRowsStrings( wxDateTime date_time, int time_zone, int
             case 1:
                 return t.Format( _T(" %a-%d-%b-%Y  "), wxDateTime::UTC );
             }
-        default:
-            return wxEmptyString;
+            break;
     }
+    return wxEmptyString;
 }

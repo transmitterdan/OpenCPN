@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: grib_pi 4.5.0\n"
+"Project-Id-Version: grib_pi 4.6.22\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-26 22:16-0500\n"
+"POT-Creation-Date: 2017-08-04 09:52-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,12 +31,20 @@ msgstr ""
 msgid "Valid Area and Continue"
 msgstr ""
 
+#: src/GribUIDialog.cpp:425
+msgid "File: "
+msgstr ""
+
 #: src/GribUIDialog.cpp:430
 msgid "Error! "
 msgstr ""
 
 #: src/GribUIDialog.cpp:430
 msgid " contains no valid data!"
+msgstr ""
+
+#: src/GribUIDialog.cpp:455
+msgid "No valid GRIB file"
 msgstr ""
 
 #: src/GribUIDialog.cpp:648 src/GribUIDialog.cpp:841
@@ -47,11 +55,11 @@ msgstr ""
 msgid "Show data at cursor"
 msgstr ""
 
-#: src/GribUIDialog.cpp:649 src/GribUIDialog.cpp:844 src/GribUIDialog.cpp:1197
+#: src/GribUIDialog.cpp:649 src/GribUIDialog.cpp:844 src/GribUIDialog.cpp:1199
 msgid "Start play back"
 msgstr ""
 
-#: src/GribUIDialog.cpp:798 src/grib_pi.cpp:382 src/CursorData.cpp:577
+#: src/GribUIDialog.cpp:798 src/grib_pi.cpp:383 src/CursorData.cpp:577
 msgid "Menu"
 msgstr ""
 
@@ -69,7 +77,7 @@ msgstr ""
 msgid "Zoom To Center"
 msgstr ""
 
-#: src/GribUIDialog.cpp:844 src/GribUIDialog.cpp:1161
+#: src/GribUIDialog.cpp:844 src/GribUIDialog.cpp:1163
 msgid "Stop play back"
 msgstr ""
 
@@ -91,15 +99,15 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: src/GribUIDialog.cpp:1420 src/GribUIDialog.cpp:1440
+#: src/GribUIDialog.cpp:1422 src/GribUIDialog.cpp:1443
 msgid "Select a GRIB file"
 msgstr ""
 
-#: src/GribUIDialog.cpp:1679
+#: src/GribUIDialog.cpp:1682
 msgid " files don't exist!"
 msgstr ""
 
-#: src/GribUIDialog.cpp:1701
+#: src/GribUIDialog.cpp:1704
 msgid " can't be read!"
 msgstr ""
 
@@ -169,7 +177,7 @@ msgstr ""
 
 #: src/GribSettingsDialog.cpp:47 src/GribUIDialogBase.cpp:417
 #: src/GribUIDialogBase.cpp:899 src/GribUIDialogBase.cpp:1747
-#: src/GribOverlayFactory.cpp:1119 src/GribTable.cpp:136
+#: src/GribOverlayFactory.cpp:1128 src/GribTable.cpp:136
 msgid "Wind"
 msgstr ""
 
@@ -283,7 +291,7 @@ msgid ""
 msgstr ""
 
 #: src/GribSettingsDialog.cpp:890 src/GribSettingsDialog.cpp:936
-#: src/grib_pi.cpp:680 src/GribRequestDialog.cpp:628
+#: src/grib_pi.cpp:681 src/GribRequestDialog.cpp:628
 msgid "Warning!"
 msgstr ""
 
@@ -814,45 +822,45 @@ msgstr ""
 msgid "Grib Data Table"
 msgstr ""
 
-#: src/grib_pi.h:104 src/grib_pi.cpp:398 src/GribRequestDialog.cpp:127
+#: src/grib_pi.h:104 src/grib_pi.cpp:399 src/GribRequestDialog.cpp:127
 #: src/GribRequestDialog.cpp:198 src/GribRequestDialog.cpp:456
 #: src/CursorData.cpp:155
 msgid "Dialog"
 msgstr ""
 
-#: src/GribOverlayFactory.cpp:518
+#: src/GribOverlayFactory.cpp:527
 msgid "Warning : Data at Geopotential Height"
 msgstr ""
 
-#: src/GribOverlayFactory.cpp:1119
+#: src/GribOverlayFactory.cpp:1128
 msgid "Building Isobar map"
 msgstr ""
 
-#: src/GribOverlayFactory.cpp:1437
+#: src/GribOverlayFactory.cpp:1446
 msgid "Overlays not supported by this graphics hardware (Disable OpenGL)"
 msgstr ""
 
-#: src/GribOverlayFactory.cpp:1447
+#: src/GribOverlayFactory.cpp:1456
 msgid "Overlays too wide and can't be displayed:"
 msgstr ""
 
-#: src/GribOverlayFactory.cpp:1456
+#: src/GribOverlayFactory.cpp:1465
 msgid "overlays suppressed if not north-up in DC mode (enable OpenGL)"
 msgstr ""
 
-#: src/GribOverlayFactory.cpp:1473
+#: src/GribOverlayFactory.cpp:1482
 msgid "Please Zoom or Scale Out to view invisible overlays:"
 msgstr ""
 
-#: src/grib_pi.cpp:136
+#: src/grib_pi.cpp:137
 msgid "Grib"
 msgstr ""
 
-#: src/grib_pi.cpp:204
+#: src/grib_pi.cpp:205
 msgid "GRIB PlugIn for OpenCPN"
 msgstr ""
 
-#: src/grib_pi.cpp:210
+#: src/grib_pi.cpp:211
 msgid ""
 "GRIB PlugIn for OpenCPN\n"
 "Provides basic GRIB file overlay capabilities for several GRIB file types\n"
@@ -872,11 +880,11 @@ msgid ""
 "- wind, altitude, temperature and relative humidity at 300, 500, 700, 850 hPa."
 msgstr ""
 
-#: src/grib_pi.cpp:380
+#: src/grib_pi.cpp:381
 msgid "Weather table"
 msgstr ""
 
-#: src/grib_pi.cpp:679
+#: src/grib_pi.cpp:680
 msgid ""
 "You have chosen to authorize interpolation.\n"
 "Don't forget that data displayed at current time will not be real but "

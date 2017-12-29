@@ -35,6 +35,8 @@
 #include <list>
 #include <deque>
 
+#include "Route.h"
+
 struct SubTrack
 {
     SubTrack() {}
@@ -46,19 +48,21 @@ struct SubTrack
 class TrackPoint
 {
 public:
-      TrackPoint(double lat, double lon) : m_lat(lat), m_lon(lon) {}
+      TrackPoint(double lat, double lon, wxString ts="");
+      TrackPoint(double lat, double lon, wxDateTime dt);
       TrackPoint( TrackPoint* orig );
+      ~TrackPoint();
 
       wxDateTime GetCreateTime(void);
       void SetCreateTime( wxDateTime dt );
       void Draw(ocpnDC& dc );
+      const char *GetTimeString() { return m_timestring; }
       
-
       double            m_lat, m_lon;
       int               m_GPXTrkSegNo;
-      wxString          m_timestring;
 private:
-      wxDateTime        m_CreateTimeX;
+      void SetCreateTime( wxString ts );
+      char             *m_timestring;
 };
 
 //----------------------------------------------------------------------------
@@ -72,14 +76,16 @@ public:
     virtual ~Track();
 
     void Draw(ocpnDC& dc, ViewPort &VP, const LLBBox &box);
-    TrackPoint *GetPoint( int nWhichPoint );
     int GetnPoints(void){ return TrackPoints.size(); }
+    
+    
+    void SetVisible(bool visible = true) { m_bVisible = visible; }
+    TrackPoint *GetPoint( int nWhichPoint );
     TrackPoint *GetLastPoint();
     void AddPoint( TrackPoint *pNewPoint );
     void AddPointFinalized( TrackPoint *pNewPoint );
     TrackPoint* AddNewPoint( vector2D point, wxDateTime time );
     
-    void SetVisible(bool visible = true) { m_bVisible = visible; }
     void SetListed(bool listed = true) { m_bListed = listed; }
     virtual bool IsRunning() { return false; }
 

@@ -415,6 +415,9 @@ class MyFrame: public wxFrame
     void UpdateControlBar(void);
     void RemoveChartFromQuilt(int dbIndex);
 
+    void ShowTides(bool bShow);
+    void ShowCurrents(bool bShow);
+
     void SubmergeToolbar(void);
     void SubmergeToolbarIfOverlap(int x, int y, int margin = 0);
     void SurfaceToolbar(void);
@@ -496,6 +499,8 @@ class MyFrame: public wxFrame
     bool                m_bdefer_resize;
     wxSize              m_defer_size;
     wxSize              m_newsize;
+    
+    void FastClose();
     
   private:
     void ODoSetSize(void);

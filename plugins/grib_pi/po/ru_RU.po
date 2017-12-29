@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-26 22:16-0500\n"
-"PO-Revision-Date: 2017-02-25 13:33-0500\n"
+"POT-Creation-Date: 2017-08-04 09:52-0400\n"
+"PO-Revision-Date: 2017-08-04 22:34-0400\n"
 "Last-Translator: nohal <pavel@kalian.cz>\n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -23,10 +23,15 @@ msgstr "Начать запрос"
 #: src/GribUIDialog.cpp:379
 msgid "Draw requested Area\n"
 "or Click here to stop request"
-msgstr ""
+msgstr "Выделите запрашиваемую область \n"
+"или Нажмите здесь, чтобы остановить запрос"
 
 #: src/GribUIDialog.cpp:383 src/GribUIDialog.cpp:852
 msgid "Valid Area and Continue"
+msgstr "Подтвердить выбор области и продолжить"
+
+#: src/GribUIDialog.cpp:425
+msgid "File: "
 msgstr ""
 
 #: src/GribUIDialog.cpp:430
@@ -37,6 +42,10 @@ msgstr "Ошибка! "
 msgid " contains no valid data!"
 msgstr " не содержит допустимые данные!"
 
+#: src/GribUIDialog.cpp:455
+msgid "No valid GRIB file"
+msgstr ""
+
 #: src/GribUIDialog.cpp:648 src/GribUIDialog.cpp:841
 msgid "Hide data at cursor"
 msgstr "Скрыть данные под курсором"
@@ -45,11 +54,11 @@ msgstr "Скрыть данные под курсором"
 msgid "Show data at cursor"
 msgstr "Показать данные под курсором"
 
-#: src/GribUIDialog.cpp:649 src/GribUIDialog.cpp:844 src/GribUIDialog.cpp:1197
+#: src/GribUIDialog.cpp:649 src/GribUIDialog.cpp:844 src/GribUIDialog.cpp:1199
 msgid "Start play back"
 msgstr "Начать воспроизведение"
 
-#: src/GribUIDialog.cpp:798 src/grib_pi.cpp:382 src/CursorData.cpp:577
+#: src/GribUIDialog.cpp:798 src/grib_pi.cpp:383 src/CursorData.cpp:577
 msgid "Menu"
 msgstr "Меню"
 
@@ -67,7 +76,7 @@ msgstr "Сейчас"
 msgid "Zoom To Center"
 msgstr "Центрировать и приблизить"
 
-#: src/GribUIDialog.cpp:844 src/GribUIDialog.cpp:1161
+#: src/GribUIDialog.cpp:844 src/GribUIDialog.cpp:1163
 msgid "Stop play back"
 msgstr "Остановить воспроизведение"
 
@@ -83,21 +92,21 @@ msgstr "Настройки"
 
 #: src/GribUIDialog.cpp:852
 msgid "Draw requested Area or Click here to stop request"
-msgstr ""
+msgstr "Выделите запрашиваемую область или Нажмите здесь, чтобы остановить запрос"
 
 #: src/GribUIDialog.cpp:903
 msgid "Close"
 msgstr "Закрыть"
 
-#: src/GribUIDialog.cpp:1420 src/GribUIDialog.cpp:1440
+#: src/GribUIDialog.cpp:1422 src/GribUIDialog.cpp:1443
 msgid "Select a GRIB file"
 msgstr "Выберите GRIB-файл"
 
-#: src/GribUIDialog.cpp:1679
+#: src/GribUIDialog.cpp:1682
 msgid " files don't exist!"
 msgstr " файл не существует!"
 
-#: src/GribUIDialog.cpp:1701
+#: src/GribUIDialog.cpp:1704
 msgid " can't be read!"
 msgstr " не удается прочитать!"
 
@@ -167,7 +176,7 @@ msgstr "Дж/кг"
 
 #: src/GribSettingsDialog.cpp:47 src/GribUIDialogBase.cpp:417
 #: src/GribUIDialogBase.cpp:899 src/GribUIDialogBase.cpp:1747
-#: src/GribOverlayFactory.cpp:1119 src/GribTable.cpp:136
+#: src/GribOverlayFactory.cpp:1128 src/GribTable.cpp:136
 msgid "Wind"
 msgstr "Ветер"
 
@@ -282,7 +291,7 @@ msgstr "Вы активировали интерполяцию данных.\n"
 "будут интерполированными, а не реальными!"
 
 #: src/GribSettingsDialog.cpp:890 src/GribSettingsDialog.cpp:936
-#: src/grib_pi.cpp:680 src/GribRequestDialog.cpp:628
+#: src/grib_pi.cpp:681 src/GribRequestDialog.cpp:628
 msgid "Warning!"
 msgstr "Внимание!"
 
@@ -441,7 +450,7 @@ msgstr "Цветовая схема"
 
 #: src/GribUIDialogBase.cpp:899
 msgid "Generic"
-msgstr "Типовая"
+msgstr "Общий"
 
 #: src/GribUIDialogBase.cpp:905 src/CursorData.cpp:497 src/CursorData.cpp:503
 #: src/CursorData.cpp:507 src/CursorData.cpp:515 src/CursorData.cpp:520
@@ -813,45 +822,45 @@ msgstr "Составление запроса для отправки по э�
 msgid "Grib Data Table"
 msgstr "Таблица метео данных Grib"
 
-#: src/grib_pi.h:104 src/grib_pi.cpp:398 src/GribRequestDialog.cpp:127
+#: src/grib_pi.h:104 src/grib_pi.cpp:399 src/GribRequestDialog.cpp:127
 #: src/GribRequestDialog.cpp:198 src/GribRequestDialog.cpp:456
 #: src/CursorData.cpp:155
 msgid "Dialog"
 msgstr "Диалог"
 
-#: src/GribOverlayFactory.cpp:518
+#: src/GribOverlayFactory.cpp:527
 msgid "Warning : Data at Geopotential Height"
 msgstr "Предупреждение: Данные на высоте геопотенциала"
 
-#: src/GribOverlayFactory.cpp:1119
+#: src/GribOverlayFactory.cpp:1128
 msgid "Building Isobar map"
 msgstr "Построение карты изобар"
 
-#: src/GribOverlayFactory.cpp:1437
+#: src/GribOverlayFactory.cpp:1446
 msgid "Overlays not supported by this graphics hardware (Disable OpenGL)"
 msgstr "Наложение метео-карты, не поддерживается вашей видеосистемой (отключите OpenGL)"
 
-#: src/GribOverlayFactory.cpp:1447
+#: src/GribOverlayFactory.cpp:1456
 msgid "Overlays too wide and can't be displayed:"
 msgstr "Наложение метео-карты слишком широкое и не может быть отображено:"
 
-#: src/GribOverlayFactory.cpp:1456
+#: src/GribOverlayFactory.cpp:1465
 msgid "overlays suppressed if not north-up in DC mode (enable OpenGL)"
 msgstr "Повёрнутые наложения отключены в режиме DC"
 
-#: src/GribOverlayFactory.cpp:1473
+#: src/GribOverlayFactory.cpp:1482
 msgid "Please Zoom or Scale Out to view invisible overlays:"
 msgstr "Отдалите карту или уменьшите масштаб, чтобы увидеть невидимые наложения:"
 
-#: src/grib_pi.cpp:136
+#: src/grib_pi.cpp:137
 msgid "Grib"
-msgstr "GRIB"
+msgstr "Метеокарты GRIB"
 
-#: src/grib_pi.cpp:204
+#: src/grib_pi.cpp:205
 msgid "GRIB PlugIn for OpenCPN"
 msgstr "Модуль «GRIB» для OpenCPN"
 
-#: src/grib_pi.cpp:210
+#: src/grib_pi.cpp:211
 msgid "GRIB PlugIn for OpenCPN\n"
 "Provides basic GRIB file overlay capabilities for several GRIB file types\n"
 "and a request function to get GRIB files by eMail.\n\n"
@@ -870,11 +879,11 @@ msgid "GRIB PlugIn for OpenCPN\n"
 msgstr "Модуль «GRIB» для OpenCPN\n"
 "Запрашивает прогноз погоды и отображает его поверх карты."
 
-#: src/grib_pi.cpp:380
+#: src/grib_pi.cpp:381
 msgid "Weather table"
 msgstr "Таблица прогноза погоды"
 
-#: src/grib_pi.cpp:679
+#: src/grib_pi.cpp:680
 msgid "You have chosen to authorize interpolation.\n"
 "Don't forget that data displayed at current time will not be real but Recomputed\n"
 "This can decrease accuracy!"

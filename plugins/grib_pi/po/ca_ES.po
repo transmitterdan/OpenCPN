@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-26 22:16-0500\n"
-"PO-Revision-Date: 2017-01-27 16:13-0500\n"
+"POT-Creation-Date: 2017-08-04 09:52-0400\n"
+"PO-Revision-Date: 2017-08-04 22:32-0400\n"
 "Last-Translator: nohal <pavel@kalian.cz>\n"
 "Language-Team: Catalan\n"
 "Language: ca_ES\n"
@@ -29,6 +29,10 @@ msgstr ""
 msgid "Valid Area and Continue"
 msgstr ""
 
+#: src/GribUIDialog.cpp:425
+msgid "File: "
+msgstr ""
+
 #: src/GribUIDialog.cpp:430
 msgid "Error! "
 msgstr "Error! "
@@ -36,6 +40,10 @@ msgstr "Error! "
 #: src/GribUIDialog.cpp:430
 msgid " contains no valid data!"
 msgstr " conté dades no vàlides!"
+
+#: src/GribUIDialog.cpp:455
+msgid "No valid GRIB file"
+msgstr ""
 
 #: src/GribUIDialog.cpp:648 src/GribUIDialog.cpp:841
 msgid "Hide data at cursor"
@@ -45,11 +53,11 @@ msgstr "Amagar dades en el cursor"
 msgid "Show data at cursor"
 msgstr "Mostrar dades en el cursor"
 
-#: src/GribUIDialog.cpp:649 src/GribUIDialog.cpp:844 src/GribUIDialog.cpp:1197
+#: src/GribUIDialog.cpp:649 src/GribUIDialog.cpp:844 src/GribUIDialog.cpp:1199
 msgid "Start play back"
 msgstr "Iniciar la reproducció"
 
-#: src/GribUIDialog.cpp:798 src/grib_pi.cpp:382 src/CursorData.cpp:577
+#: src/GribUIDialog.cpp:798 src/grib_pi.cpp:383 src/CursorData.cpp:577
 msgid "Menu"
 msgstr "Menú"
 
@@ -67,7 +75,7 @@ msgstr "Ara"
 msgid "Zoom To Center"
 msgstr "Centrar i augmentar"
 
-#: src/GribUIDialog.cpp:844 src/GribUIDialog.cpp:1161
+#: src/GribUIDialog.cpp:844 src/GribUIDialog.cpp:1163
 msgid "Stop play back"
 msgstr "Aturar reprodueix"
 
@@ -89,15 +97,15 @@ msgstr ""
 msgid "Close"
 msgstr "Tanca"
 
-#: src/GribUIDialog.cpp:1420 src/GribUIDialog.cpp:1440
+#: src/GribUIDialog.cpp:1422 src/GribUIDialog.cpp:1443
 msgid "Select a GRIB file"
 msgstr "Seleccioneu un arxiu GRIB"
 
-#: src/GribUIDialog.cpp:1679
+#: src/GribUIDialog.cpp:1682
 msgid " files don't exist!"
 msgstr ""
 
-#: src/GribUIDialog.cpp:1701
+#: src/GribUIDialog.cpp:1704
 msgid " can't be read!"
 msgstr " no es pot llegir!"
 
@@ -167,7 +175,7 @@ msgstr "j/kg"
 
 #: src/GribSettingsDialog.cpp:47 src/GribUIDialogBase.cpp:417
 #: src/GribUIDialogBase.cpp:899 src/GribUIDialogBase.cpp:1747
-#: src/GribOverlayFactory.cpp:1119 src/GribTable.cpp:136
+#: src/GribOverlayFactory.cpp:1128 src/GribTable.cpp:136
 msgid "Wind"
 msgstr "Vent"
 
@@ -280,7 +288,7 @@ msgid "You have chosen to authorize interpolation.\n"
 msgstr ""
 
 #: src/GribSettingsDialog.cpp:890 src/GribSettingsDialog.cpp:936
-#: src/grib_pi.cpp:680 src/GribRequestDialog.cpp:628
+#: src/grib_pi.cpp:681 src/GribRequestDialog.cpp:628
 msgid "Warning!"
 msgstr "Alerta!"
 
@@ -809,45 +817,45 @@ msgstr "Escriure i enviar petició per correu electrònic"
 msgid "Grib Data Table"
 msgstr "Taula de dades GRIB"
 
-#: src/grib_pi.h:104 src/grib_pi.cpp:398 src/GribRequestDialog.cpp:127
+#: src/grib_pi.h:104 src/grib_pi.cpp:399 src/GribRequestDialog.cpp:127
 #: src/GribRequestDialog.cpp:198 src/GribRequestDialog.cpp:456
 #: src/CursorData.cpp:155
 msgid "Dialog"
 msgstr "Diàleg"
 
-#: src/GribOverlayFactory.cpp:518
+#: src/GribOverlayFactory.cpp:527
 msgid "Warning : Data at Geopotential Height"
 msgstr ""
 
-#: src/GribOverlayFactory.cpp:1119
+#: src/GribOverlayFactory.cpp:1128
 msgid "Building Isobar map"
 msgstr "Construint mapa Isobàric"
 
-#: src/GribOverlayFactory.cpp:1437
+#: src/GribOverlayFactory.cpp:1446
 msgid "Overlays not supported by this graphics hardware (Disable OpenGL)"
 msgstr "Superposicions no són compatibles amb aquest maquinari de gràfics (Desactivat OpenGL)"
 
-#: src/GribOverlayFactory.cpp:1447
+#: src/GribOverlayFactory.cpp:1456
 msgid "Overlays too wide and can't be displayed:"
 msgstr "Superposicions massa àmplies i no es poden visualitzar:"
 
-#: src/GribOverlayFactory.cpp:1456
+#: src/GribOverlayFactory.cpp:1465
 msgid "overlays suppressed if not north-up in DC mode (enable OpenGL)"
 msgstr "rotació de capes suprimida si no és nord amunt en mode DC (permetre OpenGL)"
 
-#: src/GribOverlayFactory.cpp:1473
+#: src/GribOverlayFactory.cpp:1482
 msgid "Please Zoom or Scale Out to view invisible overlays:"
 msgstr "Si us plau disminuïu Zoom o l'escala per visualitzar les superposicions invisibles:"
 
-#: src/grib_pi.cpp:136
+#: src/grib_pi.cpp:137
 msgid "Grib"
 msgstr "GRIB"
 
-#: src/grib_pi.cpp:204
+#: src/grib_pi.cpp:205
 msgid "GRIB PlugIn for OpenCPN"
 msgstr "Connector GRIB per a OpenCPN"
 
-#: src/grib_pi.cpp:210
+#: src/grib_pi.cpp:211
 msgid "GRIB PlugIn for OpenCPN\n"
 "Provides basic GRIB file overlay capabilities for several GRIB file types\n"
 "and a request function to get GRIB files by eMail.\n\n"
@@ -879,11 +887,11 @@ msgstr "El connector GRIB per a OpenCPN\n"
 "-   Energia potencial convectiva disponible (CAPE)\n"
 "- Vent, altitud, temperatura i humitat relativa als 300, 500, 700, 850 hPa."
 
-#: src/grib_pi.cpp:380
+#: src/grib_pi.cpp:381
 msgid "Weather table"
 msgstr "Taula Clima"
 
-#: src/grib_pi.cpp:679
+#: src/grib_pi.cpp:680
 msgid "You have chosen to authorize interpolation.\n"
 "Don't forget that data displayed at current time will not be real but Recomputed\n"
 "This can decrease accuracy!"

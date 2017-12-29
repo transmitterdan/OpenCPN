@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-26 22:16-0500\n"
-"PO-Revision-Date: 2017-03-07 13:53-0500\n"
+"POT-Creation-Date: 2017-08-04 09:52-0400\n"
+"PO-Revision-Date: 2017-08-04 22:34-0400\n"
 "Last-Translator: nohal <pavel@kalian.cz>\n"
 "Language-Team: Swedish\n"
 "Language: sv_SE\n"
@@ -30,6 +30,10 @@ msgstr "Rita inställd area\n"
 msgid "Valid Area and Continue"
 msgstr "Acceptera området och fortsätt"
 
+#: src/GribUIDialog.cpp:425
+msgid "File: "
+msgstr "Fil: "
+
 #: src/GribUIDialog.cpp:430
 msgid "Error! "
 msgstr "Fel! "
@@ -37,6 +41,10 @@ msgstr "Fel! "
 #: src/GribUIDialog.cpp:430
 msgid " contains no valid data!"
 msgstr " innehåller inga giltiga data!"
+
+#: src/GribUIDialog.cpp:455
+msgid "No valid GRIB file"
+msgstr "Ingen giltig GRIB-fil"
 
 #: src/GribUIDialog.cpp:648 src/GribUIDialog.cpp:841
 msgid "Hide data at cursor"
@@ -46,11 +54,11 @@ msgstr "Dölj data vid markören"
 msgid "Show data at cursor"
 msgstr "Visa data vid markören"
 
-#: src/GribUIDialog.cpp:649 src/GribUIDialog.cpp:844 src/GribUIDialog.cpp:1197
+#: src/GribUIDialog.cpp:649 src/GribUIDialog.cpp:844 src/GribUIDialog.cpp:1199
 msgid "Start play back"
 msgstr "Börja spela upp"
 
-#: src/GribUIDialog.cpp:798 src/grib_pi.cpp:382 src/CursorData.cpp:577
+#: src/GribUIDialog.cpp:798 src/grib_pi.cpp:383 src/CursorData.cpp:577
 msgid "Menu"
 msgstr "Meny"
 
@@ -68,7 +76,7 @@ msgstr "Nu"
 msgid "Zoom To Center"
 msgstr "Zooma till centrum"
 
-#: src/GribUIDialog.cpp:844 src/GribUIDialog.cpp:1161
+#: src/GribUIDialog.cpp:844 src/GribUIDialog.cpp:1163
 msgid "Stop play back"
 msgstr "Avbryt uppspelning"
 
@@ -90,15 +98,15 @@ msgstr "Rita inställd area eller klicka här för att avbryta"
 msgid "Close"
 msgstr "Avsluta"
 
-#: src/GribUIDialog.cpp:1420 src/GribUIDialog.cpp:1440
+#: src/GribUIDialog.cpp:1422 src/GribUIDialog.cpp:1443
 msgid "Select a GRIB file"
 msgstr "Välj en GRIB-fil"
 
-#: src/GribUIDialog.cpp:1679
+#: src/GribUIDialog.cpp:1682
 msgid " files don't exist!"
 msgstr " hittar inte filerna!"
 
-#: src/GribUIDialog.cpp:1701
+#: src/GribUIDialog.cpp:1704
 msgid " can't be read!"
 msgstr " går inte att läsa!"
 
@@ -168,7 +176,7 @@ msgstr "j/kg"
 
 #: src/GribSettingsDialog.cpp:47 src/GribUIDialogBase.cpp:417
 #: src/GribUIDialogBase.cpp:899 src/GribUIDialogBase.cpp:1747
-#: src/GribOverlayFactory.cpp:1119 src/GribTable.cpp:136
+#: src/GribOverlayFactory.cpp:1128 src/GribTable.cpp:136
 msgid "Wind"
 msgstr "Vind"
 
@@ -283,7 +291,7 @@ msgstr "Du har valt att tillåta interpolation. \n"
 "minskad noggrannhet!"
 
 #: src/GribSettingsDialog.cpp:890 src/GribSettingsDialog.cpp:936
-#: src/grib_pi.cpp:680 src/GribRequestDialog.cpp:628
+#: src/grib_pi.cpp:681 src/GribRequestDialog.cpp:628
 msgid "Warning!"
 msgstr "Varning"
 
@@ -814,45 +822,45 @@ msgstr "Epostförfrågan om GRIB-data"
 msgid "Grib Data Table"
 msgstr "GRIB datatabell"
 
-#: src/grib_pi.h:104 src/grib_pi.cpp:398 src/GribRequestDialog.cpp:127
+#: src/grib_pi.h:104 src/grib_pi.cpp:399 src/GribRequestDialog.cpp:127
 #: src/GribRequestDialog.cpp:198 src/GribRequestDialog.cpp:456
 #: src/CursorData.cpp:155
 msgid "Dialog"
 msgstr "Dialog"
 
-#: src/GribOverlayFactory.cpp:518
+#: src/GribOverlayFactory.cpp:527
 msgid "Warning : Data at Geopotential Height"
 msgstr "Varning: Data på Geopotential höjd"
 
-#: src/GribOverlayFactory.cpp:1119
+#: src/GribOverlayFactory.cpp:1128
 msgid "Building Isobar map"
 msgstr "Skapar isobar-karta"
 
-#: src/GribOverlayFactory.cpp:1437
+#: src/GribOverlayFactory.cpp:1446
 msgid "Overlays not supported by this graphics hardware (Disable OpenGL)"
 msgstr "Överlagring stöds av grafikhårdvaran (inaktivera OpenGL)"
 
-#: src/GribOverlayFactory.cpp:1447
+#: src/GribOverlayFactory.cpp:1456
 msgid "Overlays too wide and can't be displayed:"
 msgstr "Överlagringen är för bred och kan inte visas:"
 
-#: src/GribOverlayFactory.cpp:1456
+#: src/GribOverlayFactory.cpp:1465
 msgid "overlays suppressed if not north-up in DC mode (enable OpenGL)"
 msgstr "Överlagrad data som är roterad döljs i DC-läge"
 
-#: src/GribOverlayFactory.cpp:1473
+#: src/GribOverlayFactory.cpp:1482
 msgid "Please Zoom or Scale Out to view invisible overlays:"
 msgstr "Zooma ut eller öka skalan för att visa GRIB.information"
 
-#: src/grib_pi.cpp:136
+#: src/grib_pi.cpp:137
 msgid "Grib"
 msgstr "Grib"
 
-#: src/grib_pi.cpp:204
+#: src/grib_pi.cpp:205
 msgid "GRIB PlugIn for OpenCPN"
 msgstr "GRIB-modul för OpenCPN"
 
-#: src/grib_pi.cpp:210
+#: src/grib_pi.cpp:211
 msgid "GRIB PlugIn for OpenCPN\n"
 "Provides basic GRIB file overlay capabilities for several GRIB file types\n"
 "and a request function to get GRIB files by eMail.\n\n"
@@ -876,11 +884,11 @@ msgstr "GRIB-modul för OpenCPN\n"
 "- ytvattentemperatur\n"
 "-  strömhastighet och riktning"
 
-#: src/grib_pi.cpp:380
+#: src/grib_pi.cpp:381
 msgid "Weather table"
 msgstr "Vädertabell"
 
-#: src/grib_pi.cpp:679
+#: src/grib_pi.cpp:680
 msgid "You have chosen to authorize interpolation.\n"
 "Don't forget that data displayed at current time will not be real but Recomputed\n"
 "This can decrease accuracy!"
