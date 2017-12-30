@@ -324,6 +324,11 @@ extern double           g_display_size_mm;
 extern bool             g_bshowToolbar;
 extern ocpnFloatingToolbarDialog *g_MainToolbar;
 
+// LIVE ETA OPTION
+bool                    g_bShowLiveETA;
+double                  g_defaultBoatSpeed;
+double                  g_defaultBoatSpeedUserUnit;
+
 
 
 // "Curtain" mode parameters
@@ -389,6 +394,7 @@ ChartCanvas::ChartCanvas ( wxFrame *frame ) :
     m_bMeasure_Active = false;
     m_bMeasure_DistCircle = false;
     m_pMeasureRoute = NULL;
+    m_pTrackRolloverWin = NULL;
     m_pRouteRolloverWin = NULL;
     m_pAISRolloverWin = NULL;
     m_bedge_pan = false;
@@ -407,6 +413,7 @@ ChartCanvas::ChartCanvas ( wxFrame *frame ) :
     m_pFoundRoutePoint            = NULL;
 
     m_pRolloverRouteSeg           = NULL;
+    m_pRolloverTrackSeg           = NULL;
     m_bsectors_shown              = false;
     
     m_bbrightdir = false;
@@ -802,6 +809,7 @@ ChartCanvas::~ChartCanvas()
     delete pRotDefTimer;
     delete m_DoubleClickTimer;
 
+    delete m_pTrackRolloverWin;
     delete m_pRouteRolloverWin;
     delete m_pAISRolloverWin;
     delete m_pBrightPopup;
@@ -2333,7 +2341,7 @@ void ChartCanvas::OnRolloverPopupTimerEvent( wxTimerEvent& event )
 
     // Now the Route info rollover
     // Show the route segment info
-    bool showRollover = false;
+    bool showRouteRollover = false;
 
     if( NULL == m_pRolloverRouteSeg ) {
         //    Get a list of all selectable sgements, and search for the first visible segment as the rollover target.
@@ -2348,7 +2356,7 @@ void ChartCanvas::OnRolloverPopupTimerEvent( wxTimerEvent& event )
 
             if( pr && pr->IsVisible() ) {
                 m_pRolloverRouteSeg = pFindSel;
-                showRollover = true;
+                showRouteRollover = true;
 
                 if( NULL == m_pRouteRolloverWin ) {
                     m_pRouteRolloverWin = new RolloverWin( this, 10 );
@@ -2417,7 +2425,7 @@ void ChartCanvas::OnRolloverPopupTimerEvent( wxTimerEvent& event )
                     m_pRouteRolloverWin->SetBitmap( LEG_ROLLOVER );
                     m_pRouteRolloverWin->IsActive( true );
                     b_need_refresh = true;
-                    showRollover = true;
+                    showRouteRollover = true;
                     break;
                 }
             } else
@@ -2426,29 +2434,130 @@ void ChartCanvas::OnRolloverPopupTimerEvent( wxTimerEvent& event )
     } else {
         //    Is the cursor still in select radius, and not timed out?
         if( !pSelect->IsSelectableSegmentSelected( m_cursor_lat, m_cursor_lon, m_pRolloverRouteSeg ) )
-            showRollover = false;
+            showRouteRollover = false;
         else if(m_pRouteRolloverWin && !m_pRouteRolloverWin->IsActive())
-            showRollover = false;
+            showRouteRollover = false;
         else
-            showRollover = true;
+            showRouteRollover = true;
     }
 
     //    If currently creating a route, do not show this rollover window
     if( parent_frame->nRoute_State )
-        showRollover = false;
+        showRouteRollover = false;
 
     //    Similar for AIS target rollover window
     if( m_pAISRolloverWin && m_pAISRolloverWin->IsActive() )
-        showRollover = false;
+        showRouteRollover = false;
 
-    if( m_pRouteRolloverWin /*&& m_pRouteRolloverWin->IsActive()*/ && !showRollover ) {
+    if( m_pRouteRolloverWin /*&& m_pRouteRolloverWin->IsActive()*/ && !showRouteRollover ) {
         m_pRouteRolloverWin->IsActive( false );
         m_pRolloverRouteSeg = NULL;
         m_pRouteRolloverWin->Destroy();
         m_pRouteRolloverWin = NULL;
         b_need_refresh = true;
-    } else if( m_pRouteRolloverWin && showRollover ) {
+    } else if( m_pRouteRolloverWin && showRouteRollover ) {
         m_pRouteRolloverWin->IsActive( true );
+        b_need_refresh = true;
+    }
+
+    // Now the Track info rollover
+    // Show the track segment info
+    bool showTrackRollover = false;
+
+    if( NULL == m_pRolloverTrackSeg ) {
+        //    Get a list of all selectable sgements, and search for the first visible segment as the rollover target.
+
+        SelectableItemList SelList = pSelect->FindSelectionList( m_cursor_lat, m_cursor_lon,
+                                     SELTYPE_TRACKSEGMENT );
+        wxSelectableItemListNode *node = SelList.GetFirst();
+        while( node ) {
+            SelectItem *pFindSel = node->GetData();
+
+            Track *pt = (Track *) pFindSel->m_pData3;        //candidate
+
+            if( pt && pt->IsVisible() ) {
+                m_pRolloverTrackSeg = pFindSel;
+                showTrackRollover = true;
+
+                if( NULL == m_pTrackRolloverWin ) {
+		   m_pTrackRolloverWin = new RolloverWin( this, 10 );
+                    m_pTrackRolloverWin->IsActive( false );
+                }
+
+                if( !m_pTrackRolloverWin->IsActive() ) {
+                    wxString s;
+                    TrackPoint *segShow_point_a = (TrackPoint *) m_pRolloverTrackSeg->m_pData1;
+                    TrackPoint *segShow_point_b = (TrackPoint *) m_pRolloverTrackSeg->m_pData2;
+
+                    double brg, dist;
+                    DistanceBearingMercator( segShow_point_b->m_lat, segShow_point_b->m_lon,
+                                             segShow_point_a->m_lat, segShow_point_a->m_lon, &brg, &dist );
+
+                    if( !pt->m_bIsInLayer )
+                        s.Append( _("Track") + _T(": ") );
+                    else
+                        s.Append( _("Layer Track: ") );
+
+                    if( pt->m_TrackNameString.IsEmpty() ) s.Append( _("(unnamed)") );
+                    else
+                        s.Append( pt->m_TrackNameString );
+
+                    s << _T("\n") << _("Total Length: ") << FormatDistanceAdaptive( pt->Length())
+                    << _T("\n");
+
+                    if( g_bShowTrue )
+                        s << wxString::Format( wxString("%03d°  ", wxConvUTF8 ), (int)brg );
+                    if( g_bShowMag ){
+                        double latAverage = (segShow_point_b->m_lat + segShow_point_a->m_lat)/2;
+                        double lonAverage = (segShow_point_b->m_lon + segShow_point_a->m_lon)/2;
+                        double varBrg = gFrame->GetMag( brg, latAverage, lonAverage);
+
+                        s << wxString::Format( wxString("%03d°(M)  ", wxConvUTF8 ), (int)varBrg );
+                    }
+
+                    s << FormatDistanceAdaptive( dist );
+
+                    m_pTrackRolloverWin->SetString( s );
+
+                    wxSize win_size = GetSize();
+                    if( console && console->IsShown() ) win_size.x -= console->GetSize().x;
+                    m_pTrackRolloverWin->SetBestPosition( mouse_x, mouse_y, 16, 16, LEG_ROLLOVER,
+                                                     win_size );
+                    m_pTrackRolloverWin->SetBitmap( LEG_ROLLOVER );
+                    m_pTrackRolloverWin->IsActive( true );
+                    b_need_refresh = true;
+                    showTrackRollover = true;
+                    break;
+                }
+            } else
+                node = node->GetNext();
+        }
+    } else {
+        //    Is the cursor still in select radius, and not timed out?
+        if( !pSelect->IsSelectableSegmentSelected( m_cursor_lat, m_cursor_lon, m_pRolloverTrackSeg ) )
+            showTrackRollover = false;
+        else if(m_pTrackRolloverWin && !m_pTrackRolloverWin->IsActive())
+            showTrackRollover = false;
+        else
+            showTrackRollover = true;
+    }
+
+    //    Similar for AIS target rollover window
+    if( m_pAISRolloverWin && m_pAISRolloverWin->IsActive() )
+        showTrackRollover = false;
+
+    //    Similar for route rollover window
+    if( m_pRouteRolloverWin && m_pRouteRolloverWin->IsActive() )
+        showTrackRollover = false;
+
+    if( m_pTrackRolloverWin /*&& m_pTrackRolloverWin->IsActive()*/ && !showTrackRollover ) {
+        m_pTrackRolloverWin->IsActive( false );
+        m_pRolloverTrackSeg = NULL;
+        m_pTrackRolloverWin->Destroy();
+        m_pTrackRolloverWin = NULL;
+        b_need_refresh = true;
+    } else if( m_pTrackRolloverWin && showTrackRollover ) {
+        m_pTrackRolloverWin->IsActive( true );
         b_need_refresh = true;
     }
 
@@ -2521,9 +2630,138 @@ void ChartCanvas::SetCursorStatus( double cursor_lat, double cursor_lon )
     
     s << FormatDistanceAdaptive( dist );
     
+    // CUSTOMIZATION - LIVE ETA OPTION
+    // -------------------------------------------------------
+    // Calculate an "live" ETA based on route starting from the current
+    // position of the boat and goes to the cursor of the mouse.
+    // In any case, an standard ETA will be calculated with a default speed
+    // of the boat to give an estimation of the route (in particular if GPS
+    // is off).
+    
+    // Display only if option "live ETA" is selected in Settings > Display > General.
+    if (g_bShowLiveETA)
+    {
+    
+        float realTimeETA;
+        float boatSpeed;
+        float boatSpeedDefault = g_defaultBoatSpeed;
+        
+        // Calculate Estimate Time to Arrival (ETA) in minutes
+        // Check before is value not closed to zero (it will make an very big number...)
+        if (!wxIsNaN(gSog))
+        {
+            boatSpeed = gSog;
+            if (boatSpeed < 0.5)
+            {
+                realTimeETA = 0;
+            }
+            else
+            {
+                realTimeETA = dist / boatSpeed * 60;
+            }
+        }
+        else
+        {
+            realTimeETA = 0;
+        }
+        
+        // Add space after distance display
+        s << " ";
+        // Display ETA
+        s << minutesToHoursDays(realTimeETA);
+        
+        // In any case, display also an ETA with default speed at 6knts
+        
+        s << " [@";
+        s << wxString::Format(_T("%d"), (int)toUsrSpeed(boatSpeedDefault, -1));
+        s << wxString::Format(_T("%s"), getUsrSpeedUnit(-1));
+        s << " ";
+        s << minutesToHoursDays(dist/boatSpeedDefault*60);
+        s << "]";
+    
+    }
+    // END OF - LIVE ETA OPTION
+    
     if(STAT_FIELD_CURSOR_BRGRNG >= 0)
         parent_frame->SetStatusText ( s, STAT_FIELD_CURSOR_BRGRNG );
 }
+
+// CUSTOMIZATION - FORMAT MINUTES
+// -------------------------------------------------------
+// New function to format minutes into a more readable format:
+//  * Hours + minutes, or
+//  * Days + hours.
+wxString minutesToHoursDays(float timeInMinutes)
+{
+    wxString s;
+    
+    if (timeInMinutes == 0)
+    {
+        s << "--min";
+    }
+    
+    // Less than 60min, keep time in minutes
+    else if (timeInMinutes < 60 && timeInMinutes != 0)
+    {
+        s << wxString::Format(_T("%d"), (int)timeInMinutes);
+        s << "min";
+    }
+    
+    // Between 1h and less than 24h, display time in hours, minutes
+    else if (timeInMinutes >= 60 && timeInMinutes < 24 * 60)
+    {
+        
+        int hours;
+        int min;
+        hours = (int)timeInMinutes / 60;
+        min = (int)timeInMinutes % 60;
+        
+        if (min == 0)
+        {
+            s << wxString::Format(_T("%d"), hours );
+            s << "h";
+        }
+        else
+        {
+            s << wxString::Format(_T("%d"), hours );
+            s << "h";
+            s << wxString::Format(_T("%d"), min );
+            s << "min";
+        }
+        
+    }
+    
+    // More than 24h, display time in days, hours
+    else if (timeInMinutes > 24 * 60)
+    {
+        
+        int days;
+        int hours;
+        days = (int)(timeInMinutes / 60) / 24;
+        hours = (int)(timeInMinutes / 60) % 24;
+        
+        if (hours == 0)
+        {
+            s << wxString::Format(_T("%d"), days );
+            s << "d";
+        }
+        else
+        {
+            s << wxString::Format(_T("%d"), days );
+            s << "d";
+            s << wxString::Format(_T("%d"), hours );
+            s << "h";
+        }
+        
+    }
+    
+    return s;
+}
+
+// END OF CUSTOMIZATION - FORMAT MINUTES
+// Thanks open source code ;-)
+// -------------------------------------------------------
+
 
 void ChartCanvas::GetCursorLatLon( double *lat, double *lon )
 {
@@ -5004,7 +5242,9 @@ bool ChartCanvas::MouseEventSetup( wxMouseEvent& event,  bool b_handle_dclick )
 //      Retrigger the route leg / AIS target popup timer
     if( !g_btouch )
     {
-        if( m_pRouteRolloverWin && m_pRouteRolloverWin->IsActive() )
+       if( (m_pRouteRolloverWin && m_pRouteRolloverWin->IsActive()) ||
+	   (m_pTrackRolloverWin && m_pTrackRolloverWin->IsActive()) ||
+	   (m_pAISRolloverWin && m_pAISRolloverWin->IsActive()) )
             m_RolloverPopupTimer.Start( 10, wxTIMER_ONE_SHOT );               // faster response while the rollover is turned on
         else
             m_RolloverPopupTimer.Start( m_rollover_popup_timer_msec, wxTIMER_ONE_SHOT );
@@ -6225,7 +6465,10 @@ bool ChartCanvas::MouseEventProcessObjects( wxMouseEvent& event )
                         b_startedit_route = true;
                         
                         
-                        //  Hide the route rollover during route point edit, not needed, and may be confusing
+                        //  Hide the track and route rollover during route point edit, not needed, and may be confusing
+                        if( m_pTrackRolloverWin && m_pTrackRolloverWin->IsActive()  ) {
+                            m_pTrackRolloverWin->IsActive( false );
+                        }
                         if( m_pRouteRolloverWin && m_pRouteRolloverWin->IsActive()  ) {
                             m_pRouteRolloverWin->IsActive( false );
                         }
@@ -6342,6 +6585,23 @@ bool ChartCanvas::MouseEventProcessObjects( wxMouseEvent& event )
                 }       // while
             }
             
+            if(!b_start_rollover && !b_startedit_route){
+                SelectableItemList SelList = pSelect->FindSelectionList( m_cursor_lat, m_cursor_lon,
+                                                                         SELTYPE_TRACKSEGMENT );
+                wxSelectableItemListNode *node = SelList.GetFirst();
+                while( node ) {
+                    SelectItem *pFindSel = node->GetData();
+
+                    Track *tr = (Track *) pFindSel->m_pData3;        //candidate
+
+                    if( tr && tr->IsVisible() ){
+                        b_start_rollover = true;
+                        break;
+                    }
+                    node = node->GetNext();
+                }       // while
+            }
+
             if( b_start_rollover )
                 m_RolloverPopupTimer.Start( m_rollover_popup_timer_msec, wxTIMER_ONE_SHOT );
             
@@ -8440,7 +8700,9 @@ void ChartCanvas::Refresh( bool eraseBackground, const wxRect *rect )
     //      n.b.  We use slightly longer oneshot value to allow this method's Refresh() to complete before
     //      potentially getting another Refresh() in the popup timer handler.
     if( !m_RolloverPopupTimer.IsRunning() &&
-        ((m_pRouteRolloverWin && m_pRouteRolloverWin->IsActive()) || (m_pAISRolloverWin && m_pAISRolloverWin->IsActive())))
+        ((m_pRouteRolloverWin && m_pRouteRolloverWin->IsActive()) ||
+	(m_pTrackRolloverWin && m_pTrackRolloverWin->IsActive()) ||
+	(m_pAISRolloverWin && m_pAISRolloverWin->IsActive())) )
         m_RolloverPopupTimer.Start( 500, wxTIMER_ONE_SHOT );
 
 #ifdef ocpnUSE_GL
@@ -8604,6 +8866,11 @@ void ChartCanvas::DrawOverlayObjects( ocpnDC &dc, const wxRegion& ru )
 #ifdef USE_S57
     s57_DrawExtendedLightSectors( dc, VPoint, extendedSectorLegs );
 #endif
+
+    if( m_pTrackRolloverWin ) {
+        m_pTrackRolloverWin->Draw(dc);
+        m_brepaint_piano = true;
+    }
 
     if( m_pRouteRolloverWin ) {
         m_pRouteRolloverWin->Draw(dc);
