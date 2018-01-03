@@ -323,12 +323,12 @@ extern double           g_display_size_mm;
 
 extern bool             g_bshowToolbar;
 extern ocpnFloatingToolbarDialog *g_MainToolbar;
+extern wxColour         g_colourOwnshipRangeRingsColour;
 
 // LIVE ETA OPTION
 bool                    g_bShowLiveETA;
 double                  g_defaultBoatSpeed;
 double                  g_defaultBoatSpeedUserUnit;
-
 
 
 // "Curtain" mode parameters
@@ -1705,6 +1705,10 @@ void ChartCanvas::OnKeyDown( wxKeyEvent &event )
             parent_frame->ToggleENCText();
             break;
 
+        case 'U':
+            parent_frame->ToggleDataQuality();
+            break;
+
         case 1:                      // Ctrl A
             parent_frame->TogglebFollow();
             break;
@@ -2516,6 +2520,9 @@ void ChartCanvas::OnRolloverPopupTimerEvent( wxTimerEvent& event )
                     }
 
                     s << FormatDistanceAdaptive( dist );
+
+                    double segmentSpeed = toUsrSpeed( dist / ( (segShow_point_b->GetCreateTime() - segShow_point_a->GetCreateTime()).GetSeconds().ToDouble() / 3600.) );
+                    s << wxString::Format( _T("  %.1f "), (float)segmentSpeed ) << getUsrSpeedUnit();
 
                     m_pTrackRolloverWin->SetString( s );
 
@@ -3436,7 +3443,15 @@ bool ChartCanvas::SetViewPoint( double lat, double lon, double scale_ppm, double
                 b_ret = true;
             }
         }
-        
+        //  Create the stack
+        if( ChartData && pCurrentStack ) {
+            int current_db_index;
+            current_db_index = pCurrentStack->GetCurrentEntrydbIndex();       // capture the current
+
+            ChartData->BuildChartStack( pCurrentStack, lat, lon, current_db_index);
+            pCurrentStack->SetCurrentEntryFromdbIndex( current_db_index );
+        }
+
         if(!g_bopengl)
             VPoint.b_MercatorProjectionOverride = false;
     }
@@ -3450,7 +3465,7 @@ bool ChartCanvas::SetViewPoint( double lat, double lon, double scale_ppm, double
         if( ChartData /*&& ChartData->IsValid()*/ ) {
             if( !pCurrentStack ) return false;
 
-            int current_db_index = -1;
+            int current_db_index;
             current_db_index = pCurrentStack->GetCurrentEntrydbIndex();       // capture the current
 
             ChartData->BuildChartStack( pCurrentStack, lat, lon );
@@ -3995,9 +4010,13 @@ void ChartCanvas::ShipIndicatorsDraw( ocpnDC& dc, int img_height,
             pow( (double) (lGPSPoint.y - r.y), 2 ) );
             int pix_radius = (int) lpp;
             
-            wxPen ppPen1( GetGlobalColor( _T ( "URED" ) ), g_cog_predictor_width );
+            extern wxColor GetDimColor(wxColor c);
+            wxColor rangeringcolour = GetDimColor(g_colourOwnshipRangeRingsColour);
+            
+            wxPen ppPen1( rangeringcolour, g_cog_predictor_width );
+            
             dc.SetPen( ppPen1 );
-            dc.SetBrush( wxBrush( GetGlobalColor( _T ( "URED" ) ), wxBRUSHSTYLE_TRANSPARENT ) );
+            dc.SetBrush( wxBrush( rangeringcolour, wxBRUSHSTYLE_TRANSPARENT ) );
             
             for( int i = 1; i <= g_iNavAidRadarRingsNumberVisible; i++ )
                 dc.StrokeCircle( lGPSPoint.x, lGPSPoint.y, i * pix_radius );
