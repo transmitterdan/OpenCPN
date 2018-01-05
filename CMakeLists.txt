@@ -67,6 +67,14 @@ if ( CMAKE_VERSION VERSION_GREATER 3.4 )
   endif()
 endif()
 
+if ( CMAKE_VERSION VERSION_GREATER 3.9 )
+  set(ENABLE_CPPCHECK OFF CACHE BOOL "Add cppcheck automatically to builds")
+  if (ENABLE_CPPCHECK)
+      find_program (CPPCHECK_EXECUTABLE NAMES "cppcheck" )
+      set(CMAKE_CXX_CPPCHECK ${CPPCHECK_EXECUTABLE})
+  endif()
+endif()
+
 INCLUDE( ${CMAKE_SOURCE_DIR}/VERSION.cmake )
 SET(PACKAGE_VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}" )
 IF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/version.h")
@@ -420,6 +428,10 @@ SET( wxWidgets_USE_UNICODE ON)
 SET( wxWidgets_USE_UNIVERSAL OFF)
 SET( wxWidgets_USE_STATIC OFF)
 
+set (WXWIDGETS_FORCE_VERSION CACHE VERSION "Force usage of a specific wxWidgets version.")
+if(WXWIDGETS_FORCE_VERSION)
+  set (wxWidgets_CONFIG_OPTIONS --version=${WXWIDGETS_FORCE_VERSION})
+endif()
 FIND_PACKAGE(wxWidgets REQUIRED)
 
 IF(MSYS)
@@ -730,6 +742,7 @@ IF(OCPN_USE_SVG)
       #set(VIDEO_FFMPEG_LIBRARIES ${FFMPEG_LIBRARIES} ${SWSCALE_LIBRARIES})
 
        FIND_PACKAGE(EXPAT REQUIRED)
+       INCLUDE(FindEXIF.cmake)
     ELSE(NOT WIN32)
       #On Windows, we have our own expat
       SET(EXPAT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/buildwin/expat-2.1.0/include)
@@ -763,6 +776,7 @@ IF(OCPN_USE_SVG)
         ${CAIRO_EXTRA_LIBRARIES}
 #        ${FFMPEG_LIBRARIES}
         ${EXPAT_LIBRARIES}
+        ${EXIF_LIBRARIES}
         ${GTK_LIBRARIES}
       )
     ENDIF(WIN32)
@@ -836,6 +850,12 @@ IF(OCPN_USE_SVG)
       src/wxsvg/src/svgxml/svgxml.cpp
       src/wxsvg/src/svgxml/svgxmlhelpr.cpp
     )
+    if(EXIF_FOUND)
+        SET(SRC_WXSVG ${SRC_WXSVG}
+            src/wxsvg/src/ExifHandler.cpp
+        )
+        ADD_DEFINITIONS(-DwxsvgUSE_EXIF) 
+    endif()
     ADD_LIBRARY(WXSVG ${SRC_WXSVG})
     TARGET_LINK_LIBRARIES(WXSVG ${SVG_LIBS})
     INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/wxsvg/include/wxSVG)

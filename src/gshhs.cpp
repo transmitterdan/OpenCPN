@@ -96,6 +96,7 @@ void GSHHSChart::Reset() {
     if( reader )
         delete reader;
     reader = NULL;
+    gshhsCrossesLandReset();
 }
 
 void GSHHSChart::RenderViewOnDC( ocpnDC& dc, ViewPort& vp )
@@ -1356,17 +1357,28 @@ int GshhsReader::selectBestQuality( ViewPort &vp )
 static GshhsReader *reader = NULL;
 void gshhsCrossesLandInit()
 {
-    reader = new GshhsReader();
-
+    if( ! reader ) {
+        reader = new GshhsReader();
+    }
     /* load best possible quality for crossing tests */
     int bestQuality = 4;
     while( !reader->qualityAvailable[bestQuality] && bestQuality > 0)
         bestQuality--;
     reader->LoadQuality(bestQuality);
+    wxLogMessage("GSHHG: Loaded quality %d for land crossing detection.", bestQuality);
+}
+
+void gshhsCrossesLandReset() {
+    if( reader )
+        delete reader;
+    reader = NULL;
 }
 
 bool gshhsCrossesLand(double lat1, double lon1, double lat2, double lon2)
 {
+    if( ! reader ) {
+        gshhsCrossesLandInit();
+    }
     if(lon1 < 0)
         lon1 += 360;
     if(lon2 < 0)
