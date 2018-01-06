@@ -130,6 +130,11 @@ extern ocpnStyle::StyleManager* g_StyleManager;
 
 extern bool g_bDisplayGrid;
 
+// LIVE ETA OPTION
+extern bool     g_bShowLiveETA;
+extern double   g_defaultBoatSpeed;
+extern double   g_defaultBoatSpeedUserUnit;
+
 //    AIS Global configuration
 extern bool g_bCPAMax;
 extern double g_CPAMax_NM;
@@ -167,6 +172,7 @@ extern float g_fWaypointRangeRingsStep;
 extern int g_iWaypointRangeRingsStepUnits;
 extern wxColour g_colourWaypointRangeRingsColour;
 extern bool g_bWayPointPreventDragging;
+extern wxColour g_colourOwnshipRangeRingsColour;
 
 extern bool g_own_ship_sog_cog_calc;
 extern int g_own_ship_sog_cog_calc_damp_sec;
@@ -195,6 +201,7 @@ extern double g_TrackIntervalSeconds;
 extern double g_TrackDeltaDistance;
 extern double g_TrackDeltaDistance;
 extern int g_nTrackPrecision;
+extern wxColour g_colourTrackLineColour;
 
 extern int g_iSDMMFormat;
 extern int g_iDistanceFormat;
@@ -736,11 +743,11 @@ MMSI_Props_Panel::MMSI_Props_Panel(wxWindow* parent)
       this, ID_MMSI_PROPS_LIST, wxDefaultPosition, wxSize(-1, -1),
       wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_HRULES | wxLC_VRULES |
           wxBORDER_SUNKEN | wxLC_VIRTUAL);
-  wxImageList* imglist = new wxImageList(16, 16, TRUE, 2);
+  //wxImageList* imglist = new wxImageList(16, 16, TRUE, 2);
 
   ocpnStyle::Style* style = g_StyleManager->GetCurrentStyle();
-  imglist->Add(style->GetIcon(_T( "sort_asc" )));
-  imglist->Add(style->GetIcon(_T( "sort_desc" )));
+  //imglist->Add(style->GetIcon(_T( "sort_asc" )));
+  //imglist->Add(style->GetIcon(_T( "sort_desc" )));
 
   // m_pListCtrlMMSI->AssignImageList( imglist, wxIMAGE_LIST_SMALL );
   int dx = GetCharWidth();
@@ -940,8 +947,6 @@ options::~options(void) {
   delete m_pSerialArray;
   delete m_pGroupArray;
   delete m_topImgList;
-  delete smallFont;
-  
 }
 
 // with AIS it's called very often
@@ -1006,7 +1011,6 @@ void options::Init(void) {
   k_vectorcharts = 0;
   k_plugins = 0;
   k_tides = 0;
-  smallFont = 0;
   m_pConfig = NULL;
   
   activeSizer = NULL;
@@ -2505,7 +2509,7 @@ void options::CreatePanel_Ownship(size_t parent, int border_size,
   rrSelect->Add(pNavAidRadarRingsNumberVisible, 0, wxALIGN_RIGHT | wxALL,
                 group_item_spacing);
 
-  radarGrid = new wxFlexGridSizer(2, 2, group_item_spacing, group_item_spacing);
+  radarGrid = new wxFlexGridSizer(0, 2, group_item_spacing, group_item_spacing);
   radarGrid->AddGrowableCol(1);
   dispOptions->Add(radarGrid, 0, wxLEFT | wxEXPAND, 30);
 
@@ -2528,6 +2532,13 @@ void options::CreatePanel_Ownship(size_t parent, int border_size,
                    m_pShipIconType->GetSize(), 2, pDistUnitsStrings);
   radarGrid->Add(m_itemRadarRingsUnits, 0, wxALIGN_RIGHT | wxALL, border_size);
 
+  wxStaticText* colourText = new wxStaticText(itemPanelShip, wxID_STATIC, _("Range Ring Colour"));
+  radarGrid->Add(colourText, 1, wxEXPAND | wxALL, group_item_spacing);
+
+  m_colourOwnshipRangeRingColour = new wxColourPickerCtrl( itemPanelShip, wxID_STATIC, *wxRED,
+                  wxDefaultPosition, wxDefaultSize, 0,  wxDefaultValidator, _T( "ID_COLOUROSRANGECOLOUR" ));
+  radarGrid->Add(m_colourOwnshipRangeRingColour, 1,  wxALIGN_RIGHT, border_size);
+  
   //  Tracks
   wxStaticBox* trackText =
       new wxStaticBox(itemPanelShip, wxID_ANY, _("Tracks"));
@@ -2559,9 +2570,22 @@ void options::CreatePanel_Ownship(size_t parent, int border_size,
 
   trackSizer->Add(trackSizer1, 1, wxEXPAND | wxALL, border_size);
     
+  wxFlexGridSizer* hTrackGrid =
+      new wxFlexGridSizer(1, 3, group_item_spacing, group_item_spacing);
+  hTrackGrid->AddGrowableCol(1);
+  trackSizer->Add(hTrackGrid, 0, wxALL | wxEXPAND, border_size);
+
   pTrackHighlite =
       new wxCheckBox(itemPanelShip, ID_TRACKHILITE, _("Highlight Tracks"));
-  trackSizer->Add(pTrackHighlite, 1, wxALL, border_size);
+  hTrackGrid->Add(pTrackHighlite, 1, wxALIGN_LEFT | wxALIGN_CENTER_VERTICAL, border_size);
+  wxStaticText* trackColourText =
+      new wxStaticText( itemPanelShip, wxID_STATIC, _("Highlight Colour"));
+  hTrackGrid->Add(trackColourText, 1, wxALIGN_RIGHT | wxALIGN_CENTER_VERTICAL, border_size);
+  m_colourTrackLineColour = new wxColourPickerCtrl(
+      itemPanelShip, wxID_STATIC, *wxRED, wxDefaultPosition, wxDefaultSize, 0,
+      wxDefaultValidator, _T( "ID_COLOURTRACKCOLOUR" ));
+  hTrackGrid->Add(m_colourTrackLineColour, 1,
+                         wxALIGN_RIGHT, border_size);
 
   wxFlexGridSizer* pTrackGrid =
       new wxFlexGridSizer(1, 2, group_item_spacing, group_item_spacing);
@@ -2609,9 +2633,9 @@ void options::CreatePanel_Ownship(size_t parent, int border_size,
       new wxStaticBoxSizer(waypointText, wxVERTICAL);
   ownShip->Add(waypointSizer, 0, wxTOP | wxALL | wxEXPAND, border_size);
 
-  wxFlexGridSizer* dispWaypointOptionsGrid =
-      new wxFlexGridSizer(2, 2, group_item_spacing, group_item_spacing);
-  dispWaypointOptionsGrid->AddGrowableCol(1);
+  //wxFlexGridSizer* dispWaypointOptionsGrid =
+  //    new wxFlexGridSizer(2, 2, group_item_spacing, group_item_spacing);
+  //dispWaypointOptionsGrid->AddGrowableCol(1);
 
   wxFlexGridSizer* waypointrrSelect =
       new wxFlexGridSizer(1, 2, group_item_spacing, group_item_spacing);
@@ -2851,7 +2875,7 @@ void options::CreatePanel_Advanced(size_t parent, int border_size,
 
     //  Course Up display update period
     wrapperSizer->Add(new wxStaticText(m_ChartDisplayPage, wxID_ANY,
-                                       _("Course-Up Update Period")),
+                                       _("Chart Rotation Averaging Time")),
                       inputFlags);
 
     wxBoxSizer* pCOGUPFilterRow = new wxBoxSizer(wxHORIZONTAL);
@@ -2967,7 +2991,7 @@ void options::CreatePanel_Advanced(size_t parent, int border_size,
 
     //  Course Up display update period
     itemBoxSizerUI->Add(new wxStaticText(m_ChartDisplayPage, wxID_ANY,
-                                         _("Course-Up Update Period")),
+                                         _("Chart Rotation Averaging Time")),
                         labelFlags);
     wxBoxSizer* pCOGUPFilterRow = new wxBoxSizer(wxHORIZONTAL);
     itemBoxSizerUI->Add(pCOGUPFilterRow, 0, wxALL | wxEXPAND,
@@ -3019,11 +3043,11 @@ void options::CreatePanel_Advanced(size_t parent, int border_size,
                          _("With a lower value, the same zoom level shows a less detailed chart.\n\
 With a higher value, the same zoom level shows a more detailed chart."));
 
-    smallFont = new wxFont(*dialogFont);  // we can't use Smaller() because
-                                          // wx2.8 doesn't support it
-    smallFont->SetPointSize((smallFont->GetPointSize() / 1.2) +
+    smallFont = *dialogFont;  // we can't use Smaller() because
+                              // wx2.8 doesn't support it
+    smallFont.SetPointSize((smallFont.GetPointSize() / 1.2) +
                             0.5);  // + 0.5 to round instead of truncate
-    zoomText->SetFont(*smallFont);
+    zoomText->SetFont(smallFont);
     itemBoxSizerUI->Add(zoomText, 0, wxALL | wxEXPAND, group_item_spacing);
 
     // spacer
@@ -3805,7 +3829,44 @@ void options::CreatePanel_Display(size_t parent, int border_size,
     pSDepthUnits = new wxCheckBox(pDisplayPanel, ID_SHOWDEPTHUNITSBOX1,
                                   _("Show Depth Units"));
     boxDisp->Add(pSDepthUnits, verticleInputFlags);
+      
+    // CUSTOMIZATION - LIVE ETA OPTION
+    // -------------------------------
+    // Add a checkbox to activate live ETA option in status bar, and
+    // Add a text field to set default boat speed (for calculation when
+    // no GPS or when the boat is at the harbor).
+      
+    // Spacer
+    generalSizer->Add(0, border_size * 4);
+    generalSizer->Add(0, border_size * 4);
+    
+    // New menu status bar
+    generalSizer->Add(new wxStaticText(pDisplayPanel, wxID_ANY, _("Status Bar Option")),
+                      groupLabelFlags);
+    wxBoxSizer* boxDispStatusBar = new wxBoxSizer(wxVERTICAL);
+    generalSizer->Add(boxDispStatusBar, groupInputFlags);
+      
+    // Add option for live ETA
+    pSLiveETA = new wxCheckBox(pDisplayPanel, ID_CHECK_LIVEETA, _("Live ETA at Cursor"));
+    boxDispStatusBar->Add(pSLiveETA, verticleInputFlags);
+      
+    // Add text input for default boat speed
+    // (for calculation, in case GPS speed is null)
+    wxBoxSizer *defaultBoatSpeedSizer = new wxBoxSizer(wxHORIZONTAL);
+    boxDispStatusBar->Add(defaultBoatSpeedSizer, wxALL, group_item_spacing);
+    defaultBoatSpeedSizer->Add(new wxStaticText(pDisplayPanel, wxID_ANY, _("Default Boat Speed ")),
+                               groupLabelFlags);
+    pSDefaultBoatSpeed = new wxTextCtrl(pDisplayPanel, ID_DEFAULT_BOAT_SPEED, _T(""), wxDefaultPosition,
+                                        wxSize(50, -1), wxTE_RIGHT);
+    defaultBoatSpeedSizer->Add(pSDefaultBoatSpeed, 0, wxALIGN_CENTER_VERTICAL, group_item_spacing);
+    
+    // --------------------------------------
+    // END OF CUSTOMIZATION - LIVE ETA OPTION
+    
+      
+      
   } else {
+      
     wxBoxSizer* wrapperSizer = new wxBoxSizer(wxVERTICAL);
     pDisplayPanel->SetSizer(wrapperSizer);
 
@@ -4114,9 +4175,9 @@ void options::CreatePanel_Units(size_t parent, int border_size,
     bearingsSizer->AddSpacer(10);
     
     wxStaticText *varText = new wxStaticText(panelUnits, wxID_ANY, _(" To set the magnetic variation manually,\n you must disable the WMM plugin."));
-    smallFont = new wxFont(*dialogFont);  
-    smallFont->SetPointSize((smallFont->GetPointSize() / 1.2) +  0.5);  // + 0.5 to round instead of truncate
-    varText->SetFont(*smallFont);
+    smallFont = *dialogFont;
+    smallFont.SetPointSize((smallFont.GetPointSize() / 1.2) +  0.5);  // + 0.5 to round instead of truncate
+    varText->SetFont(smallFont);
     
     bearingsSizer->Add(varText);
     
@@ -4988,6 +5049,24 @@ void options::SetInitialSettings(void) {
   pMagVar->Enable(!b_haveWMM);
   
   pSDisplayGrid->SetValue(g_bDisplayGrid);
+    
+  // LIVE ETA OPTION
+    
+  // Checkbox
+  pSLiveETA->SetValue(g_bShowLiveETA);
+    
+  // Defaut boat speed text input field
+  // Speed always in knots, and converted to user speed unit
+  wxString stringDefaultBoatSpeed;
+  if (!g_defaultBoatSpeed || !g_defaultBoatSpeedUserUnit)
+  {
+      g_defaultBoatSpeed = 6.0;
+      g_defaultBoatSpeedUserUnit = toUsrSpeed(g_defaultBoatSpeed, -1);
+  }
+  stringDefaultBoatSpeed.Printf(_T("%d"), (int)g_defaultBoatSpeedUserUnit);
+  pSDefaultBoatSpeed->SetValue(stringDefaultBoatSpeed);
+  
+  // END LIVE ETA OPTION
 
   pCBCourseUp->SetValue(g_bCourseUp);
   pCBNorthUp->SetValue(!g_bCourseUp);
@@ -5029,6 +5108,8 @@ void options::SetInitialSettings(void) {
   buf.Printf(_T("%.3f"), g_fNavAidRadarRingsStep);
   pNavAidRadarRingsStep->SetValue(buf);
   m_itemRadarRingsUnits->SetSelection(g_pNavAidRadarRingsStepUnits);
+  m_colourOwnshipRangeRingColour->SetColour(g_colourOwnshipRangeRingsColour);
+  
   OnRadarringSelect(eDummy);
 
   if (g_iWaypointRangeRingsNumber > 10) g_iWaypointRangeRingsNumber = 10;
@@ -5064,7 +5145,8 @@ void options::SetInitialSettings(void) {
   pTrackRotateUTC->SetValue(g_track_rotate_time_type == TIME_TYPE_UTC);
   pTrackRotateComputerTime->SetValue(g_track_rotate_time_type == TIME_TYPE_COMPUTER);
   pTrackHighlite->SetValue(g_bHighliteTracks);
-
+  m_colourTrackLineColour->SetColour(g_colourTrackLineColour);
+  
   pTrackPrecision->SetSelection(g_nTrackPrecision);
 
   //    AIS Parameters
@@ -6000,7 +6082,7 @@ void options::OnApplyClick(wxCommandEvent& event) {
   // End of Connections page
   g_bShowOutlines = pCDOOutlines->GetValue();
   g_bDisplayGrid = pSDisplayGrid->GetValue();
-
+    
   bool temp_bquilting = pCDOQuilting->GetValue();
   if (!g_bQuiltEnable && temp_bquilting)
     cc1->ReloadVP(); /* compose the quilt */
@@ -6056,6 +6138,8 @@ void options::OnApplyClick(wxCommandEvent& event) {
       m_itemWaypointRangeRingsUnits->GetSelection();
   g_colourWaypointRangeRingsColour =
       m_colourWaypointRangeRingsColour->GetColour();
+   g_colourWaypointRangeRingsColour =
+       wxColour(g_colourWaypointRangeRingsColour.Red(), g_colourWaypointRangeRingsColour.Green(), g_colourWaypointRangeRingsColour.Blue());
   g_bWayPointPreventDragging = pWayPointPreventDragging->GetValue();
   g_own_ship_sog_cog_calc = pSogCogFromLLCheckBox->GetValue();
   g_own_ship_sog_cog_calc_damp_sec = pSogCogFromLLDampInterval->GetValue();
@@ -6070,10 +6154,17 @@ void options::OnApplyClick(wxCommandEvent& event) {
   g_iSDMMFormat = pSDMMFormat->GetSelection();
   g_iDistanceFormat = pDistanceFormat->GetSelection();
   g_iSpeedFormat = pSpeedFormat->GetSelection();
+    
+  // LIVE ETA OPTION
+  g_bShowLiveETA = pSLiveETA->GetValue();
+  pSDefaultBoatSpeed->GetValue().ToDouble(&g_defaultBoatSpeedUserUnit);
+  g_defaultBoatSpeed = fromUsrSpeed(g_defaultBoatSpeedUserUnit);
 
   g_bAdvanceRouteWaypointOnArrivalOnly =
       pAdvanceRouteWaypointOnArrivalOnly->GetValue();
 
+  g_colourTrackLineColour =  m_colourTrackLineColour->GetColour();
+  g_colourTrackLineColour =  wxColour(g_colourTrackLineColour.Red(), g_colourTrackLineColour.Green(), g_colourTrackLineColour.Blue());
   g_nTrackPrecision = pTrackPrecision->GetSelection();
 
   g_bTrackDaily = pTrackDaily->GetValue();
@@ -6096,6 +6187,9 @@ void options::OnApplyClick(wxCommandEvent& event) {
 
   g_bEnableZoomToCursor = pEnableZoomToCursor->GetValue();
 
+  g_colourOwnshipRangeRingsColour =  m_colourOwnshipRangeRingColour->GetColour();
+  g_colourOwnshipRangeRingsColour =  wxColour(g_colourOwnshipRangeRingsColour.Red(), g_colourOwnshipRangeRingsColour.Green(), g_colourOwnshipRangeRingsColour.Blue());
+  
   // AIS Parameters
   //   CPA Box
   g_bCPAMax = m_pCheck_CPA_Max->GetValue();

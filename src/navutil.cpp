@@ -122,6 +122,7 @@ extern wxString         g_UserPresLibData;
 
 extern AIS_Decoder      *g_pAIS;
 extern wxString         *pInit_Chart_Dir;
+extern wxString         gWorldMapLocation;
 extern WayPointman      *pWayPointMan;
 extern Routeman         *g_pRouteMan;
 extern RouteProp        *pRoutePropDialog;
@@ -171,6 +172,11 @@ extern wxString         g_InvisibleLayers;
 extern wxRect           g_blink_rect;
 
 extern wxArrayString    *pMessageOnceArray;
+
+// LIVE ETA OPTION
+extern bool             g_bShowLiveETA;
+extern double           g_defaultBoatSpeed;
+extern double           g_defaultBoatSpeedUserUnit;
 
 //    AIS Global configuration
 extern bool             g_bCPAMax;
@@ -234,6 +240,7 @@ extern int              g_iWaypointRangeRingsStepUnits;
 extern wxColour         g_colourWaypointRangeRingsColour;
 extern bool             g_bWayPointPreventDragging;
 extern bool             g_bConfirmObjectDelete;
+extern wxColour         g_colourOwnshipRangeRingsColour;
 
 extern bool             g_bEnableZoomToCursor;
 extern wxString         g_toolbarConfig;
@@ -737,12 +744,17 @@ int MyConfig::LoadMyConfig()
     Read( _T ( "ShowActiveRouteTotal" ), &g_bShowRouteTotal, 0 );
     Read( _T ( "MostRecentGPSUploadConnection" ), &g_uploadConnection, _T("") );
     Read( _T ( "ShowChartBar" ), &g_bShowChartBar, 1 );
-    
     Read( _T ( "SDMMFormat" ), &g_iSDMMFormat, 0 ); //0 = "Degrees, Decimal minutes"), 1 = "Decimal degrees", 2 = "Degrees,Minutes, Seconds"
       
     Read( _T ( "DistanceFormat" ), &g_iDistanceFormat, 0 ); //0 = "Nautical miles"), 1 = "Statute miles", 2 = "Kilometers", 3 = "Meters"
     Read( _T ( "SpeedFormat" ), &g_iSpeedFormat, 0 ); //0 = "kts"), 1 = "mph", 2 = "km/h", 3 = "m/s"
 
+    // LIVE ETA OPTION
+    Read( _T ( "LiveETA" ), &g_bShowLiveETA, 0 );
+    Read( _T ( "DefaultBoatSpeed" ), &g_defaultBoatSpeed, 6.0 );
+    // Calculate user selected speed unit
+    g_defaultBoatSpeedUserUnit = toUsrSpeed(g_defaultBoatSpeed, -1);
+    
     Read( _T ( "OwnshipCOGPredictorMinutes" ), &g_ownship_predictor_minutes, 5 );
     Read( _T ( "OwnshipCOGPredictorWidth" ), &g_cog_predictor_width, 3 );
     Read( _T ( "OwnshipHDTPredictorMiles" ), &g_ownship_HDTpredictor_miles, 1 );
@@ -779,7 +791,7 @@ int MyConfig::LoadMyConfig()
     Read( _T ( "VisibleLayers" ), &g_VisibleLayers );
     Read( _T ( "InvisibleLayers" ), &g_InvisibleLayers );
 
-    Read( _T ( "PreserveScaleOnX" ), &g_bPreserveScaleOnX, 0 );
+    Read( _T ( "PreserveScaleOnX" ), &g_bPreserveScaleOnX, 1 );
 
     g_locale = _T("en_US");
     Read( _T ( "Locale" ), &g_locale );
@@ -963,6 +975,7 @@ int MyConfig::LoadMyConfig()
 
     Read( _T ( "GPXIODir" ), &m_gpx_path );           // Get the Directory name
     Read( _T ( "TCDataDir" ), &g_TCData_Dir );           // Get the Directory name
+    Read( _T ( "BasemapDir"), &gWorldMapLocation );
 
     SetPath( _T ( "/Settings/GlobalState" ) );
     
@@ -1299,6 +1312,11 @@ int MyConfig::LoadMyConfig()
     g_pNavAidRadarRingsStepUnits = 0;
     Read( _T ( "RadarRingsStepUnits" ), &g_pNavAidRadarRingsStepUnits );
 
+    g_colourOwnshipRangeRingsColour = *wxRED;
+    wxString l_wxsOwnshipRangeRingsColour;
+    Read( _T ( "RadarRingsColour" ), &l_wxsOwnshipRangeRingsColour );
+    if(l_wxsOwnshipRangeRingsColour.Length()) g_colourOwnshipRangeRingsColour.Set( l_wxsOwnshipRangeRingsColour );
+    
     // Waypoint Radar rings
     g_iWaypointRangeRingsNumber = 0;
     Read( _T ( "WaypointRangeRingsNumber" ), &val );
@@ -2059,6 +2077,10 @@ void MyConfig::UpdateSettings()
     Write( _T ( "LegacyInputCOMPortFilterBehaviour" ), g_b_legacy_input_filter_behaviour );
     Write( _T( "AdvanceRouteWaypointOnArrivalOnly" ), g_bAdvanceRouteWaypointOnArrivalOnly);
     
+    // LIVE ETA OPTION
+    Write( _T( "LiveETA" ), g_bShowLiveETA);
+    Write( _T( "DefaultBoatSpeed" ), g_defaultBoatSpeed);
+    
 //    S57 Object Filter Settings
 
     SetPath( _T ( "/Settings/ObjectFilter" ) );
@@ -2216,6 +2238,7 @@ void MyConfig::UpdateSettings()
     Write( _T ( "InitChartDir" ), *pInit_Chart_Dir );
     Write( _T ( "GPXIODir" ), m_gpx_path );
     Write( _T ( "TCDataDir" ), g_TCData_Dir );
+    Write( _T ( "BasemapDir" ), gWorldMapLocation );
 
     SetPath( _T ( "/Settings/NMEADataSource" ) );
     wxString connectionconfigs;
@@ -2290,7 +2313,8 @@ void MyConfig::UpdateSettings()
     Write( _T ( "RadarRingsNumberVisible" ), g_iNavAidRadarRingsNumberVisible );
     Write( _T ( "RadarRingsStep" ), g_fNavAidRadarRingsStep );
     Write( _T ( "RadarRingsStepUnits" ), g_pNavAidRadarRingsStepUnits );
-
+    Write( _T ( "RadarRingsColour" ), g_colourOwnshipRangeRingsColour.GetAsString( wxC2S_HTML_SYNTAX ) );
+    
     // Waypoint Radar rings
     Write( _T ( "WaypointRangeRingsNumber" ), g_iWaypointRangeRingsNumber );
     Write( _T ( "WaypointRangeRingsStep" ), g_fWaypointRangeRingsStep );

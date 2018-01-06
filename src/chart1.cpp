@@ -229,7 +229,7 @@ bool                      bDrawCurrentValues;
 
 wxString                  ChartListFileName;
 wxString                  AISTargetNameFileName;
-wxString                  *pWorldMapLocation;
+wxString                  gWorldMapLocation, gDefaultWorldMapLocation;
 wxString                  *pInit_Chart_Dir;
 wxString                  g_csv_locn;
 wxString                  g_SENCPrefix;
@@ -311,6 +311,7 @@ int                       g_iWaypointRangeRingsStepUnits;
 wxColour                  g_colourWaypointRangeRingsColour;
 bool                      g_bWayPointPreventDragging;
 bool                      g_bConfirmObjectDelete;
+wxColour                  g_colourOwnshipRangeRingsColour;
 
 // Set default color scheme
 ColorScheme               global_color_scheme = GLOBAL_COLOR_SCHEME_DAY;
@@ -1505,7 +1506,7 @@ void ParseAllENC()
             }
             #endif 
             
-#ifdef __WXMSW__            
+#if defined(__WXMSW__) || defined (__WXOSX__)
             ::wxSafeYield();
 #endif            
         }
@@ -1953,9 +1954,12 @@ bool MyApp::OnInit()
     }
 
 //      Establish the GSHHS Dataset location
-    pWorldMapLocation = new wxString( _T("gshhs") );
-    pWorldMapLocation->Prepend( g_Platform->GetSharedDataDir() );
-    pWorldMapLocation->Append( wxFileName::GetPathSeparator() );
+    gDefaultWorldMapLocation = "gshhs";
+    gDefaultWorldMapLocation.Prepend( g_Platform->GetSharedDataDir() );
+    gDefaultWorldMapLocation.Append( wxFileName::GetPathSeparator() );
+    if( gWorldMapLocation == wxEmptyString ) {
+        gWorldMapLocation = gDefaultWorldMapLocation;
+    }
 
     //  Check the global Tide/Current data source array
     //  If empty, preset one default (US) Ascii data source
@@ -2124,6 +2128,7 @@ bool MyApp::OnInit()
     cc1->m_bFollow = pConfig->st_bFollow;               // set initial state
     cc1->SetViewPoint( vLat, vLon, initial_scale_ppm, 0., 0. );
     
+    g_ChartUpdatePeriod = !!cc1->m_bFollow;
     gFrame->Enable();
 
     cc1->SetFocus();
@@ -2541,7 +2546,6 @@ int MyApp::OnExit()
 
     delete phost_name;
     delete pInit_Chart_Dir;
-    delete pWorldMapLocation;
 
     delete g_pRouteMan;
     delete pWayPointMan;
@@ -3888,7 +3892,7 @@ void MyFrame::ODoSetSize( void )
                 //  Otherwise, just split the frame client width into equal spaces
 
                 if(m_StatusBarFieldCount > 2){
-                    int widths[] = { -6, -5, -5, -3, -4 };
+                    int widths[] = { -6, -5, -5, -6, -4 };
                     m_pStatusBar->SetStatusWidths( m_StatusBarFieldCount, widths );
                 }
                 else if(m_StatusBarFieldCount == 2){
@@ -4161,14 +4165,12 @@ void MyFrame::OnToolLeftClick( wxCommandEvent& event )
         case ID_MENU_ZOOM_IN:
         case ID_ZOOMIN: {
             cc1->ZoomCanvas( 2.0, false );
-            DoChartUpdate();
             break;
         }
 
         case ID_MENU_ZOOM_OUT:
         case ID_ZOOMOUT: {
             cc1->ZoomCanvas( 0.5, false );
-            DoChartUpdate();
             break;
         }
 
@@ -4239,6 +4241,10 @@ void MyFrame::OnToolLeftClick( wxCommandEvent& event )
         }
         case ID_MENU_ENC_ANCHOR: {
             ToggleAnchor();
+            break;
+        }
+        case ID_MENU_ENC_DATA_QUALITY: {
+            ToggleDataQuality();
             break;
         }
 #endif
@@ -5106,7 +5112,7 @@ void MyFrame::ToggleAnchor( void )
 {
 #ifdef USE_S57
     if( ps52plib ) {
-        int old_vis =  0;
+        int old_vis;
 
         const char * categories[] = { "ACHBRT", "ACHARE", "CBLSUB", "PIPARE", "PIPSOL", "TUNNEL", "SBDARE" };
         unsigned int num = sizeof(categories) / sizeof(categories[0]);
@@ -5152,6 +5158,42 @@ void MyFrame::ToggleAnchor( void )
 #endif
 }
 
+void MyFrame::ToggleDataQuality( )
+{
+#ifdef USE_S57
+    if( ps52plib == 0) 
+        return;
+
+    int old_vis;
+
+    old_vis = ps52plib->GetQualityOfDataOn();
+    if(old_vis){                            // On, going off
+        ps52plib->SetQualityOfDataOn(false);
+        ps52plib->AddObjNoshow("M_QUAL");
+    }
+    else{                                   // Off, going on
+        ps52plib->SetQualityOfDataOn(true);
+        ps52plib->RemoveObjNoshow("M_QUAL");
+
+        for( unsigned int iPtr = 0; iPtr < ps52plib->pOBJLArray->GetCount(); iPtr++ ) {
+            OBJLElement *pOLE = (OBJLElement *) ( ps52plib->pOBJLArray->Item( iPtr ) );
+            if( !strncmp( pOLE->OBJLName, "M_QUAL", 6 ) ) {
+                pOLE->nViz = 1;         // force on
+                break;
+            }
+        }
+    }
+
+    SetMenubarItemState( ID_MENU_ENC_DATA_QUALITY, !old_vis );
+
+    if(g_pi_manager)
+        g_pi_manager->SendConfigToAllPlugIns();
+
+    ps52plib->GenerateStateHash();
+    cc1->ReloadVP();
+#endif
+}
+
 void MyFrame::TogglebFollow( void )
 {
     if( !cc1->m_bFollow ) SetbFollow();
@@ -5174,6 +5216,7 @@ void MyFrame::SetbFollow( void )
 
     DoChartUpdate();
     cc1->ReloadVP();
+    SetChartUpdatePeriod( cc1->GetVP() );
 }
 
 void MyFrame::ClearbFollow( void )
@@ -5192,6 +5235,7 @@ void MyFrame::ClearbFollow( void )
 
     DoChartUpdate();
     cc1->ReloadVP();
+    SetChartUpdatePeriod( cc1->GetVP() );
 }
 
 void MyFrame::ToggleChartOutlines( void )
@@ -5370,12 +5414,14 @@ void MyFrame::RegisterGlobalMenuItems()
     view_menu->AppendCheckItem( ID_MENU_ENC_LIGHTS, _menuText(_("Show ENC Lights"), _T("L")) );
     view_menu->AppendCheckItem( ID_MENU_ENC_SOUNDINGS, _menuText(_("Show ENC Soundings"), _T("S")) );
     view_menu->AppendCheckItem( ID_MENU_ENC_ANCHOR, _menuText(_("Show ENC Anchoring Info"), _T("A")) );
+    view_menu->AppendCheckItem( ID_MENU_ENC_DATA_QUALITY, _menuText(_("Show ENC Data Quality"), _T("U")) );
 #else
     view_menu->AppendCheckItem( ID_MENU_ENC_TEXT, _menuText(_("Show ENC text"), _T("Alt-T")) );
     view_menu->AppendCheckItem( ID_MENU_ENC_LIGHTS, _menuText(_("Show ENC Lights"), _T("Alt-L")) );
     view_menu->AppendCheckItem( ID_MENU_ENC_SOUNDINGS, _menuText(_("Show ENC Soundings"), _T("Alt-S")) );
     view_menu->AppendCheckItem( ID_MENU_ENC_ANCHOR, _menuText(_("Show ENC Anchoring Info"), _T("Alt-A")) );
-    #endif
+    view_menu->AppendCheckItem( ID_MENU_ENC_DATA_QUALITY, _menuText(_("Show ENC Data Quality"), _T("Alt-U")) );
+#endif
 #endif
     view_menu->AppendSeparator();
     view_menu->AppendCheckItem( ID_MENU_SHOW_TIDES, _("Show Tides") );
@@ -5482,10 +5528,13 @@ void MyFrame::UpdateGlobalMenuItems()
         if((nset == MARINERS_STANDARD) || (nset == OTHER) ){
             m_pMenuBar->FindItem( ID_MENU_ENC_ANCHOR )->Check( !ps52plib->IsObjNoshow("SBDARE") );
             m_pMenuBar->Enable( ID_MENU_ENC_ANCHOR, true);
+            m_pMenuBar->FindItem( ID_MENU_ENC_DATA_QUALITY )->Check( !ps52plib->IsObjNoshow("M_QUAL")  );
+            m_pMenuBar->Enable( ID_MENU_ENC_DATA_QUALITY, true);
         }
         else{
             m_pMenuBar->FindItem( ID_MENU_ENC_ANCHOR )->Check( false );
             m_pMenuBar->Enable( ID_MENU_ENC_ANCHOR, false);
+            m_pMenuBar->Enable( ID_MENU_ENC_DATA_QUALITY, false);
         }            
             
     }
@@ -6106,10 +6155,21 @@ bool MyFrame::UpdateChartDatabaseInplace( ArrayOfCDI &DirArray, bool b_force, bo
     
     wxLogMessage( _T("   ") );
     wxLogMessage( _T("Starting chart database Update...") );
+    wxString gshhg_chart_loc = gWorldMapLocation;
+    gWorldMapLocation = wxEmptyString;
     ChartData->Update( DirArray, b_force, pprog );
     ChartData->SaveBinary(ChartListFileName);
     wxLogMessage( _T("Finished chart database Update") );
     wxLogMessage( _T("   ") );
+    if( gWorldMapLocation.empty() ) { //Last resort. User might have deleted all GSHHG data, but we still might have the default dataset distributed with OpenCPN or from the package repository...
+       gWorldMapLocation = gDefaultWorldMapLocation;
+       gshhg_chart_loc = wxEmptyString;
+    }
+
+    if( cc1 && gWorldMapLocation != gshhg_chart_loc )
+    {
+        cc1->ResetWorldBackgroundChart();
+    }
 
     delete pprog;
 
@@ -7023,9 +7083,11 @@ void MyFrame::OnFrameTimer1( wxTimerEvent& event )
 
 //    Do the chart update based on the global update period currently set
 //    If in COG UP mode, the chart update is handled by COG Update timer
-    if( !g_bCourseUp && ( 0 == m_ChartUpdatePeriod-- ) ) {
-        bnew_view = DoChartUpdate();
-        m_ChartUpdatePeriod = g_ChartUpdatePeriod;
+    if( !g_bCourseUp && (0 != g_ChartUpdatePeriod ) ) {
+        if (0 == m_ChartUpdatePeriod--) {
+            bnew_view = DoChartUpdate();
+            m_ChartUpdatePeriod = g_ChartUpdatePeriod;
+        }
     }
 
     nBlinkerTick++;
@@ -7080,7 +7142,6 @@ void MyFrame::OnFrameTimer1( wxTimerEvent& event )
             bnew_view = true;
     }
 
-    FrameTimer1.Start( TIMER_GFRAME_1, wxTIMER_CONTINUOUS );
 
     //  Make sure we get a redraw and alert sound on AnchorWatch excursions.
     if(AnchorAlertOn1 || AnchorAlertOn2)
@@ -7142,6 +7203,7 @@ void MyFrame::OnFrameTimer1( wxTimerEvent& event )
             m_bdefer_resize = false;
         }
     }
+    FrameTimer1.Start( TIMER_GFRAME_1, wxTIMER_CONTINUOUS );
 }
 
 double MyFrame::GetMag(double a)
@@ -7796,7 +7858,7 @@ void MyFrame::SetChartUpdatePeriod( ViewPort &vp )
 {
     //    Set the chart update period based upon chart skew and skew compensator
 
-    g_ChartUpdatePeriod = 1;            // General default
+    g_ChartUpdatePeriod = !!cc1->m_bFollow;            // General default
 
     if (!g_bopengl && !vp.b_quilt)
         if ( fabs(vp.skew) > 0.0001)
@@ -9097,6 +9159,27 @@ void MyFrame::OnEvtPlugInMessage( OCPN_MsgEvent & event )
             g_pi_manager->SendJSONMessageToAllPlugins( msg_id, v );
         }
     }
+    else if(message_ID == _T("OCPN_ACTIVE_ROUTELEG_REQUEST"))
+    {
+        wxJSONValue v;
+        v[0][_T("error")] = true;
+        if( g_pRouteMan->GetpActiveRoute() )
+        {
+            if( g_pRouteMan->m_bDataValid )
+            {
+                v[0][_T("error")] = false;
+                v[0][_T("range")] = g_pRouteMan->GetCurrentRngToActivePoint();
+                v[0][_T("bearing")] = g_pRouteMan->GetCurrentBrgToActivePoint();
+                v[0][_T("XTE")] = g_pRouteMan->GetCurrentXTEToActivePoint();
+                v[0][_T("active_route_GUID")] = g_pRouteMan->GetpActiveRoute()->m_RouteNameString;
+                v[0][_T("active_waypoint_lat")] = g_pRouteMan->GetpActiveRoute()->m_pRouteActivePoint->GetLatitude();
+                v[0][_T("active_waypoint_lon")] = g_pRouteMan->GetpActiveRoute()->m_pRouteActivePoint->GetLongitude();
+            }
+        }
+        wxString msg_id( _T("OCPN_ACTIVE_ROUTELEG_RESPONSE") );
+        g_pi_manager->SendJSONMessageToAllPlugins( msg_id, v );
+    }
+
 }
 
 void MyFrame::OnEvtTHREADMSG( OCPN_ThreadMessageEvent & event )
@@ -9190,9 +9273,9 @@ bool MyFrame::EvalPriority(const wxString & message, DataStream *pDS )
 static void UpdatePositionCalculatedSogCog()                                                                         
 {
     wxDateTime now = wxDateTime::Now();
-    if( last_own_ship_sog_cog_calc_ts != wxInvalidDateTime) {
+    if( last_own_ship_sog_cog_calc_ts.IsValid() ) {
         wxLongLong time_diff = now.Subtract(last_own_ship_sog_cog_calc_ts).GetMilliseconds();
-        if( time_diff * 1000 >= g_own_ship_sog_cog_calc_damp_sec ) {
+        if( time_diff / 1000 >= g_own_ship_sog_cog_calc_damp_sec ) {
             double brg, dist;
             DistanceBearingMercator( gLat, gLon, last_own_ship_sog_cog_calc_lat, last_own_ship_sog_cog_calc_lon, &brg, &dist );
             gCog = brg;

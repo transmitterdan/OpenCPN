@@ -290,6 +290,7 @@ public:
     ~GSHHSChart();
     void SetColorScheme( ColorScheme scheme );
     void RenderViewOnDC( ocpnDC& dc, ViewPort& VPoint );
+    void Reset();
 
     wxColor land;
     wxColor water;
@@ -299,6 +300,7 @@ private:
 };
 
 void gshhsCrossesLandInit();
+void gshhsCrossesLandReset();
 bool gshhsCrossesLand(double lat1, double lon1, double lat2, double lon2);
 
 #endif

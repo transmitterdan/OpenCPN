@@ -182,7 +182,10 @@ enum {
   ID_VECZOOM,
   ID_INLANDECDISBOX,
   ID_SOGCOGFROMLLCHECKBOX,
-  ID_SOGCOGDAMPINTTEXTCTRL
+  ID_SOGCOGDAMPINTTEXTCTRL,
+  // LIVE ETA OPTION
+  ID_CHECK_LIVEETA,
+  ID_DEFAULT_BOAT_SPEED
 };
 
 /* Define an int bit field for dialog return value
@@ -353,6 +356,9 @@ class options : private Uncopyable,
   wxChoice *m_pShipIconType, *m_pcTCDatasets;
   wxSlider *m_pSlider_Zoom, *m_pSlider_GUI_Factor, *m_pSlider_Chart_Factor;
   wxSlider *m_pSlider_Zoom_Vector;
+  // LIVE ETA OPTION
+  wxCheckBox *pSLiveETA;
+  wxTextCtrl *pSDefaultBoatSpeed;
   
   wxRadioButton *pCBCourseUp, *pCBNorthUp, *pRBSizeAuto, *pRBSizeManual;
   int k_tides;
@@ -500,7 +506,9 @@ class options : private Uncopyable,
   wxBoxSizer *itemBoxSizerPanelPlugins;
   wxFlexGridSizer *radarGrid, *waypointradarGrid;
   wxChoice *pNavAidRadarRingsNumberVisible, *pWaypointRangeRingsNumber;
+  wxColourPickerCtrl *m_colourOwnshipRangeRingColour;
   wxChoice *m_itemRadarRingsUnits, *m_itemWaypointRangeRingsUnits;
+  wxColourPickerCtrl *m_colourTrackLineColour;;
   wxChoice *pTrackPrecision;
   wxTextCtrl *pNavAidRadarRingsStep, *pWaypointRangeRingsStep;
   wxCheckBox *pSogCogFromLLCheckBox;
@@ -583,7 +591,8 @@ class options : private Uncopyable,
   ConnectionParams *CreateConnectionParamsFromSelectedItem();
 
   wxNotebookPage *m_groupsPage;
-  wxFont *smallFont, *dialogFont;
+  wxFont smallFont;
+  wxFont *dialogFont;
   wxSize m_small_button_size;
   wxTimer m_BTScanTimer;
   wxArrayString m_BTscan_results;

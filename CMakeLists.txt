@@ -49,6 +49,32 @@ ENDIF(APPLE)
 
 OPTION(OCPN_USE_LIBCPP "Use C++11 and libc++ instead of libstdc++ on macOS" OFF)
 
+if ( CMAKE_VERSION VERSION_GREATER 3.4 )
+  set(ENABLE_CLANG_TIDY OFF CACHE BOOL "Add clang-tidy automatically to builds")
+  if (ENABLE_CLANG_TIDY)
+    find_program (CLANG_TIDY_EXE NAMES "clang-tidy" PATHS /usr/local/opt/llvm/bin )
+    if (CLANG_TIDY_EXE)
+      message(STATUS "clang-tidy found: ${CLANG_TIDY_EXE}")
+      #For more, see http://clang.llvm.org/extra/clang-tidy/
+      #set(CLANG_TIDY_CHECKS "-*,modernize-*")
+      set(CLANG_TIDY_CHECKS "-*,performance-*")
+      set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXE};-checks=${CLANG_TIDY_CHECKS};-header-filter='${CMAKE_SOURCE_DIR}/*'"
+        CACHE STRING "" FORCE)
+    else()
+      message(AUTHOR_WARNING "clang-tidy not found!")
+      set(CMAKE_CXX_CLANG_TIDY "" CACHE STRING "" FORCE) # delete it
+    endif()
+  endif()
+endif()
+
+if ( CMAKE_VERSION VERSION_GREATER 3.9 )
+  set(ENABLE_CPPCHECK OFF CACHE BOOL "Add cppcheck automatically to builds")
+  if (ENABLE_CPPCHECK)
+      find_program (CPPCHECK_EXECUTABLE NAMES "cppcheck" )
+      set(CMAKE_CXX_CPPCHECK ${CPPCHECK_EXECUTABLE})
+  endif()
+endif()
+
 INCLUDE( ${CMAKE_SOURCE_DIR}/VERSION.cmake )
 SET(PACKAGE_VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}" )
 IF(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/include/version.h")
@@ -402,6 +428,10 @@ SET( wxWidgets_USE_UNICODE ON)
 SET( wxWidgets_USE_UNIVERSAL OFF)
 SET( wxWidgets_USE_STATIC OFF)
 
+set (WXWIDGETS_FORCE_VERSION CACHE VERSION "Force usage of a specific wxWidgets version.")
+if(WXWIDGETS_FORCE_VERSION)
+  set (wxWidgets_CONFIG_OPTIONS --version=${WXWIDGETS_FORCE_VERSION})
+endif()
 FIND_PACKAGE(wxWidgets REQUIRED)
 
 IF(MSYS)
@@ -712,6 +742,7 @@ IF(OCPN_USE_SVG)
       #set(VIDEO_FFMPEG_LIBRARIES ${FFMPEG_LIBRARIES} ${SWSCALE_LIBRARIES})
 
        FIND_PACKAGE(EXPAT REQUIRED)
+       INCLUDE(FindEXIF.cmake)
     ELSE(NOT WIN32)
       #On Windows, we have our own expat
       SET(EXPAT_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/buildwin/expat-2.1.0/include)
@@ -745,6 +776,7 @@ IF(OCPN_USE_SVG)
         ${CAIRO_EXTRA_LIBRARIES}
 #        ${FFMPEG_LIBRARIES}
         ${EXPAT_LIBRARIES}
+        ${EXIF_LIBRARIES}
         ${GTK_LIBRARIES}
       )
     ENDIF(WIN32)
@@ -818,6 +850,12 @@ IF(OCPN_USE_SVG)
       src/wxsvg/src/svgxml/svgxml.cpp
       src/wxsvg/src/svgxml/svgxmlhelpr.cpp
     )
+    if(EXIF_FOUND)
+        SET(SRC_WXSVG ${SRC_WXSVG}
+            src/wxsvg/src/ExifHandler.cpp
+        )
+        ADD_DEFINITIONS(-DwxsvgUSE_EXIF) 
+    endif()
     ADD_LIBRARY(WXSVG ${SRC_WXSVG})
     TARGET_LINK_LIBRARIES(WXSVG ${SVG_LIBS})
     INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/wxsvg/include/wxSVG)
@@ -860,11 +898,19 @@ IF(UNIX)
     FIND_PACKAGE(ZLIB REQUIRED)
     FIND_PACKAGE(X11)
     INCLUDE_DIRECTORIES(${ZLIB_INCLUDE_DIR})
-    FIND_PACKAGE(TinyXML)
+    IF(NOT APPLE)
+      #TinyXML from Homebrew is not good enough for our GpxDocument needs
+      #We should probably replace it with pugixml completely anyway...
+      FIND_PACKAGE(TinyXML)
+    ENDIF(NOT APPLE)
   ENDIF(NOT QT_ANDROID)
 ENDIF(UNIX)
 
 # check for lzma support for reading compressed charts
+IF(WIN32)
+  LIST(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/buildwin")
+  LIST(APPEND CMAKE_PREFIX_PATH "${CMAKE_CURRENT_SOURCE_DIR}/buildwin/include")
+ENDIF(WIN32)
 FIND_PACKAGE(LibLZMA)
 IF(LIBLZMA_FOUND)
     message (STATUS "Building with lzma support")
@@ -2098,6 +2144,12 @@ IF(WIN32 AND NOT UNIX)
         INSTALL(FILES ${vcdll_files} DESTINATION ".")
 	MESSAGE(STATUS "MSVC redistributable DLLs bundled into the installer package...")
     ENDIF(BUNDLE_VCDLLS)
+    OPTION (BUNDLE_LIBARCHIVEDLLS "Bundle the prebuilt LibArchive and LibLZMA DLLs" ON)
+    IF(BUNDLE_LIBARCHIVEDLLS)
+        FILE(GLOB libarchivedll_files "${CMAKE_CURRENT_SOURCE_DIR}/buildwin/archive.dll" "${CMAKE_CURRENT_SOURCE_DIR}/buildwin/liblzma.dll")
+        INSTALL(FILES ${libarchivedll_files} DESTINATION ".")
+	MESSAGE(STATUS "LibArchive DLLs bundled into the installer package...")
+    ENDIF(BUNDLE_LIBARCHIVEDLLS)
 ENDIF(WIN32 AND NOT UNIX)
 
 IF(MSVC AND OCPN_USE_CRASHREPORT)
@@ -2274,9 +2326,14 @@ IF(APPLE)
   SET(APPS "\${CMAKE_INSTALL_PREFIX}/bin/OpenCPN.app")
   SET(DIRS "")
 
+#INSTALL(DIRECTORY DESTINATION "bin/OpenCPN.app/Contents/PlugIns")
+  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/plugins/dashboard_pi/libdashboard_pi.dylib DESTINATION "bin/OpenCPN.app/Contents/PlugIns")
+  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/plugins/grib_pi/libgrib_pi.dylib DESTINATION "bin/OpenCPN.app/Contents/PlugIns")
+  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/plugins/chartdldr_pi/libchartdldr_pi.dylib DESTINATION "bin/OpenCPN.app/Contents/PlugIns")
+  INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/plugins/wmm_pi/libwmm_pi.dylib DESTINATION "bin/OpenCPN.app/Contents/PlugIns")  
+
   SET(LIBS "\${CMAKE_INSTALL_PREFIX}/bin/OpenCPN.app/Contents/PlugIns/libdashboard_pi.dylib")
   SET(LIBS ${LIBS} "\${CMAKE_INSTALL_PREFIX}/bin/OpenCPN.app/Contents/PlugIns/libgrib_pi.dylib")
-
   SET(LIBS ${LIBS} "\${CMAKE_INSTALL_PREFIX}/bin/OpenCPN.app/Contents/PlugIns/libchartdldr_pi.dylib")
   SET(LIBS ${LIBS} "\${CMAKE_INSTALL_PREFIX}/bin/OpenCPN.app/Contents/PlugIns/libwmm_pi.dylib")
 
