@@ -7,14 +7,23 @@
 SET(PLUGIN_SOURCE_DIR .)
 
 # This should be 2.8.0 to have FindGTK2 module
+IF (COMMAND cmake_policy)
+  CMAKE_POLICY(SET CMP0003 OLD)
+  CMAKE_POLICY(SET CMP0005 OLD)
+  CMAKE_POLICY(SET CMP0011 OLD)
+ENDIF (COMMAND cmake_policy)
 
 MESSAGE (STATUS "*** Staging to build ${PACKAGE_NAME} ***")
 
 #configure_file(cmake/version.h.in ${PROJECT_SOURCE_DIR}/src/version.h)
 #  Do the version.h configuration into the build output directory,
 #  thereby allowing building from a read-only source tree.
+FILE(REMOVE ${PROJECT_SOURCE_DIR}/include/version.h)
+FILE(REMOVE ${PROJECT_SOURCE_DIR}/include/wxWTranslateCatalog.h)
+MESSAGE(STATUS "SKIP_VERSION_CONFIG: ${SKIP_VERSION_CONFIG}")
 IF(NOT SKIP_VERSION_CONFIG)
     SET(BUILD_INCLUDE_PATH ${CMAKE_CURRENT_BINARY_DIR}${CMAKE_FILES_DIRECTORY})
+    MESSAGE(STATUS "translate directory: ${BUILD_INCLUDE_PATH}")
     configure_file(cmake/version.h.in ${BUILD_INCLUDE_PATH}/include/version.h)
     configure_file(cmake/wxWTranslateCatalog.h.in ${BUILD_INCLUDE_PATH}/include/wxWTranslateCatalog.h)
     INCLUDE_DIRECTORIES(${BUILD_INCLUDE_PATH}/include)
@@ -23,9 +32,11 @@ ENDIF(NOT SKIP_VERSION_CONFIG)
 SET(PACKAGE_VERSION "${VERSION_MAJOR}.${VERSION_MINOR}" )
 
 #SET(CMAKE_BUILD_TYPE Debug)
-SET(CMAKE_VERBOSE_MAKEFILE ON)
+#SET(CMAKE_VERBOSE_MAKEFILE ON)
 
 INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/include ${PROJECT_SOURCE_DIR}/src)
+    get_property(inc_dirs DIRECTORY PROPERTY INCLUDE_DIRECTORIES)
+    MESSAGE(STATUS "INCLUDE_DIRECTORIES: ${inc_dirs}")
 
 # SET(PROFILING 1)
 
@@ -52,9 +63,9 @@ IF(MSVC)
     ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_DEPRECATE -D_CRT_SECURE_NO_DEPRECATE)
 ENDIF(MSVC)
 
+
 SET_PROPERTY(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS TRUE)
 SET(BUILD_SHARED_LIBS "ON")
-
 
 #  QT_ANDROID is a cross-build, so the native FIND_PACKAGE(wxWidgets...) and wxWidgets_USE_FILE is not useful.
 IF(NOT QT_ANDROID)
@@ -66,6 +77,7 @@ ENDIF(NOT DEFINED wxWidgets_USE_FILE)
 
   INCLUDE(${wxWidgets_USE_FILE})
 ENDIF(NOT QT_ANDROID)
+
 
 IF(MSYS)
 # this is just a hack. I think the bug is in FindwxWidgets.cmake
@@ -89,6 +101,41 @@ ELSE(OPENGL_GLU_FOUND)
     MESSAGE (STATUS "OpenGL not found..." )
 ENDIF(OPENGL_GLU_FOUND)
 ENDIF(NOT QT_ANDROID)
+
+#  Building for QT_ANDROID involves a cross-building environment,
+#  So the OpenGL include directories, flags, etc must be stated explicitly
+#  without trying to locate them on the host build system.
+IF(QT_ANDROID)
+    MESSAGE (STATUS "Using GLESv1 for Android")
+    ADD_DEFINITIONS(-DocpnUSE_GLES)
+    ADD_DEFINITIONS(-DocpnUSE_GL)
+    ADD_DEFINITIONS(-DUSE_GLU_TESS)
+    ADD_DEFINITIONS(-DARMHF)
+   
+    SET(OPENGLES_FOUND "YES")
+    SET(OPENGL_FOUND "YES")
+
+#    SET(wxWidgets_USE_LIBS ${wxWidgets_USE_LIBS} gl )
+#    add_subdirectory(src/glshim)
+
+#    add_subdirectory(src/glu)
+
+ELSE(QT_ANDROID)
+    FIND_PACKAGE(OpenGL)
+    IF(OPENGL_GLU_FOUND)
+
+        SET(wxWidgets_USE_LIBS ${wxWidgets_USE_LIBS} gl)
+        INCLUDE_DIRECTORIES(${OPENGL_INCLUDE_DIR})
+
+        MESSAGE (STATUS "Found OpenGL..." )
+        MESSAGE (STATUS "    Lib: " ${OPENGL_LIBRARIES})
+        MESSAGE (STATUS "    Include: " ${OPENGL_INCLUDE_DIR})
+        ADD_DEFINITIONS(-DocpnUSE_GL)
+    ELSE(OPENGL_GLU_FOUND)
+        MESSAGE (STATUS "OpenGL not found..." )
+    ENDIF(OPENGL_GLU_FOUND)
+
+ENDIF(QT_ANDROID)
 
 # On Android, PlugIns need a specific linkage set....
 IF (QT_ANDROID )
@@ -116,11 +163,10 @@ IF (QT_ANDROID )
         ${Qt_Base}/android_armv7/lib/libQt5Gui.so
         ${Qt_Base}/android_armv7/lib/libQt5AndroidExtras.so
 
-        #${NDK_Base}/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi-v7a/libgnustl_shared.so
+        ${NDK_Base}/sources/cxx-stl/gnu-libstdc++/4.8/libs/armeabi-v7a/libgnustl_shared.so
         )
 
 ENDIF(QT_ANDROID)
-
 
 SET(BUILD_SHARED_LIBS TRUE)
 
