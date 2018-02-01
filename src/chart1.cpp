@@ -4344,7 +4344,11 @@ void MyFrame::OnToolLeftClick( wxCommandEvent& event )
         case wxID_ABOUT:
         case ID_ABOUT: {
             if( !g_pAboutDlg )
+#ifdef __WXOSX__
+                g_pAboutDlg = new about( cc1, g_Platform->GetSharedDataDir() );
+#else
                 g_pAboutDlg = new about( this, g_Platform->GetSharedDataDir() );
+#endif
             else
                 g_pAboutDlg->SetFocus();
             g_pAboutDlg->Show();
@@ -12773,7 +12777,7 @@ OCPN_TimedHTMLMessageDialog::OCPN_TimedHTMLMessageDialog( wxWindow *parent,
        
 //       SetClientSize(szyv.x + 20, szyv.y + 20); 
        
-       CentreOnParent();
+       CentreOnScreen();
        
        //msgWindow->SetBackgroundColour(wxColour(191, 183, 180));
        msgWindow->SetBackgroundColour(GetBackgroundColour());
@@ -12796,7 +12800,10 @@ void OCPN_TimedHTMLMessageDialog::RecalculateSize( void )
     SetClientSize(esize);     // This will force a recalc of internal representation
     
     int height1 = msgWindow->GetInternalRepresentation()->GetHeight();
-    SetClientSize(wxSize(esize.x, height1 + 70 ));   // constant is 2xBorders + a little slop.
+    
+    int client_size_y = wxMin(::wxGetDisplaySize().y - 100, height1 + 70);    // Must fit on screen
+    
+    SetClientSize(wxSize(esize.x, client_size_y ));   // constant is 2xBorders + a little slop.
     
 }
 

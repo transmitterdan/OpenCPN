@@ -1655,7 +1655,12 @@ void ChartCanvas::OnKeyDown( wxKeyEvent &event )
                         pPopupDetailSlider = new PopUpDSlide( this, -1, ChartType, ChartFam,
                             wxPoint( g_detailslider_dialog_x, g_detailslider_dialog_y ),
                             wxDefaultSize, wxSIMPLE_BORDER, _T("") );
-                        if (pPopupDetailSlider) pPopupDetailSlider->ShowModal();
+                        if (pPopupDetailSlider)
+#ifdef __WXOSX__
+                            pPopupDetailSlider->Show();
+#else
+                            pPopupDetailSlider->ShowModal();
+#endif
                     }
                 }
             else //( !pPopupDetailSlider ) close popupslider
@@ -2522,8 +2527,10 @@ void ChartCanvas::OnRolloverPopupTimerEvent( wxTimerEvent& event )
 
                     s << FormatDistanceAdaptive( dist );
 
-                    double segmentSpeed = toUsrSpeed( dist / ( (segShow_point_b->GetCreateTime() - segShow_point_a->GetCreateTime()).GetSeconds().ToDouble() / 3600.) );
-                    s << wxString::Format( _T("  %.1f "), (float)segmentSpeed ) << getUsrSpeedUnit();
+                    if(segShow_point_a->GetTimeString() && segShow_point_b->GetTimeString()){
+                        double segmentSpeed = toUsrSpeed( dist / ( (segShow_point_b->GetCreateTime() - segShow_point_a->GetCreateTime()).GetSeconds().ToDouble() / 3600.) );
+                        s << wxString::Format( _T("  %.1f "), (float)segmentSpeed ) << getUsrSpeedUnit();
+                    }
 
                     m_pTrackRolloverWin->SetString( s );
 
