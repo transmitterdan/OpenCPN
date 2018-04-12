@@ -619,7 +619,7 @@ void CanvasMenuHandler::CanvasPopupMenu( int x, int y, int seltype )
         }
     }
 
-    if( seltype & SELTYPE_ROUTESEGMENT ) {
+    if( menuFocus != menuAIS && (seltype & SELTYPE_ROUTESEGMENT) ) {
         bool blay = false;
         if( m_pSelectedRoute && m_pSelectedRoute->m_bIsInLayer )
             blay = true;
@@ -685,7 +685,7 @@ void CanvasMenuHandler::CanvasPopupMenu( int x, int y, int seltype )
         menuFocus = menuRoute;
     }
 
-    if( seltype & SELTYPE_TRACKSEGMENT ) {
+    if( menuFocus != menuAIS && (seltype & SELTYPE_TRACKSEGMENT) ) {
         bool blay = false;
         if( m_pSelectedTrack && m_pSelectedTrack->m_bIsInLayer )
             blay = true;
@@ -705,7 +705,7 @@ void CanvasMenuHandler::CanvasPopupMenu( int x, int y, int seltype )
         menuFocus = menuTrack;
     }
 
-    if( seltype & SELTYPE_ROUTEPOINT ) {
+    if( menuFocus != menuAIS && (seltype & SELTYPE_ROUTEPOINT) ) {
         bool blay = false;
         if( m_pFoundRoutePoint && m_pFoundRoutePoint->m_bIsInLayer )
             blay = true;
@@ -761,7 +761,7 @@ void CanvasMenuHandler::CanvasPopupMenu( int x, int y, int seltype )
         menuFocus = menuWaypoint;
     }
 
-    if( seltype & SELTYPE_MARKPOINT ) {
+    if( menuFocus != menuAIS && (seltype & SELTYPE_MARKPOINT) ) {
         bool blay = false;
         if( m_pFoundRoutePoint && m_pFoundRoutePoint->m_bIsInLayer )
             blay = true;
@@ -1193,9 +1193,6 @@ void CanvasMenuHandler::PopupMenuHandler( wxCommandEvent& event )
 
             if( !g_pRouteMan->DeleteRoute( m_pSelectedRoute ) )
                 break;
-            if( pRoutePropDialog && ( pRoutePropDialog->IsShown()) && (m_pSelectedRoute == pRoutePropDialog->GetRoute()) ) {
-                pRoutePropDialog->Hide();
-            }
 
             if( pRouteManagerDialog && pRouteManagerDialog->IsShown() )
                 pRouteManagerDialog->UpdateRouteListCtrl();
@@ -1446,10 +1443,6 @@ void CanvasMenuHandler::PopupMenuHandler( wxCommandEvent& event )
             g_pAIS->DeletePersistentTrack( m_pSelectedTrack );
             pConfig->DeleteConfigTrack( m_pSelectedTrack );
             g_pRouteMan->DeleteTrack( m_pSelectedTrack );
-
-            if( pTrackPropDialog && ( pTrackPropDialog->IsShown()) && (m_pSelectedTrack == pTrackPropDialog->GetTrack()) ) {
-                pTrackPropDialog->Hide();
-            }
 
             if( pRouteManagerDialog && pRouteManagerDialog->IsShown() ) {
                 pRouteManagerDialog->UpdateTrkListCtrl();

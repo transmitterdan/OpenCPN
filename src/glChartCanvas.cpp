@@ -156,13 +156,6 @@ extern double           g_ownship_HDTpredictor_miles;
 extern double           g_n_ownship_length_meters;
 extern double           g_n_ownship_beam_meters;
 
-extern double           gLat, gLon, gCog, gSog, gHdt;
-
-extern int              g_OwnShipIconType;
-extern double           g_ownship_predictor_minutes;
-extern double           g_n_ownship_length_meters;
-extern double           g_n_ownship_beam_meters;
-
 extern int              g_GroupIndex;
 extern ChartDB          *ChartData;
 
@@ -2506,12 +2499,7 @@ void glChartCanvas::RenderRasterChartRegionGL( ChartBase *chart, ViewPort &vp, L
     double scalefactor = pBSBChart->GetRasterScaleFactor(vp);
 
     //    Look for the texture factory for this chart
-    wxString key = chart->GetFullPath();
-    
-    /* replace path separators with ! */
-    wxChar separator = wxFileName::GetPathSeparator();
-    for(unsigned int pos = 0; pos < key.size(); pos = key.find(separator, pos))
-        key.replace(pos, 1, _T("!"));
+    wxString key = chart->GetHashKey();
     
     glTexFactory *pTexFact;
     ChartPathHashTexfactType &hash = g_glTextureManager->m_chart_texfactory_hash;
