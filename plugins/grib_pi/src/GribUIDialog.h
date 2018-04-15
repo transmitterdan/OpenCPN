@@ -114,7 +114,8 @@ public:
     void SetScaledBitmap( double factor );
     wxBitmap GetScaledBitmap(wxBitmap bitmap, const wxString svgFileName, double scale_factor);
     void OpenFileFromJSON( wxString json);
-        
+    void connectKeyDownEvent(wxWindow* pclComponent);
+
     wxWindow *pParent;
     GribOverlaySettings m_OverlaySettings;
 
@@ -151,6 +152,7 @@ private:
     
     void OnTimeline( wxScrollEvent& event );
 	void OnShowCursorData( wxCommandEvent& event );
+    void OnKeyDown(wxKeyEvent &event) { GetOCPNCanvasWindow()->ProcessWindowEvent(event); }
 
     wxDateTime MinTime();
     wxArrayString GetFilesInDirectory();

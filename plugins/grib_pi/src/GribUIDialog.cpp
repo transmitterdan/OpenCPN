@@ -264,6 +264,7 @@ GRIBUICtrlBar::GRIBUICtrlBar(wxWindow *parent, wxWindowID id, const wxString& ti
 
     Fit();
     SetMinSize( GetBestSize() );
+    this->connectKeyDownEvent(this);
 
 }
 
@@ -310,6 +311,27 @@ GRIBUICtrlBar::~GRIBUICtrlBar()
     }
     delete m_vp;
     delete m_pTimelineSet;
+}
+
+void GRIBUICtrlBar::connectKeyDownEvent(wxWindow* pclComponent)
+{
+    if (pclComponent)
+    {
+        pclComponent->Connect(wxID_ANY,
+            wxEVT_KEY_DOWN,
+            wxKeyEventHandler(GRIBUICtrlBar::OnKeyDown),
+            (wxObject*)NULL,
+            this);
+
+        wxWindowListNode* pclNode = pclComponent->GetChildren().GetFirst();
+        while (pclNode)
+        {
+            wxWindow* pclChild = pclNode->GetData();
+            this->connectKeyDownEvent(pclChild);
+
+            pclNode = pclNode->GetNext();
+        }
+    }
 }
 
 wxBitmap GRIBUICtrlBar::GetScaledBitmap(wxBitmap bitmap, const wxString svgFileName, double scale_factor)
