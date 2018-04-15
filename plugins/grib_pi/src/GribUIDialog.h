@@ -115,7 +115,6 @@ public:
     void SetScaledBitmap( double factor );
     wxBitmap GetScaledBitmap(wxBitmap bitmap, const wxString svgFileName, double scale_factor);
     void OpenFileFromJSON( wxString json);
-    void connectKeyDownEvent(wxWindow* pclComponent);
 
     wxWindow *pParent;
     GribOverlaySettings m_OverlaySettings;
@@ -131,7 +130,6 @@ public:
     int             m_ZoneSelAllowed;
     int             m_old_DialogStyle;
 	double			m_ScaledFactor;
-
 private:
     void OnClose( wxCloseEvent& event );
     void OnSize( wxSizeEvent& event );
@@ -155,6 +153,7 @@ private:
     void OnTimeline( wxScrollEvent& event );
 	void OnShowCursorData( wxCommandEvent& event );
     void OnKeyDown(wxKeyEvent &event);
+    void connectKeyDownEvent(wxWindow* pclComponent);
 
     wxDateTime MinTime();
     wxArrayString GetFilesInDirectory();
