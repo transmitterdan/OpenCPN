@@ -314,10 +314,26 @@ GRIBUICtrlBar::~GRIBUICtrlBar()
     delete m_pTimelineSet;
 }
 
-void GRIBUICtrlBar::OnKeyDown(wxKeyEvent &event) {
+// Handle a key down event from this dialog or one of its
+// children. Since this dialog uses the arrow keys for
+// navigation we send all other keys up to the canvas
+// window (i.e. chart window). Would be nice if there
+// was a plugin API to return a list of hot keys defined by
+// the main application so we could only send up only those
+// keys and not any others. The handler examines the event
+// and decides whether or not to reflect the event back up to
+// the main canvas (i.e. chart)window. Note that some keys
+// (e.g. F2) will steal the focus away from this dialog. But
+// this should seem logical to the user since F2 toggles
+// follow-boat mode so presumably there is interest in the boat
+// location on the chart.
+void
+GRIBUICtrlBar::OnKeyDown(wxKeyEvent &event) {
     switch (event.GetKeyCode())
     {
-    // We need these keys to scroll through Grib times
+    // We need these keyboard keys to scroll through Grib forecasts
+    // Put any other keys here that should not be sent to the chart
+    // window. Don't list command keys as they never get here.
     case WXK_LEFT:
     case WXK_RIGHT:
     case WXK_UP:
@@ -325,14 +341,20 @@ void GRIBUICtrlBar::OnKeyDown(wxKeyEvent &event) {
         break;
     default:
         GetOCPNCanvasWindow()->ProcessWindowEvent(event);
-        wxSafeYield((wxWindow *)NULL, true);
-        if (!HasFocus())
-            SetFocus();
+        // If we want to take back focus uncomment these 3 lines
+        //wxSafeYield((wxWindow *)NULL, true);
+        //if (!HasFocus())
+        //    SetFocus();
     }
     event.Skip();
 }
 
-void GRIBUICtrlBar::connectKeyDownEvent(wxWindow* pclComponent)
+// This function uses recurrsion to connect the same key down event handler to
+// every child of this dialog that is derived from wxWindow.
+// NOTE: Only call this function after all child windows have been created.
+//       A child created after this call will not be connected to the handler.
+void
+GRIBUICtrlBar::connectKeyDownEvent(wxWindow* pclComponent)
 {
     if (pclComponent)
     {
@@ -353,7 +375,14 @@ void GRIBUICtrlBar::connectKeyDownEvent(wxWindow* pclComponent)
     }
 }
 
-void GRIBUICtrlBar::disconnectKeyDownEvent(wxWindow* pclComponent)
+// This function uses recurrsion to disconnect the key down event handler from
+// every child of this dialog that is derived from wxWindow.
+// NOTE: This function may not work as epected if child windows have been
+//       created after the call to connectKeyDownEvent(). Call this function
+//       before adding any new controls/windows to the dialog. Then call
+//       connectKeyDownEvent() after adding the child controls/windows.
+void
+GRIBUICtrlBar::disconnectKeyDownEvent(wxWindow* pclComponent)
 {
     if (pclComponent)
     {
