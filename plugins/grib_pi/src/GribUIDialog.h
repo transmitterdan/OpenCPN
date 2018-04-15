@@ -154,6 +154,7 @@ private:
 	void OnShowCursorData( wxCommandEvent& event );
     void OnKeyDown(wxKeyEvent &event);
     void connectKeyDownEvent(wxWindow* pclComponent);
+    void disconnectKeyDownEvent(wxWindow* pclComponent);
 
     wxDateTime MinTime();
     wxArrayString GetFilesInDirectory();

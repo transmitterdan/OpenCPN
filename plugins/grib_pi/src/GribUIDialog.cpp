@@ -270,6 +270,7 @@ GRIBUICtrlBar::GRIBUICtrlBar(wxWindow *parent, wxWindowID id, const wxString& ti
 
 GRIBUICtrlBar::~GRIBUICtrlBar()
 {
+    this->disconnectKeyDownEvent(this);
     wxFileConfig *pConf = GetOCPNConfigObject();;
 
     if(pConf) {
@@ -315,20 +316,20 @@ GRIBUICtrlBar::~GRIBUICtrlBar()
 
 void GRIBUICtrlBar::OnKeyDown(wxKeyEvent &event) {
     switch (event.GetKeyCode())
-    {   // We need these keys to scroll through Grib times
+    {
+    // We need these keys to scroll through Grib times
     case WXK_LEFT:
     case WXK_RIGHT:
     case WXK_UP:
     case WXK_DOWN:
-        event.Skip();
-        return;
+        break;
     default:
         GetOCPNCanvasWindow()->ProcessWindowEvent(event);
-        wxSafeYield();
+        wxSafeYield((wxWindow *)NULL, true);
         if (!HasFocus())
             SetFocus();
-        event.Skip();
     }
+    event.Skip();
 }
 
 void GRIBUICtrlBar::connectKeyDownEvent(wxWindow* pclComponent)
@@ -346,6 +347,27 @@ void GRIBUICtrlBar::connectKeyDownEvent(wxWindow* pclComponent)
         {
             wxWindow* pclChild = pclNode->GetData();
             this->connectKeyDownEvent(pclChild);
+
+            pclNode = pclNode->GetNext();
+        }
+    }
+}
+
+void GRIBUICtrlBar::disconnectKeyDownEvent(wxWindow* pclComponent)
+{
+    if (pclComponent)
+    {
+        pclComponent->Disconnect(wxID_ANY,
+            wxEVT_KEY_DOWN,
+            wxKeyEventHandler(GRIBUICtrlBar::OnKeyDown),
+            (wxObject*)NULL,
+            this);
+
+        wxWindowListNode* pclNode = pclComponent->GetChildren().GetFirst();
+        while (pclNode)
+        {
+            wxWindow* pclChild = pclNode->GetData();
+            this->disconnectKeyDownEvent(pclChild);
 
             pclNode = pclNode->GetNext();
         }
