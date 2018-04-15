@@ -28,6 +28,7 @@
 #define __GRIBUICTRLBAR_H__
 
 #include "wx/wxprec.h"
+#include "wx/app.h"
 
 #ifndef  WX_PRECOMP
 #include "wx/wx.h"
@@ -130,6 +131,7 @@ public:
     int             m_ZoneSelAllowed;
     int             m_old_DialogStyle;
 	double			m_ScaledFactor;
+
 private:
     void OnClose( wxCloseEvent& event );
     void OnSize( wxSizeEvent& event );
@@ -152,7 +154,7 @@ private:
     
     void OnTimeline( wxScrollEvent& event );
 	void OnShowCursorData( wxCommandEvent& event );
-    void OnKeyDown(wxKeyEvent &event) { GetOCPNCanvasWindow()->ProcessWindowEvent(event); }
+    void OnKeyDown(wxKeyEvent &event);
 
     wxDateTime MinTime();
     wxArrayString GetFilesInDirectory();

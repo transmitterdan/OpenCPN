@@ -313,6 +313,13 @@ GRIBUICtrlBar::~GRIBUICtrlBar()
     delete m_pTimelineSet;
 }
 
+void GRIBUICtrlBar::OnKeyDown(wxKeyEvent &event) {
+    GetOCPNCanvasWindow()->ProcessWindowEvent(event);
+    wxSafeYield();
+    if (!HasFocus())
+        Raise();
+}
+
 void GRIBUICtrlBar::connectKeyDownEvent(wxWindow* pclComponent)
 {
     if (pclComponent)
