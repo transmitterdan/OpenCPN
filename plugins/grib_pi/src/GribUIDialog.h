@@ -115,7 +115,7 @@ public:
     void SetScaledBitmap( double factor );
     wxBitmap GetScaledBitmap(wxBitmap bitmap, const wxString svgFileName, double scale_factor);
     void OpenFileFromJSON( wxString json);
-
+        
     wxWindow *pParent;
     GribOverlaySettings m_OverlaySettings;
 

@@ -314,10 +314,21 @@ GRIBUICtrlBar::~GRIBUICtrlBar()
 }
 
 void GRIBUICtrlBar::OnKeyDown(wxKeyEvent &event) {
-    GetOCPNCanvasWindow()->ProcessWindowEvent(event);
-    wxSafeYield();
-    if (!HasFocus())
-        Raise();
+    switch (event.GetKeyCode())
+    {   // We need these keys to scroll through Grib times
+    case WXK_LEFT:
+    case WXK_RIGHT:
+    case WXK_UP:
+    case WXK_DOWN:
+        event.Skip();
+        return;
+    default:
+        GetOCPNCanvasWindow()->ProcessWindowEvent(event);
+        wxSafeYield();
+        if (!HasFocus())
+            SetFocus();
+        event.Skip();
+    }
 }
 
 void GRIBUICtrlBar::connectKeyDownEvent(wxWindow* pclComponent)
