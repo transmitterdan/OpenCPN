@@ -90,6 +90,9 @@ public:
     GRIBUICtrlBar(wxWindow *parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ,grib_pi *ppi );
     ~GRIBUICtrlBar();
 
+    void connectKeyDownEvent(wxWindow* pclComponent);
+    void disconnectKeyDownEvent(wxWindow* pclComponent);
+
     void OpenFile( bool newestFile = false );
 
     void ContextMenuItemCallback(int id);
@@ -153,8 +156,6 @@ private:
     void OnTimeline( wxScrollEvent& event );
 	void OnShowCursorData( wxCommandEvent& event );
     void OnKeyDown(wxKeyEvent &event);
-    void connectKeyDownEvent(wxWindow* pclComponent);
-    void disconnectKeyDownEvent(wxWindow* pclComponent);
 
     wxDateTime MinTime();
     wxArrayString GetFilesInDirectory();
