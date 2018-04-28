@@ -70,8 +70,8 @@ DashboardInstrument_WindDirHistory::DashboardInstrument_WindDirHistory( wxWindow
         m_ArrayWindSpdHistory[idx] = -1;
         m_ExpSmoothArrayWindSpd[idx] = -1;
         m_ExpSmoothArrayWindDir[idx] = -1;
-        m_ArrayRecTime[idx]=wxDateTime::Now();
-        m_ArrayRecTime[idx].SetYear(999);
+        m_ArrayRecTime[idx]=wxDateTime::Now().GetTm();
+        m_ArrayRecTime[idx].year = 999;
       }
       alpha=0.01;  //smoothing constant
       m_WindowRect=GetClientRect();
@@ -88,7 +88,7 @@ wxSize DashboardInstrument_WindDirHistory::GetSize( int orient, wxSize hint )
         return wxSize( DefaultWidth, wxMax(m_TitleHeight+140, hint.y) );
       }
       else {
-        return wxSize( wxMax(hint.x, DefaultWidth), wxMax(m_TitleHeight+140, hint.y) );
+        return wxSize( wxMin(hint.x, DefaultWidth), wxMin(m_TitleHeight+140, hint.y) );
       }
 }
 void DashboardInstrument_WindDirHistory::SetData(int st, double data, wxString unit)
@@ -124,8 +124,8 @@ void DashboardInstrument_WindDirHistory::SetData(int st, double data, wxString u
 			  m_ArrayWindSpdHistory[idx] = -1;
 			  m_ExpSmoothArrayWindSpd[idx] = -1;
 			  m_ExpSmoothArrayWindDir[idx] = -1;
-			  m_ArrayRecTime[idx] = wxDateTime::Now();
-			  m_ArrayRecTime[idx].SetYear(999);
+			  m_ArrayRecTime[idx] = wxDateTime::Now().GetTm();
+			  m_ArrayRecTime[idx].year = 999;
 		  }
 	  }
 	  m_WindSpeedUnit = unit;
@@ -176,7 +176,7 @@ void DashboardInstrument_WindDirHistory::SetData(int st, double data, wxString u
       }
       m_ExpSmoothArrayWindSpd[WIND_RECORD_COUNT-1]=alpha*m_ArrayWindSpdHistory[WIND_RECORD_COUNT-2]+(1-alpha)*m_ExpSmoothArrayWindSpd[WIND_RECORD_COUNT-2];
       m_ExpSmoothArrayWindDir[WIND_RECORD_COUNT-1]=alpha*m_ArrayWindDirHistory[WIND_RECORD_COUNT-2]+(1-alpha)*m_ExpSmoothArrayWindDir[WIND_RECORD_COUNT-2];
-      m_ArrayRecTime[WIND_RECORD_COUNT-1]=wxDateTime::Now();
+      m_ArrayRecTime[WIND_RECORD_COUNT-1]=wxDateTime::Now().GetTm();
       m_oldDirVal=m_ExpSmoothArrayWindDir[WIND_RECORD_COUNT-1];
       //include the new/latest value in the max/min value test too
       m_MaxWindDir = wxMax(m_WindDir,m_MaxWindDir);
@@ -497,7 +497,7 @@ void DashboardInstrument_WindDirHistory::DrawForeground(wxGCDC* dc)
   //---------------------------------------------------------------------------------
   // wind direction
   //---------------------------------------------------------------------------------
-  dc->SetFont(*g_pFontData);
+  dc->SetFont(*g_pFontLabel);
   col=wxColour(204,41,41,255); //red, opaque
   dc->SetTextForeground(col);
   if(!m_IsRunning)
@@ -508,8 +508,8 @@ void DashboardInstrument_WindDirHistory::DrawForeground(wxGCDC* dc)
     while(dir <0 ) dir+=360;
     WindAngle=wxString::Format(_T("TWD %3.0f"), dir)+DEGREE_SIGN;
   }
-  dc->GetTextExtent(WindAngle, &degw, &degh, 0, 0, g_pFontData);
-  dc->DrawText(WindAngle, m_WindowRect.width-degw-m_RightLegend-3, m_TopLineHeight-degh);
+  dc->GetTextExtent(WindAngle, &degw, &degh, 0, 0, g_pFontLabel);
+  dc->DrawText(WindAngle, m_LeftLegend + 3, m_TopLineHeight-degh-1);
   pen.SetStyle(wxPENSTYLE_SOLID);
   pen.SetColour(wxColour(204,41,41 ,96)); //red, transparent
   pen.SetWidth(1);
@@ -555,22 +555,22 @@ void DashboardInstrument_WindDirHistory::DrawForeground(wxGCDC* dc)
   // wind speed
   //---------------------------------------------------------------------------------
   col=wxColour(61,61,204,255); //blue, opaque
-  dc->SetFont(*g_pFontData);
+  dc->SetFont(*g_pFontLabel);
   dc->SetTextForeground(col);
   WindSpeed=wxString::Format(_T("TWS %3.1f %s "), m_WindSpd, m_WindSpeedUnit.c_str());
-  dc->GetTextExtent(WindSpeed, &degw, &degh, 0, 0, g_pFontData);
-  dc->DrawText(WindSpeed, m_LeftLegend+3, m_TopLineHeight-degh);
+  dc->GetTextExtent(WindSpeed, &degw, &degh, 0, 0, g_pFontLabel);
+  dc->DrawText(WindSpeed, m_LeftLegend + 3, m_TopLineHeight - 2*degh);
   dc->SetFont(*g_pFontLabel);
   //determine the time range of the available data (=oldest data value)
   int i=0;
-  while(m_ArrayRecTime[i].GetYear()== 999 && i<WIND_RECORD_COUNT-1) i++;
+  while(m_ArrayRecTime[i].year == 999 && i<WIND_RECORD_COUNT-1) i++;
   if (i == WIND_RECORD_COUNT -1) {
     min=0;
     hour=0;
   }
   else {
-    min=m_ArrayRecTime[i].GetMinute();
-    hour=m_ArrayRecTime[i].GetHour();
+    min=m_ArrayRecTime[i].min;
+    hour=m_ArrayRecTime[i].hour;
   }
   dc->DrawText(wxString::Format(_("Max %.1f %s since %02d:%02d  Overall %.1f %s"), m_MaxWindSpd, m_WindSpeedUnit.c_str(), hour, min, m_TotalMaxWindSpd, m_WindSpeedUnit.c_str()), m_LeftLegend + 3 + 2 + degw, m_TopLineHeight - degh + 5);
   pen.SetStyle(wxPENSTYLE_SOLID);
@@ -613,7 +613,7 @@ void DashboardInstrument_WindDirHistory::DrawForeground(wxGCDC* dc)
   }
 
   //---------------------------------------------------------------------------------
-  //draw vertical timelines every 5 minutes
+  //draw vertical timelines every 10 minutes
   //---------------------------------------------------------------------------------
   GetGlobalColor(_T("UBLCK"), &col);
   pen.SetColour(col);
@@ -624,10 +624,10 @@ void DashboardInstrument_WindDirHistory::DrawForeground(wxGCDC* dc)
   int done=-1;
   wxPoint pointTime;
   for (int idx = 0; idx < WIND_RECORD_COUNT; idx++) {
-    min=m_ArrayRecTime[idx].GetMinute();
-    hour=m_ArrayRecTime[idx].GetHour();
-    if(m_ArrayRecTime[idx].GetYear()!= 999) {
-      if ( (hour*100+min) != done && (min % 5 == 0 ) && (m_ArrayRecTime[idx].GetSecond() == 0 || m_ArrayRecTime[idx].GetSecond() == 1) ) {
+    if(m_ArrayRecTime[idx].year!= 999) {
+      min = m_ArrayRecTime[idx].min;
+      hour = m_ArrayRecTime[idx].hour;
+      if ( (hour*100+min) != done && (min % 10 == 0 ) && (m_ArrayRecTime[idx].sec == 0 || m_ArrayRecTime[idx].sec == 1) ) {
         pointTime.x = idx * m_ratioW + 3 + m_LeftLegend;
         dc->DrawLine( pointTime.x, m_TopLineHeight+1, pointTime.x,(m_TopLineHeight+m_DrawAreaRect.height+1) );
         label.Printf(_T("%02d:%02d"), hour,min);

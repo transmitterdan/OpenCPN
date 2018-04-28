@@ -190,7 +190,7 @@ wxSize DashboardInstrument_Single::GetSize( int orient, wxSize hint )
       if( orient == wxHORIZONTAL ) {
           return wxSize( DefaultWidth, wxMax(hint.y, m_TitleHeight+m_DataHeight) );
       } else {
-          return wxSize( wxMax(hint.x, DefaultWidth), m_TitleHeight+m_DataHeight );
+          return wxSize( wxMin(hint.x, DefaultWidth), m_TitleHeight+m_DataHeight );
       }
 }
 
@@ -198,6 +198,10 @@ void DashboardInstrument_Single::Draw(wxGCDC* dc)
 {
       wxColour cl;
 #ifdef __WXMSW__
+      if (m_DataHeight <= 0) {
+          int w;
+          dc->GetTextExtent(_T("000"), &w, &m_DataHeight, 0, 0, g_pFontData);
+      }
       wxBitmap tbm( dc->GetSize().x, m_DataHeight, -1 );
       wxMemoryDC tdc( tbm );
       wxColour c2;
@@ -285,7 +289,7 @@ wxSize DashboardInstrument_Position::GetSize( int orient, wxSize hint )
       if( orient == wxHORIZONTAL ) {
           return wxSize( w+10, wxMax(hint.y, m_TitleHeight+m_DataHeight*2) );
       } else {
-          return wxSize( wxMax(hint.x, w+10), m_TitleHeight+m_DataHeight*2 );
+          return wxSize( wxMin(hint.x, w+10), m_TitleHeight+m_DataHeight*2 );
       }
 }
 
@@ -294,6 +298,10 @@ void DashboardInstrument_Position::Draw(wxGCDC* dc)
       wxColour cl;
 
 #ifdef __WXMSW__
+      if (m_DataHeight <= 0) {
+          int w;
+          dc->GetTextExtent(_T("000"), &w, &m_DataHeight, 0, 0, g_pFontData);
+      }
       wxBitmap tbm( dc->GetSize().x, m_DataHeight * 2, -1 );
       wxMemoryDC tdc( tbm );
       wxColour c2;

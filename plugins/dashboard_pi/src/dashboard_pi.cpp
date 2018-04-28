@@ -2581,6 +2581,18 @@ void DashboardWindow::SetInstrumentList( wxArrayInt list )
             }
         }
     }
+    /* We must reset all MinSize to ensure we start with new default */
+    /* size of the sizer. */
+    wxSize minSize(itemBoxSizer->GetSize());
+    wxWindowListNode* node = GetChildren().GetFirst();
+    while (node) {
+        if (itemBoxSizer->IsVertical())
+            node->GetData()->SetMinSize(wxSize(minSize.x, -1));
+        else
+            node->GetData()->SetMinSize(wxSize(-1, minSize.y));
+        node = node->GetNext();
+    }
+    SetMinSize(wxDefaultSize);
     Fit();
     Layout();
     SetMinSize( itemBoxSizer->GetMinSize() );
