@@ -181,7 +181,8 @@ glTexFactory::glTexFactory(ChartBase *chart, int raster_format)
 
 glTexFactory::~glTexFactory()
 {
-    delete m_fs;
+    if (m_fs)
+        delete m_fs;
 
     PurgeBackgroundCompressionPool();
     DeleteAllTextures();
@@ -999,6 +1000,7 @@ bool glTexFactory::LoadHeader(void)
                     
                     //  Bad header signature    
                     delete m_fs;
+                    m_fs = NULL;
                     need_new = true;
                 }
                 else {      // good header
@@ -1015,6 +1017,7 @@ bool glTexFactory::LoadHeader(void)
         
         else{               // some problem opening file, probably permissions on Win7
             delete m_fs;
+            m_fs = NULL;
             need_new = true;
             wxRemoveFile(m_CompressedCacheFilePath);
         }

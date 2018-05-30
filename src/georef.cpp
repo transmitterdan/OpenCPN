@@ -445,6 +445,8 @@ void toSMcache(double lat, double lon, double y30, double lon0, double *x, doubl
 void
 fromSM(double x, double y, double lat0, double lon0, double *lat, double *lon)
 {
+      if ( isnan(lat0) || isnan(lon0) )
+          return;
       const double z = WGS84_semimajor_axis_meters * mercator_k0;
 
 // lat = arcsin((e^2(y+y0) - 1)/(e^2(y+y0) + 1))

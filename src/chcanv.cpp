@@ -2620,7 +2620,7 @@ void ChartCanvas::OnCursorTrackTimerEvent( wxTimerEvent& event )
 
 void ChartCanvas::SetCursorStatus( double cursor_lat, double cursor_lon )
 {
-    if ( !parent_frame->m_pStatusBar )
+    if ( !parent_frame->m_pStatusBar || isnan(cursor_lat) || isnan(cursor_lon) )
         return;
 
     wxString s1;
