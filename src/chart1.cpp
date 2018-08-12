@@ -6771,6 +6771,17 @@ void MyFrame::OnInitTimer(wxTimerEvent& event)
 }
 
 void MyFrame::OnFrameActivatedTimer( wxTimerEvent &event )
+
+//  If no mouse-up event was detected then the frame was not 
+//  activated by a mouse click. Therefore we should clear the 
+//  flag so the next mouse click in the chart frame will pan 
+//  instead of doing nothing. For most platforms 1000mS is 
+//  sufficient time to detect if the mouse-up event will 
+//  happen. So when timer expires we clear the activation flag.
+
+//  Timer length is set in 
+//      void MyFrame::OnActivate( wxActivateEvent& event )
+
 {
     if (cc1 && cc1->GetbJustActivated() )
         cc1->ClearbJustActivated();
