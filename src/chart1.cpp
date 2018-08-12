@@ -2664,6 +2664,7 @@ EVT_SIZE(MyFrame::OnSize)
 EVT_MOVE(MyFrame::OnMove)
 EVT_MENU(-1, MyFrame::OnToolLeftClick)
 EVT_TIMER(INIT_TIMER, MyFrame::OnInitTimer)
+EVT_TIMER(FRAME_ACTIVATE_TIMER, MyFrame::OnFrameActivatedTimer)
 EVT_TIMER(FRAME_TIMER_1, MyFrame::OnFrameTimer1)
 EVT_TIMER(FRAME_TC_TIMER, MyFrame::OnFrameTCTimer)
 EVT_TIMER(FRAME_COG_TIMER, MyFrame::OnFrameCOGTimer)
@@ -2703,6 +2704,8 @@ MyFrame::MyFrame( wxFrame *frame, const wxString& title, const wxPoint& pos, con
     InitTimer.SetOwner( this, INIT_TIMER );
     m_iInitCount = 0;
     m_initializing = false;
+    //
+    FrameActivatedTimer.SetOwner( this, FRAME_ACTIVATE_TIMER );
 
     //      Redirect the global heartbeat timer to this frame
     FrameTimer1.SetOwner( this, FRAME_TIMER_1 );
@@ -2840,10 +2843,13 @@ void MyFrame::OnActivate( wxActivateEvent& event )
 //    It is called in some unexpected places,
 //    such as on closure of dialogs, etc.
 
+
+
     if( cc1 ) {
         cc1->SetFocus();       // This seems to be needed for MSW, to get key and wheel events
                                      // after minimize/maximize.
         cc1->SetbJustActivated();
+        FrameActivatedTimer.Start(1000, wxTIMER_ONE_SHOT);
     }
 
 #ifdef __WXOSX__
@@ -6764,6 +6770,11 @@ void MyFrame::OnInitTimer(wxTimerEvent& event)
     cc1->Refresh( true );
 }
 
+void MyFrame::OnFrameActivatedTimer( wxTimerEvent &event )
+{
+    if (cc1 && cc1->GetbJustActivated() )
+        cc1->ClearbJustActivated();
+}
 //    Manage the application memory footprint on a periodic schedule
 void MyFrame::OnMemFootTimer( wxTimerEvent& event )
 {

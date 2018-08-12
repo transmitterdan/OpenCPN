@@ -335,6 +335,7 @@ class MyFrame: public wxFrame
     void OnExit(wxCommandEvent& event);
     void OnSize(wxSizeEvent& event);
     void OnMove(wxMoveEvent& event);
+    void OnFrameActivatedTimer(wxTimerEvent &event);
     void OnInitTimer(wxTimerEvent& event);
     void OnFrameTimer1(wxTimerEvent& event);
     bool DoChartUpdate(void);
@@ -479,6 +480,8 @@ class MyFrame: public wxFrame
     wxTimer             InitTimer;
     int                 m_iInitCount;
     bool                m_initializing;
+
+    wxTimer             FrameActivatedTimer;
 
     wxTimer             FrameTCTimer;
     wxTimer             FrameTimer1;
@@ -625,7 +628,8 @@ enum {
     MEMORY_FOOTPRINT_TIMER,
     BELLS_TIMER,
     ID_NMEA_THREADMSG,
-    RESIZE_TIMER
+    RESIZE_TIMER,
+    FRAME_ACTIVATE_TIMER
 
 };
 
