@@ -2840,8 +2840,11 @@ void MyFrame::OnActivate( wxActivateEvent& event )
 //    It is called in some unexpected places,
 //    such as on closure of dialogs, etc.
 
-    if( cc1 ) cc1->SetFocus();       // This seems to be needed for MSW, to get key and wheel events
+    if( cc1 ) {
+        cc1->SetFocus();       // This seems to be needed for MSW, to get key and wheel events
                                      // after minimize/maximize.
+        cc1->SetbJustActivated();
+    }
 
 #ifdef __WXOSX__
     if(event.GetActive())

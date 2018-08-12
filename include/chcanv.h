@@ -347,6 +347,9 @@ public:
       int GetMinAvailableGshhgQuality() { return pWorldBackgroundChart->GetMinAvailableQuality(); }
       int GetMaxAvailableGshhgQuality() { return pWorldBackgroundChart->GetMaxAvailableQuality(); }
 
+      void ClearbJustActivated() { bJustActivated = false; };
+      void SetbJustActivated() { bJustActivated = true; };
+      bool GetbJustActivated() { return(bJustActivated); };
 private:
       void CallPopupMenu( int x, int y );
       
@@ -375,6 +378,7 @@ private:
       bool        m_bShowTide;
       int         cursor_region;
       bool        m_bTCupdate;
+      bool        bJustActivated;
 
       wxRect      bbRect;
 
