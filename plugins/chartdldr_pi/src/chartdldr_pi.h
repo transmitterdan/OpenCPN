@@ -115,6 +115,7 @@ public:
     bool            m_preselect_new;
     bool            m_preselect_updated;
     bool            m_allow_bulk_update;
+    bool            m_auto_close;
 
 private:
     wxFileConfig   *m_pconfig;
@@ -270,8 +271,8 @@ public:
 	~ChartDldrPrefsDlgImpl();
 	wxString        GetPath() { return m_tcDefaultDir->GetValue(); }
 	void            SetPath( const wxString path );
-	void            GetPreferences( bool &preselect_new, bool &preselect_updated, bool &bulk_update );
-	void            SetPreferences( bool preselect_new, bool preselect_updated, bool bulk_update );
+	void            GetPreferences( bool &preselect_new, bool &preselect_updated, bool &bulk_update, bool &auto_close );
+	void            SetPreferences( bool preselect_new, bool preselect_updated, bool bulk_update, bool auto_close );
 };
 
 #endif

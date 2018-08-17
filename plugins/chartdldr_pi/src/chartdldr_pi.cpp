@@ -134,6 +134,7 @@ chartdldr_pi::chartdldr_pi( void *ppimgr ) : opencpn_plugin_113( ppimgr )
     m_preselect_new = false;
     m_preselect_updated = false;
     m_allow_bulk_update = false;
+    m_auto_close = false;
     m_pOptionsPage = NULL;
     m_selected_source = -1;
     m_dldrpanel = NULL;
@@ -290,6 +291,8 @@ bool chartdldr_pi::LoadConfig( void )
         pConf->Read ( _T ( "PreselectNew" ), &m_preselect_new, false );
         pConf->Read ( _T ( "PreselectUpdated" ), &m_preselect_updated, true );
         pConf->Read ( _T ( "AllowBulkUpdate" ), &m_allow_bulk_update, false );
+        pConf->Read( _T ( "AutoClose" ), &m_auto_close, false );
+
         return true;
     }
     else
@@ -317,6 +320,7 @@ bool chartdldr_pi::SaveConfig(void)
         pConf->Write ( _T ( "PreselectNew" ), m_preselect_new );
         pConf->Write ( _T ( "PreselectUpdated" ), m_preselect_updated );
         pConf->Write ( _T ( "AllowBulkUpdate" ), m_allow_bulk_update );
+        pConf->Write ( _T ( "AutoClose"), m_auto_close );
 
         return true;
     }
@@ -334,11 +338,11 @@ void chartdldr_pi::ShowPreferencesDialog( wxWindow* parent )
     }
     
     dialog->SetPath(m_base_chart_dir);
-    dialog->SetPreferences(m_preselect_new, m_preselect_updated, m_allow_bulk_update);
+    dialog->SetPreferences(m_preselect_new, m_preselect_updated, m_allow_bulk_update, m_auto_close);
     if( wxID_OK == dialog->ShowModal() )
     {
         m_base_chart_dir = dialog->GetPath();
-        dialog->GetPreferences(m_preselect_new, m_preselect_updated, m_allow_bulk_update);
+        dialog->GetPreferences(m_preselect_new, m_preselect_updated, m_allow_bulk_update, m_auto_close);
         SaveConfig();
         if(m_dldrpanel)
             m_dldrpanel->SetBulkUpdate( m_allow_bulk_update );
@@ -714,6 +718,10 @@ void ChartDldrPanelImpl::UpdateAllCharts( wxCommandEvent& event )
                 failed_to_update, attempted_to_update ), _("Chart Downloader"), wxOK | wxICON_ERROR );
     if( attempted_to_update > failed_to_update )
         ForceChartDBUpdate();
+    // Autoclose the options dialog if buik update succeeded & user requested this option
+    if ( failed_to_update == 0 && pPlugIn->m_auto_close && !cancelled )
+            QueueEvent( new wxCommandEvent( wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK ) );
+
     updatingAll = false;
     cancelled = false;
 }
@@ -1877,17 +1885,19 @@ void ChartDldrPrefsDlgImpl::SetPath( const wxString path )
     m_tcDefaultDir->SetValue(path);
 }
 
-void ChartDldrPrefsDlgImpl::GetPreferences( bool &preselect_new, bool &preselect_updated, bool &bulk_update )
+void ChartDldrPrefsDlgImpl::GetPreferences( bool &preselect_new, bool &preselect_updated, bool &bulk_update, bool &auto_close )
 {
     preselect_new = m_cbSelectNew->GetValue();
     preselect_updated = m_cbSelectUpdated->GetValue();
     bulk_update = m_cbBulkUpdate->GetValue();
+    auto_close = m_cbAutoClose->GetValue();
 }
-void ChartDldrPrefsDlgImpl::SetPreferences( bool preselect_new, bool preselect_updated, bool bulk_update )
+void ChartDldrPrefsDlgImpl::SetPreferences( bool preselect_new, bool preselect_updated, bool bulk_update, bool auto_close )
 {
     m_cbSelectNew->SetValue(preselect_new);
     m_cbSelectUpdated->SetValue(preselect_updated);
     m_cbBulkUpdate->SetValue(bulk_update);
+    m_cbAutoClose->SetValue(auto_close);
 }
 
 void ChartDldrGuiAddSourceDlg::OnOkClick( wxCommandEvent& event )

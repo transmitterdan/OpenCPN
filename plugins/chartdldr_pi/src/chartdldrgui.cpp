@@ -498,6 +498,8 @@ ChartDldrPrefsDlg::ChartDldrPrefsDlg( wxWindow* parent, wxWindowID id, const wxS
 	m_cbBulkUpdate = new wxCheckBox( this, wxID_ANY, _("Allow bulk update of all configured chart sources and charts"), wxDefaultPosition, wxDefaultSize, 0 );
 	sbSizerBehavior->Add( m_cbBulkUpdate, 0, wxALL, 5 );
 
+    m_cbAutoClose = new wxCheckBox( this, wxID_ANY, _("Close chart downloader after bulk update successfully finishes"), wxDefaultPosition );
+    sbSizerBehavior->Add( m_cbAutoClose, 0, wxALL, 5 );
 
 	bSizerPrefsMain->Add( sbSizerBehavior, 1, wxALL|wxEXPAND, 5 );
 

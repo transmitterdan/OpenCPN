@@ -135,6 +135,7 @@ class ChartDldrPrefsDlg : public wxDialog
 		wxCheckBox* m_cbSelectNew;
 		wxStaticLine* m_staticline1;
 		wxCheckBox* m_cbBulkUpdate;
+        wxCheckBox* m_cbAutoClose;
 		wxStdDialogButtonSizer* m_sdbSizerBtns;
 		wxButton* m_sdbSizerBtnsOK;
 		wxButton* m_sdbSizerBtnsCancel;
