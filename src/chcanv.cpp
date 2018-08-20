@@ -371,6 +371,7 @@ ChartCanvas::ChartCanvas ( wxFrame *frame ) :
     parent_frame = ( MyFrame * ) frame;       // save a pointer to parent
 
     pscratch_bm = NULL;
+    bJustActivated = true;
 
     SetBackgroundColour ( GetGlobalColor ( _T ( "NODTA" ) ) );
     SetBackgroundStyle ( wxBG_STYLE_CUSTOM );  // on WXMSW, this prevents flashing on color scheme change
@@ -6881,9 +6882,11 @@ bool ChartCanvas::MouseEventProcessCanvas( wxMouseEvent& event )
     }
     
     if( event.LeftUp() ) {
-        if( panleftIsDown ) {  // leftUp for chart center, but only after a leftDown seen here.
+        if( GetbJustActivated() ) {
+            ClearbJustActivated();
             panleftIsDown = false;
-            
+        } else if( panleftIsDown ) {  // leftUp for chart center, but only after a leftDown seen here.
+            panleftIsDown = false;
             if( !g_btouch ){
                 if( !m_bChartDragging && !m_bMeasure_Active ) {
                     switch( cursor_region ){
@@ -8772,6 +8775,7 @@ bool ChartCanvas::SetCursor( const wxCursor &c )
 
 void ChartCanvas::Refresh( bool eraseBackground, const wxRect *rect )
 {
+    // ClearbJustActivated();
     //  Keep the mouse position members up to date
     GetCanvasPixPoint( mouse_x, mouse_y, m_cursor_lat, m_cursor_lon );
 
