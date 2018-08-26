@@ -718,10 +718,16 @@ void ChartDldrPanelImpl::UpdateAllCharts( wxCommandEvent& event )
                 failed_to_update, attempted_to_update ), _("Chart Downloader"), wxOK | wxICON_ERROR );
     if( attempted_to_update > failed_to_update )
         ForceChartDBUpdate();
-    // Autoclose the options dialog if buik update succeeded & user requested this option
-    if ( failed_to_update == 0 && pPlugIn->m_auto_close && !cancelled )
-            QueueEvent( new wxCommandEvent( wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK ) );
-
+    // Autoclose the options dialog if buik update succeeded & user requested autoclose option
+    if ( failed_to_update == 0 && pPlugIn->m_auto_close && !cancelled ) {
+        wxCommandEvent *evt = new wxCommandEvent(wxEVT_COMMAND_BUTTON_CLICKED, wxID_OK);
+        // This eent will be propagated up to the dialog that owns this plugin dialog window
+        // (normally the main program options dialog). This is safe because wxCommandEvents
+        // will not propagate up past the dialog. In other words, the main window will never
+        // see this event.
+        if ( evt )
+            QueueEvent( evt );
+    }
     updatingAll = false;
     cancelled = false;
 }
@@ -1104,7 +1110,7 @@ After downloading the charts, please extract them to %s"), pPlugIn->m_pChartCata
         wxMessageBox( wxString::Format( _("%d out of %d charts failed to download.\nCheck the list, verify there is a working Internet connection and repeat the operation if needed.")
                 , m_failed_downloads, m_downloading ),
                 _("Chart Downloader"), wxOK | wxICON_ERROR );
-    if( (m_downloading - m_failed_downloads > 0) && !updatingAll )
+    if( m_downloading - m_failed_downloads > 0 )
         ForceChartDBUpdate();
 }
 
