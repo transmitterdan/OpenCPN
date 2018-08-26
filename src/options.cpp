@@ -903,6 +903,7 @@ EVT_BUTTON(ID_TCDATAADD, options::OnInsertTideDataLocation)
 EVT_BUTTON(ID_TCDATADEL, options::OnRemoveTideDataLocation)
 EVT_BUTTON(ID_APPLY, options::OnApplyClick)
 EVT_BUTTON(xID_OK, options::OnXidOkClick)
+EVT_BUTTON(wxID_OK, options::OnXidOkClick)
 EVT_BUTTON(wxID_CANCEL, options::OnCancelClick)
 EVT_BUTTON(ID_BUTTONFONTCHOOSE, options::OnChooseFont)
 EVT_CHOICE(ID_CHOICE_FONTELEMENT, options::OnFontChoice)
@@ -6510,10 +6511,12 @@ void options::OnApplyClick(wxCommandEvent& event) {
 void options::OnXidOkClick(wxCommandEvent& event) {
   // When closing the form with Ctrl-Enter sometimes we get double events, the
   // second is empty??
-  if (event.GetEventObject() == NULL) return;
+  //if (event.GetEventObject() == NULL)
+  //    return;
 
   OnApplyClick(event);
-  if (event.GetInt() == wxID_STOP) return;
+  if (event.GetInt() == wxID_STOP)
+      return;
 
   Finish();
 }
