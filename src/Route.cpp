@@ -117,6 +117,19 @@ void Route::CloneRoute( Route *psourceroute, int start_nPoint, int end_nPoint, c
 
 }
 
+void Route::MergeRoutes(Route *pstartroute, Route *pfinishroute)
+{
+    int i;
+    int nPoints = pfinishroute->GetnPoints();
+
+    for (i = 1; i <= nPoints; i++)
+    {
+        pstartroute->AddPoint( pfinishroute->GetPoint( i ), false );
+    }
+
+    FinalizeForRendering();
+}
+
 void Route::AddPoint( RoutePoint *pNewPoint, bool b_rename_in_sequence, bool b_deferBoxCalc )
 {
     if( pNewPoint->m_bIsolatedMark ) {

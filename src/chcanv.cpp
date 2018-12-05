@@ -5902,7 +5902,7 @@ bool ChartCanvas::MouseEventProcessObjects( wxMouseEvent& event )
                     if( brp_viz ){
                         int dlg_return;
 #ifndef __WXOSX__
-                        dlg_return = OCPNMessageBox( this, _("Use nearby waypoint?"),
+                        dlg_return = OCPNMessageBox( this, _("Use nearby waypoint?_"),
                                                  _("OpenCPN Route Create"),
                                                    (long) wxYES_NO | wxCANCEL | wxYES_DEFAULT );
 #else
