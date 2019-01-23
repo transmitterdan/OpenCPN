@@ -196,9 +196,7 @@ extern int g_own_ship_sog_cog_calc_damp_sec;
 extern bool g_bPreserveScaleOnX;
 extern bool g_bPlayShipsBells;
 
-#ifdef USE_SYSTEM_CMD_SOUND
 extern wxString g_CmdSoundString;
-#endif /* USE_SYSTEM_CMD_SOUND */
 
 extern int g_iSoundDeviceIndex;
 extern bool g_bFullscreenToolbar;
@@ -1226,6 +1224,7 @@ void options::Init(void) {
 #ifdef __OCPN__ANDROID__
   m_bcompact = true;
 #endif
+  pCmdSoundString = NULL;
 }
 
 size_t options::CreatePanel(const wxString& title) {
@@ -5904,10 +5903,8 @@ void options::SetInitialSettings(void) {
   if(pPreserveScale) pPreserveScale->SetValue(g_bPreserveScaleOnX);
   pPlayShipsBells->SetValue(g_bPlayShipsBells);
 
-#ifdef USE_SYSTEM_CMD_SOUND
-  if ( g_bUIexpert )
+  if ( g_bUIexpert && pCmdSoundString )
       pCmdSoundString->SetValue(g_CmdSoundString);
-#endif /* USE_SYSTEM_CMD_SOUND */
 
   if (pSoundDeviceIndex)
       pSoundDeviceIndex->SetSelection(g_iSoundDeviceIndex);
@@ -6998,15 +6995,13 @@ void options::OnApplyClick(wxCommandEvent& event) {
 
   if(pPreserveScale) g_bPreserveScaleOnX = pPreserveScale->GetValue();
 
-#ifdef USE_SYSTEM_CMD_SOUND
-  if ( g_bUIexpert ) {
+  if ( g_bUIexpert && pCmdSoundString) {
       g_CmdSoundString = pCmdSoundString->GetValue( );
       if ( wxIsEmpty( g_CmdSoundString ) ) {
           g_CmdSoundString = wxString( SYSTEM_SOUND_CMD );
           pCmdSoundString->SetValue( g_CmdSoundString );
       }
   }
-#endif /* USE_SYSTEM_CMD_SOUND */
 
   g_bPlayShipsBells = pPlayShipsBells->GetValue();
   if (pSoundDeviceIndex)
@@ -8124,10 +8119,7 @@ void options::OnButtonSelectSound(wxCommandEvent& event) {
 
 void options::OnButtonTestSound(wxCommandEvent& event) {
     std::unique_ptr<OcpnSound> AIS_Sound(SoundFactory());
-#ifdef USE_SYSTEM_CMD_SOUND
-    std::string strCmd( g_CmdSoundString.mb_str( ) );
-    AIS_Sound->SetCmd( strCmd );
-#endif /* USE_SYSTEM_CMD_SOUND */
+    AIS_Sound->SetCmd( g_CmdSoundString.mb_str( wxConvUTF8 ) );
     AIS_Sound->Load(g_sAIS_Alert_Sound_File, g_iSoundDeviceIndex);
     AIS_Sound->Play();
 }

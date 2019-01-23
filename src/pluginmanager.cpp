@@ -138,9 +138,7 @@ extern bool             g_bopengl;
 extern ChartGroupArray  *g_pGroupArray;
 extern unsigned int     g_canvasConfig;
 
-#ifdef USE_SYSTEM_CMD_SOUND
 extern wxString         g_CmdSoundString;
-#endif /* USE_SYSTEM_CMD_SOUND */
 
 #ifdef __WXMSW__
 static const char PATH_SEP = ';';
@@ -6001,10 +5999,7 @@ bool PlugInPlaySoundEx( wxString &sound_file, int deviceIndex )
         wxLogWarning( "Cannot load sound file: %s", sound_file );
         return false;
     }
-#ifdef USE_SYSTEM_CMD_SOUND
-    std::string strCmd( g_CmdSoundString.mb_str( ) );
-    g_PluginSound->SetCmd( strCmd );
-#endif /* USE_SYSTEM_CMD_SOUND */
+    g_PluginSound->SetCmd( g_CmdSoundString.mb_str( wxConvUTF8 ) );
 
     g_PluginSound->SetFinishedCallback( onPlugInPlaySoundExFinished, NULL );
     ok = g_PluginSound->Play( );

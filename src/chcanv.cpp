@@ -322,9 +322,7 @@ extern bool              g_bAutoHideToolbar;
 extern int               g_nAutoHideToolbar;
 extern bool              g_bDeferredInitDone;
 
-#ifdef USE_SYSTEM_CMD_SOUND
 extern wxString          g_CmdSoundString;
-#endif /* USE_SYSTEM_CMD_SOUND */
 
 //  TODO why are these static?
 static int mouse_x;
@@ -6181,10 +6179,7 @@ void ChartCanvas::AlertDraw( ocpnDC& dc )
         AnchorAlertOn2 = false;
 
     if( play_sound && !bAnchorSoundPlaying) {
-#ifdef USE_SYSTEM_CMD_SOUND
-        std::string strCmd( g_CmdSoundString.mb_str( ) );
-        g_anchorwatch_sound->SetCmd( strCmd );
-#endif /* USE_SYSTEM_CMD_SOUND */
+        g_anchorwatch_sound->SetCmd( g_CmdSoundString.mb_str( wxConvUTF8) );
         g_anchorwatch_sound->Load( g_sAIS_Alert_Sound_File );
         if ( g_anchorwatch_sound->IsOk( ) ) {
             bAnchorSoundPlaying = true;

@@ -310,9 +310,7 @@ extern int             n_NavMessageShown;
 extern wxString        g_config_version_string;
 extern wxString        g_config_version_string;
 
-#ifdef USE_SYSTEM_CMD_SOUND
 extern wxString        g_CmdSoundString;
-#endif /* USE_SYSTEM_CMD_SOUND */
 
 extern bool             g_bAISRolloverShowClass;
 extern bool             g_bAISRolloverShowCOG;

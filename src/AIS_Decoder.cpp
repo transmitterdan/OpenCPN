@@ -99,9 +99,7 @@ extern OCPNPlatform     *g_Platform;
 extern PlugInManager             *g_pi_manager;
 extern Multiplexer      *g_pMUX;
 
-#ifdef USE_SYSTEM_CMD_SOUND
 extern wxString g_CmdSoundString;
-#endif /* USE_SYSTEM_CMD_SOUND */
 
 bool g_benableAISNameCache;
 bool g_bUseOnlyConfirmedAISName;
@@ -2607,10 +2605,7 @@ void AIS_Decoder::OnTimerAIS( wxTimerEvent& event )
         }
         if ( !AIS_AlertPlaying() ) {
             m_bAIS_AlertPlaying = true;
-#ifdef USE_SYSTEM_CMD_SOUND
-            std::string strCmd( g_CmdSoundString.mb_str( ) );
-            m_AIS_Sound->SetCmd( strCmd );
-#endif /* USE_SYSTEM_CMD_SOUND */
+            m_AIS_Sound->SetCmd( g_CmdSoundString.mb_str( wxConvUTF8 ) );
             m_AIS_Sound->Load(g_sAIS_Alert_Sound_File, g_iSoundDeviceIndex);
             if ( m_AIS_Sound->IsOk( ) ) {
                 m_AIS_Sound->SetFinishedCallback( onSoundFinished, this );

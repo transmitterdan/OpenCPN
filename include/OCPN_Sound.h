@@ -103,7 +103,7 @@ class OcpnSound
          * Set system command string in case program wants to change from
          * default string.
          */
-        virtual void SetCmd( std::string &cmd ) { };    // does nothing if not overridden
+        virtual void SetCmd( const char *cmd ) { };    // does nothing if not overridden
 
     protected:
 

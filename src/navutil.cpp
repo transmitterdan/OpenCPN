@@ -331,9 +331,7 @@ extern int              g_BSBImgDebug;
 extern int             n_NavMessageShown;
 extern wxString        g_config_version_string;
 
-#ifdef USE_SYSTEM_CMD_SOUND
 extern wxString        g_CmdSoundString;
-#endif /* USE_SYSTEM_CMD_SOUND */
 
 extern bool             g_bAISRolloverShowClass;
 extern bool             g_bAISRolloverShowCOG;
@@ -758,11 +756,11 @@ int MyConfig::LoadMyConfigRaw( bool bAsTemplate )
     
     // Some undocumented values
     Read( _T ( "ConfigVersionString" ), &g_config_version_string );
-#ifdef USE_SYSTEM_CMD_SOUND
+#ifdef SYSTEM_SOUND_CMD
     Read(_T("CmdSoundString"), &g_CmdSoundString, wxString(SYSTEM_SOUND_CMD) );
     if ( wxIsEmpty( g_CmdSoundString ) )
         g_CmdSoundString = wxString( SYSTEM_SOUND_CMD );
-#endif /* USE_SYSTEM_CMD_SOUND */
+#endif /* SYSTEM_SOUND_CMD */
     Read( _T ( "NavMessageShown" ), &n_NavMessageShown );
 
     Read( _T ( "UIexpert" ), &g_bUIexpert );
@@ -2237,11 +2235,11 @@ void MyConfig::UpdateSettings()
     Write( _T ( "LastAppliedTemplate" ), g_lastAppliedTemplateGUID );
     
     Write( _T ( "ConfigVersionString" ), g_config_version_string );
-#ifdef USE_SYSTEM_CMD_SOUND
+#ifdef SYSTEM_SOUND_CMD
     if ( wxIsEmpty( g_CmdSoundString ) )
         g_CmdSoundString = wxString( SYSTEM_SOUND_CMD );
     Write( _T( "CmdSoundString" ), g_CmdSoundString );
-#endif /* USE_SYSTEM_CMD_SOUND */
+#endif /* SYSTEM_SOUND_CMD */
     Write( _T ( "NavMessageShown" ), n_NavMessageShown );
     Write( _T ( "InlandEcdis" ), g_bInlandEcdis );
     
