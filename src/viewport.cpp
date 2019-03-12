@@ -372,10 +372,11 @@ LLRegion ViewPort::GetLLRegion( const OCPNRegion &region )
 
                 for(int k = 1; k<splits; k++) {
                     float d = (float)k / splits;
-                    GetLLFromPix(wxPoint((1-d)*p[li] + d*p[i], (1-d)*p[li+1] + d*p[i+1]), pll+j, pll+j+1);
+					GetLLFromPix( wxPoint( (1 - d) * p[li] + d * p[i], (1 - d) * p[li + 1] + d * p[i + 1] ), pll + j, pll + j + 1 );
                     j += 2;
                 }
-                pll[j++] = lat;
+				wxASSERT( (j + 1) < 539 );
+				pll[j++] = lat;
                 pll[j++] = lon;
                 li = i;
                 lastlat = lat, lastlon = lon;
