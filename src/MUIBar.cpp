@@ -268,17 +268,20 @@ void MUIButton::SetState( int state)
             case 0:
             default:
                 m_bitmap = m_bitmapState0;
-				SetToolTip( _( "Not Following" ) );
+				if (ShowToolTips())
+					SetToolTip( _( "Not Following" ) );
 				break;
                 
             case 1:
                 m_bitmap = m_bitmapState1;
-				SetToolTip( _( "Following" ) );
+				if ( ShowToolTips( ) )
+					SetToolTip( _( "Following" ) );
 				break;
 
             case 2:
                 m_bitmap = m_bitmapState2;
-				SetToolTip( _( "Follow Lookahead" ) );
+				if ( ShowToolTips( ) )
+					SetToolTip( _( "Following Lookahead" ) );
                 break;
     }
 
