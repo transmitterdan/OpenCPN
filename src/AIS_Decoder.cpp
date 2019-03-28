@@ -2020,8 +2020,7 @@ void AIS_Decoder::UpdateOneTrack( AIS_Target_Data *ptarget )
             // after an unlikely jump in pos, the last trackpoint might also be wrong
             // just to be sure we do delete this one as well.
             ptarget->m_ptrack->pop_back();
-            ptarget->b_positionDoubtful = true;            
-            return;
+            ptarget->b_positionDoubtful = true;
         }        
     }
 
@@ -2032,7 +2031,9 @@ void AIS_Decoder::UpdateOneTrack( AIS_Target_Data *ptarget )
     ptrackpoint->m_time = wxDateTime::Now().GetTicks();
 
     ptarget->m_ptrack->Append( ptrackpoint );
-    
+    if ( ptarget->b_positionDoubtful )
+        return;
+
     if( ptarget->b_PersistTrack )
     {
         Track *t;
