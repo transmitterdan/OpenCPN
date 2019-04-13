@@ -124,6 +124,7 @@ private:
     std::vector<int> m_MMSI_MismatchVec;
     
     bool             m_bAIS_AlertPlaying;
+    wxLongLong       m_msgID;
 DECLARE_EVENT_TABLE()
 };
 

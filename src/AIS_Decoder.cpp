@@ -141,7 +141,7 @@ static void onSoundFinished(void* ptr)
 AIS_Decoder::AIS_Decoder( wxFrame *parent )
 {
     AISTargetList = new AIS_Target_Hash;
-
+    m_msgID = 0;
     // Load cached AIS target names from a file
     AISTargetNamesC = new AIS_Target_Name_Hash;
     AISTargetNamesNC = new AIS_Target_Name_Hash;
@@ -2824,13 +2824,11 @@ void AIS_Decoder::SendJSONMsg(AIS_Target_Data* pTarget)
         
     // Do JSON message to all Plugin to inform of target
     wxJSONValue jMsg;
-    
-    wxLongLong t = ::wxGetLocalTimeMillis();
-    
+    m_msgID++;
     jMsg[wxS("Source")] = wxS("AIS_Decoder");
     jMsg[wxT("Type")] = wxT("Information");
     jMsg[wxT("Msg")] = wxS("AIS Target");
-    jMsg[wxT("MsgId")] = t.GetValue();
+    jMsg[wxT("MsgId")] = m_msgID.GetValue();
     jMsg[wxS("lat")] = pTarget->Lat;
     jMsg[wxS("lon")] = pTarget->Lon;
     jMsg[wxS("sog")] = pTarget->SOG;
