@@ -53,6 +53,7 @@
 #include "nmea0183/nmea0183.h"
 #include "instrument.h"
 #include "speedometer.h"
+#include "rpm.h"
 #include "compass.h"
 #include "wind.h"
 #include "rudder_angle.h"

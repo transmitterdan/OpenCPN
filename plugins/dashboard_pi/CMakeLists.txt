@@ -91,6 +91,8 @@ SET(SRC_DASHBOARD
     src/gps.h
     src/rudder_angle.cpp
     src/rudder_angle.h
+    src/rpm.cpp
+    src/rpm.h
     src/speedometer.cpp
     src/speedometer.h
     src/wind.cpp
