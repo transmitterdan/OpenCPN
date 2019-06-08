@@ -169,7 +169,7 @@ private:
       int               m_hide_id;
 
       NMEA0183             m_NMEA0183;                 // Used to parse NMEA Sentences
-      short                mPriPosition, mPriCOGSOG, mPriHeadingM, mPriHeadingT, mPriVar, mPriDateTime, mPriAWA, mPriTWA, mPriDepth;
+      short                mPriPosition, mPriCOGSOG, mPriVMG, mPriHeadingM, mPriHeadingT, mPriVar, mPriDateTime, mPriAWA, mPriTWA, mPriDepth;
       double               mVar;
       // FFU
       double               mSatsInView;

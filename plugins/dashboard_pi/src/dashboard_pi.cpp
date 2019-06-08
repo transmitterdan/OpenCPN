@@ -343,6 +343,7 @@ int dashboard_pi::Init( void )
     mVar = NAN;
     mPriPosition = 99;
     mPriCOGSOG = 99;
+    mPriVMG = 99;
     mPriHeadingT = 99; // True heading
     mPriHeadingM = 99; // Magnetic heading
     mPriVar = 99;
@@ -887,8 +888,14 @@ void dashboard_pi::SetNMEASentence( wxString &sentence )
         else if ( m_NMEA0183.LastSentenceIDReceived == _T( "RMB" ) ) {
             if ( m_NMEA0183.Parse( ) ) {
                 if ( m_NMEA0183.Rmb.IsDataValid == NTrue ) {
-                    SendSentenceToAllInstruments( OCPN_DBP_STC_VMG,
-                        toUsrSpeed_Plugin( m_NMEA0183.Rmb.DestinationClosingVelocityKnots, g_iDashSpeedUnit), getUsrSpeedUnit_Plugin( g_iDashSpeedUnit ) );
+                    if ( mPriVMG > 1 )
+                    {
+                        mPriVMG = 1;
+                        SendSentenceToAllInstruments(
+                            OCPN_DBP_STC_VMG,
+                            toUsrSpeed_Plugin( m_NMEA0183.Rmb.DestinationClosingVelocityKnots, g_iDashSpeedUnit ), 
+                            getUsrSpeedUnit_Plugin( g_iDashSpeedUnit ) );
+                    }
                 }
             }
         }
