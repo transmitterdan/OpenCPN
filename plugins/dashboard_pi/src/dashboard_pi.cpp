@@ -884,6 +884,14 @@ void dashboard_pi::SetNMEASentence( wxString &sentence )
             }
         }
 
+        else if ( m_NMEA0183.LastSentenceIDReceived == _T( "RMB" ) ) {
+            if ( m_NMEA0183.Parse( ) ) {
+                if ( m_NMEA0183.Rmb.IsDataValid == NTrue ) {
+                    SendSentenceToAllInstruments( OCPN_DBP_STC_VMG,
+                        toUsrSpeed_Plugin( m_NMEA0183.Rmb.DestinationClosingVelocityKnots, g_iDashSpeedUnit), getUsrSpeedUnit_Plugin( g_iDashSpeedUnit ) );
+                }
+            }
+        }
         else if( m_NMEA0183.LastSentenceIDReceived == _T("RMC") ) {
             if( m_NMEA0183.Parse() ) {
                 if( m_NMEA0183.Rmc.IsDataValid == NTrue ) {
