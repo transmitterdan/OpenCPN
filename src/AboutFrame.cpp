@@ -33,7 +33,6 @@ AboutFrame::AboutFrame( wxWindow* parent, wxWindowID id, const wxString& title, 
 	m_btnBack = new wxButton( this, wxID_ANY, _("< Back"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT );
 	bSizerLeftColumn->Add( m_btnBack, 0, wxALL, 5 );
 
-
 	bSizerContentMain->Add( bSizerLeftColumn, 0, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizerContent;
@@ -167,7 +166,7 @@ AboutFrame::AboutFrame( wxWindow* parent, wxWindowID id, const wxString& title, 
 
 	bSizerLinksInner->Add( 0, 0, 1, wxEXPAND, 5 );
 
-	m_hyperlinkWebsite = new wxHyperlinkCtrl( m_panelMainLinks, wxID_ANY, _("OpenCPN Website"), wxT("https://opencpn.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
+    m_hyperlinkWebsite = new wxHyperlinkCtrl( m_panelMainLinks, wxID_ANY, _("OpenCPN Website"), wxT("https://opencpn.org"), wxDefaultPosition, wxDefaultSize, wxHL_DEFAULT_STYLE );
 
 	m_hyperlinkWebsite->SetNormalColour( wxColour( 255, 255, 255 ) );
 	m_hyperlinkWebsite->SetFont( wxFont( wxNORMAL_FONT->GetPointSize(), wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxEmptyString ) );
@@ -188,9 +187,10 @@ AboutFrame::AboutFrame( wxWindow* parent, wxWindowID id, const wxString& title, 
 
 	bSizerLinksInner->Add( m_hyperlinkLicense, 0, wxALL, 20 );
 
+    m_btnCancel = new wxButton( m_panelMainLinks, wxID_CANCEL, _( "Cancel" ) );
+    bSizerLinksInner->Add( m_btnCancel, 0, wxALIGN_CENTER_VERTICAL | wxALL, 20 );
 
-	bSizerLinksInner->Add( 0, 0, 1, wxEXPAND, 5 );
-
+    bSizerLinksInner->Add( 0, 0, 1, wxEXPAND, 5 );
 
 	m_panelMainLinks->SetSizer( bSizerLinksInner );
 	m_panelMainLinks->Layout();
@@ -210,7 +210,8 @@ AboutFrame::AboutFrame( wxWindow* parent, wxWindowID id, const wxString& title, 
 	this->Connect( wxEVT_ACTIVATE, wxActivateEventHandler( AboutFrame::AboutFrameOnActivate ) );
 	this->Connect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( AboutFrame::AboutFrameOnClose ) );
 	m_btnBack->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AboutFrame::m_btnBackOnButtonClick ), NULL, this );
-	m_hyperlinkAuthors->Connect( wxEVT_COMMAND_HYPERLINK, wxHyperlinkEventHandler( AboutFrame::OnLinkAuthors ), NULL, this );
+    m_btnCancel->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AboutFrame::m_btnCancelOnButtonClick ), NULL, this );
+    m_hyperlinkAuthors->Connect( wxEVT_COMMAND_HYPERLINK, wxHyperlinkEventHandler( AboutFrame::OnLinkAuthors ), NULL, this );
 	m_hyperlinkDonate->Connect( wxEVT_COMMAND_HYPERLINK, wxHyperlinkEventHandler( AboutFrame::OnLinkDonate ), NULL, this );
 	m_hyperlinkGetInvolved->Connect( wxEVT_COMMAND_HYPERLINK, wxHyperlinkEventHandler( AboutFrame::OnLinkGetInvolved ), NULL, this );
 	m_hyperlinkLogFile->Connect( wxEVT_COMMAND_HYPERLINK, wxHyperlinkEventHandler( AboutFrame::OnLinkLogfile ), NULL, this );
@@ -226,7 +227,8 @@ AboutFrame::~AboutFrame()
 	this->Disconnect( wxEVT_ACTIVATE, wxActivateEventHandler( AboutFrame::AboutFrameOnActivate ) );
 	this->Disconnect( wxEVT_CLOSE_WINDOW, wxCloseEventHandler( AboutFrame::AboutFrameOnClose ) );
 	m_btnBack->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AboutFrame::m_btnBackOnButtonClick ), NULL, this );
-	m_hyperlinkAuthors->Disconnect( wxEVT_COMMAND_HYPERLINK, wxHyperlinkEventHandler( AboutFrame::OnLinkAuthors ), NULL, this );
+    m_btnCancel->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( AboutFrame::m_btnCancelOnButtonClick ), NULL, this );
+    m_hyperlinkAuthors->Disconnect( wxEVT_COMMAND_HYPERLINK, wxHyperlinkEventHandler( AboutFrame::OnLinkAuthors ), NULL, this );
 	m_hyperlinkDonate->Disconnect( wxEVT_COMMAND_HYPERLINK, wxHyperlinkEventHandler( AboutFrame::OnLinkDonate ), NULL, this );
 	m_hyperlinkGetInvolved->Disconnect( wxEVT_COMMAND_HYPERLINK, wxHyperlinkEventHandler( AboutFrame::OnLinkGetInvolved ), NULL, this );
 	m_hyperlinkLogFile->Disconnect( wxEVT_COMMAND_HYPERLINK, wxHyperlinkEventHandler( AboutFrame::OnLinkLogfile ), NULL, this );

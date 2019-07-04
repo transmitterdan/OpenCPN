@@ -44,6 +44,7 @@ class AboutFrame : public wxFrame
 	protected:
 		wxStaticBitmap* m_bitmapLogo;
 		wxButton* m_btnBack;
+        wxButton* m_btnCancel;
 		wxScrolledWindow* m_scrolledWindowAbout;
 		wxStaticText* m_staticTextOCPN;
 		wxStaticText* m_staticTextVersion;
@@ -74,7 +75,8 @@ class AboutFrame : public wxFrame
 		virtual void AboutFrameOnActivate( wxActivateEvent& event ) { event.Skip(); }
 		virtual void AboutFrameOnClose( wxCloseEvent& event ) { event.Skip(); }
 		virtual void m_btnBackOnButtonClick( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnLinkAuthors( wxHyperlinkEvent& event ) { event.Skip(); }
+        virtual void m_btnCancelOnButtonClick( wxCommandEvent& event ) { event.Skip( ); }
+        virtual void OnLinkAuthors( wxHyperlinkEvent& event ) { event.Skip(); }
 		virtual void OnLinkDonate( wxHyperlinkEvent& event ) { event.Skip(); }
 		virtual void OnLinkGetInvolved( wxHyperlinkEvent& event ) { event.Skip(); }
 		virtual void OnLinkLogfile( wxHyperlinkEvent& event ) { event.Skip(); }

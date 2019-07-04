@@ -50,6 +50,8 @@ AboutFrameImpl::AboutFrameImpl( wxWindow* parent, wxWindowID id, const wxString&
     m_htmlWinLicense->Hide();
     m_htmlWinHelp->Hide();
     m_btnBack->Hide();
+    m_btnCancel->Show( );
+    m_btnCancel->Enable( );
     m_htmlWinLicense->LoadFile(wxString::Format("%s/license.html", g_Platform->GetSharedDataDir().c_str()));
     m_htmlWinAuthors->LoadFile(wxString::Format("%s/authors.html", g_Platform->GetSharedDataDir().c_str()));
     wxBitmap logo(wxString::Format("%s/opencpn.png", g_Platform->GetSharedDataDir().c_str()), wxBITMAP_TYPE_ANY);
@@ -91,9 +93,11 @@ void AboutFrameImpl::OnLinkHelp( wxHyperlinkEvent& event )
         m_htmlWinLicense->Hide();
         m_htmlWinHelp->Show();
         m_scrolledWindowAbout->Hide();
-        m_btnBack->Show();
 #if wxUSE_WEBVIEW && defined(HAVE_WEBVIEW)
-        m_btnBack->Enable(m_htmlWinHelp->CanGoBack());
+        m_btnCancel->Show( );
+        m_btnCancel->Enable( );
+        m_btnBack->Show( );
+        m_btnBack->Enable( m_htmlWinHelp->CanGoBack( ) );
 #else
         m_btnBack->Enable(m_htmlWinHelp->HistoryCanBack());
 #endif
@@ -108,6 +112,7 @@ void AboutFrameImpl::OnLinkLicense( wxHyperlinkEvent& event )
     m_htmlWinLicense->Show();
     m_htmlWinHelp->Hide();
     m_btnBack->Hide();
+    m_btnCancel->Show( );
     m_scrolledWindowAbout->Hide();
     Layout();
 }
@@ -118,6 +123,7 @@ void AboutFrameImpl::OnLinkAuthors( wxHyperlinkEvent& event )
     m_htmlWinLicense->Hide();
     m_htmlWinHelp->Hide();
     m_btnBack->Hide();
+    m_btnCancel->Show( );
     m_scrolledWindowAbout->Hide();
     Layout();
 }
@@ -128,6 +134,7 @@ void AboutFrameImpl::AboutFrameOnActivate( wxActivateEvent& event )
     m_htmlWinLicense->Hide();
     m_htmlWinHelp->Hide();
     m_btnBack->Hide();
+    m_btnCancel->Show( );
     m_scrolledWindowAbout->Show();
     Layout();
     m_scrolledWindowAbout->Refresh();
