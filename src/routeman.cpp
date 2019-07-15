@@ -747,8 +747,8 @@ bool Routeman::UpdateAutopilot()
             double rpVar = std::isnan(gVar) ? g_UserVar : gVar;
             if( g_bMagneticAPB && !std::isnan(rpVar) ) {
                 
-                double brg1m = ((brg1 - gVar) >= 0.) ? (brg1 - gVar) : (brg1 - gVar + 360.);
-                double bapm = ((CurrentBrgToActivePoint - gVar) >= 0.) ? (CurrentBrgToActivePoint - gVar) : (CurrentBrgToActivePoint - gVar + 360.);
+                double brg1m = ((brg1 - rpVar) >= 0.) ? (brg1 - rpVar) : (brg1 - rpVar + 360.);
+                double bapm = ((CurrentBrgToActivePoint - rpVar) >= 0.) ? (CurrentBrgToActivePoint - rpVar) : (CurrentBrgToActivePoint - rpVar + 360.);
                 
                 m_NMEA0183.Apb.BearingOriginToDestination = brg1m;
                 m_NMEA0183.Apb.BearingOriginToDestinationUnits = _T("M");
