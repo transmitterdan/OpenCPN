@@ -83,6 +83,7 @@ extern wxRect           g_blink_rect;
 
 extern double           gLat, gLon, gSog, gCog;
 extern double           gVar;
+extern double           g_UserVar;
 
 extern bool             g_bMagneticAPB;
 
@@ -743,8 +744,8 @@ bool Routeman::UpdateAutopilot()
                                      pActiveRouteSegmentBeginPoint->m_lat, pActiveRouteSegmentBeginPoint->m_lon,
                                      &brg1,
                                      &dist1 );
-            
-            if( g_bMagneticAPB && !std::isnan(gVar) ) {
+            double rpVar = std::isnan(gVar) ? g_UserVar : gVar;
+            if( g_bMagneticAPB && !std::isnan(rpVar) ) {
                 
                 double brg1m = ((brg1 - gVar) >= 0.) ? (brg1 - gVar) : (brg1 - gVar + 360.);
                 double bapm = ((CurrentBrgToActivePoint - gVar) >= 0.) ? (CurrentBrgToActivePoint - gVar) : (CurrentBrgToActivePoint - gVar + 360.);
