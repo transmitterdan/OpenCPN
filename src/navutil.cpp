@@ -2802,15 +2802,14 @@ void ExportGPX( wxWindow* parent, bool bviz_only, bool blayer )
 {
     wxFileName fn = exportFileName(parent, _T("userobjects.gpx"));
     if (fn.IsOk()) {
-        ::wxBeginBusyCursor();
 
         NavObjectCollection1 *pgpx = new NavObjectCollection1;
 
         wxGenericProgressDialog *pprog = nullptr;
         int count = pWayPointMan->GetWaypointList()->GetCount();
         if( count > 200) {
-            pprog = new wxGenericProgressDialog( _("Export GPX file"), _T("0/0"), count, NULL,
-                                          wxPD_APP_MODAL | wxPD_SMOOTH |
+            pprog = new wxGenericProgressDialog( _("Export GPX file"), _T("0/0"), 100, NULL,
+                                          wxPD_APP_MODAL | wxPD_SMOOTH | wxPD_CAN_ABORT |
                                           wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME );
             pprog->SetSize( 400, wxDefaultCoord );
             pprog->Centre();
@@ -2823,12 +2822,18 @@ void ExportGPX( wxWindow* parent, bool bviz_only, bool blayer )
         RoutePoint *pr;
         while( node ) {
             if(pprog) {
-                wxString msg;
-                msg.Printf(_T("%d/%d"), ic, count);
-                pprog->Update( ic, msg );
-                ic++;
+                if (ic % 2 == 0) {
+                    wxString msg;
+                    msg.Printf(_T("%d/%d"), ic, count);
+                    if (!pprog->Update(ic*100/count, msg)) {
+                        delete pgpx;
+                        delete pprog;
+                        return;
+                    }
+                }
             }
 
+            ic++;
             pr = node->GetData();
 
             bool b_add = true;
@@ -2845,6 +2850,7 @@ void ExportGPX( wxWindow* parent, bool bviz_only, bool blayer )
 
             node = node->GetNext();
         }
+        ::wxBeginBusyCursor();
         //RTEs and TRKs
         wxRouteListNode *node1 = pRouteList->GetFirst();
         while( node1 ) {
