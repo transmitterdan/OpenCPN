@@ -57,9 +57,7 @@ private:
 
 #if defined(__OCPN__ANDROID__)
 #include "androidUTIL.h"
-#elif defined(__WXQT__)
-#include <GL/glx.h>
-#elif defined(__WXGTK__)
+#elif defined(__WXQT__) || defined(__WXGTK__)
 #include <GL/glx.h>
 #endif
 
