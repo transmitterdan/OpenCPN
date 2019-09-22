@@ -848,7 +848,7 @@ int GetFrameTimer(void)
         wxLogMessage(_T("Found CPU device file: ") + deviceFile);
         getline(f, deviceLine);
         wxLogMessage(_T("Found CPU device string: ") + deviceLine);
-        if (deviceLine.find("Raspberry Pi 3 Model B"))
+        if (deviceLine.find("Raspberry Pi 3 Model B") != std::string::npos)
         {
             timerGframe1 = timerGframe1 * 2;
             wxLogMessage(wxString::Format(_T("Slowing down chart update loop to %d mS."), timerGframe1));
