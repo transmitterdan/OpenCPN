@@ -59,6 +59,8 @@ private:
 #include "androidUTIL.h"
 #elif defined(__WXQT__)
 #include <GL/glx.h>
+#elif defined(__WXGTK__)
+#include <GL/glx.h>
 #endif
 
 #include "dychart.h"
