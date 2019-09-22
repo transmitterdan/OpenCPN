@@ -847,7 +847,8 @@ int GetFrameTimer(void)
     {
         wxLogMessage(_T("Found CPU device file: ") + deviceFile);
         getline(f, deviceLine);
-        if ( deviceFile.find("Raspberry Pi 3 Model B") )
+        wxLogMessage(_T("Found CPU device string: ") + deviceLine);
+        if ( deviceLine.find("Raspberry Pi 3 Model B") )
             timerGframe1 = timerGframe1 * 2;
     }
     return timerGframe1;
