@@ -1121,7 +1121,8 @@ ChartBase *ChartDB::OpenChartFromDBAndLock(wxString chart_path, ChartInitFlag in
 
 CacheEntry *ChartDB::FindOldestDeleteCandidate( bool blog)
 {
-    CacheEntry *pret = 0;
+        static int cacheMessages = 0;
+        CacheEntry* pret = 0;
     
          
         unsigned int nCache = pChartCache->GetCount();
@@ -1153,7 +1154,8 @@ CacheEntry *ChartDB::FindOldestDeleteCandidate( bool blog)
                 pret = pce;
             }
             else
-                wxLogMessage(_T("All chart in cache locked, size: %d"), nCache);
+                if(blog && (cacheMessage++ < 20) )
+                    wxLogMessage(_T("All chart in cache locked, size: %d"), nCache);
  
         }
         
