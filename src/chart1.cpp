@@ -845,10 +845,12 @@ int GetFrameTimer(void)
     std::ifstream f(deviceFile.c_str());
     if (f.is_open())
     {
+        wxLogMessage(_T("Found CPU device file: ") + deviceFile);
         getline(f, deviceLine);
         if ( deviceFile.find("Raspberry Pi 3 Model B") )
             timerGframe1 = timerGframe1 * 2;
     }
+    return timerGframe1;
 }
 
 // Connection class, for use by both communicating instances
