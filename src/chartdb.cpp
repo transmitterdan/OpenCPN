@@ -1154,7 +1154,7 @@ CacheEntry *ChartDB::FindOldestDeleteCandidate( bool blog)
                 pret = pce;
             }
             else
-                if(blog && (cacheMessage++ < 20) )
+                if(blog && (cacheMessages++ < 20) )
                     wxLogMessage(_T("All chart in cache locked, size: %d"), nCache);
  
         }
