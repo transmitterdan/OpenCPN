@@ -829,6 +829,21 @@ static void refresh_Piano()
 //     g_Piano->SetActiveKeyArray( piano_active_chart_index_array );
 }
 
+int GetFrameTimer(void)
+{
+#if defined( __linux__ )
+    if (access("/proc/device-tree/model", F_OK) != -1) {
+        char device_line[133];
+        FILE* model = fopen("/proc/device-tree/model", "r");
+        fread(device_line, 1, 132, model);
+        if (strstr(model, "Raspberry Pi 3 Model B") != NULL)
+            return(TIMER_GFRAME_1 * 2);
+    }
+#else
+    return (TIMER_GFRAME_1);
+#endif
+}
+
 // Connection class, for use by both communicating instances
 class stConnection : public wxConnection
 {
@@ -2420,7 +2435,7 @@ extern ocpnGLOptions g_GLOptions;
 //      establish GPS timeout value as multiple of frame timer
 //      This will override any nonsense or unset value from the config file
     if( ( gps_watchdog_timeout_ticks > 60 ) || ( gps_watchdog_timeout_ticks <= 0 ) ) gps_watchdog_timeout_ticks =
-            ( GPS_TIMEOUT_SECONDS * 1000 ) / TIMER_GFRAME_1;
+            ( GPS_TIMEOUT_SECONDS * 1000 ) / GetFrameTimer();
 
     wxString dogmsg;
     dogmsg.Printf( _T("GPS Watchdog Timeout is: %d sec."), gps_watchdog_timeout_ticks );
@@ -2504,7 +2519,7 @@ extern ocpnGLOptions g_GLOptions;
 //     gFrame->ShowCurrents( g_bShowCurrent );
  
 //      Start up the ticker....
-    gFrame->FrameTimer1.Start( TIMER_GFRAME_1, wxTIMER_CONTINUOUS );
+    gFrame->FrameTimer1.Start( GetFrameTimer(), wxTIMER_CONTINUOUS );
 
 //      Start up the ViewPort Rotation angle Averaging Timer....
     gFrame->FrameCOGTimer.Start( 10, wxTIMER_CONTINUOUS );
@@ -6543,7 +6558,7 @@ void MyFrame::ChartsRefresh( )
     }
     
 
-    if( b_run ) FrameTimer1.Start( TIMER_GFRAME_1, wxTIMER_CONTINUOUS );
+    if( b_run ) FrameTimer1.Start( GetFrameTimer(), wxTIMER_CONTINUOUS );
 
     OCPNPlatform::HideBusySpinner();
 
@@ -6620,7 +6635,7 @@ bool MyFrame::UpdateChartDatabaseInplace( ArrayOfCDI &DirArray, bool b_force, bo
 
     pConfig->UpdateChartDirs( DirArray );
 
-    if( b_run ) FrameTimer1.Start( TIMER_GFRAME_1, wxTIMER_CONTINUOUS );
+    if( b_run ) FrameTimer1.Start( GetFrameTimer(), wxTIMER_CONTINUOUS );
 
     return true;
 }
@@ -7412,7 +7427,7 @@ void MyFrame::OnFrameTimer1( wxTimerEvent& event )
         TrackDailyRestart();
 
     if(g_bSleep){
-        FrameTimer1.Start( TIMER_GFRAME_1, wxTIMER_CONTINUOUS );
+        FrameTimer1.Start( GetFrameTimer(), wxTIMER_CONTINUOUS );
         return;
     }
 
@@ -7583,9 +7598,9 @@ void MyFrame::OnFrameTimer1( wxTimerEvent& event )
         }
     }
     if (g_unit_test_2)
-        FrameTimer1.Start( TIMER_GFRAME_1*3, wxTIMER_CONTINUOUS );
+        FrameTimer1.Start( GetFrameTimer()*3, wxTIMER_CONTINUOUS );
     else 
-        FrameTimer1.Start( TIMER_GFRAME_1, wxTIMER_CONTINUOUS );
+        FrameTimer1.Start( GetFrameTimer(), wxTIMER_CONTINUOUS );
 }
 
 double MyFrame::GetMag(double a)
