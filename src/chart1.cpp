@@ -832,8 +832,8 @@ static void refresh_Piano()
 //     g_Piano->SetActiveKeyArray( piano_active_chart_index_array );
 }
 
-bool deviceFlag = false;
-int timerGframe1 = TIMER_GFRAME_1;
+static bool deviceFlag = false;
+static int timerGframe1 = TIMER_GFRAME_1;
 
 int GetFrameTimer(void)
 {
