@@ -172,6 +172,9 @@ WX_DEFINE_OBJARRAY( ArrayOfCDI );
 void RedirectIOToConsole();
 #endif
 
+#include <string>
+#include <fstream>
+
 #include "wx/ipc.h"
 
 //------------------------------------------------------------------------------
@@ -829,19 +832,23 @@ static void refresh_Piano()
 //     g_Piano->SetActiveKeyArray( piano_active_chart_index_array );
 }
 
+bool deviceFlag = false;
+int timerGframe1 = TIMER_GFRAME_1;
+
 int GetFrameTimer(void)
 {
-#if defined( __linux__ )
-    if (access("/proc/device-tree/model", F_OK) != -1) {
-        char device_line[133];
-        FILE* model = fopen("/proc/device-tree/model", "r");
-        fread(device_line, 1, 132, model);
-        if (strstr(model, "Raspberry Pi 3 Model B") != NULL)
-            return(TIMER_GFRAME_1 * 2);
+    if (deviceFlag)
+        return timerGframe1;
+    deviceFlag = true;
+    std::string deviceLine;
+    std::string deviceFile = "/proc/device-tree/model";
+    std::ifstream f(deviceFile.c_str());
+    if (f.is_open())
+    {
+        getline(f, deviceLine);
+        if ( deviceFile.find("Raspberry Pi 3 Model B") )
+            timerGframe1 = timerGframe1 * 2;
     }
-#else
-    return (TIMER_GFRAME_1);
-#endif
 }
 
 // Connection class, for use by both communicating instances
