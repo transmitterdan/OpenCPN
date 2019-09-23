@@ -858,9 +858,8 @@ int GetFrameTimer(void)
             return timerGframe1;
         }
     }
-    else
-        // Don't recognize runtime device type
-        return timerGframe1;
+    // Don't recognize runtime device type
+    return timerGframe1;
 }
 
 // Connection class, for use by both communicating instances
