@@ -837,9 +837,12 @@ static int timerGframe1 = TIMER_GFRAME_1;
 
 int GetFrameTimer(void)
 {
+    // Only sort out the runtime device type once, after that just return cached value
     if (deviceFlag)
         return timerGframe1;
     deviceFlag = true;
+
+    // Check if we are running on Raspberry Pi 3
     std::string deviceLine;
     std::string deviceFile = "/proc/device-tree/model";
     std::ifstream f(deviceFile.c_str());
@@ -848,13 +851,16 @@ int GetFrameTimer(void)
         wxLogMessage(_T("Found CPU device file: ") + deviceFile);
         getline(f, deviceLine);
         wxLogMessage(_T("Found CPU device string: ") + deviceLine);
-        if (deviceLine.find("Raspberry Pi 3 Model B") != std::string::npos)
+        if (deviceLine.find("Raspberry Pi 3") != std::string::npos)
         {
             timerGframe1 = timerGframe1 * 2;
             wxLogMessage(wxString::Format(_T("Slowing down chart update loop to %d mS."), timerGframe1));
+            return timerGframe1;
         }
     }
-    return timerGframe1;
+    else
+        // Don't recognize runtime device type
+        return timerGframe1;
 }
 
 // Connection class, for use by both communicating instances
