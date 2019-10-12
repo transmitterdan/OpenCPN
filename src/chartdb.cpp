@@ -36,6 +36,7 @@
 #include "wx/tokenzr.h"
 #include "wx/dir.h"
 
+#include "config.h"
 #include "chartdb.h"
 #include "chartimg.h"
 #include "chart1.h"
@@ -53,10 +54,8 @@
 
 #include "chcanv.h"
 
-#ifdef USE_S57
 #include "s57chart.h"
 #include "cm93.h"
-#endif
 
 extern ColorScheme GetColorScheme();
 
@@ -477,19 +476,16 @@ ChartBase *ChartDB::GetChart(const wxChar *theFilePath, ChartClassDescriptor &ch
       else if (chartExt == wxT("MBTILES")) {
             pch = new ChartMBTiles;
       }
-#ifdef USE_S57
       else if (chartExt == wxT("000") || chartExt == wxT("S57")) {
             LoadS57();
             pch = new s57chart;
       }
-#endif
       else if (chart_desc.m_descriptor_type == PLUGIN_DESCRIPTOR) {
             LoadS57();
             ChartPlugInWrapper *cpiw = new ChartPlugInWrapper(chart_desc.m_class_name);
             pch = (ChartBase *)cpiw;
       }
 
-#ifdef USE_S57
       else
       {
             wxRegEx rxName(wxT("[0-9]+"));
@@ -502,7 +498,6 @@ ChartBase *ChartDB::GetChart(const wxChar *theFilePath, ChartClassDescriptor &ch
                         pch = new cm93compchart;
             }
       }
-#endif
 
       return pch;
 }
@@ -1321,7 +1316,6 @@ ChartBase *ChartDB::OpenChartUsingCache(int dbindex, ChartInitFlag init_flag)
             else if(chart_type == CHART_TYPE_MBTILES)
                 Ch = new ChartMBTiles();
             
-#ifdef USE_S57
             else if(chart_type == CHART_TYPE_S57)
             {
                   LoadS57();
@@ -1339,9 +1333,7 @@ ChartBase *ChartDB::OpenChartUsingCache(int dbindex, ChartInitFlag init_flag)
                   ext.ELON = cte.GetLonMax();
                   Chs57->SetFullExtent(ext);
             }
-#endif
 
-#ifdef USE_S57
             else if(chart_type == CHART_TYPE_CM93)
             {
                   LoadS57();
@@ -1378,7 +1370,6 @@ ChartBase *ChartDB::OpenChartUsingCache(int dbindex, ChartInitFlag init_flag)
                   ext.ELON = cte.GetLonMax();
                   Chcm93->SetFullExtent(ext);
             }
-#endif
 
             else if(chart_type == CHART_TYPE_PLUGIN)
             {
@@ -1435,11 +1426,7 @@ ChartBase *ChartDB::OpenChartUsingCache(int dbindex, ChartInitFlag init_flag)
             {
                   InitReturn ir;
                   
-#ifdef USE_S57
                   s52plib *plib = ps52plib;
-#else
-                  s52plib *plib = NULL;
-#endif                  
                   wxString msg_fn(ChartFullPath);
                   msg_fn.Replace(_T("%"), _T("%%"));
 
@@ -1775,8 +1762,6 @@ wxXmlDocument ChartDB::GetXMLDescription(int dbIndex, bool b_getGeom)
                   node->AddChild ( tnode );
             }
 
-#ifdef USE_S57
-            
             s57chart *pcs57 = dynamic_cast<s57chart*>(pc);
             if(pcs57)
             {
@@ -1801,7 +1786,6 @@ wxXmlDocument ChartDB::GetXMLDescription(int dbIndex, bool b_getGeom)
                   node->AddChild ( tnode );
 
             }
-#endif            
       }
 
 

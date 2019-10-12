@@ -32,6 +32,7 @@
 
 #include <QtAndroidExtras/QAndroidJniObject>
 
+#include "config.h"
 #include "dychart.h"
 #include "androidUTIL.h"
 #include "OCPN_DataStreamEvent.h"
@@ -208,9 +209,7 @@ extern bool             g_bShowStatusBar;
 
 
 
-//#ifdef USE_S57
 extern s52plib          *ps52plib;
-//#endif
 
 extern wxString         g_locale;
 extern bool             g_bportable;

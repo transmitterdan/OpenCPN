@@ -49,7 +49,7 @@
 extern PlugInManager    *g_pi_manager;
 extern wxString         gWorldMapLocation;
 
-int s_dbVersion;                                //    Database version currently in use at runtime
+static int s_dbVersion;                         //    Database version currently in use at runtime
                                                 //  Needed for ChartTableEntry::GetChartType() only
                                                 //  TODO This can go away at opencpn Version 1.3.8 and above....
 ///////////////////////////////////////////////////////////////////////
@@ -64,7 +64,7 @@ bool FindMatchingFile(const wxString &theDir, const wxChar *theRegEx, int nameLe
 }
 
 
-ChartFamilyEnum GetChartFamily(int charttype)
+static ChartFamilyEnum GetChartFamily(int charttype)
 {
       ChartFamilyEnum cf;
 
@@ -409,13 +409,13 @@ bool ChartTableEntry::IsEqualTo(const ChartTableEntry &cte) const {
 
 ///////////////////////////////////////////////////////////////////////
 
-int ChartTableEntry::GetChartType() const
+static int convertChartType(int charttype)
 {
       //    Hackeroo here....
       //    dB version 14 had different ChartType Enum, patch it here
       if(s_dbVersion == 14)
       {
-            switch(ChartType)
+            switch(charttype)
             {
                   case 0: return CHART_TYPE_KAP;
                   case 1: return CHART_TYPE_GEO;
@@ -428,15 +428,14 @@ int ChartTableEntry::GetChartType() const
                   default: return CHART_TYPE_UNKNOWN;
             }
       }
-      else
-       return ChartType;
+      return charttype;
 }
 
-int ChartTableEntry::GetChartFamily() const
+static int convertChartFamily(int charttype, int chartfamily)
 {
     if(s_dbVersion < 18)
     {
-        switch(ChartType)
+        switch(charttype)
         {
             case CHART_TYPE_KAP:
             case CHART_TYPE_GEO:
@@ -451,11 +450,8 @@ int ChartTableEntry::GetChartFamily() const
                   return CHART_FAMILY_UNKNOWN;
       }
     }
-    else
-        return ChartFamily;
+    return chartfamily;
 }
-
-
 
 
 bool ChartTableEntry::Read(const ChartDatabase *pDb, wxInputStream &is)
@@ -785,6 +781,8 @@ bool ChartTableEntry::Read(const ChartDatabase *pDb, wxInputStream &is)
                 }
           }
     }
+    ChartFamily = convertChartFamily(ChartType, ChartFamily);
+    ChartType = convertChartType(ChartType);
 
     return true;
 }
@@ -2842,9 +2840,9 @@ void ChartDatabase::ApplyGroupArray(ChartGroupArray *pGroupArray)
             for(unsigned int igroup = 0; igroup < pGroupArray->GetCount(); igroup++)
             {
                   ChartGroup *pGroup = pGroupArray->Item(igroup);
-                  for(unsigned int j=0; j < pGroup->m_element_array.GetCount(); j++)
+                  for(auto& elem : pGroup->m_element_array )
                   {
-                        wxString element_root = pGroup->m_element_array[j]->m_element_name;
+                        wxString element_root = elem->m_element_name;
                         
                         //  The element may be a full single chart name
                         //  If so, add it
@@ -2855,9 +2853,9 @@ void ChartDatabase::ApplyGroupArray(ChartGroupArray *pGroupArray)
                         if(chart_full_path->StartsWith(element_root))
                         {
                               bool b_add = true;
-                              for(unsigned int k=0 ; k < pGroup->m_element_array[j]->m_missing_name_array.GetCount(); k++)
+                              for(unsigned int k=0 ; k < elem->m_missing_name_array.size(); k++)
                               {
-                                    wxString missing_item = pGroup->m_element_array[j]->m_missing_name_array[k];
+                                    wxString missing_item = elem->m_missing_name_array[k];
                                     if(chart_full_path->StartsWith(missing_item))
                                     {
                                           if(chart_full_path->IsSameAs( missing_item )) // missing item is full chart name

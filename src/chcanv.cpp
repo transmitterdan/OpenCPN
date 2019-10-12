@@ -35,6 +35,8 @@
 #include <wx/clipbrd.h>
 #include <wx/aui/aui.h>
 #include "wx/progdlg.h"
+
+#include "config.h"
 #include "dychart.h"
 #include "OCPNPlatform.h"
 
@@ -44,7 +46,6 @@
 
 #include <wx/listimpl.cpp>
 
-#include "config.h" 
 #include "chcanv.h"
 #include "TCWin.h"
 #include "geodesic.h"
@@ -103,12 +104,10 @@
 #include "glChartCanvas.h"
 #endif
 
-#ifdef USE_S57
 #include "cm93.h"                   // for chart outline draw
 #include "s57chart.h"               // for ArrayOfS57Obj
 #include "s52plib.h"
 #include "s52utils.h"
-#endif
 
 #include "ais.h"
 
@@ -208,10 +207,8 @@ extern bool             g_bsimplifiedScalebar;
 
 extern bool             bDrawCurrentValues;
 
-#ifdef USE_S57
 extern s52plib          *ps52plib;
 extern CM93OffsetDialog  *g_pCM93OffsetDialog;
-#endif
 
 extern bool             bGPSValid;
 //extern bool             g_bShowOutlines;
@@ -530,6 +527,7 @@ ChartCanvas::ChartCanvas ( wxFrame *frame, int canvasIndex ) :
     m_encShowAnchor = true;
     m_encShowDataQual = false;
     m_bShowGPS = true;
+    m_pQuilt = new Quilt( this );
     SetQuiltMode(true);
     SetAlertString(_T(""));
     
@@ -879,7 +877,6 @@ ChartCanvas::ChartCanvas ( wxFrame *frame, int canvasIndex ) :
     SetUserOwnship();
         
     m_pBrightPopup = NULL;
-    m_pQuilt = new Quilt( this );
     
 #ifdef ocpnUSE_GL
     if ( !g_bdisable_opengl )
@@ -943,7 +940,6 @@ ChartCanvas::~ChartCanvas()
     delete m_pEM_OverZoom;
 //        delete m_pEM_CM93Offset;
 
-    delete m_pQuilt;
 
     delete m_prot_bm;
 
@@ -974,6 +970,7 @@ ChartCanvas::~ChartCanvas()
     MUIBar *muiBar = m_muiBar;
     m_muiBar = 0;
     delete muiBar;
+    delete m_pQuilt;
 }
 
 void ChartCanvas::CanvasApplyLocale()
@@ -1355,40 +1352,28 @@ bool ChartCanvas::CheckGroup( int igroup )
 
     ChartGroup *pGroup = g_pGroupArray->Item( igroup - 1 );
     
-    if( !pGroup->m_element_array.GetCount() )   //  truly empty group prompts a warning, and auto-shift to group 0
+    if( pGroup->m_element_array.empty() )   //  truly empty group prompts a warning, and auto-shift to group 0
         return false; 
-    
-    bool b_chart_in_group = false;
-    
-    for( unsigned int j = 0; j < pGroup->m_element_array.GetCount(); j++ ) {
-        wxString element_root = pGroup->m_element_array.Item( j )->m_element_name;
-        
+
+    for( auto& elem : pGroup->m_element_array ) {
         for( unsigned int ic = 0; ic < (unsigned int) ChartData->GetChartTableEntries(); ic++ ) {
             ChartTableEntry *pcte = ChartData->GetpChartTableEntry( ic );
             wxString chart_full_path( pcte->GetpFullPath(), wxConvUTF8 );
-            
-            if( chart_full_path.StartsWith( element_root ) ) {
-                b_chart_in_group = true;
-                break;
-            }
+
+            if( chart_full_path.StartsWith( elem->m_element_name ) )
+               return true;
         }
-        
-        if( b_chart_in_group ) break;
     }
-    
+
     //  If necessary, check for GSHHS
-    if(!b_chart_in_group){
-        for( unsigned int j = 0; j < pGroup->m_element_array.GetCount(); j++ ) {
-            wxString element_root = pGroup->m_element_array.Item( j )->m_element_name;
-            wxString test_string = _T("GSHH");
-            if(element_root.Upper().Contains(test_string))
-                b_chart_in_group = true;
-         }
+    for( auto& elem : pGroup->m_element_array ) {
+        wxString element_root = elem->m_element_name;
+        wxString test_string = _T("GSHH");
+        if(element_root.Upper().Contains(test_string))
+            return true;
     }
-    
-    
-    return b_chart_in_group;                           // this group is empty
-    
+
+    return false;
 }
 
 
@@ -2290,10 +2275,8 @@ void ChartCanvas::SetDisplaySizeMM( double size )
     m_canvas_scale_factor = ( max_physical ) / (m_display_size_mm /1000.);
     
     
-#ifdef USE_S57
     if( ps52plib )
         ps52plib->SetPPMM( m_pix_per_mm );
-#endif
     
      wxString msg;
      msg.Printf(_T("Metrics:  m_display_size_mm: %g     wxDisplaySize:  %d:%d   "), m_display_size_mm, sx, sy);
@@ -2547,6 +2530,8 @@ void ChartCanvas::CancelMeasureRoute()
 
     g_pRouteMan->DeleteRoute( m_pMeasureRoute );
     m_pMeasureRoute = NULL;
+
+    SetCursor( *pCursorArrow );
 }
 
 ViewPort &ChartCanvas::GetVP()
@@ -2665,8 +2650,9 @@ void ChartCanvas::OnKeyDown( wxKeyEvent &event )
     case WXK_MENU:
         int x, y;
         event.GetPosition( &x, &y );
-
+        m_FinishRouteOnKillFocus = false;
         CallPopupMenu(x, y);
+        m_FinishRouteOnKillFocus = true;
         break;
 
     case WXK_ALT:
@@ -2926,14 +2912,11 @@ void ChartCanvas::OnKeyDown( wxKeyEvent &event )
             if( !pPopupDetailSlider ) {
                 if( VPoint.b_quilt ) 
                     {
-                        if (m_pQuilt) 
-                        { 
                             if (m_pQuilt->GetChartAtPix( VPoint, wxPoint( x, y )) ) // = null if no chart loaded for this point
                             {
                                 ChartType = m_pQuilt->GetChartAtPix( VPoint, wxPoint( x, y ) )->GetChartType();
                                 ChartFam = m_pQuilt->GetChartAtPix( VPoint, wxPoint( x, y ) )->GetChartFamily();
                             }
-                        }                        
                     }
                 else
                     {
@@ -3981,7 +3964,6 @@ void ChartCanvas::OnRolloverPopupTimerEvent( wxTimerEvent& event )
 
 void ChartCanvas::OnCursorTrackTimerEvent( wxTimerEvent& event )
 {
-#ifdef USE_S57
     if( s57_CheckExtendedLightSectors( this, mouse_x, mouse_y, VPoint, extendedSectorLegs ) ){
         if(!m_bsectors_shown) {
             ReloadVP( false );
@@ -3994,7 +3976,6 @@ void ChartCanvas::OnCursorTrackTimerEvent( wxTimerEvent& event )
             m_bsectors_shown = false;
         }
     }
-#endif
 
 //      This is here because GTK status window update is expensive..
 //            cairo using pango rebuilds the font every time so is very inefficient
@@ -4751,7 +4732,7 @@ void ChartCanvas::LoadVP( ViewPort &vp, bool b_adjust )
 
     VPoint.Invalidate();
 
-    if( m_pQuilt ) m_pQuilt->Invalidate();
+    m_pQuilt->Invalidate();
 
     //  Make sure that the Selected Group is sensible...
 //    if( m_groupIndex > (int) g_pGroupArray->GetCount() )
@@ -4772,10 +4753,7 @@ void ChartCanvas::SetQuiltRefChart( int dbIndex )
 
 double ChartCanvas::GetBestStartScale(int dbi_hint, const ViewPort &vp)
 {
-    if(m_pQuilt)
-        return m_pQuilt->GetBestStartScale(dbi_hint, vp);
-    else
-        return vp.view_scale_ppm;
+    return m_pQuilt->GetBestStartScale(dbi_hint, vp);
 }
 
 
@@ -4784,7 +4762,8 @@ double ChartCanvas::GetBestStartScale(int dbi_hint, const ViewPort &vp)
 int ChartCanvas::AdjustQuiltRefChart()
 {
     int ret = -1;
-    if(m_pQuilt){
+    wxASSERT(m_pQuilt);
+
         wxASSERT(ChartData);
         ChartBase *pc = ChartData->OpenChartFromDB( m_pQuilt->GetRefChartdbIndex(), FULL_INIT );
         if( pc ) {
@@ -4844,7 +4823,6 @@ int ChartCanvas::AdjustQuiltRefChart()
         }
         else
             ret = -1;
-    }
     
     return ret;
 }
@@ -4858,10 +4836,8 @@ void ChartCanvas::UpdateCanvasOnGroupChange( void )
     wxASSERT(ChartData);
     ChartData->BuildChartStack( m_pCurrentStack, VPoint.clat, VPoint.clon, m_groupIndex );
 
-    if( m_pQuilt ) {
-        m_pQuilt->Compose( VPoint );
-        SetFocus();
-    }
+    m_pQuilt->Compose( VPoint );
+    SetFocus();
 }
 
 bool ChartCanvas::SetViewPointByCorners( double latSW, double lonSW, double latNE, double lonNE )
@@ -6125,7 +6101,8 @@ void ChartCanvas::ScaleBarDraw( ocpnDC& dc )
             dist /= 2;
 
         wxString s = wxString::Format(_T("%g "), dist) + getUsrDistanceUnit( unit );
-        wxPen pen1 = wxPen( GetGlobalColor( _T ( "UBLCK" ) ), 3, wxPENSTYLE_SOLID );
+        wxColour black = GetGlobalColor( _T ( "UBLCK" ) );
+        wxPen pen1 = wxPen( black , 3, wxPENSTYLE_SOLID );
         double rotation = -VPoint.rotation;
 
         ll_gc_ll( blat, blon, rotation * 180 / PI + 90, fromUsrDistance(dist, unit), &tlat, &tlon );
@@ -6142,7 +6119,7 @@ void ChartCanvas::ScaleBarDraw( ocpnDC& dc )
         dc.DrawLine( x_origin + l1, y_origin, x_origin + l1, y_origin - 12);
 
         dc.SetFont( *m_pgridFont );
-        dc.SetTextForeground( GetGlobalColor( _T ( "UBLCK" ) ) );
+        dc.SetTextForeground( black );
         int w, h;
         dc.GetTextExtent(s, &w, &h);
         dc.DrawText( s, x_origin + l1/2 - w/2, y_origin - h - 1 );
@@ -6460,7 +6437,7 @@ void ChartCanvas::OnSize( wxSizeEvent& event )
     yt_margin = m_canvas_height * 5 / 100;
     yb_margin = m_canvas_height * 95 / 100;
 
-    if( m_pQuilt ) m_pQuilt->SetQuiltParameters( m_canvas_scale_factor, m_canvas_width );
+    m_pQuilt->SetQuiltParameters( m_canvas_scale_factor, m_canvas_width );
 
 //    Resize the current viewport
 
@@ -8463,7 +8440,9 @@ bool ChartCanvas::MouseEventProcessObjects( wxMouseEvent& event )
         }
         
         ret = true;
+        m_FinishRouteOnKillFocus = false;
         CallPopupMenu(mx , my);
+        m_FinishRouteOnKillFocus = true;
     }   //Right down
 
     return ret;
@@ -8670,7 +8649,6 @@ void ChartCanvas::LostMouseCapture( wxMouseCaptureLostEvent& event )
 
 void ChartCanvas::ShowObjectQueryWindow( int x, int y, float zlat, float zlon )
 {
-#ifdef USE_S57
     
     ChartPlugInWrapper *target_plugin_chart = NULL;
     s57chart *Chs57 = NULL;
@@ -8836,7 +8814,6 @@ void ChartCanvas::ShowObjectQueryWindow( int x, int y, float zlat, float zlon )
 
         SetCursor( wxCURSOR_ARROW );
     }
-#endif    
 }
 
 
@@ -9298,7 +9275,6 @@ void ChartCanvas::RenderAllChartOutlines( ocpnDC &dc, ViewPort& vp )
         if( b_group_draw ) RenderChartOutline( dc, i, vp );
     }
 
-#ifdef USE_S57
     //        On CM93 Composite Charts, draw the outlines of the next smaller scale cell
     cm93compchart *pcm93 = NULL;
     if( VPoint.b_quilt ) {
@@ -9325,7 +9301,6 @@ void ChartCanvas::RenderAllChartOutlines( ocpnDC &dc, ViewPort& vp )
         
         pcm93->RenderNextSmallerCellOutlines( dc, vp, this );
     }
-#endif
 }
 
 void ChartCanvas::RenderChartOutline( ocpnDC &dc, int dbIndex, ViewPort& vp )
@@ -9669,7 +9644,7 @@ void ChartCanvas::UpdateCanvasS52PLIBConfig()
         return;
     
     if( VPoint.b_quilt ){          // quilted
-        if( !m_pQuilt || !m_pQuilt->IsComposed() ) 
+        if( !m_pQuilt->IsComposed() ) 
             return;  // not ready
             
         if(m_pQuilt->IsQuiltVector()){    
@@ -9864,7 +9839,7 @@ void ChartCanvas::OnPaint( wxPaintEvent& event )
     //  Blit pan acceleration
     if( VPoint.b_quilt )          // quilted
     {
-        if( !m_pQuilt || !m_pQuilt->IsComposed() ) 
+        if( !m_pQuilt->IsComposed() ) 
             return;  // not ready
 
         bool bvectorQuilt = m_pQuilt->IsQuiltVector();    
@@ -10759,9 +10734,7 @@ void ChartCanvas::DrawOverlayObjects( ocpnDC &dc, const wxRegion& ru )
     RenderAllChartOutlines( dc, GetVP() );
     RenderRouteLegs( dc );
     ScaleBarDraw( dc );
-#ifdef USE_S57
     s57_DrawExtendedLightSectors( dc, VPoint, extendedSectorLegs );
-#endif
 
     if( m_pTrackRolloverWin ) {
         m_pTrackRolloverWin->Draw(dc);
@@ -10798,10 +10771,8 @@ emboss_data *ChartCanvas::EmbossDepthScale()
     } else {
         if( m_singleChart ) {
             depth_unit_type = m_singleChart->GetDepthUnitType();
-#ifdef USE_S57
             if( m_singleChart->GetChartFamily() == CHART_FAMILY_VECTOR ) depth_unit_type =
                     ps52plib->m_nDepthUnitDisplay + 1;
-#endif
         }
     }
 
@@ -11826,11 +11797,9 @@ void ChartCanvas::ToggleCanvasQuiltMode( void )
             //  TODO What to do about this?
             //g_bQuiltEnable = GetQuiltMode();
             
-#ifdef USE_S57
             // Recycle the S52 PLIB so that vector charts will flush caches and re-render
         if(ps52plib)
             ps52plib->GenerateStateHash();
-#endif
 
         if( GetMUIBar() && GetMUIBar()->GetCanvasOptions())
             GetMUIBar()->GetCanvasOptions()->RefreshControlValues();

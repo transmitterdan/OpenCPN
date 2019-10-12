@@ -48,6 +48,7 @@
 #include <wx/listimpl.cpp>
 #include <wx/progdlg.h>
 
+#include "config.h"
 #include "chart1.h"
 #include "navutil.h"
 #include "chcanv.h"
@@ -74,12 +75,9 @@
 #include "Track.h"
 #include "chartdb.h"
 #include "CanvasConfig.h"
-#include "config.h"
 
-#ifdef USE_S57
 #include "s52plib.h"
 #include "cm93.h"
-#endif
 
 #ifdef ocpnUSE_GL
 #include "glChartCanvas.h"
@@ -279,9 +277,7 @@ extern int              g_own_ship_sog_cog_calc_damp_sec;
 extern bool             g_bShowMenuBar;
 extern bool             g_bShowCompassWin;
 
-#ifdef USE_S57
 extern s52plib          *ps52plib;
-#endif
 
 extern int              g_cm93_zoom_factor;
 extern bool             g_b_legacy_input_filter_behaviour;
@@ -911,7 +907,6 @@ int MyConfig::LoadMyConfigRaw( bool bAsTemplate )
     Read( _T ( "ZoomDetailFactor" ), &g_chart_zoom_modifier );
     Read( _T ( "ZoomDetailFactorVector" ), &g_chart_zoom_modifier_vector );
     
-#ifdef USE_S57
     Read( _T ( "CM93DetailFactor" ), &g_cm93_zoom_factor );
 
     Read( _T ( "CM93DetailZoomPosX" ), &g_detailslider_dialog_x );
@@ -919,8 +914,6 @@ int MyConfig::LoadMyConfigRaw( bool bAsTemplate )
     Read( _T ( "ShowCM93DetailSlider" ), &g_bShowDetailSlider );
 
     Read( _T ( "SENC_LOD_Pixels" ), &g_SENC_LOD_pixels );
-
-#endif
 
     Read( _T ( "SkewCompUpdatePeriod" ), &g_SkewCompUpdatePeriod );
 
@@ -1153,15 +1146,12 @@ int MyConfig::LoadMyConfigRaw( bool bAsTemplate )
     if(!valpres.IsEmpty())
         g_UserPresLibData = valpres;
 
-#ifdef USE_S57
     wxString strs( _T ( "SENCFileLocation" ) );
     SetPath( _T ( "/Directories" ) );
     wxString vals;
     Read( strs, &vals );              // Get the Directory name
     if(!vals.IsEmpty())
         g_SENCPrefix = vals;
-#endif
-
     
     SetPath( _T ( "/Directories" ) );
     wxString vald;
@@ -1472,7 +1462,6 @@ int MyConfig::LoadMyConfigRaw( bool bAsTemplate )
 
 void MyConfig::LoadS57Config()
 {
-#ifdef USE_S57
     if( !ps52plib )
         return;
 
@@ -1584,7 +1573,6 @@ void MyConfig::LoadS57Config()
             bCont = pConfig->GetNextEntry( str, dummy );
         }
     }
-#endif
 }
 
 void MyConfig::LoadNavObjects()
@@ -1892,9 +1880,9 @@ void MyConfig::CreateConfigGroups( ChartGroupArray *pGroupArray )
         SetPath( s );
 
         Write( _T ( "GroupName" ), pGroup->m_group_name );
-        Write( _T ( "GroupItemCount" ), (int) pGroup->m_element_array.GetCount() );
+        Write( _T ( "GroupItemCount" ), (int) pGroup->m_element_array.size() );
 
-        for( unsigned int j = 0; j < pGroup->m_element_array.GetCount(); j++ ) {
+        for( unsigned int j = 0; j < pGroup->m_element_array.size(); j++ ) {
             wxString sg;
             sg.Printf( _T("Group%d/Item%d"), i + 1, j );
             sg.Prepend( _T ( "/Groups/" ) );
@@ -1946,9 +1934,8 @@ void MyConfig::LoadConfigGroups( ChartGroupArray *pGroupArray )
 
             wxString v;
             Read( _T ( "IncludeItem" ), &v );
-            ChartGroupElement *pelement = new ChartGroupElement;
-            pelement->m_element_name = v;
-            pGroup->m_element_array.Add( pelement );
+            ChartGroupElement *pelement = new ChartGroupElement{v};
+            pGroup->m_element_array.emplace_back( pelement );
 
             wxString u;
             if( Read( _T ( "ExcludeItems" ), &u ) ) {
@@ -2442,7 +2429,6 @@ void MyConfig::UpdateSettings()
 
     SetPath( _T ( "/Settings/ObjectFilter" ) );
 
-#ifdef USE_S57
     if( ps52plib ) {
         for( unsigned int iPtr = 0; iPtr < ps52plib->pOBJLArray->GetCount(); iPtr++ ) {
             OBJLElement *pOLE = (OBJLElement *) ( ps52plib->pOBJLArray->Item( iPtr ) );
@@ -2455,7 +2441,6 @@ void MyConfig::UpdateSettings()
             Write( st1, pOLE->nViz );
         }
     }
-#endif
 
 //    Global State
 
@@ -2567,7 +2552,6 @@ void MyConfig::UpdateSettings()
     Write( _T ( "bAISAlertAckTimeout" ), g_bAIS_ACK_Timeout );
     Write( _T ( "AlertAckTimeoutMinutes" ), g_AckTimeout_Mins );
 
-#ifdef USE_S57
     SetPath( _T ( "/Settings/GlobalState" ) );
     if( ps52plib ) {
         Write( _T ( "bShowS57Text" ), ps52plib->GetShowS57Text() );
@@ -2594,8 +2578,6 @@ void MyConfig::UpdateSettings()
     SetPath( _T ( "/Directories" ) );
     Write( _T ( "S57DataLocation" ), _T("") );
 //    Write( _T ( "SENCFileLocation" ), _T("") );
-
-#endif
 
     SetPath( _T ( "/Directories" ) );
     Write( _T ( "InitChartDir" ), *pInit_Chart_Dir );

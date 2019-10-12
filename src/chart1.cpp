@@ -134,13 +134,11 @@
 #include "macutils.h"
 #endif
 
-#ifdef USE_S57
 #include "cm93.h"
 #include "s52plib.h"
 #include "s57chart.h"
-#include "mygdal/cpl_csv.h"
+#include "gdal/cpl_csv.h"
 #include "s52utils.h"
-#endif
 
 #ifdef __WXMSW__
 //#define __MSVC__LEAK
@@ -163,7 +161,7 @@
 #include "DarkMode.h"
 #endif
 
-#ifdef ocpnUSE_NEWSERIAL
+#ifdef OCPN_USE_NEWSERIAL
 #include "serial/serial.h"
 #endif
 
@@ -173,6 +171,8 @@ WX_DEFINE_OBJARRAY( ArrayOfCDI );
 #ifdef __WXMSW__
 void RedirectIOToConsole();
 #endif
+
+#include "wx/ipc.h"
 
 //------------------------------------------------------------------------------
 //      Fwd Declarations
@@ -194,6 +194,10 @@ int                       g_unit_test_2;
 bool                      g_start_fullscreen;
 bool                      g_rebuild_gl_cache;
 bool                      g_parse_all_enc;
+
+// Files specified on the command line, if any.
+wxVector<wxString> g_params;
+
 
 MyFrame                   *gFrame;
 
@@ -229,6 +233,7 @@ RouteManagerDialog        *pRouteManagerDialog;
 GoToPositionDialog        *pGoToPositionDialog;
 
 double                    gLat, gLon, gCog, gSog, gHdt, gHdm, gVar;
+wxString                  gTime, gDate;
 double                    vLat, vLon;
 double                    initial_scale_ppm, initial_rotation;
 
@@ -391,20 +396,18 @@ float                     g_ShipScaleFactorExp;
 bool                      g_bShowTide;
 bool                      g_bShowCurrent;
 
-#ifdef USE_S57
 s52plib                   *ps52plib;
 S57ClassRegistrar         *g_poRegistrar;
 s57RegistrarMgr           *m_pRegistrarMan;
 
 CM93OffsetDialog          *g_pCM93OffsetDialog;
-#endif
 
 #ifdef __WXOSX__
 #include "macutils.h"
 #endif
 
 // begin rms
-#if defined( USE_S57) || defined ( __WXOSX__ )
+#ifdef __WXOSX__
 #ifdef __WXMSW__
 #ifdef USE_GLU_TESS
 #ifdef USE_GLU_DLL
@@ -827,6 +830,82 @@ static void refresh_Piano()
 //     g_Piano->SetActiveKeyArray( piano_active_chart_index_array );
 }
 
+// Connection class, for use by both communicating instances
+class stConnection : public wxConnection
+{
+public:
+    stConnection() {}
+    ~stConnection() {}
+    bool OnExec(const wxString& topic, const wxString& data);
+};
+
+// Opens a file passed from another instance
+bool stConnection::OnExec(const wxString& topic, const wxString& data)
+{
+    // not setup yet
+    if (!gFrame)
+        return false;
+
+    wxString path(data);
+    if (path.IsEmpty()) {
+       gFrame->InvalidateAllGL();
+       gFrame->RefreshAllCanvas( false );
+       gFrame->Raise();
+    }
+    else {
+        NavObjectCollection1 *pSet = new NavObjectCollection1;
+        pSet->load_file(path.fn_str());
+        int wpt_dups;
+        pSet->LoadAllGPXObjects( !pSet->IsOpenCPN(), wpt_dups, true ); // Import with full vizibility of names and objects
+        if( pRouteManagerDialog && pRouteManagerDialog->IsShown() )
+            pRouteManagerDialog->UpdateLists();
+
+        LLBBox box = pSet->GetBBox();
+        if (box.GetValid()) {
+            gFrame->CenterView(gFrame->GetPrimaryCanvas(), box);
+        }
+        delete pSet;
+        return true;
+    }
+    return true;
+}
+
+// Server class, for listening to connection requests
+class stServer: public wxServer
+{
+public:
+    wxConnectionBase *OnAcceptConnection(const wxString& topic);
+};
+
+// Accepts a connection from another instance
+wxConnectionBase *stServer::OnAcceptConnection(const wxString& topic)
+{
+    if (topic.Lower() == wxT("opencpn"))
+    {
+        // Check that there are no modal dialogs active
+	wxWindowList::Node* node = wxTopLevelWindows.GetFirst();
+	while (node) {
+	    wxDialog* dialog = wxDynamicCast(node->GetData(), wxDialog);
+	    if (dialog && dialog->IsModal()) {
+	        return 0;
+            }
+            node = node->GetNext();
+        }
+        return new stConnection();
+    }
+    return 0;
+}
+
+
+// Client class, to be used by subsequent instances in OnInit
+class stClient: public wxClient
+{
+public:
+    stClient() {};
+    wxConnectionBase *OnMakeConnection() { return new stConnection; }
+};
+
+
 
 //------------------------------------------------------------------------------
 //    PNG Icon resources
@@ -1004,8 +1083,10 @@ void MyApp::OnInitCmdLine( wxCmdLineParser& parser )
     parser.AddSwitch( _T("rebuild_gl_raster_cache"), wxEmptyString, _T("Rebuild OpenGL raster cache on start.") );
     parser.AddSwitch( _T("parse_all_enc"), wxEmptyString, _T("Convert all S-57 charts to OpenCPN's internal format on start.") );
     parser.AddOption( _T("unit_test_1"), wxEmptyString, _("Display a slideshow of <num> charts and then exit. Zero or negative <num> specifies no limit."), wxCMD_LINE_VAL_NUMBER );
-
     parser.AddSwitch( _T("unit_test_2") );
+    parser.AddParam("import GPX files",
+                        wxCMD_LINE_VAL_STRING,
+                        wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE);
 }
 
 bool MyApp::OnCmdLineParsed( wxCmdLineParser& parser )
@@ -1024,6 +1105,9 @@ bool MyApp::OnCmdLineParsed( wxCmdLineParser& parser )
         if( g_unit_test_1 == 0 )
             g_unit_test_1 = -1;
     }
+
+    for (size_t paramNr=0; paramNr < parser.GetParamCount(); ++paramNr)
+            g_params.push_back(parser.GetParam(paramNr));
 
     return true;
 }
@@ -1067,9 +1151,6 @@ void MyApp::OnActivateApp( wxActivateEvent& event )
 
 void LoadS57()
 {
-#ifndef USE_S57
-    return;
-#else
     if(ps52plib) // already loaded?
         return;
 
@@ -1180,7 +1261,7 @@ void LoadS57()
 
     if( ps52plib->m_bOK ) {
         wxLogMessage( _T("Using s57data in ") + g_csv_locn );
-        m_pRegistrarMan = new s57RegistrarMgr( g_csv_locn, g_Platform->GetLogFilePtr() );
+        m_pRegistrarMan = new s57RegistrarMgr( g_csv_locn );
 
 
             //    Preset some object class visibilites for "User Standard" disply category
@@ -1218,7 +1299,6 @@ void LoadS57()
         delete ps52plib;
         ps52plib = NULL;
     }
-#endif
 }
 
 #if defined(__WXGTK__) && defined(OCPN_HAVE_X11)
@@ -1587,19 +1667,56 @@ bool MyApp::OnInit()
     dc.SelectObject( bmp );
     dc.DrawText( _T("X"), 0, 0 );
 #endif
-
-    //  On Windows
-    //  We allow only one instance unless the portable option is used
-#ifdef __WXMSW__
-    m_checker = new wxSingleInstanceChecker(_T("OpenCPN"));
-    if(!g_bportable) {
-        if ( m_checker->IsAnotherRunning() )
-            return false;               // exit quietly
-    }
-#endif
+    m_checker = 0;
 
     // Instantiate the global OCPNPlatform class
     g_Platform = new OCPNPlatform;
+
+    //  On Windows
+    //  We allow only one instance unless the portable option is used
+    if(!g_bportable) {
+        wxChar separator = wxFileName::GetPathSeparator();
+        wxString service_name = g_Platform->GetPrivateDataDir() + separator + _T("opencpn-ipc");
+
+        m_checker = new wxSingleInstanceChecker(_T("OpenCPN"));
+        if ( !m_checker->IsAnotherRunning() )
+        {
+            stServer *m_server = new stServer;
+            if ( !m_server->Create(service_name) ) {
+		wxLogDebug(wxT("Failed to create an IPC service."));
+            }
+        }
+        else {
+    	    wxLogNull logNull;
+    	    stClient* client = new stClient;
+    	    // ignored under DDE, host name in TCP/IP based classes
+    	    wxString hostName = wxT("localhost");
+    	    // Create the connection service, topic
+    	    wxConnectionBase* connection = client->MakeConnection(hostName, service_name, _T("OpenCPN"));
+    	    if (connection) {
+    	        // Ask the other instance to open a file or raise itself
+    	        if ( !g_params.empty() ) {
+                    for ( size_t n = 0; n < g_params.size(); n++ )
+                    {
+                        wxString path = g_params[n];
+                        if( ::wxFileExists( path ) )
+                        {
+                            connection->Execute(path);
+                        }
+                    }
+                }
+                connection->Execute(wxT(""));
+    	        connection->Disconnect();
+    	        delete connection;
+            }
+            else {
+                wxMessageBox(wxT("Sorry, the existing instance may be too busy too respond.\nPlease close any open dialogs and retry."),
+                    wxT("OpenCPN"), wxICON_INFORMATION|wxOK);
+            }
+            delete client;
+            return false;               // exit quietly
+        }
+    }
 
     //  Perform first stage initialization
     OCPNPlatform::Initialize_1( );
@@ -1609,8 +1726,6 @@ bool MyApp::OnInit()
     // This is necessary at least on OS X, for the capitalisation to be correct in the system menus.
     MyApp::SetAppDisplayName("OpenCPN");
 #endif
-
-
 
 
     //  Seed the random number generator
@@ -2464,9 +2579,7 @@ int MyApp::OnExit()
     delete pSelectTC;
     delete pSelectAIS;
 
-#ifdef USE_S57
     delete ps52plib;
-#endif
 
     if(g_pGroupArray){
         for(unsigned int igroup = 0; igroup < g_pGroupArray->GetCount(); igroup++){
@@ -2496,20 +2609,16 @@ int MyApp::OnExit()
 
     delete pLayerList;
 
-#ifdef USE_S57
     delete m_pRegistrarMan;
     CSVDeaccess( NULL );
-#endif
 
     delete g_StyleManager;
 
-#ifdef USE_S57
 #ifdef __WXMSW__
 #ifdef USE_GLU_TESS
 #ifdef USE_GLU_DLL
     if(s_glu_dll_ready)
     FreeLibrary(s_hGLU_DLL);           // free the glu32.dll
-#endif
 #endif
 #endif
 #endif
@@ -2529,10 +2638,7 @@ int MyApp::OnExit()
 
     FontMgr::Shutdown();
 
-#ifdef __WXMSW__
     delete m_checker;
-#endif
-
 
     g_Platform->OnExit_2();
 
@@ -2609,7 +2715,7 @@ MyFrame::MyFrame( wxFrame *frame, const wxString& title, const wxPoint& pos, con
 //wxCAPTION | wxSYSTEM_MENU | wxRESIZE_BORDER
 {
     m_last_track_rotation_ts = 0;
-    m_ulLastNEMATicktime = 0;
+    m_ulLastNMEATicktime = 0;
 
     m_pStatusBar = NULL;
     m_StatusBarFieldCount = g_Platform->GetStatusBarFieldCount();
@@ -2936,9 +3042,7 @@ void MyFrame::SetAndApplyColorScheme( ColorScheme cs )
         }
     }
 
-#ifdef USE_S57
     if( ps52plib ) ps52plib->SetPLIBColorScheme( SchemeName );
-#endif
 
     //    Set up a pointer to the proper hash table
     pcurrent_user_color_hash = (wxColorHashMap *) UserColourHashTableArray->Item(
@@ -3688,12 +3792,10 @@ void MyFrame::OnCloseWindow( wxCloseEvent& event )
 //      Explicitely Close some children, especially the ones with event handlers
 //      or that call GUI methods
 
-#ifdef USE_S57
     if( g_pCM93OffsetDialog ) {
         g_pCM93OffsetDialog->Destroy();
         g_pCM93OffsetDialog = NULL;
     }
-#endif
 
     // .. for each canvas...
     // ..For each canvas...
@@ -4399,7 +4501,6 @@ void MyFrame::OnToolLeftClick( wxCommandEvent& event )
             break;
         }
 
-#ifdef USE_S57
         case ID_MENU_ENC_TEXT:
         case ID_ENC_TEXT: {
             ToggleENCText(GetFocusCanvas());
@@ -4421,8 +4522,6 @@ void MyFrame::OnToolLeftClick( wxCommandEvent& event )
             ToggleDataQuality( GetFocusCanvas() );
             break;
         }
-#endif
-
         case ID_MENU_SHOW_NAVOBJECTS : {
             ToggleNavobjects( GetFocusCanvas() );
             break;
@@ -4557,10 +4656,7 @@ void MyFrame::OnToolLeftClick( wxCommandEvent& event )
             if( pRouteManagerDialog->IsShown() )
                 pRouteManagerDialog->Hide();
             else {
-                pRouteManagerDialog->UpdateRouteListCtrl();
-                pRouteManagerDialog->UpdateTrkListCtrl();
-                pRouteManagerDialog->UpdateWptListCtrl();
-                pRouteManagerDialog->UpdateLayListCtrl();
+            pRouteManagerDialog->UpdateLists();
 
                 pRouteManagerDialog->Show();
 
@@ -5190,7 +5286,6 @@ void MyFrame::ToggleENCText( ChartCanvas *cc )
 
 void MyFrame::SetENCDisplayCategory( ChartCanvas *cc, enum _DisCat nset )
 {
-#ifdef USE_S57
     if( ps52plib ) {
          
        if(cc){
@@ -5204,8 +5299,6 @@ void MyFrame::SetENCDisplayCategory( ChartCanvas *cc, enum _DisCat nset )
        ReloadAllVP();
        }
     }
-    
-#endif
 }
 
 void MyFrame::ToggleSoundings( ChartCanvas *cc )
@@ -5237,7 +5330,6 @@ bool MyFrame::ToggleLights( ChartCanvas *cc )
 #if 0
 void MyFrame::ToggleRocks( void )
 {
-#ifdef USE_S57
     if( ps52plib ) {
         int vis =  0;
         // Need to loop once for UWTROC, which is our "master", then for
@@ -5261,7 +5353,6 @@ void MyFrame::ToggleRocks( void )
         ps52plib->GenerateStateHash();
         ReloadAllVP();
     }
-#endif
 }
 #endif
 
@@ -5527,7 +5618,6 @@ void MyFrame::RegisterGlobalMenuItems()
 #endif
     view_menu->AppendCheckItem( ID_MENU_UI_CHARTBAR, _menuText(_("Show Chart Bar"), _T("Ctrl-B")) );
 
-#ifdef USE_S57
     view_menu->AppendSeparator();
 #ifndef __WXOSX__
     view_menu->AppendCheckItem( ID_MENU_ENC_TEXT, _menuText(_("Show ENC text"), _T("T")) );
@@ -5543,7 +5633,6 @@ void MyFrame::RegisterGlobalMenuItems()
     view_menu->AppendCheckItem( ID_MENU_ENC_ANCHOR, _menuText(_("Show ENC Anchoring Info"), _T("Alt-A")) );
     view_menu->AppendCheckItem( ID_MENU_ENC_DATA_QUALITY, _menuText(_("Show ENC Data Quality"), _T("Alt-U")) );
     view_menu->AppendCheckItem( ID_MENU_SHOW_NAVOBJECTS, _menuText(_("Show Navobjects"), _T("Alt-V")) );
-#endif
 #endif
     view_menu->AppendSeparator();
     view_menu->AppendCheckItem( ID_MENU_SHOW_TIDES, _("Show Tides") );
@@ -5631,7 +5720,6 @@ void MyFrame::UpdateGlobalMenuItems()
     m_pMenuBar->FindItem( ID_MENU_AIS_CPASOUND )->Check( g_bAIS_CPA_Alert_Audio );
     m_pMenuBar->FindItem( ID_MENU_SHOW_NAVOBJECTS )->Check( GetPrimaryCanvas()->m_bShowNavobjects );
 
-#ifdef USE_S57
     if( ps52plib ) {
         m_pMenuBar->FindItem( ID_MENU_ENC_TEXT )->Check( ps52plib->GetShowS57Text() );
         m_pMenuBar->FindItem( ID_MENU_ENC_SOUNDINGS )->Check( ps52plib->GetShowSoundings() );
@@ -5663,7 +5751,6 @@ void MyFrame::UpdateGlobalMenuItems()
         }            
             
     }
-#endif
 }
 
 void MyFrame::UpdateGlobalMenuItems( ChartCanvas *cc)
@@ -5688,7 +5775,6 @@ void MyFrame::UpdateGlobalMenuItems( ChartCanvas *cc)
     m_pMenuBar->FindItem( ID_MENU_SHOW_TIDES )->Check( cc->GetbShowTide() );
     m_pMenuBar->FindItem( ID_MENU_SHOW_CURRENTS )->Check( cc->GetbShowCurrent() );
     
-#ifdef USE_S57
     if( ps52plib ) {
         m_pMenuBar->FindItem( ID_MENU_ENC_TEXT )->Check( cc->GetShowENCText() );
         m_pMenuBar->FindItem( ID_MENU_ENC_SOUNDINGS )->Check( cc->GetShowENCDepth() );
@@ -5720,7 +5806,6 @@ void MyFrame::UpdateGlobalMenuItems( ChartCanvas *cc)
         }            
             
     }
-#endif
 }
 
 void MyFrame::InvalidateAllCanvasUndo()
@@ -5812,6 +5897,43 @@ void MyFrame::UpdateCanvasConfigDescriptors()
 
 
 
+
+
+void MyFrame::CenterView(ChartCanvas *cc, const LLBBox& RBBox)
+{
+    if ( !RBBox.GetValid() )
+        return;
+    // Calculate bbox center
+    double clat = (RBBox.GetMinLat() + RBBox.GetMaxLat()) / 2;
+    double clon = (RBBox.GetMinLon() + RBBox.GetMaxLon()) / 2;
+    double ppm; // final ppm scale to use
+
+    if (RBBox.GetMinLat() == RBBox.GetMaxLat() && RBBox.GetMinLon() == RBBox.GetMaxLon() )
+    {
+        // only one point, (should be a box?)
+        ppm = cc->GetVPScale();
+    }
+    else
+    {
+        // Calculate ppm
+        double rw, rh; // route width, height
+        int ww, wh; // chart window width, height
+        // route bbox width in nm
+        DistanceBearingMercator( RBBox.GetMinLat(), RBBox.GetMinLon(), RBBox.GetMinLat(),
+                                 RBBox.GetMaxLon(), NULL, &rw );
+                             // route bbox height in nm
+        DistanceBearingMercator( RBBox.GetMinLat(), RBBox.GetMinLon(), RBBox.GetMaxLat(),
+                                RBBox.GetMinLon(), NULL, &rh );
+
+        cc->GetSize( &ww, &wh );
+
+        ppm = wxMin(ww/(rw*1852), wh/(rh*1852)) * ( 100 - fabs( clat ) ) / 90;
+
+        ppm = wxMin(ppm, 1.0);
+    }
+
+    JumpToPosition(cc, clat, clon, ppm );
+}
 
 int MyFrame::DoOptionsDialog()
 {
@@ -6328,24 +6450,18 @@ bool MyFrame::CheckGroup( int igroup )
 
     bool b_chart_in_group = false;
 
-    for( unsigned int j = 0; j < pGroup->m_element_array.size(); j++ ) {
-        wxString element_root = pGroup->m_element_array[j]->m_element_name;
+    for( auto& elem : pGroup->m_element_array ) {
 
         for( unsigned int ic = 0; ic < (unsigned int) ChartData->GetChartTableEntries(); ic++ ) {
             ChartTableEntry *pcte = ChartData->GetpChartTableEntry( ic );
             wxString chart_full_path( pcte->GetpFullPath(), wxConvUTF8 );
 
-            if( chart_full_path.StartsWith( element_root ) ) {
-                b_chart_in_group = true;
-                break;
-            }
+            if( chart_full_path.StartsWith( elem->m_element_name ) )
+                return true;
         }
-
-        if( b_chart_in_group ) break;
     }
 
-    return b_chart_in_group;                           // this group is empty
-
+    return false;                           // this group is empty
 }
 
 bool MyFrame::ScrubGroupArray()
@@ -6383,10 +6499,8 @@ bool MyFrame::ScrubGroupArray()
 
             if( !b_chart_in_element )             // delete the element
             {
-                ChartGroupElement *pelement = pGroup->m_element_array[j];
-                pGroup->m_element_array.RemoveAt( j );
+                pGroup->m_element_array.erase(pGroup->m_element_array.begin() + j);
                 j--;
-                delete pelement;
                 b_change = true;
             }
         }
@@ -6536,11 +6650,9 @@ void MyFrame::ToggleQuiltMode( ChartCanvas *cc )
         }
         g_bQuiltEnable = cc->GetQuiltMode();
         
-#ifdef USE_S57
         // Recycle the S52 PLIB so that vector charts will flush caches and re-render
         if(ps52plib)
             ps52plib->GenerateStateHash();
-#endif
 #endif        
     }
 }
@@ -6871,6 +6983,30 @@ void MyFrame::OnInitTimer(wxTimerEvent& event)
             break;
         }
 
+        case 5:
+        {
+            if ( !g_params.empty() ) {
+                for ( size_t n = 0; n < g_params.size(); n++ )
+                {
+                    wxString path = g_params[n];
+                    if( ::wxFileExists( path ) )
+                    {
+                        NavObjectCollection1 *pSet = new NavObjectCollection1;
+                        pSet->load_file(path.fn_str());
+                        int wpt_dups;
+
+                        pSet->LoadAllGPXObjects( !pSet->IsOpenCPN(),wpt_dups , true ); // Import with full vizibility of names and objects
+                        LLBBox box = pSet->GetBBox();
+                        if (box.GetValid()) {
+                            CenterView(GetPrimaryCanvas(), box);
+                        }
+                        delete pSet;
+                    }
+                }
+            }
+            break;
+
+        }
         default:
         {
             // Last call....
@@ -8724,6 +8860,8 @@ void MyFrame::OnEvtOCPN_NMEA( OCPN_DataStreamEvent & event )
                     }
                     
                     sfixtime = m_NMEA0183.Rmc.UTCTime;
+                    gTime = sfixtime;
+                    gDate = m_NMEA0183.Rmc.Date;
                 }
                 break;
 
@@ -8798,7 +8936,7 @@ void MyFrame::OnEvtOCPN_NMEA( OCPN_DataStreamEvent & event )
                 if( m_NMEA0183.Gll.IsDataValid == NTrue )
                 {
                     pos_valid = ParsePosition(m_NMEA0183.Gll.Position);
-                    sfixtime = m_NMEA0183.Gll.UTCTime;  
+                    sfixtime = m_NMEA0183.Gll.UTCTime;
                 }
                 break;
             }
@@ -8880,10 +9018,10 @@ void MyFrame::OnEvtOCPN_NMEA( OCPN_DataStreamEvent & event )
         }
     }
 
-    if( bis_recognized_sentence ) PostProcessNNEA( pos_valid, cog_sog_valid, sfixtime );
+    if( bis_recognized_sentence ) PostProcessNMEA( pos_valid, cog_sog_valid, sfixtime );
 }
 
-void MyFrame::PostProcessNNEA( bool pos_valid, bool cog_sog_valid, const wxString &sfixtime )
+void MyFrame::PostProcessNMEA( bool pos_valid, bool cog_sog_valid, const wxString &sfixtime )
 {
     if(cog_sog_valid) {
         //    Maintain average COG for Course Up Mode
@@ -8958,8 +9096,8 @@ void MyFrame::PostProcessNNEA( bool pos_valid, bool cog_sog_valid, const wxStrin
         m_MMEAeventTime.SetToCurrent();
         uiCurrentTickCount = m_MMEAeventTime.GetMillisecond() / 100;           // tenths of a second
         uiCurrentTickCount += m_MMEAeventTime.GetTicks() * 10;
-        if( uiCurrentTickCount > m_ulLastNEMATicktime + 1 ) {
-            m_ulLastNEMATicktime = uiCurrentTickCount;
+        if( uiCurrentTickCount > m_ulLastNMEATicktime + 1 ) {
+            m_ulLastNMEATicktime = uiCurrentTickCount;
 
             if( tick_idx++ > 6 ) tick_idx = 0;
         }
@@ -9444,7 +9582,6 @@ void MyFrame::applySettingsString( wxString settings)
             *pInit_Chart_Dir = val;
         }
 
-#ifdef USE_S57
         if(ps52plib){
             float conv = 1;
             int depthUnit = ps52plib->m_nDepthUnitDisplay;
@@ -9576,7 +9713,6 @@ void MyFrame::applySettingsString( wxString settings)
                 }
             }
         }
-#endif        
     }
 
     // Process Connections
@@ -9653,7 +9789,6 @@ void MyFrame::applySettingsString( wxString settings)
     if(last_ChartScaleFactorExp != g_ChartScaleFactor)
         rr |= S52_CHANGED;
     
-#ifdef USE_S57
     if(rr & S52_CHANGED){
         if(ps52plib){
             ps52plib->FlushSymbolCaches();
@@ -9661,7 +9796,6 @@ void MyFrame::applySettingsString( wxString settings)
             ps52plib->GenerateStateHash();
         }
     }
-#endif
 
     ProcessOptionsDialog( rr,  &NewDirArray );
 
@@ -10126,7 +10260,6 @@ bool MyFrame::AddDefaultPositionPlugInTools()
 //----------------------------------------------------------------------------------------------------------
 //      Application-wide CPL Error handler
 //----------------------------------------------------------------------------------------------------------
-#ifdef USE_S57
 void MyCPLErrorHandler( CPLErr eErrClass, int nError, const char * pszErrorMsg )
 
 {
@@ -10143,7 +10276,6 @@ void MyCPLErrorHandler( CPLErr eErrClass, int nError, const char * pszErrorMsg )
     wxString str( msg, wxConvUTF8 );
     wxLogMessage( str );
 }
-#endif
 
 //----------------------------------------------------------------------------------------------------------
 //      Printing Framework Support
@@ -10403,7 +10535,7 @@ DEFINE_GUID(GUID_CLASS_COMPORT, 0x86e0d1e0L, 0x8089, 0x11d0, 0x9c, 0xe4, 0x08, 0
 wxArrayString *EnumerateSerialPorts( void )
 {
     wxArrayString *preturn = new wxArrayString;
-#ifdef ocpnUSE_NEWSERIAL
+#ifdef OCPN_USE_NEWSERIAL
     std::vector<serial::PortInfo> ports = serial::list_ports();
     for(std::vector<serial::PortInfo>::iterator it = ports.begin(); it != ports.end(); ++it) {
         wxString port((*it).port);
@@ -10842,7 +10974,7 @@ wxArrayString *EnumerateSerialPorts( void )
 #endif
 
 #endif      //__WXMSW__
-#endif //ocpnUSE_NEWSERIAL
+#endif //OCPN_USE_NEWSERIAL
     return preturn;
 }
 
@@ -10988,11 +11120,9 @@ wxColour GetGlobalColor(wxString colorName)
 {
     wxColour ret_color;
 
-#ifdef USE_S57
     //    Use the S52 Presentation library if present
     if( ps52plib )
         ret_color = ps52plib->getwxColour( colorName );
-#endif
     if( !ret_color.Ok() && pcurrent_user_color_hash )
         ret_color = ( *pcurrent_user_color_hash )[colorName];
 

@@ -57,6 +57,10 @@
 #include <wx/colordlg.h>
 #endif
 
+#ifdef ocpnUSE_SVG
+#include <wxSVG/svg.h>
+#endif // ocpnUSE_SVG
+
 #include "config.h"
 
 #include "dychart.h"
@@ -88,11 +92,9 @@ extern GLuint g_raster_format;
 
 #include "navutil.h"
 
-#ifdef USE_S57
 #include "s52plib.h"
 #include "s52utils.h"
 #include "cm93.h"
-#endif
 
 #ifdef __OCPN__ANDROID__
 #include "androidUTIL.h"
@@ -269,9 +271,7 @@ extern double g_overzoom_emphasis_base;
 extern bool g_oz_vector_scale;
 extern bool g_bShowStatusBar;
 
-#ifdef USE_S57
 extern s52plib* ps52plib;
-#endif
 
 extern wxString g_locale;
 extern bool g_bportable;
@@ -3243,7 +3243,7 @@ void options::CreatePanel_ChartsLoad(size_t parent, int border_size,
   cmdButtonSizer->Add(m_removeBtn, 1, wxALL | wxEXPAND, group_item_spacing);
   m_removeBtn->Disable();
 
-#ifdef USE_LZMA
+#ifdef OCPN_USE_LZMA
   m_compressBtn =
       new wxButton(chartPanelWin, ID_BUTTONCOMPRESS, _("Compress Selected"));
   cmdButtonSizer->Add(m_compressBtn, 1, wxALL | wxEXPAND, group_item_spacing);
@@ -4049,7 +4049,6 @@ void options::CreatePanel_VectorCharts(size_t parent, int border_size,
     optionsColumn->Add(0, border_size * 4);
     optionsColumn->Add(0, border_size * 4);
 
-#ifdef USE_S57
     int slider_width = wxMax(m_fontHeight * 4, 150);
 
     optionsColumn->Add(
@@ -4064,8 +4063,6 @@ void options::CreatePanel_VectorCharts(size_t parent, int border_size,
 
 #ifdef __OCPN__ANDROID__
     m_pSlider_CM93_Zoom->GetHandle()->setStyleSheet(getQtStyleSheet());
-#endif
-
 #endif
 
     // 2nd column, Display Category / Mariner's Standard options
@@ -4260,7 +4257,6 @@ void options::CreatePanel_VectorCharts(size_t parent, int border_size,
     optionsColumn->Add(0, border_size * 4);
     optionsColumn->Add(0, border_size * 4);
 
-#ifdef USE_S57
     int slider_width = wxMax(m_fontHeight * 4, 150);
 
     optionsColumn->Add(
@@ -4275,8 +4271,6 @@ void options::CreatePanel_VectorCharts(size_t parent, int border_size,
 
 #ifdef __OCPN__ANDROID__
     m_pSlider_CM93_Zoom->GetHandle()->setStyleSheet(getQtStyleSheet());
-#endif
-
 #endif
 
     //  Display Category / Mariner's Standard options
@@ -6234,7 +6228,6 @@ void options::resetMarStdList(bool bsetConfig, bool bsetStd)
 
 void options::SetInitialVectorSettings(void)
 {
-#ifdef USE_S57
     m_pSlider_CM93_Zoom->SetValue(g_cm93_zoom_factor);
     
     //    Diplay Category
@@ -6308,7 +6301,6 @@ void options::SetInitialVectorSettings(void)
             p24Color->SetSelection(1);
         
     }
-#endif
 }
 
 
@@ -6326,7 +6318,6 @@ void options::UpdateOptionsUnits(void) {
     conv = 0.3048f * 6;     // 1 fathom is 6 feet
 
   // set depth input values
-#ifdef USE_S57
 
     // set depth unit labels
   wxString depthUnitStrings[] = {_("feet"), _("meters"), _("fathoms")};
@@ -6347,7 +6338,6 @@ void options::UpdateOptionsUnits(void) {
   s.Printf(_T( "%6.2f" ), S52_getMarinerParam(S52_MAR_DEEP_CONTOUR) / conv);
   s.Trim(FALSE);
   m_DeepCtl->SetValue(s);
-#endif
 /*
   int oldLength = itemStaticTextUserVar->GetLabel().Length();
 
@@ -7229,7 +7219,6 @@ void options::OnApplyClick(wxCommandEvent& event) {
   if (g_bopengl != pOpenGL->GetValue()) m_returnChanges |= GL_CHANGED;
   g_bopengl = pOpenGL->GetValue();
 
-#ifdef USE_S57
   //   Handle Vector Charts Tab
   g_cm93_zoom_factor = m_pSlider_CM93_Zoom->GetValue();
  
@@ -7341,7 +7330,6 @@ void options::OnApplyClick(wxCommandEvent& event) {
         m_returnChanges |= S52_CHANGED;
 
   }
-#endif
 
 // User Interface Panel
 #if wxUSE_XLOCALE || !wxCHECK_VERSION(3, 0, 0)
@@ -7518,7 +7506,7 @@ void options::OnButtonParseENC(wxCommandEvent &event)
     
 }   
 
-#ifdef USE_LZMA
+#ifdef OCPN_USE_LZMA
 #include <lzma.h>
 
 static bool
@@ -7678,7 +7666,7 @@ compress(lzma_stream *strm, FILE *infile, FILE *outfile)
 
 static bool CompressChart(wxString in, wxString out)
 {
-#ifdef USE_LZMA
+#ifdef OCPN_USE_LZMA
     FILE *infile = fopen(in.mb_str(), "rb");
     if(!infile)
         return false;
@@ -8350,19 +8338,11 @@ ChartGroupArray* ChartGroupsUI::CloneChartGroupArray(ChartGroupArray* s) {
     ChartGroup* psg = s->Item(i);
     ChartGroup* pdg = new ChartGroup;
     pdg->m_group_name = psg->m_group_name;
+    pdg->m_element_array.reserve(psg->m_element_array.size());
 
-    for (unsigned int j = 0; j < psg->m_element_array.GetCount(); j++) {
-      ChartGroupElement* pde = new ChartGroupElement;
-      pde->m_element_name = psg->m_element_array[j]->m_element_name;
-      for (unsigned int k = 0;
-           k < psg->m_element_array[j]->m_missing_name_array.GetCount();
-           k++) {
-        wxString missing_name =
-            psg->m_element_array[j]->m_missing_name_array[k];
-        pde->m_missing_name_array.Add(missing_name);
-      }
-      pdg->m_element_array.Add(pde);
-    }
+    for(auto& elem : psg->m_element_array)
+	    pdg->m_element_array.emplace_back(new ChartGroupElement(*elem));
+
     d->Add(pdg);
   }
   return d;
@@ -8371,20 +8351,8 @@ ChartGroupArray* ChartGroupsUI::CloneChartGroupArray(ChartGroupArray* s) {
 void ChartGroupsUI::EmptyChartGroupArray(ChartGroupArray* s) {
   if (!s) return;
 
-  while (s->GetCount() != 0) {
-    ChartGroup* psg = s->Item(0);
-
-    while (psg->m_element_array.GetCount() != 0) {
-      ChartGroupElement* pe = psg->m_element_array[0];
-      pe->m_missing_name_array.Clear();
-      psg->m_element_array.RemoveAt(0);
-      delete pe;
-    }
-    s->RemoveAt(0);
-    delete psg;
-  }
-
-  s->Clear();
+  // ChartGroups don't need anything special for delete, just calling the destructor is enough.
+  WX_CLEAR_ARRAY(*s);
 }
 
 //    Chart Groups dialog implementation
@@ -8528,9 +8496,7 @@ void ChartGroupsUI::OnInsertChartItem(wxCommandEvent& event) {
           if (wxDir::Exists(insert_candidate)) ptree->SetItemHasChildren(id);
         }
 
-        ChartGroupElement* pnew_element = new ChartGroupElement;
-        pnew_element->m_element_name = insert_candidate;
-        pGroup->m_element_array.Add(pnew_element);
+        pGroup->m_element_array.emplace_back(new ChartGroupElement{insert_candidate});
       }
     }
   }
@@ -8556,11 +8522,9 @@ void ChartGroupsUI::OnRemoveChartItem(wxCommandEvent& event) {
           int group_item_index =
               FindGroupBranch(pGroup, ptree, id, &branch_adder);
           if (group_item_index >= 0) {
-            ChartGroupElement* pelement =
-                pGroup->m_element_array[group_item_index];
+            ChartGroupElement* pelement = pGroup->m_element_array[group_item_index].get();
             bool b_duplicate = FALSE;
-            for (unsigned int k = 0;
-                 k < pelement->m_missing_name_array.GetCount(); k++) {
+            for (unsigned int k = 0; k < pelement->m_missing_name_array.size(); k++) {
               if (pelement->m_missing_name_array[k] == sel_item) {
                 b_duplicate = TRUE;
                 break;
@@ -8575,7 +8539,7 @@ void ChartGroupsUI::OnRemoveChartItem(wxCommandEvent& event) {
             //    Then delete from the tree, and delete from the group
             if (branch_adder == _T("")) {
               ptree->Delete(id);
-              pGroup->m_element_array.RemoveAt(group_item_index);
+              pGroup->m_element_array.erase(pGroup->m_element_array.begin() + group_item_index);
             } else {
               ptree->SetItemTextColour(id, wxColour(128, 128, 128));
               //   what about toggle back?
@@ -8687,10 +8651,9 @@ int ChartGroupsUI::FindGroupBranch(ChartGroup* pGroup, wxTreeCtrl* ptree,
   // Find the index and element pointer of the target branch in the Group
   unsigned int target_item_index = -1;
 
-  for (unsigned int i = 0; i < pGroup->m_element_array.GetCount(); i++) {
+  for (unsigned int i = 0; i < pGroup->m_element_array.size(); i++) {
     wxString target = pGroup->m_element_array[i]->m_element_name;
     if (branch_name == target) {
-      ChartGroupElement* target_element = pGroup->m_element_array[i];
       target_item_index = i;
       break;
     }
@@ -8714,7 +8677,7 @@ void ChartGroupsUI::OnNodeExpanded(wxTreeEvent& event) {
   int target_item_index = FindGroupBranch(pGroup, ptree, node, &branch_adder);
   if (target_item_index < 0) return;
   ChartGroupElement* target_element =
-      pGroup->m_element_array[target_item_index];
+    pGroup->m_element_array[target_item_index].get();
   wxString branch_name = target_element->m_element_name;
 
   // Walk the children of the expanded node, marking any items which appear in
@@ -8750,7 +8713,7 @@ void ChartGroupsUI::BuildNotebookPages(ChartGroupArray* pGroupArray)
     wxTreeCtrl* ptc = AddEmptyGroupPage(pGroup->m_group_name);
 
     wxString itemname;
-    int nItems = pGroup->m_element_array.GetCount();
+    int nItems = pGroup->m_element_array.size();
     for (int i = 0; i < nItems; i++) {
       wxString itemname = pGroup->m_element_array[i]->m_element_name;
       if (!itemname.IsEmpty()) {
