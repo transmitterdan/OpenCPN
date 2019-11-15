@@ -2806,12 +2806,10 @@ void ExportGPX( wxWindow* parent, bool bviz_only, bool blayer )
 
         NavObjectCollection1 *pgpx = new NavObjectCollection1;
 
-        wxGenericProgressDialog *pprog = nullptr;
+        wxProgressDialog *pprog = nullptr;
         int count = pWayPointMan->GetWaypointList()->GetCount();
         if( count > 200) {
-            pprog = new wxGenericProgressDialog( _("Export GPX file"), _T("0/0"), count, NULL,
-                                          wxPD_APP_MODAL | wxPD_SMOOTH |
-                                          wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME );
+            pprog = new wxProgressDialog( _("Export GPX file"), _T("0/0"), count );
             pprog->SetSize( 400, wxDefaultCoord );
             pprog->Centre();
         }
@@ -2822,12 +2820,12 @@ void ExportGPX( wxWindow* parent, bool bviz_only, bool blayer )
         wxRoutePointListNode *node = pWayPointMan->GetWaypointList()->GetFirst();
         RoutePoint *pr;
         while( node ) {
-            if(pprog) {
+            if( pprog && !(ic % 50) ) {
                 wxString msg;
                 msg.Printf(_T("%d/%d"), ic, count);
                 pprog->Update( ic, msg );
-                ic++;
             }
+            ic++;
 
             pr = node->GetData();
 
