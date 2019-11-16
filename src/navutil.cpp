@@ -398,6 +398,8 @@ extern int              g_chart_zoom_modifier_vector;
 extern int              g_NMEAAPBPrecision;
 
 extern wxString         g_TalkerIdText;
+extern bool             g_bShowTrackPointTime;
+
 extern int              g_maxWPNameLength;
 
 extern bool             g_bAdvanceRouteWaypointOnArrivalOnly;
@@ -866,6 +868,7 @@ int MyConfig::LoadMyConfigRaw( bool bAsTemplate )
     Read( _T( "TalkerIdText" ), &g_TalkerIdText );
     Read( _T( "MaxWaypointNameLength" ), &g_maxWPNameLength );
 
+    Read( _T( "ShowTrackPointTime" ), &g_bShowTrackPointTime, false );
     /* opengl options */
 #ifdef ocpnUSE_GL
     if(!bAsTemplate ){
@@ -2357,6 +2360,7 @@ void MyConfig::UpdateSettings()
     Write( _T( "NMEAAPBPrecision" ), g_NMEAAPBPrecision );
     
     Write( _T("TalkerIdText"), g_TalkerIdText );
+    Write( _T("ShowTrackPointTime"), g_bShowTrackPointTime );
 
     Write( _T ( "AnchorWatch1GUID" ), g_AW1GUID );
     Write( _T ( "AnchorWatch2GUID" ), g_AW2GUID );
