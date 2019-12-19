@@ -101,21 +101,21 @@ void PluginPaths::initLinuxPaths()
     m_userDatadir = m_home + "/.local/share";
     m_unknownPathDir = m_home + "/.local/share/opencpn/unknown-prefix";
 
-    const string platform_dir = g_Platform->GetPluginDir().ToStdString();
+    const string plugin_dir = g_Platform->GetPluginDir().ToStdString();
     const char* const envdirs = getenv("OPENCPN_PLUGIN_DIRS");
     string dirlist = envdirs ? envdirs : OCPN_LINUX_LOAD_PATH;
-    if (envdirs == 0 && dirlist.find(platform_dir) == string::npos) {
-        dirlist = dirlist + ":" + platform_dir;
-    }
     m_libdirs = split(dirlist, ':');
     for (auto& dir: m_libdirs) {
         dir += "/opencpn";
         dir = expand(dir);
     }
+    if (envdirs == 0 && dirlist.find(plugin_dir) == string::npos) {
+        m_libdirs.insert(m_libdirs.begin(), plugin_dir);
+    }
     m_bindirs = m_libdirs;
     for (auto& dir: m_bindirs) {
         size_t pos = dir.find_last_of("/lib/opencpn");
-        dir = pos == string::npos ? dir : dir.substr(0, pos) + "/bin";
+        dir = pos == string::npos ? dir : dir.substr(0, pos+1) + "/bin";
     }
     const char* const xdg_data_dirs = getenv("XDG_DATA_DIRS");
     dirlist = xdg_data_dirs ? xdg_data_dirs : LINUX_DATA_PATH;
@@ -123,8 +123,8 @@ void PluginPaths::initLinuxPaths()
     for (auto& dir: m_datadirs) {
         dir += "/opencpn/plugins";
     }
-    if (xdg_data_dirs == 0 && dirlist.find(platform_dir) == string::npos) {
-        m_datadirs.push_back(platform_dir + "/plugins");
+    if (xdg_data_dirs == 0 && dirlist.find(plugin_dir) == string::npos) {
+        m_datadirs.push_back(plugin_dir + "/plugins");
     }
 }
 
