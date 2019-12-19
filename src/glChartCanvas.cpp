@@ -314,6 +314,7 @@ typedef void (*GenericFunction)(void);
 #elif defined(__OCPN__ANDROID__)
 #define systemGetProcAddress(ADDR) eglGetProcAddress(ADDR)
 #else
+#include <GL/glx.h>
 #define systemGetProcAddress(ADDR) glXGetProcAddress((const GLubyte*)ADDR)
 #endif
 
