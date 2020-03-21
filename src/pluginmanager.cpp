@@ -5016,7 +5016,7 @@ CatalogMgrPanel::CatalogMgrPanel(wxWindow* parent)
      m_updateButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED, &CatalogMgrPanel::OnUpdateButton, this);
 
      wxStaticText *tchannels = new wxStaticText( this, wxID_STATIC, _("Choose Remote Catalog"));
-     rowSizer2->Add( tchannels, 0, wxALIGN_RIGHT | wxLEFT, 4 * GetCharWidth() );
+     rowSizer2->Add( tchannels, 0, wxLEFT, 4 * GetCharWidth() );
 
      wxArrayString channels;
      channels.Add(_T( "Master" ));
@@ -5024,7 +5024,7 @@ CatalogMgrPanel::CatalogMgrPanel(wxWindow* parent)
      channels.Add(_T( "Alpha" ));
      channels.Add(_T( "Custom..." ));
      m_choiceChannel = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, channels);
-     rowSizer2->Add( m_choiceChannel, 0, wxALIGN_RIGHT );
+     rowSizer2->Add( m_choiceChannel, 0, wxEXPAND );
      m_choiceChannel->Bind(wxEVT_CHOICE, &CatalogMgrPanel::OnChannelSelected, this);
      m_choiceChannel->SetSelection(GetChannelIndex(&channels));
 
@@ -5201,11 +5201,12 @@ void PluginListPanel::Clear()
     int nChildren = GetChildren().GetCount();
     int count = 0;
     while (auto it = GetChildren().GetFirst()) {
+        count++;
         auto data = it->GetData();
-        if (data) {
+        if (data)
             data->Destroy();
-            count++;
-        }
+        if (count > nChildren)  // Get out if stuck
+            break;
     }
     wxASSERT(count == nChildren);
     m_pitemBoxSizer01->Clear();
