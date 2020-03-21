@@ -5204,14 +5204,16 @@ PluginListPanel::PluginListPanel(wxWindow *parent, wxWindowID id,
  */
 void PluginListPanel::Clear()
 {
+    int nChildren = GetChildren().GetCount();
+    int count = 0;
     while (auto it = GetChildren().GetFirst()) {
-        if (dynamic_cast<PluginPanel*>(it->GetData())) {
-            it->GetData()->Destroy();
-        }
-        else if (dynamic_cast<wxStaticLine*>(it->GetData())) {
-            it->GetData()->Destroy();
+        auto data = it->GetData();
+        if (data) {
+            data->Destroy();
+            count++;
         }
     }
+    wxASSERT(count == nChildren);
     m_pitemBoxSizer01->Clear();
     m_PluginItems.Clear();
 
