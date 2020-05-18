@@ -952,7 +952,7 @@ check_LUP:
 
 
 // scan foward stop on ; or end-of-record
-#define SCANFWRD        while( !(*str == ';' || *str == '\037')) ++str;
+#define SCANFWRD        while( !(*str == ';' || *str == '\037' || *str == '\0')) ++str;
 
 #define INSTRUCTION(s,t)        if(0==strncmp(s,str,2)){\
                               str+=3;\
@@ -966,6 +966,9 @@ Rules *s52plib::StringToRules( const wxString& str_in )
         return NULL;
 
     size_t len = strlen( buffer.data() );
+    if (len == 0) {
+        return NULL;
+    }
     char *str0 = (char *) calloc( len + 1, 1 );
     memcpy( str0, buffer.data(), len );
     char *str = str0;
@@ -1539,7 +1542,7 @@ char *s52plib::_getParamVal( ObjRazRules *rzRules, char *str, char *buf, int bsz
     char *ret_ptr = str;
     char *tmp = buf;
 
-    if(!buf)
+    if(!buf || !str || !rzRules)
         return NULL;
 
     buf[0] = 0;
@@ -1692,6 +1695,10 @@ S52_TextC *s52plib::S52_PL_parseTX( ObjRazRules *rzRules, Rules *rules, char *cm
     char valn[MAXL]; // value of arg
 
     valn[0] = 0;
+
+    if (rules == NULL)
+        return NULL;
+
     str = (char*) rules->INSTstr;
 
     if( m_bShowNationalTexts && NULL != strstr( str, "OBJNAM" ) ) // in case user wants the national text shown and the rule contains OBJNAM, try to get the value
@@ -1748,6 +1755,9 @@ S52_TextC *s52plib::S52_PL_parseTE( ObjRazRules *rzRules, Rules *rules, char *cm
     char *parg = arg;
     char *pf = fmt;
     S52_TextC *text = NULL;
+
+    if (!rules)
+        return text;
 
     char *str = (char*) rules->INSTstr;
 
@@ -7093,6 +7103,8 @@ char *s52plib::RenderCS( ObjRazRules *rzRules, Rules *rules )
     void* (*f)( void* );
 
     static int f05;
+    if (rules == NULL)
+        return NULL;
 
     if( rules->razRule == NULL ) {
         if( !f05 )
@@ -10278,6 +10290,7 @@ render_canvas_parms* s52plib::CreatePatternBufferSpec( ObjRazRules *rzRules, Rul
                 
                 HPGL->SetTargetDC( &mdc );
                 HPGL->SetVP(vp);
+                wxASSERT(str);
                 HPGL->Render( str, col, r0, pivot, origin, 1.0 /*render_scale*/, 0, false);
 
 //                 mdc.SetPen( wxPen( wxColor(0, 0, 250), 1, wxPENSTYLE_SOLID ) );
@@ -10615,6 +10628,8 @@ void s52plib::GetAndAddCSRules( ObjRazRules *rzRules, Rules *rules )
     LUPrec *LUPCandidate;
 
     char *rule_str1 = RenderCS( rzRules, rules );
+    if (rule_str1 == NULL)
+        return;
     wxString cs_string( rule_str1, wxConvUTF8 );
     free( rule_str1 ); //delete rule_str1;
 

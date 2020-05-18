@@ -106,7 +106,9 @@ S57Obj::~S57Obj()
         if( attVal ) {
             for( unsigned int iv = 0; iv < attVal->GetCount(); iv++ ) {
                 S57attVal *vv = attVal->Item( iv );
-                void *v2 = vv->value;
+                wxASSERT(vv);
+                void* v2 = vv->value;
+                wxASSERT(v2);
                 free( v2 );
                 delete vv;
             }
