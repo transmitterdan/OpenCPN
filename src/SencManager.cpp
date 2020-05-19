@@ -168,7 +168,9 @@ void SENCThreadManager::StartTopJob()
     if(nRunning){
         wxString count;
         count.Printf(_T("  %ld"), ticket_list.size());
-        gFrame->GetPrimaryCanvas()->SetAlertString( _("Preparing vector chart  ") + count);
+        auto ptrPC = gFrame->GetPrimaryCanvas();
+        if (ptrPC)
+            ptrPC->SetAlertString( _("Preparing vector chart  ") + count);
     }
 }
 
@@ -195,14 +197,17 @@ void SENCThreadManager::FinishJob(SENCJobTicket *ticket)
             nRunning++;
     }
 
-    
     if(nRunning){
         wxString count;
         count.Printf(_T("  %ld"), ticket_list.size());
-        gFrame->GetPrimaryCanvas()->SetAlertString( _("Preparing vector chart  ") + count);
+        auto ptrPC = gFrame->GetPrimaryCanvas();
+        if (ptrPC)
+            ptrPC->SetAlertString(_("Preparing vector chart  ") + count);
     }
     else{
-        gFrame->GetPrimaryCanvas()->SetAlertString( _T(""));
+        auto ptrPC = gFrame->GetPrimaryCanvas();
+        if (ptrPC)
+            ptrPC->SetAlertString( _T(""));
     }        
 #endif
 
