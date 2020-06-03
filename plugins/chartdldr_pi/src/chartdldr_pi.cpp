@@ -48,6 +48,7 @@
 #include <wx/wfstream.h>
 #include <memory>
 #include <wx/regex.h>
+#include <wx/wupdlock.h>
 #ifdef DLDR_USE_LIBARCHIVE
   #include <archive.h>
   #include <archive_entry.h>
@@ -663,6 +664,7 @@ void ChartDldrPanelImpl::OnShowLocalDir( wxCommandEvent& event )
 
 void ChartDldrPanelImpl::SetSource( int id )
 {
+    wxWindowUpdateLocker noUpdates(m_scrollWinChartList);
     pPlugIn->SetSourceId( id );
 
     m_bDeleteSource->Enable( id >= 0 );
