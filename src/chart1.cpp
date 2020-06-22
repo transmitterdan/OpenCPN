@@ -692,9 +692,6 @@ int                       g_click_stop;
 int                       g_MemFootSec;
 int                       g_MemFootMB;
 
-std::vector<int>          g_quilt_noshow_index_array;
-std::vector<int>          g_quilt_yesshow_index_array;
-
 wxStaticBitmap            *g_pStatBoxTool;
 bool                      g_bShowStatusBar;
 
@@ -2571,7 +2568,7 @@ extern ocpnGLOptions g_GLOptions;
 #ifdef __OCPN__ANDROID__    
         //  We defer the startup message to here to allow the app frame to be contructed,
         //  thus avoiding a dialog with NULL parent which might not work on some devices.    
-    if( !n_NavMessageShown || ( g_vs != g_config_version_string ) || (g_AndroidVersionCode != androidGetVersionCode()) )
+    if( !n_NavMessageShown || ( vs != g_config_version_string ) || (g_AndroidVersionCode != androidGetVersionCode()) )
     {
             //qDebug() << "Showing NavWarning";
         wxMilliSleep(500);
@@ -3788,21 +3785,32 @@ void MyFrame::OnCloseWindow( wxCloseEvent& event )
     //   Save the saved Screen Brightness
     RestoreScreenBrightness();
 
-    // Provisionally save all settings before deactivating plugins
-    pConfig->UpdateSettings();
-
-    //    Deactivate the PlugIns
-    if( g_pi_manager ) {
-        g_pi_manager->DeactivateAllPlugIns();
+    // Persist the toolbar locations
+    if( g_MainToolbar ) {
+        wxPoint tbp_incanvas = GetPrimaryCanvas()->GetToolbarPosition();
+        g_maintoolbar_x = tbp_incanvas.x;
+        g_maintoolbar_y = tbp_incanvas.y;
+        g_maintoolbar_orient = GetPrimaryCanvas()->GetToolbarOrientation();
+        //g_toolbarConfig = GetPrimaryCanvas()->GetToolbarConfigString();
+        if (g_MainToolbar) {
+            g_MainToolbar->GetScreenPosition(&g_maintoolbar_x, &g_maintoolbar_y);
+        }
     }
 
-    wxLogMessage( _T("opencpn::MyFrame exiting cleanly.") );
-
-    quitflag++;
+    if(g_iENCToolbar){
+        wxPoint locn = g_iENCToolbar->GetPosition();
+        wxPoint tbp_incanvas = GetPrimaryCanvas()->ScreenToClient( locn );
+        g_iENCToolbarPosY = tbp_incanvas.y;
+        g_iENCToolbarPosX = tbp_incanvas.x;
+    }
+    
+    g_bframemax = IsMaximized();
 
     FrameTimer1.Stop();
-
-    /*
+    FrameCOGTimer.Stop();
+    TrackOff();
+    
+     /*
      Automatically drop an anchorage waypoint, if enabled
      On following conditions:
      1.  In "Cruising" mode, meaning that speed has at some point exceeded 3.0 kts.
@@ -3857,35 +3865,20 @@ void MyFrame::OnCloseWindow( wxCloseEvent& event )
         }
     }
 
-    FrameTimer1.Stop();
-    FrameCOGTimer.Stop();
 
-    g_bframemax = IsMaximized();
 
-    //    Record the current state of tracking
-//    g_bTrackCarryOver = g_bTrackActive;
-
-    TrackOff();
-
-    if( g_MainToolbar ) {
-        wxPoint tbp_incanvas = GetPrimaryCanvas()->GetToolbarPosition();
-        g_maintoolbar_x = tbp_incanvas.x;
-        g_maintoolbar_y = tbp_incanvas.y;
-        g_maintoolbar_orient = GetPrimaryCanvas()->GetToolbarOrientation();
-        //g_toolbarConfig = GetPrimaryCanvas()->GetToolbarConfigString();
-        if (g_MainToolbar) {
-            g_MainToolbar->GetScreenPosition(&g_maintoolbar_x, &g_maintoolbar_y);
-        }
-    }
-
-    if(g_iENCToolbar){
-        wxPoint locn = g_iENCToolbar->GetPosition();
-        wxPoint tbp_incanvas = GetPrimaryCanvas()->ScreenToClient( locn );
-        g_iENCToolbarPosY = tbp_incanvas.y;
-        g_iENCToolbarPosX = tbp_incanvas.x;
-    }
-    
+    // Provisionally save all settings before deactivating plugins
     pConfig->UpdateSettings();
+
+    //    Deactivate the PlugIns
+    if( g_pi_manager ) {
+        g_pi_manager->DeactivateAllPlugIns();
+    }
+
+    wxLogMessage( _T("opencpn::MyFrame exiting cleanly.") );
+
+    quitflag++;
+
     pConfig->UpdateNavObj();
 
 //    pConfig->m_pNavObjectChangesSet->Clear();

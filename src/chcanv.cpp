@@ -245,8 +245,6 @@ extern int              g_click_stop;
 extern double           g_ownship_predictor_minutes;
 extern double           g_ownship_HDTpredictor_miles;
 
-extern std::vector<int>      g_quilt_noshow_index_array;
-extern std::vector<int>      g_quilt_yesshow_index_array;
 extern bool              g_bquiting;
 extern AISTargetListDialog *g_pAISTargetList;
 extern wxString         g_sAIS_Alert_Sound_File;
@@ -2027,7 +2025,7 @@ void ChartCanvas::SetupCanvasQuiltMode( void )
     {
         ChartData->LockCache();
         
-        m_Piano->SetNoshowIndexArray( g_quilt_noshow_index_array );
+        m_Piano->SetNoshowIndexArray( m_quilt_noshow_index_array );
         
         ocpnStyle::Style* style = g_StyleManager->GetCurrentStyle();
         
@@ -3307,7 +3305,7 @@ void ChartCanvas::OnKeyUp( wxKeyEvent &event )
               case 54:    case 56:    // '_'  alpha/num pad
                 DoMovement(m_mustmove);
 
-                m_zoom_factor = 1;
+                //m_zoom_factor = 1;
                 break;
             case '[': case ']':
                 DoMovement(m_mustmove);
@@ -3430,7 +3428,7 @@ bool ChartCanvas::StartTimedMovement( bool stoptimer )
 {
     // Start/restart the stop movement timer
     if(stoptimer)
-        pMovementStopTimer->Start( 1000, wxTIMER_ONE_SHOT ); 
+        pMovementStopTimer->Start( 800, wxTIMER_ONE_SHOT ); 
 
     if(!pMovementTimer->IsRunning()){
 //        printf("timer not running, starting\n");
@@ -3507,7 +3505,8 @@ void ChartCanvas::DoMovement( long dt )
             zoom_factor = 1/zoom_factor;
 
         //  Try to hit the zoom target exactly.
-        if(m_wheelzoom_stop_oneshot > 0) {
+        //if(m_wheelzoom_stop_oneshot > 0)
+        {
             if(zoom_factor > 1){
                 if(  VPoint.chart_scale / zoom_factor <= m_zoom_target)
                     zoom_factor = VPoint.chart_scale / m_zoom_target;
@@ -4424,6 +4423,7 @@ void ChartCanvas::ZoomCanvas( double factor, bool can_zoom_to_cursor, bool stopt
             m_mustmove += 150; /* for quick presses register as 200 ms duration */
             m_zoom_factor = factor;
         }
+        
         m_zoom_target =  VPoint.chart_scale / factor;
     } else {
         if( m_modkeys == wxMOD_ALT )
@@ -6630,6 +6630,8 @@ void ChartCanvas::OnSize( wxSizeEvent& event )
         m_glcc->OnSize( event );
     }
 #endif
+
+    FormatPianoKeys();
     //  Invalidate the whole window
     ReloadVP();
 }
@@ -6661,6 +6663,7 @@ void ChartCanvas::CreateMUIBar()
     if(m_muiBar){
         SetMUIBarPosition();
         UpdateFollowButtonState();
+        m_muiBar->UpdateDynamicValues();
         m_muiBar->SetCanvasENCAvailable( m_bENCGroup );
         m_muiBar->Raise();
     }
@@ -8970,8 +8973,11 @@ void ChartCanvas::ShowObjectQueryWindow( int x, int y, float zlat, float zlon )
 
 
 void ChartCanvas::ShowMarkPropertiesDialog( RoutePoint* markPoint ) {
-    if ( !g_pMarkInfoDialog )    // There is one global instance of the MarkProp Dialog
+    bool bNew = false;
+    if ( !g_pMarkInfoDialog ){    // There is one global instance of the MarkProp Dialog
         g_pMarkInfoDialog = new MarkInfoDlg(this);
+        bNew = true;
+    }
 
     if( 1/*g_bresponsive*/ ) {
         wxSize canvas_size = GetSize();
@@ -9014,6 +9020,8 @@ void ChartCanvas::ShowMarkPropertiesDialog( RoutePoint* markPoint ) {
     g_pMarkInfoDialog->Show();
     g_pMarkInfoDialog->Raise();
     g_pMarkInfoDialog->InitialFocus();
+    if(bNew)
+        g_pMarkInfoDialog->CenterOnScreen();
 }
 
 void ChartCanvas::ShowRoutePropertiesDialog(wxString title, Route* selected)
@@ -12704,7 +12712,12 @@ bool ChartCanvas::IsTileOverlayIndexInNoShow( int index ){
 }
 
 
-
+void ChartCanvas::AddTileOverlayIndexToNoShow( int index )
+{
+    if(std::find(m_tile_noshow_index_array.begin(), m_tile_noshow_index_array.end(), index) == m_tile_noshow_index_array.end()) {
+        m_tile_noshow_index_array.push_back( index );
+    }
+}
 
 //-------------------------------------------------------------------------------------------------------
 //
@@ -12896,8 +12909,8 @@ void ChartCanvas::UpdateCanvasControlBar( void )
         std::vector<int>  piano_eclipsed_chart_index_array = GetQuiltEclipsedStackdbIndexArray();
         m_Piano->SetEclipsedIndexArray( piano_eclipsed_chart_index_array );
         
-        m_Piano->SetNoshowIndexArray( g_quilt_noshow_index_array );
-        //m_Piano->SetNoshowIndexArray( m_tile_noshow_index_array );
+        m_Piano->SetNoshowIndexArray( m_quilt_noshow_index_array );
+        m_Piano->AddNoshowIndexArray( m_tile_noshow_index_array );
         
         sel_type = ChartData->GetDBChartType(GetQuiltReferenceChartIndex());
         sel_family = ChartData->GetDBChartFamily(GetQuiltReferenceChartIndex());
@@ -13005,8 +13018,8 @@ void ChartCanvas::PianoPopupMenu( int x, int y, int selected_index, int selected
 
     //    Search the no-show array
     bool b_is_in_noshow = false;
-    for( unsigned int i = 0; i < g_quilt_noshow_index_array.size(); i++ ) {
-        if( g_quilt_noshow_index_array[i] == selected_dbIndex ) // chart is in the noshow list
+    for( unsigned int i = 0; i < m_quilt_noshow_index_array.size(); i++ ) {
+        if( m_quilt_noshow_index_array[i] == selected_dbIndex ) // chart is in the noshow list
                 {
             b_is_in_noshow = true;
             break;
@@ -13043,10 +13056,10 @@ void ChartCanvas::PianoPopupMenu( int x, int y, int selected_index, int selected
 
 void ChartCanvas::OnPianoMenuEnableChart( wxCommandEvent& event )
 {
-    for( unsigned int i = 0; i < g_quilt_noshow_index_array.size(); i++ ) {
-        if( g_quilt_noshow_index_array[i] == menu_selected_dbIndex ) // chart is in the noshow list
-                {
-            g_quilt_noshow_index_array.erase(g_quilt_noshow_index_array.begin() + i );
+    for( unsigned int i = 0; i < m_quilt_noshow_index_array.size(); i++ ) {
+        if( m_quilt_noshow_index_array[i] == menu_selected_dbIndex ) // chart is in the noshow list
+        {
+            m_quilt_noshow_index_array.erase(m_quilt_noshow_index_array.begin() + i );
             break;
         }
     }
@@ -13094,15 +13107,15 @@ void ChartCanvas::OnPianoMenuDisableChart( wxCommandEvent& event )
 void ChartCanvas::RemoveChartFromQuilt( int dbIndex )
 {
     //    Remove the item from the list (if it appears) to avoid multiple addition
-    for( unsigned int i = 0; i < g_quilt_noshow_index_array.size(); i++ ) {
-        if( g_quilt_noshow_index_array[i] == dbIndex ) // chart is already in the noshow list
-                {
-                    g_quilt_noshow_index_array.erase(g_quilt_noshow_index_array.begin() + i );
-                    break;
-                }
+    for( unsigned int i = 0; i < m_quilt_noshow_index_array.size(); i++ ) {
+        if( m_quilt_noshow_index_array[i] == dbIndex ) // chart is already in the noshow list
+        {
+            m_quilt_noshow_index_array.erase(m_quilt_noshow_index_array.begin() + i );
+            break;
+        }
     }
     
-    g_quilt_noshow_index_array.push_back( dbIndex );
+    m_quilt_noshow_index_array.push_back( dbIndex );
     
 }
 

@@ -1356,6 +1356,8 @@ options::~options(void) {
                                     NULL, this);
         
   groupsPanel->EmptyChartGroupArray(m_pGroupArray);
+  delete groupsPanel;
+  
   delete m_pSerialArray;
   delete m_pGroupArray;
   delete m_topImgList;
@@ -1620,7 +1622,7 @@ wxScrolledWindow* options::AddPage(size_t parent, const wxString& title) {
     m_pListbook->RemovePage(parent + 1);
     wxString previoustitle = page->GetName();
     page->Reparent(nb);
-    nb->Connect(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler(options::OnNBPageChange), NULL,  this);
+    nb->Connect(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler(options::OnSubNBPageChange), NULL,  this);
 
     nb->AddPage(page, previoustitle);
     /* wxNotebookPage is hidden under wxGTK after RemovePage/Reparent
@@ -3537,14 +3539,13 @@ void options::CreatePanel_ChartsLoad(size_t parent, int border_size,
   activeSizer = new wxStaticBoxSizer(loadedBox, wxHORIZONTAL);
   chartPanel->Add(activeSizer, 1, wxALL | wxEXPAND, border_size);
 
-  wxString* pListBoxStrings = NULL;
-
-  pActiveChartsList = new wxListCtrl( chartPanelWin, ID_LISTBOX, wxDefaultPosition, wxDefaultSize,
+  pActiveChartsList = new wxListCtrl( chartPanelWin, ID_LISTBOX, wxDefaultPosition, wxSize(100, -1),
                                        wxLC_REPORT | wxLC_NO_HEADER );
-#ifdef __OCPN__ANDROID__    
+#ifdef __OCPN__ANDROID__
     pActiveChartsList->GetHandle()->setStyleSheet(getAdjustedDialogStyleSheet());
 #endif    
  
+    
   activeSizer->Add(pActiveChartsList, 1, wxALL | wxEXPAND, border_size);
 
   pActiveChartsList->Connect(
@@ -3563,17 +3564,18 @@ void options::CreatePanel_ChartsLoad(size_t parent, int border_size,
     wxListItem col0;
     col0.SetId(0);
     col0.SetText( _("") );
+    col0.SetAlign(wxLIST_FORMAT_LEFT);
     col0.SetWidth(500);
     pActiveChartsList->InsertColumn(0, col0);
 
     for (size_t i = 0; i < m_CurrentDirList.GetCount(); i++) {
+        wxString dirname = m_CurrentDirList[i].fullpath;
         wxListItem li;
         li.SetId( i );
-
+        li.SetAlign(wxLIST_FORMAT_LEFT);
+        li.SetText(dirname);
+        li.SetColumn(0);
         long idx = pActiveChartsList->InsertItem( li );
-
-        wxString dirname = m_CurrentDirList[i].fullpath;
-        pActiveChartsList->SetItem(i, 0, dirname);
     }
   }
 
@@ -4655,15 +4657,30 @@ void options::CreatePanel_TidesCurrents(size_t parent, int border_size,
   wxStaticBoxSizer* tcSizer = new wxStaticBoxSizer(tcBox, wxHORIZONTAL);
   mainHBoxSizer->Add(tcSizer, 1, wxALL | wxEXPAND, border_size);
 
-  tcDataSelected =
-      new wxListBox(tcPanel, ID_TIDESELECTED, wxDefaultPosition, wxDefaultSize);
+  tcDataSelected =  new wxListCtrl(tcPanel, ID_TIDESELECTED, wxDefaultPosition, wxSize(100, -1), wxLC_REPORT | wxLC_NO_HEADER);
 
   tcSizer->Add(tcDataSelected, 1, wxALL | wxEXPAND, border_size);
 
   //  Populate Selection List Control with the contents
   //  of the Global static array
+  tcDataSelected->DeleteAllItems();
+
+    // Add first column       
+  wxListItem col0;
+  col0.SetId(0);
+  col0.SetText( _("") );
+  col0.SetWidth(500);
+  col0.SetAlign(wxLIST_FORMAT_LEFT);
+
+  tcDataSelected->InsertColumn(0, col0);
+
   for (unsigned int id = 0; id < TideCurrentDataSet.Count(); id++) {
-    tcDataSelected->Append(TideCurrentDataSet[id]);
+        wxListItem li;
+        li.SetId( id );
+        long idx = tcDataSelected->InsertItem( li );
+
+        wxString setName = TideCurrentDataSet[id];
+        tcDataSelected->SetItem(id, 0, setName);
   }
 
   //    Add the "Insert/Remove" buttons
@@ -6134,7 +6151,7 @@ void options::CreateControls(void) {
   m_pListbook = new wxNotebook(itemDialog1, ID_NOTEBOOK, wxDefaultPosition,
                                wxSize(-1, -1), flags);
   m_pListbook->Connect(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED,
-                       wxNotebookEventHandler(options::OnNBPageChange), NULL,
+                       wxNotebookEventHandler(options::OnTopNBPageChange), NULL,
                        this);
 #endif
 
@@ -6368,14 +6385,13 @@ void options::SetInitialSettings(void) {
     pActiveChartsList->DeleteAllItems();
 
     for (size_t i = 0; i < m_CurrentDirList.GetCount(); i++) {
+        wxString dirname = m_CurrentDirList[i].fullpath;
         wxListItem li;
         li.SetId( i );
-
+        li.SetAlign(wxLIST_FORMAT_LEFT);
+        li.SetText(dirname);
+        li.SetColumn(0);
         long idx = pActiveChartsList->InsertItem( li );
-
-        wxString dirname = m_CurrentDirList[i].fullpath;
-        pActiveChartsList->SetItem(i, 0, dirname);
-
     }
   }
 
@@ -7151,8 +7167,11 @@ void options::AddChartDir(const wxString& dir) {
    wxListItem li;
    int id = pActiveChartsList->GetItemCount();      // next index
    li.SetId( id );
+   li.SetAlign(wxLIST_FORMAT_LEFT);
+   li.SetText(dirAdd);
+   li.SetColumn(0);
+
    long idx = pActiveChartsList->InsertItem( li );
-   pActiveChartsList->SetItem(id, 0, dirAdd);
 
    k_charts |= CHANGE_CHARTS;
  
@@ -7163,13 +7182,13 @@ void options::UpdateDisplayedChartDirList(ArrayOfCDI p) {
    if (pActiveChartsList) {
        pActiveChartsList->DeleteAllItems();
        for (size_t i = 0; i < p.GetCount(); i++) {
+            wxString dirname = p[i].fullpath;
             wxListItem li;
             li.SetId( i );
-
+            li.SetAlign(wxLIST_FORMAT_LEFT);
+            li.SetText(dirname);
+            li.SetColumn(0);
             long idx = pActiveChartsList->InsertItem( li );
-
-            wxString dirname = p[i].fullpath;
-            pActiveChartsList->SetItem(i, 0, dirname);
         }
    }
 }
@@ -7986,15 +8005,15 @@ void options::OnApplyClick(wxCommandEvent& event) {
   m_returnChanges |= GENERIC_CHANGED | k_vectorcharts | k_charts |
                      m_groups_changed | k_plugins | k_tides;
 
-  // Pick up all the entries in the DataSelected control
+  // Pick up all the entries in the Tide/current DataSelected control
   // and update the global static array
   TideCurrentDataSet.Clear();
-  int nEntry = tcDataSelected->GetCount();
-
-  for (int i = 0; i < nEntry; i++)
-    TideCurrentDataSet.Add(tcDataSelected->GetString(i));
-
-  // Canvas configuration
+  int nEntry = tcDataSelected->GetItemCount();
+  for (int i = 0; i < nEntry; i++) {
+      wxString setName = tcDataSelected->GetItemText(i);
+      TideCurrentDataSet.Add(setName);
+  }
+  
   if (event.GetId() != ID_APPLY)                // only on ID_OK
     g_canvasConfig = m_screenConfig;
     
@@ -8064,13 +8083,13 @@ void options::OnButtondeleteClick(wxCommandEvent& event)
   if (m_pWorkDirList) {
       pActiveChartsList->DeleteAllItems();
       for (size_t id = 0; id < m_pWorkDirList->GetCount(); id++) {
+        wxString dirname = m_pWorkDirList->Item(id).fullpath;
         wxListItem li;
         li.SetId( id );
-
+        li.SetAlign(wxLIST_FORMAT_LEFT);
+        li.SetText(dirname);
+        li.SetColumn(0);
         long idx = pActiveChartsList->InsertItem( li );
-
-        wxString dirname = m_pWorkDirList->Item(id).fullpath;
-        pActiveChartsList->SetItem(id, 0, dirname);
      }
   }
 
@@ -8401,13 +8420,13 @@ They can be decompressed again using unxz or 7 zip programs."),
   if (m_pWorkDirList) {
       pActiveChartsList->DeleteAllItems();
       for (size_t id = 0; id < m_pWorkDirList->GetCount(); id++) {
+        wxString dirname = m_pWorkDirList->Item(id).fullpath;
         wxListItem li;
         li.SetId( id );
-
+        li.SetAlign(wxLIST_FORMAT_LEFT);
+        li.SetText(dirname);
+        li.SetColumn(0);
         long idx = pActiveChartsList->InsertItem( li );
-
-        wxString dirname = m_pWorkDirList->Item(id).fullpath;
-        pActiveChartsList->SetItem(id, 0, dirname);
      }
   }
 
@@ -8600,7 +8619,7 @@ void options::OnPageChange(wxListbookEvent& event) {
   DoOnPageChange(event.GetSelection());
 }
 
-void options::OnNBPageChange(wxNotebookEvent& event) {
+void options::OnSubNBPageChange(wxNotebookEvent& event) {
   // In the case where wxNotebooks are nested, we need to identify the subpage
   // But otherwise do nothing
   if(event.GetEventObject()){
@@ -8618,7 +8637,9 @@ void options::OnNBPageChange(wxNotebookEvent& event) {
 
       }
   }
-  // Must be top level notebook
+}
+
+void options::OnTopNBPageChange(wxNotebookEvent& event) {
   DoOnPageChange(event.GetSelection());
 }
 
@@ -9030,6 +9051,8 @@ ChartGroupsUI::ChartGroupsUI(wxWindow* parent)
 
 ChartGroupsUI::~ChartGroupsUI(void) {
   m_DirCtrlArray.Clear();
+  m_GroupNB->Disconnect(wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler(ChartGroupsUI::OnGroupPageChange), NULL, this);
+
   delete iFont;
 }
 
@@ -9428,7 +9451,11 @@ void options::OnInsertTideDataLocation(wxCommandEvent& event) {
 #endif
 
   if (response == wxID_OK) {
-    tcDataSelected->Append(g_Platform->NormalizePath(sel_file));
+    wxListItem li;
+   int id = tcDataSelected->GetItemCount();      // next index
+   li.SetId( id );
+   long idx = tcDataSelected->InsertItem( li );
+   tcDataSelected->SetItem(id, 0, g_Platform->NormalizePath(sel_file));
 
     //    Record the currently selected directory for later use
     wxFileName fn(sel_file);
@@ -9437,24 +9464,17 @@ void options::OnInsertTideDataLocation(wxCommandEvent& event) {
   }
 }
 
-void options::OnRemoveTideDataLocation(wxCommandEvent& event) {
-#ifndef __WXQT__  // Multi selection is not implemented in wxQT
-  wxArrayInt sels;
-  int nSel = tcDataSelected->GetSelections(sels);
-  wxArrayString a;
-  for (int i = 0; i < nSel; i++) {
-    a.Add(tcDataSelected->GetString(sels[i]));
+void options::OnRemoveTideDataLocation(wxCommandEvent& event)
+{
+  long item = -1;
+  for ( ;; )
+  {
+      item = tcDataSelected->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+      if ( item == -1 )
+          break;
+      tcDataSelected->DeleteItem( item );
+      item = -1;      // Restart
   }
-
-  for (unsigned int i = 0; i < a.Count(); i++) {
-    int b = tcDataSelected->FindString(a[i]);
-    wxCharBuffer buf = a[i].ToUTF8();
-    tcDataSelected->Delete(b);
-  }
-#else
-  int iSel = tcDataSelected->GetSelection();
-  tcDataSelected->Delete(iSel);
-#endif
 }
 
 void options::OnValChange(wxCommandEvent& event) { event.Skip(); }
