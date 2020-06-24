@@ -2860,7 +2860,8 @@ MyFrame::MyFrame( wxFrame *frame, const wxString& title, const wxPoint& pos, con
     for (int i = 0; i < MAX_COG_AVERAGE_SECONDS; i++ )
         COGTable[i] = NAN;
 
-    m_fixtime = 0;
+    wxDateTime now = wxDateTime::Now();
+    m_fixtime = now.GetTicks();
 
     m_bpersistent_quilt = false;
 
