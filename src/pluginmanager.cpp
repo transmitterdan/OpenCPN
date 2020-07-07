@@ -2013,10 +2013,15 @@ bool PlugInManager::CheckPluginCompatibility(wxString plugin_file)
         if( b_pi_info_usable )
         {
             b_compat = ( pi_info.type_magic == own_info.type_magic );
+            if(g_Platform->isFlatpacked()){             // Ignore specific difference in OSABI field on flatpak builds
+                    if( (pi_info.type_magic ^ own_info.type_magic) == 0x00030000)
+                        b_compat = true;
+            }
             if( !b_compat )
             {
                 pi_info.dependencies.clear();
                 wxLogError( wxString::Format( _T("    Plugin \"%s\" is of another binary flavor than the main module."), plugin_file ) );
+                wxLogDebug("host magic: %.8x, plugin magic: %.8x", own_info.type_magic, pi_info.type_magic);
             }
             for( ModuleInfo::DependencyMap::const_iterator own_dependency = own_info.dependencies.begin(); own_dependency != own_info.dependencies.end(); ++own_dependency )
             {
