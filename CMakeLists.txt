@@ -161,15 +161,6 @@ include(FindPkgConfig)
 include(CMakeDependentOption)
 
 #
-# Early Architecture detect, needed for some options
-#
-
-include(GetArch)
-getarch()
-message(STATUS "*** Build Architecture is ${ARCH}")
-
-
-#
 # Options
 #
 
@@ -228,12 +219,11 @@ if (NOT WIN32 AND NOT APPLE AND NOT QT_ANDROID)
   endif ()
 endif ()
 
-if (NOT WIN32 AND NOT APPLE AND NOT ARCH MATCHES "arm*")
+if (NOT WIN32 AND NOT APPLE AND NOT CMAKE_SYSTEM_PROCESSOR MATCHES "arm*")
   set(PA_DEFAULT "ON")
 else ()
   set(PA_DEFAULT "OFF")
 endif ()
-
 option(
   OCPN_ENABLE_PORTAUDIO "Use portaudio(3) to play sounds if available"
   ${PA_DEFAULT}
@@ -351,6 +341,10 @@ endmacro (USE_BUNDLED_LIB)
 #
 # Language, compiler and static checkers setup
 #
+
+include(GetArch)
+getarch()
+message(STATUS "*** Build Architecture is ${ARCH}")
 
 set(CMAKE_CXX_STANDARD 11)
 message(STATUS "Setting C++11 standard via cmake standard mechanism")
@@ -1516,7 +1510,11 @@ if (QT_ANDROID)
     PRIVATE ${CMAKE_SOURCE_DIR}/buildandroid/libarchive/include)
   target_link_libraries(${PACKAGE_NAME}
     PRIVATE ${CMAKE_SOURCE_DIR}/buildandroid/libarchive/libarchive.a)
-else (QT_ANDROID)
+elseif ( APPLE )
+    #  TODO This is a hack, due to the way libarchive is built and installed in CI build environment 
+    target_include_directories(${PACKAGE_NAME} PRIVATE /usr/local/include)
+    target_link_libraries(${PACKAGE_NAME} PRIVATE /usr/local/lib/libarchive.dylib)
+else ()
   find_package(LibArchive REQUIRED)
   target_include_directories(${PACKAGE_NAME} PRIVATE ${LibArchive_INCLUDE_DIRS})
   target_link_libraries(${PACKAGE_NAME} PRIVATE ${LibArchive_LIBRARIES})
