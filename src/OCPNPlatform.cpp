@@ -58,6 +58,9 @@
 #include "Select.h"
 #include "AboutFrameImpl.h"
 #include "about.h"
+#include "PluginPaths.h"
+#include <string>
+#include <vector>
 
 #ifdef __OCPN__ANDROID__
 #include "androidUTIL.h"
@@ -163,12 +166,7 @@ extern double                    g_AIS_RealtPred_Kts;
 extern bool                      g_bShowAISName;
 
 extern int                       gps_watchdog_timeout_ticks;
-
-
-
-
-
-
+extern wxString                  *pInit_Chart_Dir;
 
 extern double                    g_config_display_size_mm;
 extern bool                      g_config_display_size_manual;
@@ -238,6 +236,7 @@ extern int                        g_n_ownship_min_mm;
 
 extern int                        g_AndroidVersionCode;
 extern bool                       g_bShowMuiZoomButtons;
+extern int                        g_FlushNavobjChangesTimeout;
 
 static const char* const DEFAULT_XDG_DATA_DIRS =
     "~/.local/share:/usr/local/share:/usr/share";
@@ -723,6 +722,8 @@ void OCPNPlatform::Initialize_3( void )
         if (!g_bRollover)  //Not explicit set before
             g_bRollover = g_btouch ? false : true;
     }
+    
+    g_FlushNavobjChangesTimeout = 300;          // Seconds, so 5 minutes
 }
 
 //  Called from MyApp() just before end of MyApp::OnInit()
@@ -870,8 +871,15 @@ void OCPNPlatform::SetLocaleSearchPrefixes( void )
     // Add a new prefixes for search order.
     #if defined(__WINDOWS__)
 
+    // Legacy and system plugin location
     wxString locale_location = GetSharedDataDir();
-    locale_location += _T("share/locale");
+    locale_location += _T("share\\locale");
+    wxLocale::AddCatalogLookupPathPrefix( locale_location );
+
+    // Managed plugin location
+    wxFileName usrShare(GetWinPluginBaseDir() + wxFileName::GetPathSeparator()); 
+    usrShare.RemoveLastDir();
+    locale_location = usrShare.GetFullPath() + ("share\\locale");
     wxLocale::AddCatalogLookupPathPrefix( locale_location );
 
     #elif defined(__OCPN__ANDROID__)
@@ -895,8 +903,18 @@ void OCPNPlatform::SetLocaleSearchPrefixes( void )
     locale_location = location.GetFullPath();
     wxLocale::AddCatalogLookupPathPrefix( locale_location );
 
+    // And then for managed plugins
+    std::string dir = PluginPaths::getInstance()->UserDatadir();
+    wxString managed_locale_location(dir + "/locale");
+    wxLocale::AddCatalogLookupPathPrefix( managed_locale_location );
     #endif
 
+    #ifdef __WXOSX__
+    std::string macDir = PluginPaths::getInstance()->Homedir() + "/Library/Application Support/OpenCPN/Contents/Resources";
+    wxString Mac_managed_locale_location(macDir);
+    wxLocale::AddCatalogLookupPathPrefix( Mac_managed_locale_location );
+    #endif
+    
 #endif
 }
 
@@ -1223,7 +1241,7 @@ void OCPNPlatform::SetDefaultOptions( void )
     g_fog_overzoom = false;
     
     g_bRollover = true;
-    g_bShowMuiZoomButtons = false;
+    g_bShowMuiZoomButtons = true;
 
     g_GUIScaleFactor = 0;               // nominal
     g_ChartNotRenderScaleFactor = 2.0;
@@ -1309,7 +1327,7 @@ void OCPNPlatform::SetUpgradeOptions( wxString vNew, wxString vOld )
     
         qDebug() << "Upgrade check" << "from: " << vOld.mb_str() << " to: " << vNew.mb_str();
 
-        if( androidGetVersionCode() > g_AndroidVersionCode ){            // upgrade
+        if(androidGetVersionCode() > g_AndroidVersionCode ){            // upgrade
             qDebug() << "Upgrade detected" << "from VC: " << g_AndroidVersionCode << " to VC: " << androidGetVersionCode();
             
             // Set some S52/S57 options
@@ -1328,11 +1346,20 @@ void OCPNPlatform::SetUpgradeOptions( wxString vNew, wxString vOld )
             g_default_font_facename = _T("Roboto");
         
             FontMgr::Get().Shutdown();      // Restart the font manager
+            
+            // Reshow the zoom buttons
+            g_bShowMuiZoomButtons = true;
+            
+            // Clear the default chart storage location
+            // Will get set to e.g. "/storage/emulated/0" later
+            pInit_Chart_Dir->Clear();
+
         }
         
         // Set track default color to magenta
         g_colourTrackLineColour.Set(197,69,195);
-        
+
+
  
         // This is ugly hack
         // TODO
@@ -1572,7 +1599,7 @@ wxString OCPNPlatform::GetPluginDataPath()
     wxString dirs("");
     auto const osSystemId = wxPlatformInfo::Get().GetOperatingSystemId();
     if (g_Platform->isFlatpacked()) {
-        dirs="~/.var/app/org.opencpn.OpenCPN/data";
+        dirs="~/.var/app/org.opencpn.OpenCPN/data/opencpn/plugins";
     }
     else if (osSystemId & wxOS_UNIX_LINUX) {
         dirs = GetLinuxDataPath();
@@ -2928,7 +2955,9 @@ void OCPNColourPickerCtrl::OnButtonClick(wxCommandEvent& WXUNUSED(ev))
 
 void OCPNColourPickerCtrl::UpdateColour()
 {
+#ifndef __OCPN__ANDROID__
     SetBitmapLabel(wxBitmap());
+#endif    
     
     wxMemoryDC dc(m_bitmap);
     dc.SetPen( *wxTRANSPARENT_PEN );

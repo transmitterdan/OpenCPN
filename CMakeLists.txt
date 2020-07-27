@@ -148,10 +148,19 @@ set(
 IF(DEFINED _wx_selected_config)
   MESSAGE (STATUS "selected config ${_wx_selected_config}")
   IF(_wx_selected_config MATCHES "androideabi-qt")
-    MESSAGE (STATUS "Building for wxQt-Android")
+    MESSAGE (STATUS "Building for wxQt-Android, ANDROID_ARCH: ${ANDROID_ARCH}")
     SET(QT_ANDROID "ON")
+    if(ANDROID_ARCH MATCHES "arm64")
+      add_definitions("-DANDROID_ARM64")
+    else ()
+      add_definitions("-DANDROID_ARMHF")
+    endif ()
   ENDIF(_wx_selected_config MATCHES "androideabi-qt")
 ENDIF(DEFINED _wx_selected_config)
+
+if( QT_ANDROID )
+  set(PACKAGE_NAME gorp)
+endif( QT_ANDROID )
 
 include(FindPkgConfig)
 include(CMakeDependentOption)
@@ -215,8 +224,10 @@ if (NOT WIN32 AND NOT APPLE AND NOT QT_ANDROID)
   endif ()
 endif ()
 
-if (NOT WIN32 AND NOT APPLE)
+if (NOT WIN32 AND NOT APPLE AND NOT CMAKE_SYSTEM_PROCESSOR MATCHES "arm*")
   set(PA_DEFAULT "ON")
+else ()
+  set(PA_DEFAULT "OFF")
 endif ()
 option(
   OCPN_ENABLE_PORTAUDIO "Use portaudio(3) to play sounds if available"
@@ -338,7 +349,7 @@ endmacro (USE_BUNDLED_LIB)
 
 include(GetArch)
 getarch()
-message(STATUS "*** Build Architecture is ${ARCH}")
+message(STATUS "*** Host Build Architecture is ${ARCH}")
 
 set(CMAKE_CXX_STANDARD 11)
 message(STATUS "Setting C++11 standard via cmake standard mechanism")
@@ -517,7 +528,7 @@ if (QT_ANDROID)
         "-O3"
         "-fPIC"
   )
-  set(CMAKE_SHARED_LINKER_FLAGS "-Wl,-soname,libopencpn.so ")
+  set(CMAKE_SHARED_LINKER_FLAGS "-Wl,-soname,libgorp.so ")
 endif (QT_ANDROID)
 
 
@@ -786,16 +797,16 @@ if (GTK3_FOUND)
       printf("%d\\n", wxMAJOR_VERSION * 10 + wxMINOR_VERSION);
     }
   ]=])
+  set (TRY_COMPILE
+    "echo '${_VERSPROG}' > wx-32.c; cc $(wx-config --cflags) wx-32.c; ./a.out")
   execute_process(
-    COMMAND "/bin/sh" "-c" "echo '${_VERSPROG}' > wx-32.c"
-    COMMAND "/bin/sh" "-c" "cc $(wx-config --cflags) wx-32.c"
-    COMMAND "./a.out"
+    COMMAND "/bin/sh" "-c" "${TRY_COMPILE}"
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     OUTPUT_VARIABLE _WX_VERSION
     ERROR_VARIABLE _WX_ERRORS
     OUTPUT_STRIP_TRAILING_WHITESPACE
   )
-  if (NOT "${_WX_ERRORS}" STREQUAL "")
+  if (NOT "${_WX_ERRORS}" STREQUAL "" OR "${_WX_VERSION}" STREQUAL "")
     message(FATAL_ERROR "Cannot run wxWidgets  version test (!)")
   elseif ("${_WX_VERSION}" LESS 32)
     add_definitions("-DNDEBUG")
@@ -1374,7 +1385,7 @@ if (OCPN_USE_CURL)
     endif (WIN32 AND OCPN_USE_EXTERN_CURL)
   else (NOT QT_ANDROID)
     target_include_directories( ${PACKAGE_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/buildandroid/libcurl/include)
-    target_link_libraries(${PACKAGE_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/buildandroid/libcurl/libcurl.a)
+    target_link_libraries(${PACKAGE_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/buildandroid/libcurl/${ANDROID_ARCH}/libcurl.a)
   endif (NOT QT_ANDROID)
 endif (OCPN_USE_CURL)
 
@@ -1503,8 +1514,12 @@ if (QT_ANDROID)
   target_include_directories(${PACKAGE_NAME}
     PRIVATE ${CMAKE_SOURCE_DIR}/buildandroid/libarchive/include)
   target_link_libraries(${PACKAGE_NAME}
-    PRIVATE ${CMAKE_SOURCE_DIR}/buildandroid/libarchive/libarchive.a)
-else (QT_ANDROID)
+    PRIVATE ${CMAKE_SOURCE_DIR}/buildandroid/libarchive/${ANDROID_ARCH}/libarchive.a)
+elseif ( APPLE )
+    #  TODO This is a hack, due to the way libarchive is built and installed in CI build environment 
+    target_include_directories(${PACKAGE_NAME} PRIVATE /usr/local/include)
+    target_link_libraries(${PACKAGE_NAME} PRIVATE /usr/local/lib/libarchive.dylib)
+else ()
   find_package(LibArchive REQUIRED)
   target_include_directories(${PACKAGE_NAME} PRIVATE ${LibArchive_INCLUDE_DIRS})
   target_link_libraries(${PACKAGE_NAME} PRIVATE ${LibArchive_LIBRARIES})
@@ -2210,9 +2225,16 @@ if (NOT APPLE)
     install(
       FILES ${CMAKE_BINARY_DIR}/opencpn.appdata.xml
       DESTINATION ${PREFIX_DATA}/metainfo
+      RENAME opencpn.metainfo.xml
     )
     install(FILES opencpn.1 DESTINATION ${PREFIX_DATA}/man/man1)
   endif (UNIX)
+
+  IF(PACKAGE_FORMAT MATCHES "DEB")
+        INSTALL(FILES "buildlinux/98-sglock-ocpn.rules"
+          PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ 
+          DESTINATION "/lib/udev/rules.d")
+  ENDIF(PACKAGE_FORMAT MATCHES "DEB")
 
 endif (NOT APPLE)
 # Fix up time_t definition Checks for 32-bit version. And always use 32-bit

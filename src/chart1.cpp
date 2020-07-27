@@ -284,6 +284,8 @@ wxString                  g_VisiNameinLayers;
 wxString                  g_InVisiNameinLayers;
 
 bool                      g_bcompression_wait;
+bool                      g_FlushNavobjChanges;
+int                       g_FlushNavobjChangesTimeout;
 
 wxString                  g_uploadConnection;
 
@@ -415,6 +417,8 @@ float                     g_ChartScaleFactorExp;
 int                       g_last_ChartScaleFactor;
 int                       g_ShipScaleFactor;
 float                     g_ShipScaleFactorExp;
+int                       g_ENCSoundingScaleFactor;
+
 
 bool                      g_bShowTide;
 bool                      g_bShowCurrent;
@@ -689,9 +693,6 @@ int                       g_click_stop;
 
 int                       g_MemFootSec;
 int                       g_MemFootMB;
-
-std::vector<int>          g_quilt_noshow_index_array;
-std::vector<int>          g_quilt_yesshow_index_array;
 
 wxStaticBitmap            *g_pStatBoxTool;
 bool                      g_bShowStatusBar;
@@ -1788,6 +1789,10 @@ bool MyApp::OnInit()
     }
 #endif  // __OCPN__ANDROID__
 
+    if (getenv("OPENCPN_FATAL_ERROR") != 0) {
+        wxLogFatalError(getenv("OPENCPN_FATAL_ERROR"));
+    }
+
     // Check if last run failed, set up safe_mode.
     if (!safe_mode::get_mode()) {
         safe_mode::check_last_start();
@@ -2094,18 +2099,6 @@ bool MyApp::OnInit()
         wxString("Version ") +  VERSION_FULL + " Build " + VERSION_DATE;
     g_bUpgradeInProcess = (vs != g_config_version_string);
     
-#ifndef __OCPN__ANDROID__    
-//  Send the Welcome/warning message if it has never been sent before,
-//  or if the version string has changed at all
-//  We defer until here to allow for localization of the message
-    if( !n_NavMessageShown || ( vs != g_config_version_string ) ) {
-        if( wxID_CANCEL == ShowNavWarning() )
-            return false;
-        n_NavMessageShown = 1;
-    }
-
-    g_config_version_string = vs;
-#endif
     //  log deferred log restart message, if it exists.
     if( !g_Platform->GetLargeLogMessage().IsEmpty() )
         wxLogMessage( g_Platform->GetLargeLogMessage() );
@@ -2186,7 +2179,7 @@ bool MyApp::OnInit()
 #ifndef __OCPN__ANDROID__
         pInit_Chart_Dir->Append( std_path.GetDocumentsDir() );
 #else
-        pInit_Chart_Dir->Append( g_Platform->GetPrivateDataDir() );
+        pInit_Chart_Dir->Append( androidGetExtStorageDir() );
 #endif
     }
 
@@ -2567,47 +2560,52 @@ extern ocpnGLOptions g_GLOptions;
 
     OCPNPlatform::Initialize_4( );
     
-    if( n_NavMessageShown == 1 ) {
-        //In case the user accepted the "not for navigation" nag, persist it here...
-        pConfig->UpdateSettings();
-    }
 #ifdef __OCPN__ANDROID__
     androidHideBusyIcon();
 #endif
+    wxLogMessage( wxString::Format(_("OpenCPN Initialized in %ld ms."), init_sw.Time() ) );
 
     wxMilliSleep(500);
 
 #ifdef __OCPN__ANDROID__    
         //  We defer the startup message to here to allow the app frame to be contructed,
         //  thus avoiding a dialog with NULL parent which might not work on some devices.    
-        if( !n_NavMessageShown || ( g_vs != g_config_version_string ) || (g_AndroidVersionCode != androidGetVersionCode()) )
-        {
+    if( !n_NavMessageShown || ( vs != g_config_version_string ) || (g_AndroidVersionCode != androidGetVersionCode()) )
+    {
             //qDebug() << "Showing NavWarning";
-            wxMilliSleep(500);
-            if( wxID_CANCEL == ShowNavWarning() ) {
-                  qDebug() << "Closing due to NavWarning Cancel";
-                  gFrame->Close();
-                  androidTerminate();
-                  return true;
-            }
-            n_NavMessageShown = 1;
-            g_config_version_string = g_vs;
-            
+        wxMilliSleep(500);
+        if( wxID_CANCEL == ShowNavWarning() ) {
+              qDebug() << "Closing due to NavWarning Cancel";
+              gFrame->Close();
+              androidTerminate();
+              return true;
         }
+        n_NavMessageShown = 1;
+          
+    }
         
         // Finished with upgrade checking, so persist the currect Version Code
-        g_AndroidVersionCode = androidGetVersionCode();
-        pConfig->UpdateSettings();
-
-        qDebug() << "Persisting Version Code: " << g_AndroidVersionCode;
+    g_AndroidVersionCode = androidGetVersionCode();
+    qDebug() << "Persisting Version Code: " << g_AndroidVersionCode;
+#else
+//  Send the Welcome/warning message if it has never been sent before,
+//  or if the version string has changed at all
+//  We defer until here to allow for localization of the message
+    if( !n_NavMessageShown || ( vs != g_config_version_string ) ) {
+        if( wxID_CANCEL == ShowNavWarning() )
+            return false;
+        n_NavMessageShown = 1;
+    }
 #endif
-        
-        
+
+    g_config_version_string = vs;
+
+    //The user accepted the "not for navigation" nag, so persist it here...
+    pConfig->UpdateSettings();
+
     // Start delayed initialization chain after some milliseconds
     gFrame->InitTimer.Start( 5, wxTIMER_CONTINUOUS );
     
-    wxLogMessage( wxString::Format(_("OpenCPN Initialized in %ld ms."), init_sw.Time() ) );
-
     g_pauimgr->Update();
     
     return TRUE;
@@ -3789,21 +3787,32 @@ void MyFrame::OnCloseWindow( wxCloseEvent& event )
     //   Save the saved Screen Brightness
     RestoreScreenBrightness();
 
-    // Provisionally save all settings before deactivating plugins
-    pConfig->UpdateSettings();
-
-    //    Deactivate the PlugIns
-    if( g_pi_manager ) {
-        g_pi_manager->DeactivateAllPlugIns();
+    // Persist the toolbar locations
+    if( g_MainToolbar ) {
+        wxPoint tbp_incanvas = GetPrimaryCanvas()->GetToolbarPosition();
+        g_maintoolbar_x = tbp_incanvas.x;
+        g_maintoolbar_y = tbp_incanvas.y;
+        g_maintoolbar_orient = GetPrimaryCanvas()->GetToolbarOrientation();
+        //g_toolbarConfig = GetPrimaryCanvas()->GetToolbarConfigString();
+        if (g_MainToolbar) {
+            g_MainToolbar->GetScreenPosition(&g_maintoolbar_x, &g_maintoolbar_y);
+        }
     }
 
-    wxLogMessage( _T("opencpn::MyFrame exiting cleanly.") );
-
-    quitflag++;
+    if(g_iENCToolbar){
+        wxPoint locn = g_iENCToolbar->GetPosition();
+        wxPoint tbp_incanvas = GetPrimaryCanvas()->ScreenToClient( locn );
+        g_iENCToolbarPosY = tbp_incanvas.y;
+        g_iENCToolbarPosX = tbp_incanvas.x;
+    }
+    
+    g_bframemax = IsMaximized();
 
     FrameTimer1.Stop();
-
-    /*
+    FrameCOGTimer.Stop();
+    TrackOff();
+    
+     /*
      Automatically drop an anchorage waypoint, if enabled
      On following conditions:
      1.  In "Cruising" mode, meaning that speed has at some point exceeded 3.0 kts.
@@ -3858,35 +3867,20 @@ void MyFrame::OnCloseWindow( wxCloseEvent& event )
         }
     }
 
-    FrameTimer1.Stop();
-    FrameCOGTimer.Stop();
 
-    g_bframemax = IsMaximized();
 
-    //    Record the current state of tracking
-//    g_bTrackCarryOver = g_bTrackActive;
-
-    TrackOff();
-
-    if( g_MainToolbar ) {
-        wxPoint tbp_incanvas = GetPrimaryCanvas()->GetToolbarPosition();
-        g_maintoolbar_x = tbp_incanvas.x;
-        g_maintoolbar_y = tbp_incanvas.y;
-        g_maintoolbar_orient = GetPrimaryCanvas()->GetToolbarOrientation();
-        //g_toolbarConfig = GetPrimaryCanvas()->GetToolbarConfigString();
-        if (g_MainToolbar) {
-            g_MainToolbar->GetScreenPosition(&g_maintoolbar_x, &g_maintoolbar_y);
-        }
-    }
-
-    if(g_iENCToolbar){
-        wxPoint locn = g_iENCToolbar->GetPosition();
-        wxPoint tbp_incanvas = GetPrimaryCanvas()->ScreenToClient( locn );
-        g_iENCToolbarPosY = tbp_incanvas.y;
-        g_iENCToolbarPosX = tbp_incanvas.x;
-    }
-    
+    // Provisionally save all settings before deactivating plugins
     pConfig->UpdateSettings();
+
+    //    Deactivate the PlugIns
+    if( g_pi_manager ) {
+        g_pi_manager->DeactivateAllPlugIns();
+    }
+
+    wxLogMessage( _T("opencpn::MyFrame exiting cleanly.") );
+
+    quitflag++;
+
     pConfig->UpdateNavObj();
 
 //    pConfig->m_pNavObjectChangesSet->Clear();
@@ -5237,6 +5231,7 @@ void MyFrame::TrackOn( void )
     v[_T("GUID")] = g_pActiveTrack->m_GUID;
     wxString msg_id( _T("OCPN_TRK_ACTIVATED") );
     g_pi_manager->SendJSONMessageToAllPlugins( msg_id, v );
+    g_FlushNavobjChangesTimeout = 30;           //Every thirty seconds, consider flushing navob changes
 }
 
 Track *MyFrame::TrackOff( bool do_add_point )
@@ -5286,6 +5281,8 @@ Track *MyFrame::TrackOff( bool do_add_point )
     #ifdef __OCPN__ANDROID__
     androidSetTrackTool(false);
     #endif
+
+    g_FlushNavobjChangesTimeout = 600;           //Revert to checking/flushing navob changes every 5 minutes
 
     return return_val;
 }
@@ -5615,11 +5612,14 @@ void MyFrame::ApplyGlobalSettings( bool bnewtoolbar )
         }
     }
 
+    wxSize lastOptSize = options_lastWindowSize;
     SendSizeEvent();
 
     BuildMenuBar();
 
     SendSizeEvent();
+    options_lastWindowSize = lastOptSize;
+
 
     if( bnewtoolbar )
         UpdateAllToolbars( global_color_scheme );
@@ -6120,7 +6120,8 @@ int MyFrame::DoOptionsDialog()
 
       // Correct some fault in Options dialog layout logic on GTK3 by forcing a re-layout to new slightly reduced size.      
 #ifdef __WXGTK3__        
-        g_options->SetSize( options_lastWindowSize.x - 1, options_lastWindowSize.y );
+        if( options_lastWindowSize != wxSize(0,0) ) 
+            g_options->SetSize( options_lastWindowSize.x - 1, options_lastWindowSize.y );
 #endif
         
 #endif        
@@ -6675,6 +6676,9 @@ void MyFrame::ChartsRefresh( )
         ChartCanvas *cc = g_canvasArray.Item(i);
         if(cc ){
             int currentIndex = cc->GetpCurrentStack()->GetCurrentEntrydbIndex();
+            if(cc->GetQuiltMode()){
+                currentIndex = cc->GetQuiltReferenceChartIndex();
+                }
             cc->canvasChartsRefresh( currentIndex );
         }
     }
@@ -7153,18 +7157,11 @@ void MyFrame::OnInitTimer(wxTimerEvent& event)
         default:
         {
             // Last call....
-
+            wxLogMessage(_T("OnInitTimer...Last Call"));
+            
             PositionIENCToolbar();
 
             g_bDeferredInitDone = true;
-            
-            for(unsigned int i=0 ; i < g_canvasArray.GetCount() ; i++){
-                ChartCanvas *cc = g_canvasArray.Item(i);
-                if(cc){
-                    cc->CreateMUIBar();
-                    cc->CheckGroupValid();
-                }
-            }
             
             GetPrimaryCanvas()->SetFocus();
             g_focusCanvas = GetPrimaryCanvas();
@@ -7176,6 +7173,16 @@ void MyFrame::OnInitTimer(wxTimerEvent& event)
             if(b_reloadForPlugins){
                 DoChartUpdate();
                 ChartsRefresh();
+            }
+
+            wxLogMessage(_T("OnInitTimer...Finalize Canvases"));
+
+            for(unsigned int i=0 ; i < g_canvasArray.GetCount() ; i++){
+                ChartCanvas *cc = g_canvasArray.Item(i);
+                if(cc){
+                    cc->CreateMUIBar();
+                    cc->CheckGroupValid();
+                }
             }
 
 #ifdef __OCPN__ANDROID__
@@ -7741,13 +7748,16 @@ void MyFrame::OnFrameTimer1( wxTimerEvent& event )
 
     // Update the navobj file on a fixed schedule (5 minutes)
     // This will do nothing if the navobj.changes file is empty and clean
-    if((g_tick % 300) == 0){
+    if(((g_tick % g_FlushNavobjChangesTimeout) == 0) || g_FlushNavobjChanges){
         if(pConfig && pConfig->IsChangesFileDirty()){
+            androidShowBusyIcon();
             wxStopWatch update_sw;
             pConfig->UpdateNavObj( true );
             wxString msg = wxString::Format(_T("OpenCPN periodic navobj update took %ld ms."), update_sw.Time());
             wxLogMessage( msg );
             qDebug() << msg.mb_str();
+            g_FlushNavobjChanges = false;
+            androidHideBusyIcon();
         }
     }
 

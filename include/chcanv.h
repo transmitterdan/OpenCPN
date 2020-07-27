@@ -524,6 +524,15 @@ public:
       wxRect GetScaleBarRect(){ return m_scaleBarRect; }
       void RenderAlertMessage( wxDC &dc, const ViewPort &vp);
 
+      std::vector<int>      m_tile_noshow_index_array;
+      std::vector<int>      m_tile_yesshow_index_array;
+      std::vector<int>      m_quilt_noshow_index_array;
+
+      bool IsTileOverlayIndexInYesShow( int index );
+      bool IsTileOverlayIndexInNoShow( int index );
+      void AddTileOverlayIndexToNoShow( int index );
+      
+      std::vector<int> GetQuiltNoshowIindexArray(){ return m_quilt_noshow_index_array; }
 private:
       int AdjustQuiltRefChart();
 
