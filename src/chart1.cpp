@@ -4669,6 +4669,7 @@ void MyFrame::OnToolLeftClick( wxCommandEvent& event )
         {
  #ifdef __OCPN__ANDROID__
             ///LoadS57();
+            androidDisableFullScreen();
             g_MainToolbar->HideTooltip();
             DoAndroidPreferences();
  #else
@@ -4828,6 +4829,10 @@ void MyFrame::OnToolLeftClick( wxCommandEvent& event )
 
         case ID_CMD_APPLY_SETTINGS:{
             applySettingsString(event.GetString());
+#ifdef __OCPN__ANDROID__            
+            androidRestoreFullScreen( );
+#endif            
+
             break;
         }
 
@@ -6169,6 +6174,7 @@ int MyFrame::DoOptionsDialog()
     androidEnableBackButton( true );
     androidEnableOptionsMenu( true );
     androidRestoreFullScreen();
+    androidEnableRotation();
     #endif
     
 
@@ -6182,6 +6188,10 @@ int MyFrame::DoOptionsDialog()
     options_lastWindowSize = g_options->lastWindowSize;
 
     if( 1/*b_sub*/ ) {          // always surface toolbar, and restart the timer if needed
+#ifdef __OCPN__ANDROID__
+      g_MainToolbar-> SetDockX( -1 );
+      g_MainToolbar-> SetDockY( -1 );
+#endif        
         g_MainToolbar->Surface();
         SurfaceAllCanvasToolbars();
         GetPrimaryCanvas()->SetFocus();
@@ -11665,14 +11675,29 @@ int OCPNMessageBox( wxWindow *parent, const wxString& message, const wxString& c
 {
 #ifdef __OCPN__ANDROID__
     androidDisableRotation();
-#endif
+    int style_mod = style;
+
+    auto dlg = new wxMessageDialog(parent, message, caption,  style_mod);
+    int ret = dlg->ShowModal();
+    qDebug() << "OCPNMB-1 ret" << ret;
+
+    //int ret= dlg->GetReturnCode();
+
+    //  Not sure why we need this, maybe on wx3?
+    if( ((style & wxYES_NO) == wxYES_NO) && (ret == wxID_OK))
+        ret = wxID_YES;
+
+    dlg->Destroy();
+
+    androidEnableRotation();
+    qDebug() << "OCPNMB-2 ret" << ret;
+    return ret;
+    
+#else
     int ret =  wxID_OK;
 
     TimedMessageBox tbox(parent, message, caption, style, timeout_sec, wxPoint( x, y )  );
     ret = tbox.GetRetVal() ;
-
-#ifdef __OCPN__ANDROID__
-    androidEnableRotation();
 #endif
 
     return ret;

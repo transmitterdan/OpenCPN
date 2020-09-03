@@ -1571,6 +1571,10 @@ For more info, see the file LINUX_DEVICES.md in the distribution docs.
 void options::CheckDeviceAccess( /*[[maybe_unused]]*/ wxString &path) {
    // Microsoft compiler 19.14.26433 requires rightfully std=c++-17 for this.
 
+#ifdef __OCPN__ANDROID__
+   return;
+#endif
+   
 #ifndef __linux__
    return;
 #else
@@ -7607,6 +7611,11 @@ void options::OnApplyClick(wxCommandEvent& event) {
         if (pds_existing) g_pMUX->StopAndRemoveStream(pds_existing);
     }
 
+    // Internal BlueTooth driver stacks commonly need a time delay to purge their buffers, etc.
+    // before restating with new parameters...
+    if(cp->Type == INTERNAL_BT)
+        wxSleep(1);
+
     if (!cp->bEnabled) continue;
     g_pMUX->AddStream(makeDataStream(g_pMUX, cp));
     cp->b_IsSetup = TRUE;
@@ -8078,6 +8087,13 @@ void options::OnButtondeleteClick(wxCommandEvent& event)
       if ( item == -1 )
           break;
       pActiveChartsList->DeleteItem( item );
+
+      // On Android, there is some trouble with wxLIST_STATE_SELECTED.
+      // So, only allow deletion of one item per click.
+#ifdef __OCPN__ANDROID__
+      break;
+#endif
+      
       item = -1;      // Restart
   }
 
@@ -8816,12 +8832,10 @@ void options::DoOnPageChange(size_t page) {
       if(g_pi_manager)
           g_pi_manager->SetListPanelPtr(m_pPlugInCtrl);
 
-#ifndef __OCPN__ANDROID__      
       m_PluginCatalogMgrPanel = new CatalogMgrPanel(itemPanelPlugins);
       m_PluginCatalogMgrPanel->SetListPanelPtr(m_pPlugInCtrl);
       
       itemBoxSizerPanelPlugins->Add(m_PluginCatalogMgrPanel, 0, wxEXPAND | wxALL, 4);
-#endif      
       itemBoxSizerPanelPlugins->Layout();
 
       //  Update the PlugIn page to reflect the state of individual selections

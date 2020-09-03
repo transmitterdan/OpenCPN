@@ -346,8 +346,8 @@ AISTargetListDialog::AISTargetListDialog( wxWindow *parent, wxAuiManager *auimgr
             pane.Dockable( false );
             
             wxSize screen_size = ::wxGetDisplaySize();
-            pane.FloatingSize(screen_size.x * 6/10, screen_size.y * 8/10);
-            pane.FloatingPosition(screen_size.x * 2/10, screen_size.y * 1/10);
+            pane.FloatingSize(screen_size.x * 8/10, screen_size.y * 8/10);
+            pane.FloatingPosition(screen_size.x * 1/10, screen_size.y * 1/10);
             m_pAuiManager->Update();
         }
         
@@ -767,8 +767,12 @@ void AISTargetListDialog::Shutdown( void )
         Disconnect_decoder();
         pane.Show(false);
         m_pAuiManager->Update();
+#ifdef __OCPN__ANDROID__
+        GetParent()->Refresh( true );
+#endif        
         Destroy();
     }
+    
 }
 
 
@@ -1151,7 +1155,7 @@ void AISTargetListDialog::UpdateNVAISTargetList( void )
             m_pListCtrlAISTargets->DeleteAllItems();
 
         wxString count;
-        count.Printf( _T("%d"), m_pMMSI_array->GetCount() );
+        count.Printf( _T("%lu"), (unsigned long)m_pMMSI_array->GetCount() );
         m_pTextTargetCount->ChangeValue( count );
 
 #ifdef __WXMSW__
