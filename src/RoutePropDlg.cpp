@@ -15,6 +15,11 @@
 #endif
 
 ///////////////////////////////////////////////////////////////////////////
+BEGIN_EVENT_TABLE ( RoutePropDlg, wxFrame )
+#ifdef __OCPN__ANDROID__
+    EVT_CHAR(RoutePropDlg::OnKeyChar)
+#endif
+END_EVENT_TABLE()
 
 RoutePropDlg::RoutePropDlg( wxWindow* parent, wxWindowID id, const wxString& title, const wxPoint& pos, const wxSize& size, long style ) : wxFrame( parent, id, title, pos, size, style )
 {
@@ -206,6 +211,8 @@ RoutePropDlg::RoutePropDlg( wxWindow* parent, wxWindowID id, const wxString& tit
         // wxDataViewListCtrl has some platform dependent variability
         // We account for this here...
         
+        wxString toLabel = _("To waypoint");
+        
 #ifdef __WXQT__                         // includes Android
         int columWidths[] = {
             wxCOL_WIDTH_AUTOSIZE,
@@ -224,6 +231,8 @@ RoutePropDlg::RoutePropDlg( wxWindow* parent, wxWindowID id, const wxString& tit
             wxCOL_WIDTH_AUTOSIZE
         };
         int colFlags = 0;
+        toLabel = _("To WP");
+        
 #else
         int columWidths[] = {
             30,
@@ -250,7 +259,7 @@ RoutePropDlg::RoutePropDlg( wxWindow* parent, wxWindowID id, const wxString& tit
 	m_dvlcWaypoints = new wxDataViewListCtrl( m_pnlBasic, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxDV_VERT_RULES | wxDV_HORIZ_RULES );
 	m_dataViewListColumnLeg = m_dvlcWaypoints->AppendTextColumn( _("Leg"), wxDATAVIEW_CELL_INERT, columWidths[0], static_cast<wxAlignment>(wxALIGN_LEFT), colFlags );
 	m_dataViewListColumnLeg->GetRenderer()->EnableEllipsize( wxELLIPSIZE_NONE );
-	m_dataViewListColumnToWpt = m_dvlcWaypoints->AppendTextColumn( _("To waypoint"), wxDATAVIEW_CELL_INERT, columWidths[1], static_cast<wxAlignment>(wxALIGN_LEFT), colFlags );
+	m_dataViewListColumnToWpt = m_dvlcWaypoints->AppendTextColumn( toLabel, wxDATAVIEW_CELL_INERT, columWidths[1], static_cast<wxAlignment>(wxALIGN_LEFT), colFlags );
 	m_dataViewListColumnToWpt->GetRenderer()->EnableEllipsize( wxELLIPSIZE_END );
 	m_dataViewListColumnDistance = m_dvlcWaypoints->AppendTextColumn( _("Distance"), wxDATAVIEW_CELL_INERT, columWidths[2], static_cast<wxAlignment>(wxALIGN_LEFT), colFlags );
 	m_dataViewListColumnDistance->GetRenderer()->EnableEllipsize( wxELLIPSIZE_END );
@@ -457,4 +466,10 @@ RoutePropDlg::~RoutePropDlg()
 
 	delete m_menuLink;
 	delete m_menuLinks;
+}
+
+void RoutePropDlg::OnKeyChar( wxKeyEvent &event )
+{
+    int key_char = event.GetKeyCode();
+    int yyp = 4;
 }

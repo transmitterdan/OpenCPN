@@ -3087,9 +3087,9 @@ void options::CreatePanel_Ownship(size_t parent, int border_size,
 
   wxString iconTypes[] = {_("Default"), _("Real Scale Bitmap"),
                           _("Real Scale Vector")};
+                          
   m_pShipIconType =
-      new wxChoice(itemPanelShip, ID_SHIPICONTYPE, wxDefaultPosition,
-                   wxDefaultSize, 3, iconTypes);
+      new wxChoice(itemPanelShip, ID_SHIPICONTYPE, wxDefaultPosition, wxSize(GetCharWidth() * 20, GetCharHeight() * 2), 3, iconTypes);
   dispOptionsGrid->Add(m_pShipIconType, 0,
                        wxALIGN_RIGHT | wxLEFT | wxRIGHT | wxTOP,
                        group_item_spacing);
@@ -4014,8 +4014,7 @@ void options::CreatePanel_Advanced(size_t parent, int border_size,
     itemBoxSizerUI->Add(m_pSlider_Zoom_Vector, inputFlags);
 
     itemBoxSizerUI->Add(
-        new wxStaticText(m_ChartDisplayPage, wxID_ANY, _("CM93 Detail level")),
-        labelFlags);
+        new wxStaticText(m_ChartDisplayPage, wxID_ANY, _("CM93 Detail level")), inputFlags);
     m_pSlider_CM93_Zoom = new wxSlider( m_ChartDisplayPage, ID_CM93ZOOM, 0,
                            -CM93_ZOOM_FACTOR_MAX_RANGE, CM93_ZOOM_FACTOR_MAX_RANGE,
                            wxDefaultPosition, m_sliderSize, SLIDER_STYLE);
