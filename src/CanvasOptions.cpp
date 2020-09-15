@@ -98,7 +98,7 @@ CanvasOptions::CanvasOptions( wxWindow *parent)
     int interGroupSpace = border_size * 2;
     
     wxSizerFlags verticleInputFlags = wxSizerFlags(0).Align(wxALIGN_LEFT).Expand().Border(wxALL, group_item_spacing);
-    wxSizerFlags inputFlags = wxSizerFlags(0).Align(wxALIGN_LEFT | wxALIGN_CENTRE_VERTICAL).Border(wxALL, group_item_spacing);
+    wxSizerFlags horizontalInputFlags = wxSizerFlags(0).Align(wxALIGN_LEFT | wxALIGN_CENTRE_HORIZONTAL).Border(wxALL, group_item_spacing);
     
     wxScrolledWindow *pDisplayPanel = m_sWindow;
 
@@ -134,15 +134,15 @@ CanvasOptions::CanvasOptions( wxWindow *parent)
     boxNavMode->Add(rowOrientation);
 
     pCBNorthUp = new wxRadioButton(pDisplayPanel, wxID_ANY, _("North Up"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP);
-    rowOrientation->Add(pCBNorthUp, inputFlags);
+    rowOrientation->Add(pCBNorthUp, horizontalInputFlags);
     pCBNorthUp->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( CanvasOptions::OnOptionChange ), NULL, this );
 
     pCBCourseUp = new wxRadioButton(pDisplayPanel, IDCO_COURSEUPCHECKBOX, _("Course Up"));
-    rowOrientation->Add(pCBCourseUp, wxSizerFlags(0).Align(wxALIGN_CENTRE_VERTICAL).Border(wxLEFT, group_item_spacing * 2));
+    rowOrientation->Add(pCBCourseUp, wxSizerFlags(0).Align(wxALIGN_CENTRE_HORIZONTAL).Border(wxLEFT, group_item_spacing * 2));
     pCBCourseUp->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( CanvasOptions::OnOptionChange ), NULL, this );
  
     pCBHeadUp = new wxRadioButton(pDisplayPanel, IDCO_HEADUPCHECKBOX, _("Heading Up"));
-    rowOrientation->Add(pCBHeadUp, wxSizerFlags(0).Align(wxALIGN_CENTRE_VERTICAL).Border(wxLEFT, group_item_spacing * 2));
+    rowOrientation->Add(pCBHeadUp, wxSizerFlags(0).Align(wxALIGN_CENTRE_HORIZONTAL).Border(wxLEFT, group_item_spacing * 2));
     pCBHeadUp->Connect( wxEVT_COMMAND_RADIOBUTTON_SELECTED, wxCommandEventHandler( CanvasOptions::OnOptionChange ), NULL, this );
  
     pCBLookAhead = new wxCheckBox(pDisplayPanel, IDCO_CHECK_LOOKAHEAD, _("Look Ahead Mode"));

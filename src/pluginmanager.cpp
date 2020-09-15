@@ -5172,7 +5172,7 @@ CatalogMgrPanel::CatalogMgrPanel(wxWindow* parent)
      rowSizer2->AddSpacer( 4 * GetCharWidth() );
 
      wxStaticText *tchannels = new wxStaticText( this, wxID_STATIC, _("Choose Remote Catalog"));
-     rowSizer2->Add( tchannels, 0, wxALIGN_RIGHT | wxALL, 5 );
+     rowSizer2->Add( tchannels, 0, wxALL, 5 );
 
      wxArrayString channels;
      channels.Add(_T( "Master" ));
@@ -5185,7 +5185,7 @@ CatalogMgrPanel::CatalogMgrPanel(wxWindow* parent)
      }
      
      m_choiceChannel = new wxChoice(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, channels);
-     rowSizer2->Add( m_choiceChannel, 0, wxALIGN_RIGHT );
+     rowSizer2->Add( m_choiceChannel, 0, wxALL );
      m_choiceChannel->Bind(wxEVT_CHOICE, &CatalogMgrPanel::OnChannelSelected, this);
      int selection = GetChannelIndex(&channels);
      if(!expert){

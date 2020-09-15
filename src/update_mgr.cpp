@@ -315,7 +315,7 @@ class CandidateButtonsPanel: public wxPanel
             vbox->Add(1, 1, 1, wxEXPAND);   // Expanding, stretchable spacer
             m_info_btn = new WebsiteButton(this, plugin->info_url.c_str());
             m_info_btn->Hide();
-            vbox->Add(m_info_btn, flags.DoubleBorder().Bottom().Right());
+            vbox->Add(m_info_btn, flags.DoubleBorder().Right());
             SetSizer(vbox);
             Fit();
         }
@@ -438,7 +438,7 @@ class OcpnScrolledWindow : public wxScrolledWindow
             auto butt_box = new wxBoxSizer(wxHORIZONTAL);
             auto cancel_btn = new wxButton(this, wxID_CANCEL, _("Dismiss"));
             butt_box->Add(1, 1, 1, wxEXPAND);  // Expanding, stretchable spacer
-            butt_box->Add(cancel_btn,  wxSizerFlags().Right().Border());
+            butt_box->Add(cancel_btn,  wxSizerFlags().Border());
             box->Add(butt_box, wxSizerFlags().Proportion(0).Expand());
 
 
