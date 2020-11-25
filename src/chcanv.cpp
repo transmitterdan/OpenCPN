@@ -8391,7 +8391,6 @@ bool ChartCanvas::MouseEventProcessObjects( wxMouseEvent& event )
             
             if( m_bRouteEditing/* && !b_startedit_route*/) {            // End of RoutePoint drag
             if( m_pRoutePointEditTarget ) {
-                pSelect->UpdateSelectableRouteSegments( m_pRoutePointEditTarget );
                 //Check to see if there is a nearby point which may replace the dragged one
                 RoutePoint *pMousePoint = NULL;
                 if( m_bRoutePoinDragging && !m_pRoutePointEditTarget->m_bIsActive )
@@ -8415,7 +8414,8 @@ bool ChartCanvas::MouseEventProcessObjects( wxMouseEvent& event )
                         }
                         if( !duplicate ) {
                             int dlg_return;
-                            dlg_return = OCPNMessageBox( this, _("Replace this RoutePoint by the nearby isolated Waypoint?"),
+                        #ifndef __WXOSX__
+                            dlg_return = OCPNMessageBox( this, _("Replace this WayPoint by the nearby one?"),
                                        _("OpenCPN RoutePoint change"),
                                        (long) wxYES_NO | wxCANCEL | wxYES_DEFAULT );
                             if( dlg_return == wxID_YES ) {
@@ -8437,12 +8437,12 @@ bool ChartCanvas::MouseEventProcessObjects( wxMouseEvent& event )
                                 pMousePoint->m_bIsolatedMark = false;       // definitely no longer isolated
                                 pMousePoint->m_bIsInRoute = true;
                             }
+                        #endif
                         }
                     }
                 }
                 if( !pMousePoint )
                     pSelect->UpdateSelectableRouteSegments( m_pRoutePointEditTarget );
->>>>>>> 9cb67b106 (Tweak Routepoint replacement message.)
                 
                 if( m_pEditRouteArray ) {
                     for( unsigned int ir = 0; ir < m_pEditRouteArray->GetCount(); ir++ ) {
@@ -8525,9 +8525,6 @@ bool ChartCanvas::MouseEventProcessObjects( wxMouseEvent& event )
             if( m_pRoutePointEditTarget ) {
                 pSelect->UpdateSelectableRouteSegments( m_pRoutePointEditTarget );
                 m_pRoutePointEditTarget->m_bBlink = false;
-<<<<<<< HEAD
-                
-=======
                 //Check to see if there is a nearby point which may replace the dragged one
                 RoutePoint *pMousePoint = NULL;
                 if( m_bRoutePoinDragging && !m_pRoutePointEditTarget->m_bIsActive )
@@ -8551,7 +8548,8 @@ bool ChartCanvas::MouseEventProcessObjects( wxMouseEvent& event )
                         }
                         if( !duplicate ) {
                             int dlg_return;
-                            dlg_return = OCPNMessageBox( this, _("Replace this RoutePoint by the nearby isolated Waypoint?"),
+                        #ifndef __WXOSX__
+                            dlg_return = OCPNMessageBox( this, _("Replace this WayPoint by the nearby one?"),
                                        _("OpenCPN RoutePoint change"),
                                             (long) wxYES_NO | wxCANCEL | wxYES_DEFAULT );
                             if( dlg_return == wxID_YES ) {
@@ -8573,13 +8571,13 @@ bool ChartCanvas::MouseEventProcessObjects( wxMouseEvent& event )
                                 pMousePoint->m_bIsolatedMark = false;       // definitely no longer isolated
                                 pMousePoint->m_bIsInRoute = true;
                             }
+                       #endif
                         }
                     }
                 }
                 if( !pMousePoint )
                     pSelect->UpdateSelectableRouteSegments( m_pRoutePointEditTarget );
 
->>>>>>> 9cb67b106 (Tweak Routepoint replacement message.)
                 if( m_pEditRouteArray ) {
                     for( unsigned int ir = 0; ir < m_pEditRouteArray->GetCount(); ir++ ) {
                         Route *pr = (Route *) m_pEditRouteArray->Item( ir );
