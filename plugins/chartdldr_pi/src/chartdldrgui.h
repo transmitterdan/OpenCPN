@@ -41,12 +41,19 @@
 #ifndef NEW_LIST
 	#define NEW_LIST
 #endif	/* NEW_LIST */
+
+#ifndef NEW_LIST_CTRL
+	#define NEW_LIST_CTRL
+	#include <wx/dataview.h>
+#endif /* NEW_LIST_CTRL */
+
 ///////////////////////////////////////////////////////////////////////////
-class ChartPanel;
 class ChartDldrPanelImpl;
 
-WX_DECLARE_OBJARRAY(ChartPanel *,      ArrayOfChartPanels);    
-
+#if !defined( NEW_LIST_CTRL )
+class ChartPanel;
+WX_DECLARE_OBJARRAY(ChartPanel *,      ArrayOfChartPanels);
+#endif /* NEW_LIST_CTRL */
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class AddSourceDlg
@@ -92,7 +99,9 @@ class AddSourceDlg : public wxDialog
 class ChartDldrPanel : public wxPanel
 {
 	private:
-
+#if defined(NEW_LIST_CTRL)
+		void GuessRowSize(int* w, int* h);
+#endif /* NEW_LIST_CTRL */
 	protected:
 		wxListCtrl* m_lbChartSources;
 		wxButton* m_bAddSource;
@@ -105,13 +114,19 @@ class ChartDldrPanel : public wxPanel
 		wxButton* m_bDnldCharts;
 //		wxButton* m_bShowLocal;
 
+#if defined(NEW_LIST_CTRL)
+		wxButton* m_bDnldChartsList;
+		wxStaticText* m_stCatalogInfoList;
+#endif /* NEW_LIST_CTRL */
+
                 wxNotebook *m_DLoadNB;
                 wxString m_csTitle;
                 wxStaticText *m_chartsLabel;
-                
-                ArrayOfChartPanels m_panelArray;
-                wxBoxSizer  *m_boxSizerCharts;
-                
+#if !defined( NEW_LIST_CTRL )
+				ArrayOfChartPanels m_panelArray;
+#endif
+				wxBoxSizer  *m_boxSizerCharts;
+
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnPaint( wxPaintEvent& event ) { event.Skip(); }
 		virtual void OnLeftDClick( wxMouseEvent& event ) { event.Skip(); }
@@ -131,12 +146,23 @@ class ChartDldrPanel : public wxPanel
 #if !defined(NEW_LIST)
 		wxCheckedListCtrl *m_clCharts;
 #endif	/* NEW_LIST */
-                wxScrolledWindow *m_scrollWinChartList;
-                
+#if !defined( NEW_LIST_CTRL )
+		wxScrolledWindow *m_scrollWinChartList;
+#endif /* NEW_LIST_CTRL */
+#if defined(NEW_LIST_CTRL)
+		wxDataViewListCtrl* m_ChartList;
+		int GetListCtrlCount() { return m_ChartList->GetItemCount(); }
+		void SetListItemChecked(int item, bool flag) { m_ChartList->SetToggleValue(flag, item, 0); }
+		int GetListItemCheckedCount() { int cnt=0; for (int i = 0; i < GetListCtrlCount(); i++) if (isChecked(i)) cnt++; return cnt; }
+		bool isChecked(int item) { return (m_ChartList->GetToggleValue(item, 0)); }
+		bool isNew(int item) { return (m_ChartList->GetTextValue(item,1) == _("New")); }
+		bool isUpdated(int item) { return (m_ChartList->GetTextValue(item, 2) == _("Update available")); }
+#endif /* NEW_LIST_CTRL */
+
 		ChartDldrPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxTAB_TRAVERSAL );
 		~ChartDldrPanel();
 //                ChartDldrPanel() { }
-                
+
                 virtual void OnContextMenu( wxMouseEvent& event ) { event.Skip(); }
                 
 };
@@ -197,7 +223,6 @@ private:
     ChartDldrPanel *m_dldrPanel;
     
 };
-
 
 
 

@@ -309,5 +309,15 @@ IF(WIN32)
 
 ENDIF(WIN32)
 
+if (MSVC)
+  add_custom_command(
+    TARGET ${PACKAGE_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E echo "Copying dll file"
+    COMMAND ${CMAKE_COMMAND} -E copy "$(TargetPath)" "${CMAKE_BINARY_DIR}/$(configuration)/plugins"
+    COMMAND ${CMAKE_COMMAND} -E echo "Copying pdb file"
+    COMMAND ${CMAKE_COMMAND} -E copy "$(OutputPath)/$(TargetName).pdb" "${CMAKE_BINARY_DIR}/$(configuration)/plugins"
+  )
+endif (MSVC)
+
 INCLUDE("../PluginLocalization.cmake")
 PLUGIN_LOCALIZATION()
