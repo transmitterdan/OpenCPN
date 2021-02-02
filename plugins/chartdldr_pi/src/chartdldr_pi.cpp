@@ -743,7 +743,7 @@ void ChartDldrPanelImpl::FillFromFile( wxString url, wxString dir, bool selnew, 
 #ifdef NEW_LIST
         size_t updated_charts = 0;
         size_t new_charts = 0;
-        
+
 #if !defined( NEW_LIST_CTRL )
         // Clear any existing panels
         for(unsigned int i = 0 ; i < m_panelArray.GetCount() ; i++){
