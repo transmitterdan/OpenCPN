@@ -187,28 +187,30 @@ private:
     bool            m_bTransferSuccess;
     wxString        m_totalsize;
     wxString        m_transferredsize;
-    int		    m_failed_downloads;
+    int             m_failed_downloads;
     int             m_downloading;
 
     void            DisableForDownload( bool enabled );
     bool            m_bconnected;
+    bool            m_bInfoHold;    // Don't update chart selection stats right now
 
 protected:
     // Handlers for ChartDldrPanel events.
     void            SetSource( int id );
-	void            SelectSource( wxListEvent& event );
-	void            AddSource( wxCommandEvent& event );
-	void            DeleteSource( wxCommandEvent& event );
-	void            EditSource( wxCommandEvent& event );
-	void            UpdateChartList( wxCommandEvent& event );
-	void            OnDownloadCharts( wxCommandEvent& event );
-#if defined( CHART_LIST )
+    void            SelectSource( wxListEvent& event );
+    void            AddSource( wxCommandEvent& event );
+    void            DeleteSource( wxCommandEvent& event );
+    void            EditSource( wxCommandEvent& event );
+    void            UpdateChartList( wxCommandEvent& event );
+    void            OnDownloadCharts( wxCommandEvent& event );
+
+    void            OnSelectChartItem( wxCommandEvent& event );
     void            OnSelectNewCharts( wxCommandEvent& event );
     void            OnSelectUpdatedCharts(wxCommandEvent& event);
     void            OnSelectAllCharts(wxCommandEvent& event);
-#endif /* CHART_LIST */
+
     void            DownloadCharts( );
-	void            DoHelp( wxCommandEvent& event )
+    void            DoHelp( wxCommandEvent& event )
       {
           #ifdef __WXMSW__
           wxLaunchDefaultBrowser( _T("file:///") + *GetpSharedDataLocation() + _T("plugins/chartdldr_pi/data/doc/index.html") );
@@ -217,7 +219,7 @@ protected:
           #endif
       }
     void            UpdateAllCharts( wxCommandEvent& event );
-	void            OnShowLocalDir( wxCommandEvent& event );
+    void            OnShowLocalDir( wxCommandEvent& event );
     void            OnPaint( wxPaintEvent& event );
     void            OnLeftDClick( wxMouseEvent& event );
 
@@ -232,10 +234,11 @@ protected:
     bool            isChartChecked( int i );
     void            CheckAllCharts( bool value );
     void            InvertCheckAllCharts( );
+
 #ifdef NEW_LIST
     void            CheckNewCharts( bool value );
     void            CheckUpdatedCharts(bool value);
-#endif	/* NEW_LIST */
+#endif    /* NEW_LIST */
 
 public:
     //ChartDldrPanelImpl() { m_bconnected = false; DownloadIsCancel = false; }
@@ -254,8 +257,8 @@ class ChartDldrGuiAddSourceDlg : public AddSourceDlg
 {
 protected:
     void            OnChangeType( wxCommandEvent& event );
-	void            OnSourceSelected( wxTreeEvent& event );
-	void            OnOkClick( wxCommandEvent& event );
+    void            OnSourceSelected( wxTreeEvent& event );
+    void            OnOkClick( wxCommandEvent& event );
     void            OnCancelClick( wxCommandEvent& event );
         
     bool            LoadSources();
@@ -266,8 +269,8 @@ protected:
 
 public:
     ChartDldrGuiAddSourceDlg( wxWindow* parent );
-	~ChartDldrGuiAddSourceDlg();
-	void            SetBasePath( const wxString path ) { m_base_path = path; }
+    ~ChartDldrGuiAddSourceDlg();
+    void            SetBasePath( const wxString path ) { m_base_path = path; }
     void            SetSourceEdit( ChartSource* cs );
 
 private:
@@ -288,11 +291,11 @@ protected:
 
 public:
     ChartDldrPrefsDlgImpl( wxWindow* parent );
-	~ChartDldrPrefsDlgImpl();
-	wxString        GetPath() { return m_tcDefaultDir->GetValue(); }
-	void            SetPath( const wxString path );
-	void            GetPreferences( bool &preselect_new, bool &preselect_updated, bool &bulk_update );
-	void            SetPreferences( bool preselect_new, bool preselect_updated, bool bulk_update );
+    ~ChartDldrPrefsDlgImpl();
+    wxString        GetPath() { return m_tcDefaultDir->GetValue(); }
+    void            SetPath( const wxString path );
+    void            GetPreferences( bool &preselect_new, bool &preselect_updated, bool &bulk_update );
+    void            SetPreferences( bool preselect_new, bool preselect_updated, bool bulk_update );
 };
 
 #endif

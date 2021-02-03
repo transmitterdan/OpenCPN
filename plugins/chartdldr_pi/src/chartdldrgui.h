@@ -39,20 +39,14 @@
 
 #ifndef NEW_LIST
 #define NEW_LIST
-#endif	/* NEW_LIST */
+#endif  /* NEW_LIST */
 
-#if defined(_MSC_VER)
-// For now we only use new chart list panel in Windows
-#if !defined( CHART_LIST )
-#define CHART_LIST	// For this platform we want to use DataViewListCtrl
-#endif /* CHART_LIST */
-
+#if defined(CHART_LIST)
 #include <wx/dataview.h>
-#endif /* _MSVC_VER */
-
+#endif /* CHART_LIST */
 ///////////////////////////////////////////////////////////////////////////
 
-#if defined( CHART_LIST )	// Are we building using DataViewListCtrl?
+#if defined( CHART_LIST )  // Are we building using DataViewListCtrl?
 // We don't use ArrayOfChartPanels under MSVC
 #else
 class ChartPanel;
@@ -65,36 +59,36 @@ WX_DECLARE_OBJARRAY(ChartPanel *,      ArrayOfChartPanels);
 ///////////////////////////////////////////////////////////////////////////////
 class AddSourceDlg : public wxDialog
 {
-	private:
+    private:
 
-	protected:
-		wxPanel* m_panelPredefined;
-		wxPanel* m_panelCustom;
-		wxStaticText* m_stName;
-		wxStaticText* m_stUrl;
-		wxStdDialogButtonSizer* m_sdbSizerBtns;
-		wxButton* m_sdbSizerBtnsOK;
-		wxButton* m_sdbSizerBtnsCancel;
+    protected:
+        wxPanel* m_panelPredefined;
+        wxPanel* m_panelCustom;
+        wxStaticText* m_stName;
+        wxStaticText* m_stUrl;
+        wxStdDialogButtonSizer* m_sdbSizerBtns;
+        wxButton* m_sdbSizerBtnsOK;
+        wxButton* m_sdbSizerBtnsCancel;
 
-		// Virtual event handlers, overide them in your derived class
-		virtual void OnSourceSelected( wxTreeEvent& event ) { event.Skip(); }
-		virtual void OnOkClick( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnCancelClick( wxCommandEvent& event ) { event.Skip(); }
+        // Virtual event handlers, overide them in your derived class
+        virtual void OnSourceSelected( wxTreeEvent& event ) { event.Skip(); }
+        virtual void OnOkClick( wxCommandEvent& event ) { event.Skip(); }
+        virtual void OnCancelClick( wxCommandEvent& event ) { event.Skip(); }
                 void OnDirSelClick( wxCommandEvent& event );
                 void applyStyle();
                 
-	public:
-		wxNotebook* m_nbChoice;
-		wxTreeCtrl* m_treeCtrlPredefSrcs;
-		wxTextCtrl* m_tSourceName;
-		wxTextCtrl* m_tChartSourceUrl;
-		//wxDirPickerCtrl* m_dpChartDirectory;
+    public:
+        wxNotebook* m_nbChoice;
+        wxTreeCtrl* m_treeCtrlPredefSrcs;
+        wxTextCtrl* m_tSourceName;
+        wxTextCtrl* m_tChartSourceUrl;
+        //wxDirPickerCtrl* m_dpChartDirectory;
                 wxTextCtrl *m_tcChartDirectory;
                 wxButton *m_buttonChartDirectory;
                 wxScrolledWindow *m_sourceswin;
                 
-		AddSourceDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("New chart source"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE );
-		~AddSourceDlg();
+        AddSourceDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("New chart source"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxDEFAULT_DIALOG_STYLE );
+        ~AddSourceDlg();
 
 };
 
@@ -103,66 +97,71 @@ class AddSourceDlg : public wxDialog
 ///////////////////////////////////////////////////////////////////////////////
 class ChartDldrPanel : public wxPanel
 {
-	private:
+    private:
 
-	protected:
-		wxListCtrl* m_lbChartSources;
-		wxButton* m_bAddSource;
-		wxButton* m_bDeleteSource;
-		wxButton* m_bEditSource;
-		wxButton* m_bUpdateChartList;
-		wxButton* m_bUpdateAllCharts;
-		wxStaticText* m_stCatalogInfo;
-//		wxButton* m_bHelp;
-		wxButton* m_bDnldCharts;
-//		wxButton* m_bShowLocal;
+    protected:
+        wxListCtrl* m_lbChartSources;
+        wxButton* m_bAddSource;
+        wxButton* m_bDeleteSource;
+        wxButton* m_bEditSource;
+        wxButton* m_bUpdateChartList;
+        wxButton* m_bUpdateAllCharts;
+        wxStaticText* m_stCatalogInfo;
+        //wxButton* m_bHelp;
+        wxButton* m_bDnldCharts;
+        //wxButton* m_bShowLocal;
 #if defined( CHART_LIST )
-		// Buttons for selecting charts to download
-		wxButton* m_bClear;
-		wxButton* m_bSelectNew;
-		wxButton* m_bSelectUpdated;
-		wxButton* m_bSelectAll;
+        // Buttons for selecting charts to download
+        wxButton* m_bClear;
+        wxButton* m_bSelectNew;
+        wxButton* m_bSelectUpdated;
+        wxButton* m_bSelectAll;
 #endif /* CHART_LIST */
                 wxNotebook *m_DLoadNB;
                 wxString m_csTitle;
                 wxStaticText *m_chartsLabel;
-#if !defined (CHART_LIST)	// The chart list viewer does not use m_panelArray                
+#if !defined (CHART_LIST)  // The chart list viewer does not use m_panelArray                
                 ArrayOfChartPanels m_panelArray;
 #endif /* CHART_LIST */
                 wxBoxSizer  *m_boxSizerCharts;
                 
-		// Virtual event handlers, overide them in your derived class
-		virtual void OnPaint( wxPaintEvent& event ) { event.Skip(); }
-		virtual void OnLeftDClick( wxMouseEvent& event ) { event.Skip(); }
-		virtual void SelectSource( wxListEvent& event ) { event.Skip(); }
-		virtual void AddSource( wxCommandEvent& event ) { event.Skip(); }
-		virtual void DeleteSource( wxCommandEvent& event ) { event.Skip(); }
-		virtual void EditSource( wxCommandEvent& event ) { event.Skip(); }
-		virtual void UpdateChartList( wxCommandEvent& event ) { event.Skip(); }
-		virtual void UpdateAllCharts( wxCommandEvent& event ) { event.Skip(); }
-		virtual void DoHelp( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnDownloadCharts( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnShowLocalDir( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnSize( wxSizeEvent& event );
+        // Virtual event handlers, overide them in your derived class
+        virtual void OnPaint( wxPaintEvent& event ) { event.Skip(); }
+        virtual void OnLeftDClick( wxMouseEvent& event ) { event.Skip(); }
+        virtual void SelectSource( wxListEvent& event ) { event.Skip(); }
+        virtual void AddSource( wxCommandEvent& event ) { event.Skip(); }
+        virtual void DeleteSource( wxCommandEvent& event ) { event.Skip(); }
+        virtual void EditSource( wxCommandEvent& event ) { event.Skip(); }
+        virtual void UpdateChartList( wxCommandEvent& event ) { event.Skip(); }
+        virtual void UpdateAllCharts( wxCommandEvent& event ) { event.Skip(); }
+        virtual void DoHelp( wxCommandEvent& event ) { event.Skip(); }
+        virtual void OnDownloadCharts( wxCommandEvent& event ) { event.Skip(); }
+        virtual void OnShowLocalDir( wxCommandEvent& event ) { event.Skip(); }
+        virtual void OnSize( wxSizeEvent& event );
 #if defined( CHART_LIST )
-		virtual void OnSelectNewCharts(wxCommandEvent& event) { event.Skip(); }
-		virtual void OnSelectUpdatedCharts(wxCommandEvent& event) { event.Skip(); }
-		virtual void OnSelectAllCharts(wxCommandEvent& event) { event.Skip(); }
+        virtual void OnSelectChartItem(wxCommandEvent& event) { event.Skip(); }
+        virtual void OnSelectNewCharts(wxCommandEvent& event) { event.Skip(); }
+        virtual void OnSelectUpdatedCharts(wxCommandEvent& event) { event.Skip(); }
+        virtual void OnSelectAllCharts(wxCommandEvent& event) { event.Skip(); }
+        virtual void SetChartInfo(const wxString& info) {
+            m_stCatalogInfo->SetLabel(info);
+            m_stCatalogInfo->Show(true);
+        }
 #endif /* CHART_LIST */
-	public:
+    public:
 
 #if defined( CHART_LIST )
-		wxDataViewListCtrl* m_scrollWinChartList;
-		virtual wxDataViewListCtrl* getChartList() { return m_scrollWinChartList; }
-		virtual bool isNew(int item) { return (m_scrollWinChartList->GetTextValue(item, 1) == _("New")); }
-		virtual bool isUpdated(int item) { return (m_scrollWinChartList->GetTextValue(item, 2) == _("Update available")); }
-		virtual void clearChartList() { m_scrollWinChartList->DeleteAllItems(); }
+        wxDataViewListCtrl* m_scrollWinChartList;
+        virtual wxDataViewListCtrl* getChartList() { return m_scrollWinChartList; }
+        virtual bool isNew(int item) { return (m_scrollWinChartList->GetTextValue(item, 1) == _("New")); }
+        virtual bool isUpdated(int item) { return (m_scrollWinChartList->GetTextValue(item, 1) == _("Out of date")); }
+        virtual void clearChartList() { m_scrollWinChartList->DeleteAllItems(); }
 #else
-		wxScrolledWindow* m_scrollWinChartList;
+        wxScrolledWindow* m_scrollWinChartList;
 #endif /* CHART_LIST */        
 
-		ChartDldrPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxTAB_TRAVERSAL );
-		~ChartDldrPanel();
+        ChartDldrPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxTAB_TRAVERSAL );
+        ~ChartDldrPanel();
 //                ChartDldrPanel() { }
                 
                 virtual void OnContextMenu( wxMouseEvent& event ) { event.Skip(); }
@@ -174,18 +173,18 @@ class ChartDldrPanel : public wxPanel
 ///////////////////////////////////////////////////////////////////////////////
 class ChartDldrPrefsDlg : public wxDialog
 {
-	private:
+    private:
 
-	protected:
-		//wxDirPickerCtrl* m_dpDefaultDir;
-		wxStaticText* m_stPreselect;
-		wxCheckBox* m_cbSelectUpdated;
-		wxCheckBox* m_cbSelectNew;
-		wxStaticLine* m_staticline1;
-		wxCheckBox* m_cbBulkUpdate;
-		wxStdDialogButtonSizer* m_sdbSizerBtns;
-		wxButton* m_sdbSizerBtnsOK;
-		wxButton* m_sdbSizerBtnsCancel;
+    protected:
+        //wxDirPickerCtrl* m_dpDefaultDir;
+        wxStaticText* m_stPreselect;
+        wxCheckBox* m_cbSelectUpdated;
+        wxCheckBox* m_cbSelectNew;
+        wxStaticLine* m_staticline1;
+        wxCheckBox* m_cbBulkUpdate;
+        wxStdDialogButtonSizer* m_sdbSizerBtns;
+        wxButton* m_sdbSizerBtnsOK;
+        wxButton* m_sdbSizerBtnsCancel;
         wxButton* m_buttonChartDirectory;
         wxButton* m_buttonDownloadMasterCatalog;
         wxTextCtrl* m_tcDefaultDir;
@@ -194,15 +193,15 @@ class ChartDldrPrefsDlg : public wxDialog
         void OnDownloadMasterCatalog( wxCommandEvent& event );
                 
                 
-		// Virtual event handlers, overide them in your derived class
-		virtual void OnCancelClick( wxCommandEvent& event ) ;
-		virtual void OnOkClick( wxCommandEvent& event );
+        // Virtual event handlers, overide them in your derived class
+        virtual void OnCancelClick( wxCommandEvent& event ) ;
+        virtual void OnOkClick( wxCommandEvent& event );
 
 
-	public:
+    public:
 
-		ChartDldrPrefsDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Chart Downloader Preferences"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 462,331 ), long style = wxDEFAULT_DIALOG_STYLE );
-		~ChartDldrPrefsDlg();
+        ChartDldrPrefsDlg( wxWindow* parent, wxWindowID id = wxID_ANY, const wxString& title = _("Chart Downloader Preferences"), const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 462,331 ), long style = wxDEFAULT_DIALOG_STYLE );
+        ~ChartDldrPrefsDlg();
 
 };
 
@@ -216,7 +215,7 @@ public:
     void OnContextMenu( wxMouseEvent& event );
     wxCheckBox *GetCB(){ return m_cb; }
     bool isNew() { return (m_stat == _("New")); }
-    bool isUpdated() { return (m_stat == _("Update available")); }
+    bool isUpdated() { return (m_stat == _("Out of date")); }
 private:
     wxCheckBox* m_cb;
 //    wxStaticText *m_chartInfo;
