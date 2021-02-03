@@ -39,13 +39,17 @@
 
 #ifndef NEW_LIST
 #define NEW_LIST
+#endif	/* NEW_LIST */
 
 #if defined(_MSC_VER)
-// #define CHART_LIST	// For this platform we want to use DataViewListCtrl
+// For now we only use new chart list panel in Windows
+#if !defined( CHART_LIST )
+#define CHART_LIST	// For this platform we want to use DataViewListCtrl
+#endif /* CHART_LIST */
+
 #include <wx/dataview.h>
 #endif /* _MSVC_VER */
 
-#endif	/* NEW_LIST */
 ///////////////////////////////////////////////////////////////////////////
 
 #if defined( CHART_LIST )	// Are we building using DataViewListCtrl?

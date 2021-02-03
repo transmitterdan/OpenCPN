@@ -66,8 +66,6 @@ class ChartDldrPrefsDlgImpl;
 WX_DEFINE_ARRAY_PTR(ChartSource *, wxArrayOfChartSources);
 WX_DECLARE_OBJARRAY(wxDateTime, wxArrayOfDateTime);
 
-#define NEW_LIST
-
 //----------------------------------------------------------------------------------------------------------
 //    The PlugIn Class Definition
 //----------------------------------------------------------------------------------------------------------
