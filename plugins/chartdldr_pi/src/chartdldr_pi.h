@@ -204,7 +204,12 @@ protected:
 	void            EditSource( wxCommandEvent& event );
 	void            UpdateChartList( wxCommandEvent& event );
 	void            OnDownloadCharts( wxCommandEvent& event );
-	void            DownloadCharts( );
+#if defined( CHART_LIST )
+    void            OnSelectNewCharts( wxCommandEvent& event );
+    void            OnSelectUpdatedCharts(wxCommandEvent& event);
+    void            OnSelectAllCharts(wxCommandEvent& event);
+#endif /* CHART_LIST */
+    void            DownloadCharts( );
 	void            DoHelp( wxCommandEvent& event )
       {
           #ifdef __WXMSW__

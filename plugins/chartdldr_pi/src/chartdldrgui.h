@@ -35,18 +35,26 @@
 #include <wx/checkbox.h>
 #include <wx/statline.h>
 #include <wx/dcmemory.h>
-
 #include "ocpn_plugin.h"
 
 #ifndef NEW_LIST
-	#define NEW_LIST
+#define NEW_LIST
+
+#if defined(_MSC_VER)
+// #define CHART_LIST	// For this platform we want to use DataViewListCtrl
+#include <wx/dataview.h>
+#endif /* _MSVC_VER */
+
 #endif	/* NEW_LIST */
 ///////////////////////////////////////////////////////////////////////////
+
+#if defined( CHART_LIST )	// Are we building using DataViewListCtrl?
+// We don't use ArrayOfChartPanels under MSVC
+#else
 class ChartPanel;
 class ChartDldrPanelImpl;
-
-WX_DECLARE_OBJARRAY(ChartPanel *,      ArrayOfChartPanels);    
-
+WX_DECLARE_OBJARRAY(ChartPanel *,      ArrayOfChartPanels);
+#endif /* CHART_LIST */
 
 ///////////////////////////////////////////////////////////////////////////////
 /// Class AddSourceDlg
@@ -104,12 +112,19 @@ class ChartDldrPanel : public wxPanel
 //		wxButton* m_bHelp;
 		wxButton* m_bDnldCharts;
 //		wxButton* m_bShowLocal;
-
+#if defined( CHART_LIST )
+		// Buttons for selecting charts to download
+		wxButton* m_bClear;
+		wxButton* m_bSelectNew;
+		wxButton* m_bSelectUpdated;
+		wxButton* m_bSelectAll;
+#endif /* CHART_LIST */
                 wxNotebook *m_DLoadNB;
                 wxString m_csTitle;
                 wxStaticText *m_chartsLabel;
-                
+#if !defined (CHART_LIST)	// The chart list viewer does not use m_panelArray                
                 ArrayOfChartPanels m_panelArray;
+#endif /* CHART_LIST */
                 wxBoxSizer  *m_boxSizerCharts;
                 
 		// Virtual event handlers, overide them in your derived class
@@ -125,14 +140,23 @@ class ChartDldrPanel : public wxPanel
 		virtual void OnDownloadCharts( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnShowLocalDir( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnSize( wxSizeEvent& event );
-                
-
+#if defined( CHART_LIST )
+		virtual void OnSelectNewCharts(wxCommandEvent& event) { event.Skip(); }
+		virtual void OnSelectUpdatedCharts(wxCommandEvent& event) { event.Skip(); }
+		virtual void OnSelectAllCharts(wxCommandEvent& event) { event.Skip(); }
+#endif /* CHART_LIST */
 	public:
-#if !defined(NEW_LIST)
-		wxCheckedListCtrl *m_clCharts;
-#endif	/* NEW_LIST */
-                wxScrolledWindow *m_scrollWinChartList;
-                
+
+#if defined( CHART_LIST )
+		wxDataViewListCtrl* m_scrollWinChartList;
+		virtual wxDataViewListCtrl* getChartList() { return m_scrollWinChartList; }
+		virtual bool isNew(int item) { return (m_scrollWinChartList->GetTextValue(item, 1) == _("New")); }
+		virtual bool isUpdated(int item) { return (m_scrollWinChartList->GetTextValue(item, 2) == _("Update available")); }
+		virtual void clearChartList() { m_scrollWinChartList->DeleteAllItems(); }
+#else
+		wxScrolledWindow* m_scrollWinChartList;
+#endif /* CHART_LIST */        
+
 		ChartDldrPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxTAB_TRAVERSAL );
 		~ChartDldrPanel();
 //                ChartDldrPanel() { }
@@ -178,6 +202,7 @@ class ChartDldrPrefsDlg : public wxDialog
 
 };
 
+#if !defined ( CHART_LIST )
 class ChartPanel: public wxPanel
 {
 public:
@@ -197,7 +222,7 @@ private:
     ChartDldrPanel *m_dldrPanel;
     
 };
-
+#endif /* CHART_PANEL */
 
 
 
