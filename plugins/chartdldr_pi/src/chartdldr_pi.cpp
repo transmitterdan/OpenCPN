@@ -811,7 +811,6 @@ void ChartDldrPanelImpl::FillFromFile( wxString url, wxString dir, bool selnew, 
         Layout();
         m_scrollWinChartList->ClearBackground();
 #endif /* CHART_LIST */
-
         SetChartInfo(wxString::Format(_("%lu charts total, %lu updated, %lu new, %lu selected"),
             pPlugIn->m_pChartCatalog->charts.Count(), updated_charts, new_charts, GetCheckedChartCount()));
 #endif /* NEW_LIST */

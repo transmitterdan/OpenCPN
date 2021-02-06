@@ -42,8 +42,8 @@ SET(SRC_CHARTDLDR
             src/icons.cpp
             src/chartdldrgui.h
             src/chartdldrgui.cpp
-            src/checkedlistctrl.cpp
-            src/checkedlistctrl.h
+#            src/checkedlistctrl.cpp
+#            src/checkedlistctrl.h
             src/base64.h
             src/chartcatalog.cpp
             src/chartcatalog.h
@@ -111,6 +111,22 @@ ENDIF()
 IF(CMAKE_HOST_WIN32)
   LIST(APPEND CMAKE_PREFIX_PATH "../../buildwin/include")
   LIST(APPEND CMAKE_PREFIX_PATH "../../buildwin")
+ENDIF()
+
+OPTION(CHARTDLDR_USE_UNARR "Use unarr to extract RAR archives instead of libarchive" ON)
+
+OPTION(OCPN_USE_CHART_LIST "Use wxDATAVIEWLISTCTRL for chart downloader" OFF)
+IF (MSVC)
+  set(OCPN_USE_CHART_LIST ON)
+ENDIF (MSVC)
+
+IF (wxWidgets_VERSION_STRING GREATER_EQUAL 3.0)
+  IF (OCPN_USE_CHART_LIST)
+    ADD_DEFINITIONS(-DCHART_LIST)
+    message(STATUS "chartdldr_pi: Building with wxDATAVIEWLISTCTRL chart listing")
+  ELSE(wxWidgets_VERSION_STRING GREATER_EQUAL 3.0)
+    message(STATUS "chartdldr_pi: Building without wxDATAVIEWLISTCTRL chart listing")
+  ENDIF (OCPN_USE_CHART_LIST)
 ENDIF()
 
 OPTION(CHARTDLDR_USE_UNARR "Use unarr to extract RAR archives instead of libarchive" ON)
@@ -235,19 +251,6 @@ if (NOT OCPN_CI_BUILD)
       endif (CMAKE_BUILD_TYPE)
   endif (MSVC)
 endif (NOT OCPN_CI_BUILD)
-
-IF (MSVC)
-  set(OCPN_USE_CHART_LIST ON STRING "Use wxDATAVIEWLISTCTRL for chart downloader")
-ENDIF (MSVC)
-
-IF (wxWidgets_VERSION_STRING GREATER_EQUAL 3.0)
-  IF (OCPN_USE_CHART_LIST)
-    ADD_DEFINITIONS(-DCHART_LIST)
-    message(STATUS "chartdldr_pi: Building with wxDATAVIEWLISTCTRL chart listing")
-  ENDIF (OCPN_USE_CHART_LIST)
-ELSE(wxWidgets_VERSION_STRING GREATER_EQUAL 3.0)
-    message(STATUS "chartdldr_pi: Building without wxDATAVIEWLISTCTRL chart listing")
-ENDIF()
 
 INCLUDE("cmake/PluginInstall.cmake")
 INCLUDE("cmake/PluginLocalization.cmake")

@@ -143,10 +143,6 @@ class ChartDldrPanel : public wxPanel
         virtual void OnSelectNewCharts(wxCommandEvent& event) { event.Skip(); }
         virtual void OnSelectUpdatedCharts(wxCommandEvent& event) { event.Skip(); }
         virtual void OnSelectAllCharts(wxCommandEvent& event) { event.Skip(); }
-        virtual void SetChartInfo(const wxString& info) {
-            m_stCatalogInfo->SetLabel(info);
-            m_stCatalogInfo->Show(true);
-        }
 #endif /* CHART_LIST */
     public:
 
@@ -160,6 +156,10 @@ class ChartDldrPanel : public wxPanel
         wxScrolledWindow* m_scrollWinChartList;
 #endif /* CHART_LIST */
 
+        virtual void SetChartInfo(const wxString& info) {
+            m_stCatalogInfo->SetLabel(info);
+            m_stCatalogInfo->Show(true);
+        }
         ChartDldrPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxTAB_TRAVERSAL );
         ~ChartDldrPanel();
         //ChartDldrPanel() { }
