@@ -113,8 +113,6 @@ IF(CMAKE_HOST_WIN32)
   LIST(APPEND CMAKE_PREFIX_PATH "../../buildwin")
 ENDIF()
 
-OPTION(CHARTDLDR_USE_UNARR "Use unarr to extract RAR archives instead of libarchive" ON)
-
 OPTION(OCPN_USE_CHART_LIST "Use wxDATAVIEWLISTCTRL for chart downloader" OFF)
 IF (MSVC)
   set(OCPN_USE_CHART_LIST ON)
