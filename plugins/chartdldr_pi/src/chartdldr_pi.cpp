@@ -745,8 +745,8 @@ void ChartDldrPanelImpl::FillFromFile( wxString url, wxString dir, bool selnew, 
         //fill in the rest of the form
 
 #ifdef NEW_LIST
-        size_t updated_charts = 0;
-        size_t new_charts = 0;
+        m_updatedCharts = 0;
+        m_newCharts = 0;
 
 #if !defined( CHART_LIST )
         // Clear any existing panels
@@ -765,7 +765,7 @@ void ChartDldrPanelImpl::FillFromFile( wxString url, wxString dir, bool selnew, 
             wxString file = pPlugIn->m_pChartCatalog->charts.Item(i).GetChartFilename(true);
             if( !pPlugIn->m_pChartSource->ExistsLocaly(pPlugIn->m_pChartCatalog->charts.Item(i).number, file) )
             {
-                new_charts++;
+                m_newCharts++;
                 status = _("New");
                 if (selnew)
                     bcheck = true;
@@ -774,7 +774,7 @@ void ChartDldrPanelImpl::FillFromFile( wxString url, wxString dir, bool selnew, 
             {
                 if( pPlugIn->m_pChartSource->IsNewerThanLocal(pPlugIn->m_pChartCatalog->charts.Item(i).number, file, pPlugIn->m_pChartCatalog->charts.Item(i).GetUpdateDatetime()) )
                 {
-                    updated_charts++;
+                    m_updatedCharts++;
                     status = _("Out of date");
                     if (selupd)
                         bcheck = true;
@@ -812,7 +812,7 @@ void ChartDldrPanelImpl::FillFromFile( wxString url, wxString dir, bool selnew, 
         m_scrollWinChartList->ClearBackground();
 #endif /* CHART_LIST */
         SetChartInfo(wxString::Format(_("%lu charts total, %lu updated, %lu new, %lu selected"),
-            pPlugIn->m_pChartCatalog->charts.Count(), updated_charts, new_charts, GetCheckedChartCount()));
+            pPlugIn->m_pChartCatalog->charts.Count(), m_updatedCharts, m_newCharts, GetCheckedChartCount()));
 #endif /* NEW_LIST */
     }
 }
@@ -1212,8 +1212,8 @@ void ChartDldrPanelImpl::OnDownloadCharts( wxCommandEvent& event )
 void ChartDldrPanelImpl::OnSelectChartItem(wxCommandEvent& event)
 {
     if (!m_bInfoHold)
-        SetChartInfo(wxString::Format(_("%lu charts total, %lu selected"),
-            pPlugIn->m_pChartCatalog->charts.Count(), GetCheckedChartCount()));
+        SetChartInfo(wxString::Format(_("%lu charts total, %lu updated, %lu new, %lu selected"),
+            pPlugIn->m_pChartCatalog->charts.Count(), m_updatedCharts, m_newCharts, GetCheckedChartCount()));
     else
         event.Skip();
 }
@@ -1303,8 +1303,8 @@ void ChartDldrPanelImpl::CheckAllCharts( bool value )
 #endif  /* CHART_LIST*/
     }
 #if defined( CHART_LIST )
-    SetChartInfo(wxString::Format(_("%lu charts total, %lu selected"),
-        pPlugIn->m_pChartCatalog->charts.Count(), GetCheckedChartCount()));
+    SetChartInfo(wxString::Format(_("%lu charts total, %lu updated, %lu new, %lu selected"),
+        pPlugIn->m_pChartCatalog->charts.Count(), m_updatedCharts, m_newCharts, GetCheckedChartCount()));
     m_bInfoHold = false;
 #endif /* CHART_LIST */
 }
@@ -1321,8 +1321,8 @@ void ChartDldrPanelImpl::CheckNewCharts(bool value)
 #endif  /* CHART_LIST*/
     }
 #if defined( CHART_LIST )
-    SetChartInfo(wxString::Format(_("%lu charts total, %lu selected"),
-        pPlugIn->m_pChartCatalog->charts.Count(), GetCheckedChartCount()));
+    SetChartInfo(wxString::Format(_("%lu charts total, %lu updated, %lu new, %lu selected"),
+        pPlugIn->m_pChartCatalog->charts.Count(), m_updatedCharts, m_newCharts, GetCheckedChartCount()));
 #endif /* CHART_LIST */
 }
 
@@ -1338,8 +1338,8 @@ void ChartDldrPanelImpl::CheckUpdatedCharts(bool value)
 #endif /* CHART_LIST */
     }
 #if defined( CHART_LIST )
-    SetChartInfo(wxString::Format(_("%lu charts total, %lu selected"),
-        pPlugIn->m_pChartCatalog->charts.Count(), GetCheckedChartCount()));
+    SetChartInfo(wxString::Format(_("%lu charts total, %lu updated, %lu new, %lu selected"),
+        pPlugIn->m_pChartCatalog->charts.Count(), m_updatedCharts, m_newCharts, GetCheckedChartCount()));
 #endif /* CHART_LIST */
 }
 
@@ -1356,8 +1356,8 @@ void ChartDldrPanelImpl::InvertCheckAllCharts( )
 #endif /* CHART_LIST */
 #if defined( CHART_LIST )
     m_bInfoHold = false;
-    SetChartInfo(wxString::Format(_("%lu charts total, %lu selected"),
-        pPlugIn->m_pChartCatalog->charts.Count(), GetCheckedChartCount()));
+    SetChartInfo(wxString::Format(_("%lu charts total, %lu updated, %lu new, %lu selected"),
+        pPlugIn->m_pChartCatalog->charts.Count(), m_updatedCharts, m_newCharts, GetCheckedChartCount()));
 #endif /* CHART_LIST */
 }
 
@@ -1452,11 +1452,11 @@ After downloading the charts, please extract them to %s"), pPlugIn->m_pChartCata
         while( !m_bTransferComplete && m_bTransferSuccess  && !cancelled )
         {
             if(m_failed_downloads)
-            m_stCatalogInfo->SetLabel( wxString::Format( _("Downloading chart %u of %u, %u downloads failed (%s / %s)"),
+                SetChartInfo( wxString::Format( _("Downloading chart %u of %u, %u downloads failed (%s / %s)"),
                                                          m_downloading, to_download, m_failed_downloads,
                                                          m_transferredsize.c_str(), m_totalsize.c_str() ) );
             else
-                m_stCatalogInfo->SetLabel( wxString::Format( _("Downloading chart %u of %u (%s / %s)"),
+                SetChartInfo( wxString::Format( _("Downloading chart %u of %u (%s / %s)"),
                                                                      m_downloading, to_download,
                                                                      m_transferredsize.c_str(), m_totalsize.c_str() ) );
 
@@ -1544,7 +1544,7 @@ ChartDldrPanelImpl::ChartDldrPanelImpl( chartdldr_pi* plugin, wxWindow* parent, 
     m_populated = false;
     DownloadIsCancel = false;
     m_failed_downloads = 0;
-    m_stCatalogInfo->SetLabel( wxEmptyString );
+    SetChartInfo( wxEmptyString );
     m_bTransferComplete = true;
     m_bTransferSuccess = true;
 
@@ -1772,7 +1772,7 @@ bool chartdldr_pi::ProcessFile( const wxString& aFile, const wxString& aTargetDi
             nStrip = 1;
 
         if(m_dldrpanel)
-            m_dldrpanel->m_stCatalogInfo->SetLabel( _("Installing charts."));
+            m_dldrpanel->SetChartInfo( _("Installing charts."));
 
         androidShowBusyIcon();
         bool ret = AndroidUnzip(aFile, aTargetDir, nStrip, true);

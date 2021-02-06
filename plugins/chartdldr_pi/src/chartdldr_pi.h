@@ -193,6 +193,8 @@ private:
     void            DisableForDownload( bool enabled );
     bool            m_bconnected;
     bool            m_bInfoHold;    // Don't update chart selection stats right now
+    size_t          m_newCharts;
+    size_t          m_updatedCharts;
 
 protected:
     // Handlers for ChartDldrPanel events.
