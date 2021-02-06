@@ -217,6 +217,38 @@ IF( APPLE )
     )
 ENDIF(APPLE)
 
+# Copy shared library to execution folder for debugging if not CI build
+if (NOT OCPN_CI_BUILD)
+  if (MSVC)
+    add_custom_command(
+      TARGET ${PACKAGE_NAME} POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E echo "Copying dll file"
+      COMMAND ${CMAKE_COMMAND} -E echo "$(TargetPath)" "${CMAKE_BINARY_DIR}/$(configuration)/plugins"
+      COMMAND ${CMAKE_COMMAND} -E copy "$(TargetPath)" "${CMAKE_BINARY_DIR}/$(configuration)/plugins"
+    )
+      if (CMAKE_BUILD_TYPE MATCHES "Debug")
+        add_custom_command(
+          COMMAND ${CMAKE_COMMAND} -E echo "Copying pdb file"
+          COMMAND ${CMAKE_COMMAND} -E echo "$(OutputPath)/$(TargetName).pdb" "${CMAKE_BINARY_DIR}/$(configuration)/plugins"
+          COMMAND ${CMAKE_COMMAND} -E copy "$(OutputPath)/$(TargetName).pdb" "${CMAKE_BINARY_DIR}/$(configuration)/plugins"
+        )
+      endif (CMAKE_BUILD_TYPE)
+  endif (MSVC)
+endif (NOT OCPN_CI_BUILD)
+
+IF (MSVC)
+  set(OCPN_USE_CHART_LIST ON STRING "Use wxDATAVIEWLISTCTRL for chart downloader")
+ENDIF (MSVC)
+
+IF (wxWidgets_VERSION_STRING GREATER_EQUAL 3.0)
+  IF (OCPN_USE_CHART_LIST)
+    ADD_DEFINITIONS(-DCHART_LIST)
+    message(STATUS "chartdldr_pi: Building with wxDATAVIEWLISTCTRL chart listing")
+  ENDIF (OCPN_USE_CHART_LIST)
+ELSE(wxWidgets_VERSION_STRING GREATER_EQUAL 3.0)
+    message(STATUS "chartdldr_pi: Building without wxDATAVIEWLISTCTRL chart listing")
+ENDIF()
+
 INCLUDE("cmake/PluginInstall.cmake")
 INCLUDE("cmake/PluginLocalization.cmake")
 INCLUDE("cmake/PluginPackage.cmake")
