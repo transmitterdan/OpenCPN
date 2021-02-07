@@ -810,9 +810,12 @@ void ChartDldrPanelImpl::FillFromFile( wxString url, wxString dir, bool selnew, 
         m_scrollWinChartList->GetSizer()->Layout();
         Layout();
         m_scrollWinChartList->ClearBackground();
-#endif /* CHART_LIST */
+        SetChartInfo(wxString::Format(_("%lu charts total, %lu updated, %lu new"),
+            pPlugIn->m_pChartCatalog->charts.Count(), m_updatedCharts, m_newCharts));
+#else
         SetChartInfo(wxString::Format(_("%lu charts total, %lu updated, %lu new, %lu selected"),
             pPlugIn->m_pChartCatalog->charts.Count(), m_updatedCharts, m_newCharts, GetCheckedChartCount()));
+#endif /* CHART_LIST */
 #endif /* NEW_LIST */
     }
 }
@@ -1239,11 +1242,13 @@ void ChartDldrPanelImpl::OnSelectAllCharts(wxCommandEvent& event)
     {
         CheckAllCharts(true);
         m_bSelectAll->SetLabel(_("Select None"));
+        m_bSelectAll->SetToolTip(_("De-select all charts in the list."));
     }
     else
     {
         CheckAllCharts(false);
         m_bSelectAll->SetLabel(_("Select All"));
+        m_bSelectAll->SetToolTip(_("Select all charts in the list."));
 
     }
 }

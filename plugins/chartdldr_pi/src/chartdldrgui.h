@@ -205,6 +205,7 @@ class ChartDldrPrefsDlg : public wxDialog
 
 };
 
+// We only use this object type in "old-style" chart listing
 #if !defined ( CHART_LIST )
 class ChartPanel: public wxPanel
 {

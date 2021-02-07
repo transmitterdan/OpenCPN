@@ -208,8 +208,6 @@ void AddSourceDlg::OnDirSelClick( wxCommandEvent& event )
     }
 }
 
-#if defined( CHART_LIST )   // Use wxDataViewListCtrl
-
 ChartDldrPanel::ChartDldrPanel(wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style) : wxPanel(parent, id, pos, size, style)
 {
 
@@ -270,6 +268,7 @@ ChartDldrPanel::ChartDldrPanel(wxWindow* parent, wxWindowID id, const wxPoint& p
     bSizerCatalogBtns->Add(m_bUpdateChartList, 0, wxALL | wxEXPAND, 5);
 
     m_bUpdateAllCharts = new wxButton(catalogPanel, wxID_ANY, _("Update All"), wxDefaultPosition, wxDefaultSize, 0);
+    m_bUpdateAllCharts->SetToolTip(_("Download all chart catalogs, and then update charts."));
     bSizerCatalogBtns->Add(m_bUpdateAllCharts, 0, wxALL | wxEXPAND, 5);
 
 
@@ -283,6 +282,8 @@ ChartDldrPanel::ChartDldrPanel(wxWindow* parent, wxWindowID id, const wxPoint& p
     //  Chart list
     m_chartsLabel = new wxStaticText(chartsPanel, wxID_ANY, _("Charts"));
     chartsPanelBoxSizer->Add(m_chartsLabel, 0, wxALL, 4 * border_size);
+
+#if defined(CHART_LIST)
     m_scrollWinChartList = new wxDataViewListCtrl(chartsPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxDV_ROW_LINES);
     chartsPanelBoxSizer->Add(m_scrollWinChartList, 0, wxEXPAND);
 
@@ -304,10 +305,25 @@ ChartDldrPanel::ChartDldrPanel(wxWindow* parent, wxWindowID id, const wxPoint& p
     wxDataViewColumn* colDesc = m_scrollWinChartList->AppendTextColumn(_("Chart Description"), wxDATAVIEW_CELL_INERT, -1,
         wxALIGN_LEFT, wxDATAVIEW_COL_SORTABLE | wxDATAVIEW_COL_RESIZABLE);
 
+#else
+
+#ifdef NEW_LIST
+    m_scrollWinChartList = new wxScrolledWindow(chartsPanel, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxVSCROLL);
+    chartsPanelBoxSizer->Add(m_scrollWinChartList, 0, wxEXPAND);
+    m_scrollWinChartList->SetScrollRate(5, 5);
+    m_scrollWinChartList->SetMinSize(wxSize(-1, 12 * GetCharHeight()));
+
+    m_boxSizerCharts = new wxBoxSizer(wxVERTICAL);
+    m_scrollWinChartList->SetSizer(m_boxSizerCharts);
+
+#endif
+
+#endif /* CHART_LIST */
     //  Buttons
 
     chartsPanelBoxSizer->AddSpacer(GetCharHeight());
 
+#if defined(CHART_LIST)
     wxBoxSizer* chartsButtonBoxSizer = new wxBoxSizer(wxHORIZONTAL);
     chartsPanelBoxSizer->Add(chartsButtonBoxSizer, 0, wxEXPAND);
 
@@ -315,20 +331,32 @@ ChartDldrPanel::ChartDldrPanel(wxWindow* parent, wxWindowID id, const wxPoint& p
     chartsButtonBoxSizer->Add(m_bDnldCharts, 0, wxALL, 5);
 
     m_bSelectNew = new wxButton(chartsPanel, wxID_ANY, _("Select New"), wxDefaultPosition, wxDefaultSize, 0);
+    m_bSelectNew->SetToolTip(_("Check all charts that are 'New' in the list."));
     chartsButtonBoxSizer->Add(m_bSelectNew, 0, wxALL, 5);
 
     m_bSelectUpdated = new wxButton(chartsPanel, wxID_ANY, _("Select Updated"), wxDefaultPosition, wxDefaultSize, 0);
+    m_bSelectUpdated->SetToolTip(_("Select all charts that are 'Out of Date' in the list."));
     chartsButtonBoxSizer->Add(m_bSelectUpdated, 0, wxALL, 5);
 
     // Set text to longest string so it sizes right
     m_bSelectAll = new wxButton(chartsPanel, wxID_ANY, _("Select All"), wxDefaultPosition, wxDefaultSize, 0);
     // Now change button size
     m_bSelectAll->SetSize(m_bSelectAll->GetSizeFromTextSize(m_bSelectAll->GetTextExtent(_("Select None"))));
+    m_bSelectAll->SetToolTip(_("Select all charts in the list."));
     chartsButtonBoxSizer->Add(m_bSelectAll, 0, wxALL, 5);
+
+    m_stCatalogInfo = new wxStaticText(chartsPanel, wxID_ANY, _("%u charts total, %u updated, %u new, %u selected"), wxDefaultPosition, wxDefaultSize, 0);
+    chartsPanelBoxSizer->Add(m_stCatalogInfo, 1, wxEXPAND | wxALL, 5);
+
+#else
+    m_bDnldCharts = new wxButton(chartsPanel, wxID_ANY, _("Download selected charts"), wxDefaultPosition, wxDefaultSize, 0);
+    chartsPanelBoxSizer->Add(m_bDnldCharts, 0, wxALIGN_LEFT | wxALL, 5);
 
     m_stCatalogInfo = new wxStaticText(chartsPanel, wxID_ANY, _("%u charts total, %u updated, %u new"), wxDefaultPosition, wxDefaultSize, 0);
     chartsPanelBoxSizer->Add(m_stCatalogInfo, 1, wxEXPAND | wxALL, 5);
     /// mainSizer->Add( m_stCatalogInfo, 0, wxEXPAND| wxALL, 5 );
+
+#endif /* CHART_LIST */
 
     this->Layout();
 
@@ -344,15 +372,20 @@ ChartDldrPanel::ChartDldrPanel(wxWindow* parent, wxWindowID id, const wxPoint& p
     m_bEditSource->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ChartDldrPanel::EditSource), NULL, this);
     m_bUpdateChartList->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ChartDldrPanel::UpdateChartList), NULL, this);
     m_bUpdateAllCharts->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ChartDldrPanel::UpdateAllCharts), NULL, this);
-#ifdef NEW_LIST
+#if defined(CHART_LIST)
     m_scrollWinChartList->Connect(wxEVT_DATAVIEW_COLUMN_HEADER_RIGHT_CLICK, wxMouseEventHandler(ChartDldrPanel::OnContextMenu), NULL, this);
-#endif
-    m_scrollWinChartList->Connect(wxEVT_DATAVIEW_ITEM_VALUE_CHANGED, wxCommandEventHandler(ChartDldrPanel::OnSelectChartItem), NULL, this);
-    //m_bHelp->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ChartDldrPanel::DoHelp ), NULL, this );
-    m_bDnldCharts->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ChartDldrPanel::OnDownloadCharts), NULL, this);
     m_bSelectNew->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ChartDldrPanel::OnSelectNewCharts), NULL, this);
     m_bSelectUpdated->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ChartDldrPanel::OnSelectUpdatedCharts), NULL, this);
     m_bSelectAll->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ChartDldrPanel::OnSelectAllCharts), NULL, this);
+#else
+
+#ifdef NEW_LIST
+    m_scrollWinChartList->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( ChartDldrPanel::OnContextMenu ), NULL, this);
+#endif
+
+#endif /* CHART_LIST */
+    //m_bHelp->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ChartDldrPanel::DoHelp ), NULL, this );
+    m_bDnldCharts->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ChartDldrPanel::OnDownloadCharts), NULL, this);
     //m_bShowLocal->Connect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ChartDldrPanel::OnShowLocalDir ), NULL, this );
 
     this->Connect(wxEVT_SIZE, wxSizeEventHandler(ChartDldrPanel::OnSize));
@@ -370,9 +403,15 @@ ChartDldrPanel::~ChartDldrPanel()
     m_bUpdateChartList->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ChartDldrPanel::UpdateChartList), NULL, this);
     m_bUpdateAllCharts->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ChartDldrPanel::UpdateAllCharts), NULL, this);
 #ifdef NEW_LIST
-    m_scrollWinChartList->Disconnect(wxEVT_DATAVIEW_COLUMN_HEADER_RIGHT_CLICK, wxMouseEventHandler(ChartDldrPanel::OnContextMenu), NULL, this);
+    m_scrollWinChartList->Disconnect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(ChartDldrPanel::OnContextMenu), NULL, this);
 #endif
+
+#if defined(CHART_LIST)
     m_scrollWinChartList->Disconnect(wxEVT_DATAVIEW_ITEM_VALUE_CHANGED, wxCommandEventHandler(ChartDldrPanel::OnSelectChartItem), NULL, this);
+    m_bSelectNew->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ChartDldrPanel::OnSelectNewCharts), NULL, this);
+    m_bSelectUpdated->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ChartDldrPanel::OnSelectUpdatedCharts), NULL, this);
+    m_bSelectAll->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ChartDldrPanel::OnSelectAllCharts), NULL, this);
+#endif /* CHART_LIST */
     //m_bHelp->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ChartDldrPanel::DoHelp ), NULL, this );
     m_bDnldCharts->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ChartDldrPanel::OnDownloadCharts), NULL, this);
     //m_bShowLocal->Disconnect( wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler( ChartDldrPanel::OnShowLocalDir ), NULL, this );
@@ -414,7 +453,7 @@ void ChartDldrPanel::OnSize(wxSizeEvent& event)
     event.Skip();
 }
 
-#else   // Use the old style chart list control (wxScrollWindow)
+#if 0
 
 ChartDldrPanel::ChartDldrPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
 {
@@ -591,7 +630,7 @@ void ChartDldrPanel::OnSize( wxSizeEvent& event )
     event.Skip();
 }
 
-#endif  /* CHART_LIST */
+#endif  /* 0 */
 
 #if !defined( CHART_LIST )
 ChartPanel::ChartPanel(wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size, wxString Name, wxString stat, wxString latest, ChartDldrPanel *DldrPanel, bool bcheck)
