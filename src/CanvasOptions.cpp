@@ -80,10 +80,10 @@ CanvasOptions::CanvasOptions( wxWindow *parent)
     
     wxFont *qFont = GetOCPNScaledFont(_("Dialog"));
     SetFont( *qFont );
-
+    parentCanvas = wxDynamicCast(parent, ChartCanvas);
     //SetBackgroundStyle( wxBG_STYLE_TRANSPARENT );
     long mstyle = wxNO_BORDER | wxFRAME_NO_TASKBAR | wxFRAME_SHAPED;
-    wxDialog::Create(parent, wxID_ANY, _T(""), wxDefaultPosition, wxDefaultSize, mstyle);
+    wxDialog::Create(NULL, wxID_ANY, _T(""), wxDefaultPosition, wxDefaultSize, mstyle);
     
     wxBoxSizer *topsizer = new wxBoxSizer( wxVERTICAL );
     SetSizer(topsizer);
@@ -275,7 +275,7 @@ void CanvasOptions::OnOptionChange( wxCommandEvent &event)
 
 void CanvasOptions::RefreshControlValues( void )
 {
-    ChartCanvas *parentCanvas = wxDynamicCast(m_parent, ChartCanvas);
+//    ChartCanvas *parentCanvas = wxDynamicCast(m_parent, ChartCanvas);
     if(!parentCanvas)
         return;
 
@@ -370,7 +370,7 @@ void CanvasOptions::SetENCAvailable( bool avail )
 
 void CanvasOptions::UpdateCanvasOptions( void )
 {
-    ChartCanvas *parentCanvas = wxDynamicCast(m_parent, ChartCanvas);
+//    ChartCanvas *parentCanvas = wxDynamicCast(m_parent, ChartCanvas);
     if(!parentCanvas)
         return;
     

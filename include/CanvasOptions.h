@@ -79,6 +79,7 @@ public:
     void SetENCAvailable( bool avail );
     
 private:
+    ChartCanvas* parentCanvas;
     int m_style;
     bool m_ENCAvail;
     wxScrolledWindow *m_sWindow;
