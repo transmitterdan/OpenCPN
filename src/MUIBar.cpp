@@ -1220,7 +1220,11 @@ void MUIBar::onCanvasOptionsAnimationTimerEvent( wxTimerEvent &event )
             if(m_pushPull == CO_PUSH)
                 pcc->TriggerDeferredFocus();
 #else
-            pcc->TriggerDeferredFocus();
+//            pcc->TriggerDeferredFocus();
+            if(m_pushPull == CO_PUSH)
+                pcc->TriggerDeferredFocus();
+            else
+                m_canvasOptions->SetFocus();
 #endif
 
             pcc->Refresh();
