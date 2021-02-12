@@ -69,7 +69,7 @@ class  CanvasOptions: public wxDialog
 
 public:
     CanvasOptions(wxWindow *parent);
-
+    ~CanvasOptions();
     void OnClose( wxCloseEvent& event );
     void OnOptionChange( wxCommandEvent &event);
     

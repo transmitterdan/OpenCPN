@@ -255,6 +255,11 @@ CanvasOptions::CanvasOptions( wxWindow *parent)
     
 }
 
+CanvasOptions::~CanvasOptions()
+{
+
+}
+
 void CanvasOptions::OnEraseBackground( wxEraseEvent& event )
 {
 }
