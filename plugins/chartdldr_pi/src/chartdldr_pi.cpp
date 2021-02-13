@@ -870,7 +870,6 @@ bool ChartSource::IsNewerThanLocal( wxString chart_number, wxString filename, wx
 int ChartDldrPanelImpl::GetSelectedCatalog()
 {
     long item = m_lbChartSources->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-    wxASSERT_MSG(item >= 0, wxT("A chart set must be numbered with non-negative index."));
     return item;
 }
 
