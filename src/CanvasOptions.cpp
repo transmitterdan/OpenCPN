@@ -55,6 +55,7 @@
 //------------------------------------------------------------------------------
 //    External Static Storage
 //------------------------------------------------------------------------------
+extern MyFrame* gFrame;
 
 
 //  Helper utilities
@@ -83,6 +84,8 @@ CanvasOptions::CanvasOptions( wxWindow *parent)
 
     //SetBackgroundStyle( wxBG_STYLE_TRANSPARENT );
     long mstyle = wxNO_BORDER | wxFRAME_NO_TASKBAR | wxFRAME_SHAPED;
+    if (  gFrame->IsFullScreen() )
+        mstyle = mstyle | wxSTAY_ON_TOP;
     wxDialog::Create(parent, wxID_ANY, _T(""), wxDefaultPosition, wxDefaultSize, mstyle);
     
     wxBoxSizer *topsizer = new wxBoxSizer( wxVERTICAL );
