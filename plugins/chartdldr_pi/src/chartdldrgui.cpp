@@ -374,7 +374,9 @@ ChartDldrPanel::ChartDldrPanel(wxWindow* parent, wxWindowID id, const wxPoint& p
     m_bSelectNew->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ChartDldrPanel::OnSelectNewCharts), NULL, this);
     m_bSelectUpdated->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ChartDldrPanel::OnSelectUpdatedCharts), NULL, this);
     m_bSelectAll->Connect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ChartDldrPanel::OnSelectAllCharts), NULL, this);
+#if !defined(__WXOSX__) // This event is not available under OSX and is seldom, if ever, used
     m_scrollWinChartList->Connect(wxEVT_DATAVIEW_COLUMN_HEADER_RIGHT_CLICK, wxMouseEventHandler(ChartDldrPanel::OnContextMenu), NULL, this);
+#endif /* __WXOSX__ */
     m_scrollWinChartList->Connect(wxEVT_DATAVIEW_ITEM_VALUE_CHANGED, wxCommandEventHandler(ChartDldrPanel::OnSelectChartItem), NULL, this);
     m_scrollWinChartList->Connect(wxEVT_DATAVIEW_ITEM_CONTEXT_MENU, wxMouseEventHandler(ChartDldrPanel::OnContextMenu), NULL, this);
 #else
@@ -403,7 +405,9 @@ ChartDldrPanel::~ChartDldrPanel()
     m_bSelectNew->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ChartDldrPanel::OnSelectNewCharts), NULL, this);
     m_bSelectUpdated->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ChartDldrPanel::OnSelectUpdatedCharts), NULL, this);
     m_bSelectAll->Disconnect(wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(ChartDldrPanel::OnSelectAllCharts), NULL, this);
+#if !defined(__WXOSX__)
     m_scrollWinChartList->Disconnect(wxEVT_DATAVIEW_COLUMN_HEADER_RIGHT_CLICK, wxMouseEventHandler(ChartDldrPanel::OnContextMenu), NULL, this);
+#endif /* __WXOSX__ */
     m_scrollWinChartList->Disconnect(wxEVT_DATAVIEW_ITEM_VALUE_CHANGED, wxCommandEventHandler(ChartDldrPanel::OnSelectChartItem), NULL, this);
     m_scrollWinChartList->Disconnect(wxEVT_DATAVIEW_ITEM_CONTEXT_MENU, wxMouseEventHandler(ChartDldrPanel::OnContextMenu), NULL, this);
 #else
