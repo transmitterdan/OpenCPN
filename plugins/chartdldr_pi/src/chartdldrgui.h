@@ -31,23 +31,18 @@
 #include <wx/dialog.h>
 #include <wx/listctrl.h>
 #include <wx/combobox.h>
-#include "checkedlistctrl.h"
 #include <wx/checkbox.h>
 #include <wx/statline.h>
 #include <wx/dcmemory.h>
 #include "ocpn_plugin.h"
-
-#ifndef NEW_LIST
-#define NEW_LIST
-#endif  /* NEW_LIST */
 
 #if defined(CHART_LIST)
 #include <wx/dataview.h>
 #endif /* CHART_LIST */
 ///////////////////////////////////////////////////////////////////////////
 
-#if defined( CHART_LIST )  // Are we building using DataViewListCtrl?
-// We don't use ArrayOfChartPanels under MSVC
+#if defined( CHART_LIST )  // Are we building using wxDataViewListCtrl?
+// We don't use ArrayOfChartPanels when using wxDataViewListCtrl
 #else
 class ChartPanel;
 class ChartDldrPanelImpl;

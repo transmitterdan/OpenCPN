@@ -718,7 +718,7 @@ void ChartDldrPanelImpl::CleanForm()
 {
 #if defined(CHART_LIST)
     clearChartList();
-#else   // NEW_LIST
+#else
     m_scrollWinChartList->ClearBackground();
 #endif /* CHART_LIST */
     //m_stCatalogInfo->Show( false );
@@ -744,7 +744,6 @@ void ChartDldrPanelImpl::FillFromFile( wxString url, wxString dir, bool selnew, 
 //            m_tChartSourceInfo->SetValue(pPlugIn->m_pChartCatalog->GetDescription());
         //fill in the rest of the form
 
-#ifdef NEW_LIST
         m_updatedCharts = 0;
         m_newCharts = 0;
 
@@ -816,7 +815,6 @@ void ChartDldrPanelImpl::FillFromFile( wxString url, wxString dir, bool selnew, 
         SetChartInfo(wxString::Format(_("%lu charts total, %lu updated, %lu new, %lu selected"),
             pPlugIn->m_pChartCatalog->charts.Count(), m_updatedCharts, m_newCharts, GetCheckedChartCount()));
 #endif /* CHART_LIST */
-#endif /* NEW_LIST */
     }
 }
 
