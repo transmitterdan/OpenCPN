@@ -105,13 +105,10 @@ class ChartDldrPanel : public wxPanel
         //wxButton* m_bHelp;
         wxButton* m_bDnldCharts;
         //wxButton* m_bShowLocal;
-#if defined( CHART_LIST )
         // Buttons for selecting charts to download
-        wxButton* m_bClear;
         wxButton* m_bSelectNew;
         wxButton* m_bSelectUpdated;
         wxButton* m_bSelectAll;
-#endif /* CHART_LIST */
                 wxNotebook *m_DLoadNB;
                 wxString m_csTitle;
                 wxStaticText *m_chartsLabel;
@@ -135,10 +132,10 @@ class ChartDldrPanel : public wxPanel
         virtual void OnSize( wxSizeEvent& event );
 #if defined( CHART_LIST )
         virtual void OnSelectChartItem(wxCommandEvent& event) { event.Skip(); }
+#endif /* CHART_LIST */
         virtual void OnSelectNewCharts(wxCommandEvent& event) { event.Skip(); }
         virtual void OnSelectUpdatedCharts(wxCommandEvent& event) { event.Skip(); }
         virtual void OnSelectAllCharts(wxCommandEvent& event) { event.Skip(); }
-#endif /* CHART_LIST */
     public:
 
 #if defined( CHART_LIST )
@@ -151,9 +148,10 @@ class ChartDldrPanel : public wxPanel
         wxScrolledWindow* m_scrollWinChartList;
 #endif /* CHART_LIST */
 
-        virtual void SetChartInfo(const wxString& info) {
+        virtual void SetChartInfo(const wxString& info, bool dldEnable=false) {
             m_stCatalogInfo->SetLabel(info);
             m_stCatalogInfo->Show(true);
+            m_bDnldCharts->Enable(dldEnable);
         }
         ChartDldrPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxTAB_TRAVERSAL );
         ~ChartDldrPanel();
