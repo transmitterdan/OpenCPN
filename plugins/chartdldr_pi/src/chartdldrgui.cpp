@@ -474,6 +474,7 @@ ChartPanel::ChartPanel(wxWindow *parent, wxWindowID id, const wxPoint &pos, cons
     m_cb->SetValue(bcheck);
     m_sizer->Add(m_cb, 0, wxTOP | wxLEFT | wxRIGHT, 4);
     m_cb->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( ChartPanel::OnContextMenu ), NULL, this );
+    m_cb->Connect( wxEVT_CHECKBOX, wxCommandEventHandler( ChartPanel::OnSelectChartItem ), NULL, this );
 
     m_stat = stat;
     m_latest = latest;
@@ -505,6 +506,8 @@ ChartPanel::ChartPanel(wxWindow *parent, wxWindowID id, const wxPoint &pos, cons
 ChartPanel::~ChartPanel()
 {
     m_cb->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( ChartPanel::OnContextMenu ), NULL, this );
+    m_cb->Disconnect( wxEVT_CHECKBOX, wxCommandEventHandler( ChartPanel::OnSelectChartItem ), NULL, this);
+    Disconnect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(ChartPanel::OnContextMenu), NULL, this);
 //    m_chartInfo->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( ChartPanel::OnContextMenu ), NULL, this );
 //    m_chartInfo2->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( ChartPanel::OnContextMenu ), NULL, this );
 
@@ -517,6 +520,14 @@ void ChartPanel::OnContextMenu( wxMouseEvent& event )
 {
     if(m_dldrPanel)
         return m_dldrPanel->OnContextMenu( event );
+    event.Skip();
+
+}
+
+void ChartPanel::OnSelectChartItem( wxCommandEvent& event )
+{
+    if(m_dldrPanel)
+        return m_dldrPanel->OnSelectChartItem( event );
     event.Skip();
 
 }
