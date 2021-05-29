@@ -130,7 +130,6 @@ class ChartDldrPanel : public wxPanel
         virtual void OnDownloadCharts( wxCommandEvent& event ) { event.Skip(); }
         virtual void OnShowLocalDir( wxCommandEvent& event ) { event.Skip(); }
         virtual void OnSize( wxSizeEvent& event );
-        virtual void OnSelectChartItem(wxCommandEvent& event) { event.Skip(); }
         virtual void OnSelectNewCharts(wxCommandEvent& event) { event.Skip(); }
         virtual void OnSelectUpdatedCharts(wxCommandEvent& event) { event.Skip(); }
         virtual void OnSelectAllCharts(wxCommandEvent& event) { event.Skip(); }
@@ -156,6 +155,7 @@ class ChartDldrPanel : public wxPanel
         //ChartDldrPanel() { }
 
         virtual void OnContextMenu( wxMouseEvent& event ) { event.Skip(); }
+        virtual void OnSelectChartItem(wxCommandEvent& event) { event.Skip(); }
 
 };
 
