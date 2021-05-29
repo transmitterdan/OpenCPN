@@ -499,7 +499,6 @@ ChartPanel::ChartPanel(wxWindow *parent, wxWindowID id, const wxPoint &pos, cons
 //    m_sizer->Add( divLine, 0, wxEXPAND | wxALL, 5 );
 
     m_dldrPanel = DldrPanel;
-    Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( ChartPanel::OnContextMenu ), NULL, this );
 
 }
 
@@ -507,7 +506,6 @@ ChartPanel::~ChartPanel()
 {
     m_cb->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( ChartPanel::OnContextMenu ), NULL, this );
     m_cb->Disconnect( wxEVT_CHECKBOX, wxCommandEventHandler( ChartPanel::OnSelectChartItem ), NULL, this);
-    Disconnect(wxEVT_RIGHT_DOWN, wxMouseEventHandler(ChartPanel::OnContextMenu), NULL, this);
 //    m_chartInfo->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( ChartPanel::OnContextMenu ), NULL, this );
 //    m_chartInfo2->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( ChartPanel::OnContextMenu ), NULL, this );
 
