@@ -479,25 +479,6 @@ ChartPanel::ChartPanel(wxWindow *parent, wxWindowID id, const wxPoint &pos, cons
     m_stat = stat;
     m_latest = latest;
 
- //    wxBoxSizer* statSizer = new wxBoxSizer(wxHORIZONTAL);
- //    m_sizer->Add(statSizer, 0, wxALIGN_LEFT | wxALL, 1);
-
- //    m_chartInfo = new wxStaticText( this, wxID_ANY, stat );
- //    statSizer->Add(m_chartInfo, 0, wxLEFT, 4 * GetCharHeight());
- //    m_chartInfo->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( ChartPanel::OnContextMenu ), NULL, this );
-
- //    m_chartInfo2 = new wxStaticText( this, wxID_ANY, latest );
- //    statSizer->Add(m_chartInfo2, 0, wxLEFT, 2 * GetCharHeight());
- //    m_chartInfo2->Connect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( ChartPanel::OnContextMenu ), NULL, this );
-
-//     wxString info = _T("           ") + stat + _T("   ") + latest;
-//     m_chartInfo = new wxStaticText( this, wxID_ANY, info );
-//     m_chartInfo->Wrap(-1);
-//     m_sizer->Add( m_chartInfo, 0, wxALL, 1 );
-
-//    wxStaticLine *divLine = new wxStaticLine( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLI_HORIZONTAL );
-//    m_sizer->Add( divLine, 0, wxEXPAND | wxALL, 5 );
-
     m_dldrPanel = DldrPanel;
 
 }
@@ -506,12 +487,8 @@ ChartPanel::~ChartPanel()
 {
     m_cb->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( ChartPanel::OnContextMenu ), NULL, this );
     m_cb->Disconnect( wxEVT_CHECKBOX, wxCommandEventHandler( ChartPanel::OnSelectChartItem ), NULL, this);
-//    m_chartInfo->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( ChartPanel::OnContextMenu ), NULL, this );
-//    m_chartInfo2->Disconnect( wxEVT_RIGHT_DOWN, wxMouseEventHandler( ChartPanel::OnContextMenu ), NULL, this );
 
     delete m_cb;
- //   delete m_chartInfo;
- //   delete m_chartInfo2;
 }
 
 void ChartPanel::OnContextMenu( wxMouseEvent& event )

@@ -145,10 +145,18 @@ class ChartDldrPanel : public wxPanel
         wxScrolledWindow* m_scrollWinChartList;
 #endif /* CHART_LIST */
 
-        virtual void SetChartInfo(const wxString& info, bool dldEnable=false) {
+        virtual void SetChartInfo(const wxString& info, const wxString& allText=wxEmptyString, bool dldEnable=false) {
             m_stCatalogInfo->SetLabel(info);
             m_stCatalogInfo->Show(true);
             m_bDnldCharts->Enable(dldEnable);
+            if (allText != wxEmptyString)
+            {
+                m_bSelectAll->SetLabel(allText);
+                if (m_bSelectAll->GetLabel() == _("All"))
+                    m_bSelectAll->SetToolTip(_("Select all charts in the list."));
+                else
+                    m_bSelectAll->SetToolTip(_("Unselect all charts in the list."));
+            }
         }
         ChartDldrPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxTAB_TRAVERSAL );
         ~ChartDldrPanel();
@@ -211,8 +219,6 @@ public:
     bool isUpdated() { return (m_stat == _("Out of date")); }
 private:
     wxCheckBox* m_cb;
-//    wxStaticText *m_chartInfo;
-//    wxStaticText *m_chartInfo2;
     wxString m_stat;
     wxString m_latest;
     ChartDldrPanel *m_dldrPanel;
