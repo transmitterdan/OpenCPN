@@ -1401,6 +1401,7 @@ void ChartDldrPanelImpl::DownloadCharts()
     DisableForDownload( false );
     //wxString old_label = m_bDnldCharts->GetLabel();     // Broken on Android??
     m_bDnldCharts->SetLabel( _("Abort download") );
+    m_bDnldCharts->Enable(true);
     DownloadIsCancel = true;
 
     wxFileName downloaded_p;
@@ -1793,7 +1794,7 @@ bool chartdldr_pi::ProcessFile( const wxString& aFile, const wxString& aTargetDi
             nStrip = 1;
 
         if(m_dldrpanel)
-            m_dldrpanel->SetChartInfo( _("Installing charts.") );
+            m_dldrpanel->SetChartInfo( _("Installing charts."), wxEmptyString, false );
 
         androidShowBusyIcon();
         bool ret = AndroidUnzip(aFile, aTargetDir, nStrip, true);

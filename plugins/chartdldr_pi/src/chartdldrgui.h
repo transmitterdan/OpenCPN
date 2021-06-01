@@ -145,7 +145,7 @@ class ChartDldrPanel : public wxPanel
         wxScrolledWindow* m_scrollWinChartList;
 #endif /* CHART_LIST */
 
-        virtual void SetChartInfo(const wxString& info, const wxString& allText=wxEmptyString, bool dldEnable=false) {
+        virtual void SetChartInfo(const wxString& info, const wxString& allText=wxEmptyString, bool dldEnable=true) {
             m_stCatalogInfo->SetLabel(info);
             m_stCatalogInfo->Show(true);
             m_bDnldCharts->Enable(dldEnable);
