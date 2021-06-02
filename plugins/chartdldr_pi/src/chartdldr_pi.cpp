@@ -726,6 +726,7 @@ void ChartDldrPanelImpl::CleanForm()
 
 void ChartDldrPanelImpl::FillFromFile( wxString url, wxString dir, bool selnew, bool selupd )
 {
+    ::wxBeginBusyCursor();
     //load if exists
     wxStringTokenizer tk(url, _T("/"));
     wxString file;
@@ -815,6 +816,7 @@ void ChartDldrPanelImpl::FillFromFile( wxString url, wxString dir, bool selnew, 
         SetChartInfo(wxString::Format(_("%lu charts total, %lu updated, %lu new, %lu selected"),
             iChartTotal, m_updatedCharts, m_newCharts, iChartCkdCnt), None, iChartCkdCnt > 0);
     }
+    ::wxEndBusyCursor();
 }
 
 bool ChartSource::ExistsLocaly( wxString chart_number, wxString filename )
@@ -1312,6 +1314,7 @@ void ChartDldrPanelImpl::CheckAllCharts( bool value )
 
 void ChartDldrPanelImpl::CheckNewCharts(bool value)
 {
+    ::wxBeginBusyCursor();
     m_bInfoHold = true;
     for (int i = 0; i < GetChartCount(); i++) {
 #if defined( CHART_LIST )
@@ -1332,10 +1335,12 @@ void ChartDldrPanelImpl::CheckNewCharts(bool value)
         None = _("All");
     SetChartInfo(wxString::Format(_("%lu charts total, %lu updated, %lu new, %lu selected"),
         iChartTotal, m_updatedCharts, m_newCharts, iChartCkdCnt), None, iChartCkdCnt > 0);
+    ::wxEndBusyCursor();
 }
 
 void ChartDldrPanelImpl::CheckUpdatedCharts(bool value)
 {
+    ::wxBeginBusyCursor();
     m_bInfoHold = true;
     for (int i = 0; i < GetChartCount(); i++) {
 #if defined ( CHART_LIST )
@@ -1356,10 +1361,12 @@ void ChartDldrPanelImpl::CheckUpdatedCharts(bool value)
         None = _("All");
     SetChartInfo(wxString::Format(_("%lu charts total, %lu updated, %lu new, %lu selected"),
         iChartTotal, m_updatedCharts, m_newCharts, iChartCkdCnt), None, iChartCkdCnt > 0);
+    ::wxEndBusyCursor();
 }
 
 void ChartDldrPanelImpl::InvertCheckAllCharts( )
 {
+    ::wxBeginBusyCursor();
     m_bInfoHold = true;
     for (int i = 0; i < GetChartCount(); i++)
 #if defined( CHART_LIST )
@@ -1377,6 +1384,7 @@ void ChartDldrPanelImpl::InvertCheckAllCharts( )
         None = _("All");
     SetChartInfo(wxString::Format(_("%lu charts total, %lu updated, %lu new, %lu selected"),
         iChartTotal, m_updatedCharts, m_newCharts, iChartCkdCnt), None, iChartCkdCnt > 0);
+    ::wxEndBusyCursor();
 }
 
 void ChartDldrPanelImpl::DownloadCharts()
