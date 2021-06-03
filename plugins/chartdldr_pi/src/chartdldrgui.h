@@ -145,23 +145,11 @@ class ChartDldrPanel : public wxPanel
         wxScrolledWindow* m_scrollWinChartList;
 #endif /* CHART_LIST */
 
-        virtual void SetChartInfo(const wxString& info, const wxString& allText=wxEmptyString, bool dldEnable=true) {
-            m_stCatalogInfo->SetLabel(info);
-            m_stCatalogInfo->Show(true);
-            m_bDnldCharts->Enable(dldEnable);
-            if (allText != wxEmptyString)
-            {
-                m_bSelectAll->SetLabel(allText);
-                if (m_bSelectAll->GetLabel() == _("All"))
-                    m_bSelectAll->SetToolTip(_("Select all charts in the list."));
-                else
-                    m_bSelectAll->SetToolTip(_("Unselect all charts in the list."));
-            }
-        }
         ChartDldrPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( -1,-1 ), long style = wxTAB_TRAVERSAL );
         ~ChartDldrPanel();
         //ChartDldrPanel() { }
 
+        virtual void SetChartInfo(const wxString& info, const wxString& allText=wxEmptyString, const bool dldEnable=true);
         virtual void OnContextMenu( wxMouseEvent& event ) { event.Skip(); }
         virtual void OnSelectChartItem(wxCommandEvent& event) { event.Skip(); }
 

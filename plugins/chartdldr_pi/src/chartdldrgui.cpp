@@ -410,6 +410,20 @@ ChartDldrPanel::~ChartDldrPanel()
 
 }
 
+void ChartDldrPanel::SetChartInfo(const wxString& info, const wxString& allText, bool dldEnable)
+{
+    m_stCatalogInfo->SetLabel(info);
+    m_stCatalogInfo->Show(true);
+    m_bDnldCharts->Enable(dldEnable);
+    if (allText != wxEmptyString)
+    {
+        m_bSelectAll->SetLabel(allText);
+        if (m_bSelectAll->GetLabel() == _("All"))
+            m_bSelectAll->SetToolTip(_("Select all charts in the list."));
+        else
+            m_bSelectAll->SetToolTip(_("Unselect all charts in the list."));
+    }
+}
 
 void ChartDldrPanel::OnSize(wxSizeEvent& event)
 {

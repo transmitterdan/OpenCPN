@@ -805,7 +805,7 @@ void ChartDldrPanelImpl::FillFromFile( wxString url, wxString dir, bool selnew, 
 
 #if !defined( CHART_LIST )  // wxDataViewListCtrl handles all of this AFAIK: Dan
         m_scrollWinChartList->ClearBackground();
-        m_scrollWinChartList->FitInside();
+//        m_scrollWinChartList->FitInside();
         m_scrollWinChartList->GetSizer()->Layout();
         Layout();
         m_scrollWinChartList->ClearBackground();
@@ -1291,6 +1291,7 @@ bool ChartDldrPanelImpl::isChartChecked( int i )
 
 void ChartDldrPanelImpl::CheckAllCharts( bool value )
 {
+    ::wxBeginBusyCursor();
     m_bInfoHold = true;
 
     int iChartTotal = GetChartCount();
@@ -1310,13 +1311,15 @@ void ChartDldrPanelImpl::CheckAllCharts( bool value )
         None = _("All");
     SetChartInfo(wxString::Format(_("%lu charts total, %lu updated, %lu new, %lu selected"),
         iChartTotal, m_updatedCharts, m_newCharts, iChartCkdCnt), None, iChartCkdCnt > 0);
+    ::wxEndBusyCursor();
 }
 
 void ChartDldrPanelImpl::CheckNewCharts(bool value)
 {
     ::wxBeginBusyCursor();
     m_bInfoHold = true;
-    for (int i = 0; i < GetChartCount(); i++) {
+    int iChartTotal = GetChartCount();
+    for (int i = 0; i < iChartTotal; i++) {
 #if defined( CHART_LIST )
         if (isNew(i))
             getChartList()->SetToggleValue(true, i, 0);
@@ -1325,9 +1328,9 @@ void ChartDldrPanelImpl::CheckNewCharts(bool value)
             m_panelArray.Item(i)->GetCB()->SetValue(value);
 #endif  /* CHART_LIST*/
     }
+    ::wxEndBusyCursor();
     m_bInfoHold = false;
     int iChartCkdCnt = GetCheckedChartCount();
-    int iChartTotal = GetChartCount();
     wxString None(wxEmptyString);
     if (iChartCkdCnt == iChartTotal)
         None = _("None");
@@ -1335,7 +1338,6 @@ void ChartDldrPanelImpl::CheckNewCharts(bool value)
         None = _("All");
     SetChartInfo(wxString::Format(_("%lu charts total, %lu updated, %lu new, %lu selected"),
         iChartTotal, m_updatedCharts, m_newCharts, iChartCkdCnt), None, iChartCkdCnt > 0);
-    ::wxEndBusyCursor();
 }
 
 void ChartDldrPanelImpl::CheckUpdatedCharts(bool value)
