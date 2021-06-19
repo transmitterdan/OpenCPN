@@ -77,6 +77,7 @@
 #endif
 
 #ifdef __WXMSW__
+#include <WinSock2.h>
 #include <windows.h>
 #include <setupapi.h>
 #endif
@@ -377,7 +378,7 @@ static wxArrayString *EnumerateWindowsSerialPorts( void )
     //  This method may not find XPort virtual ports,
     //  but does find Bluetooth SPP ports
 
-    GUID *guidDev = (GUID*) &GUID_CLASS_COMPORT;
+    GUID *guidDev = (GUID*) &GUID_DEVINTERFACE_COMPORT;
 
     HDEVINFO hDevInfo = INVALID_HANDLE_VALUE;
 

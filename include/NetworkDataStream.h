@@ -60,7 +60,11 @@
 #endif
 
 #ifdef __WXMSW__
+#ifndef WIN32_LEAN_AND_MEAN
+    #define WIN32_LEAN_AND_MEAN
+#endif
 #include <windows.h>
+#include <WS2tcpip.h>
 #include <dbt.h>
 #include <initguid.h>
 #endif
