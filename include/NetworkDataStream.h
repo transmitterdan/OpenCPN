@@ -60,6 +60,9 @@
 #endif
 
 #ifdef __WXMSW__
+#if wxCHECK_VERSION(3,1,6)
+#include <WS2tcpip.h>
+#endif /*wxCHECK_VERSION(3,1,6) */
 #include <windows.h>
 #include <dbt.h>
 #include <initguid.h>
