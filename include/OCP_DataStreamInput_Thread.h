@@ -33,9 +33,12 @@
 #include <queue>                // std::queue
 
 #ifdef __WXMSW__
-	#include <windows.h>
-	#include <initguid.h>
-	#include "setupapi.h"                   // presently stored in opencpn/src
+#if wxCHECK_VERSION(3,1,6)
+#include <WS2tcpip.h>
+#endif /* wxCHECK_VERSION(3,1,6) */
+#include <windows.h>
+#include <initguid.h>
+#include "setupapi.h"                   // presently stored in opencpn/src
 #endif
 
 #include "config.h"
