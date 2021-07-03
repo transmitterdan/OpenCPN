@@ -28,6 +28,11 @@
 #include "wx/wx.h"
 #endif //precompiled headers
 
+
+#ifdef __WXMSW__
+#include <ws2tcpip.h>
+#endif
+
 #include "config.h"
 
 #ifdef HAVE_LIBGEN_H
