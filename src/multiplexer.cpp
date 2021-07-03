@@ -22,6 +22,17 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
  **************************************************************************/
+#include "wx/wxprec.h"
+
+#ifndef  WX_PRECOMP
+#include "wx/wx.h"
+#endif //precompiled headers
+
+
+#ifdef __WXMSW__
+#include <ws2tcpip.h>
+#endif
+
 #include "config.h"
 
 #ifdef HAVE_LIBGEN_H
