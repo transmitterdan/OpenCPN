@@ -28,9 +28,10 @@
 #include "wx/wx.h"
 #endif //precompiled headers
 
-
 #ifdef __WXMSW__
+#if (wxUSE_WINSOCK2 == 1)
 #include <ws2tcpip.h>
+#endif
 #endif
 
 #include "config.h"
