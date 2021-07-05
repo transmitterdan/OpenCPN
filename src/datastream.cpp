@@ -36,8 +36,7 @@
 #include <ws2tcpip.h>
 #endif
 
-#ifdef __WXMSW__
-#include <windows.h>
+#ifdef _WIN32
 #include <ws2tcpip.h>
 #endif
 
