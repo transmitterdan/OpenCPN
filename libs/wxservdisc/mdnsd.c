@@ -1,7 +1,7 @@
 #include "mdnsd.h"
 #include <string.h>
 #include <stdlib.h>
-#ifdef WIN32
+#ifdef _WIN32
 // for the inet related functions
 #include <ws2tcpip.h>
 #else
@@ -19,7 +19,7 @@
 // brute force garbage cleanup frequency, rarely needed (daily default)
 #define GC 86400
 
-#ifdef WIN32
+#ifdef _WIN32
 //#include "stdafx.h"
 #include <time.h>
 #include <windows.h> 
