@@ -48,10 +48,6 @@
 #endif //precompiled headers
 
 
-#ifdef __WXMSW__
-#include <ws2tcpip.h>
-#endif
-
 #include <wx/datetime.h>
 
 #include <stdlib.h>
