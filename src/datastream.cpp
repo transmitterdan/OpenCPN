@@ -36,16 +36,17 @@
 #include <ws2tcpip.h>
 #endif
 
+#ifdef __WXMSW__
+#include <windows.h>
+#include <ws2tcpip.h>
+#endif
+
 #include "wx/wxprec.h"
 
 #ifndef  WX_PRECOMP
   #include "wx/wx.h"
 #endif //precompiled headers
 
-
-#ifdef __WXMSW__
-#include <ws2tcpip.h>
-#endif
 
 #include <wx/datetime.h>
 
