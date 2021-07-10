@@ -2524,6 +2524,13 @@ void AIS_Decoder::UpdateAllAlarms( void )
                     continue;
                 }
 
+                //    No alert for my Follower
+                if(td->b_isFollower){
+                    td->n_alert_state = AIS_NO_ALERT;
+                    continue;
+                }
+                    
+
                 //    Skip distant targets if requested
                 if( g_bCPAMax ) {
                     if( td->Range_NM > g_CPAMax_NM ) {
