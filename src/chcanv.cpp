@@ -8415,7 +8415,6 @@ bool ChartCanvas::MouseEventProcessObjects( wxMouseEvent& event )
                         }
                         if( !duplicate ) {
                             int dlg_return;
-                        #ifndef __WXOSX__
                             dlg_return = OCPNMessageBox( this, _("Replace this RoutePoint by the nearby isolated Waypoint?"),
                                        _("OpenCPN RoutePoint change"),
                                        (long) wxYES_NO | wxCANCEL | wxYES_DEFAULT );
@@ -8438,7 +8437,6 @@ bool ChartCanvas::MouseEventProcessObjects( wxMouseEvent& event )
                                 pMousePoint->m_bIsolatedMark = false;       // definitely no longer isolated
                                 pMousePoint->m_bIsInRoute = true;
                             }
-                        #endif
                         }
                     }
                 }
@@ -8553,7 +8551,6 @@ bool ChartCanvas::MouseEventProcessObjects( wxMouseEvent& event )
                         }
                         if( !duplicate ) {
                             int dlg_return;
-                        #ifndef __WXOSX__
                             dlg_return = OCPNMessageBox( this, _("Replace this RoutePoint by the nearby isolated Waypoint?"),
                                        _("OpenCPN RoutePoint change"),
                                             (long) wxYES_NO | wxCANCEL | wxYES_DEFAULT );
@@ -8576,7 +8573,6 @@ bool ChartCanvas::MouseEventProcessObjects( wxMouseEvent& event )
                                 pMousePoint->m_bIsolatedMark = false;       // definitely no longer isolated
                                 pMousePoint->m_bIsInRoute = true;
                             }
-                       #endif
                         }
                     }
                 }
