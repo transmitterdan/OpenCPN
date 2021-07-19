@@ -8521,7 +8521,6 @@ bool ChartCanvas::MouseEventProcessObjects( wxMouseEvent& event )
         else{                   // !g_btouch
         if( m_bRouteEditing ) {            // End of RoutePoint drag
             if( m_pRoutePointEditTarget ) {
-                pSelect->UpdateSelectableRouteSegments( m_pRoutePointEditTarget );
                 m_pRoutePointEditTarget->m_bBlink = false;
                 //Check to see if there is a nearby point which may replace the dragged one
                 RoutePoint *pMousePoint = NULL;
