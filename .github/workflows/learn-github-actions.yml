@@ -28,7 +28,7 @@ jobs:
         echo $env:path
         echo $env:GITHUB_PATH
         echo "C:\Program Files\7-Zip" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-        echo "C:\Program Files (x86)\Poedit\" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        echo "C:\Program Files (x86)\Poedit\GettextTools\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
         Invoke-WebRequest https://download.opencpn.org/s/E2p4nLDzeqx4SdX/download -OutFile wxWidgets-3.1.2.7z
 
     - name: Unzip wxWidgets
