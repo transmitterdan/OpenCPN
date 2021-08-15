@@ -24,6 +24,7 @@ jobs:
       run: |
         Invoke-WebRequest https://download.opencpn.org/s/E2p4nLDzeqx4SdX/download -OutFile wxWidgets-3.1.2.7z
         echo "WXWIN=C:\wxWidgets-3.1.2" >> $GITHUB_ENV
+        echo "$Env:PATH:C:\Program Files\7-Zip\" >> $GITHUB_ENV
 
     - name: Unzip wxWidgets
       shell: cmd
