@@ -22,15 +22,15 @@ jobs:
     - name: Download wxWidgets version 3.1.2
       shell: powershell
       run: |
-        Invoke-WebRequest https://download.opencpn.org/s/E2p4nLDzeqx4SdX/download -OutFile wxWidgets-3.1.2.7z &&
+        Invoke-WebRequest https://download.opencpn.org/s/E2p4nLDzeqx4SdX/download -OutFile wxWidgets-3.1.2.7z
         echo "WXWIN=C:\wxWidgets-3.1.2" >> $GITHUB_ENV
 
     - name: Unzip wxWidgets
       shell: cmd
       run: |
-        echo "wxWidgets_ROOT_DIR=%WXWIN%" >> $GITHUB_ENV &&
-        echo "wxWidgets_LIB_DIR=%WXWIN%\lib\vc_dll" >> $GITHUB_ENV &&
-        echo "PATH=%WXWIN%;%wxWidgets_LIB_DIR%;%PATH%" >> $GITHUB_ENV &&
+        echo "wxWidgets_ROOT_DIR=%WXWIN%" >> $GITHUB_ENV
+        echo "wxWidgets_LIB_DIR=%WXWIN%\lib\vc_dll" >> $GITHUB_ENV
+        echo "PATH=%WXWIN%;%wxWidgets_LIB_DIR%;%PATH%" >> $GITHUB_ENV
         7z x wxWidgets-3.1.2.7z -o%WXWIN% > null
       
     - name: Get Dependencies
@@ -41,13 +41,13 @@ jobs:
     - name: Explode
       shell: cmd
       working-directory: ${{github.workspace}}/build
-      run: 7z x -y OpenCPN_buildwin-4.99a.7z -o${{github.workspace}}\buildwin &&
+      run: 7z x -y OpenCPN_buildwin-4.99a.7z -o${{github.workspace}}\buildwin
 
     - name: CMake Configure
       shell: cmd
       working-directory: ${{github.workspace}}/build
       run: |
-        del .\CMakeCache.txt &&
+        del .\CMakeCache.txt
         cmake -Wno-dev "-AWin32" -G"Visual Studio 16 2019" -T "v142" -D CMAKE_SYSTEM_VERSION=8.1 -D CMAKE_CXX_FLAGS="/MP /EHsc /DWIN32" -D CMAKE_C_FLAGS="/MP" -D OCPN_ENABLE_SYSTEM_CMD_SOUND=ON -D CMAKE_EXE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " -D CMAKE_MODULE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " -D CMAKE_SHARED_MODULE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " ..
       
     - name: Cmake Build
