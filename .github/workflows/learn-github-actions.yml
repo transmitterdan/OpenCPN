@@ -7,7 +7,7 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: RelWithDebInfo
-
+  WXWIN: C:\wxWidgets-3.1.2
 jobs:
   build:
     runs-on: [self-hosted, Windows, X64]
@@ -22,16 +22,21 @@ jobs:
     - name: Download wxWidgets version 3.1.2
       shell: powershell
       run: |
-        echo "WXWIN=C:\wxWidgets-3.1.2" >> $GITHUB_ENV
-        echo "$Env:PATH:C:\Program Files\7-Zip\" >> $GITHUB_ENV
+        echo $env:GITHUB_PATH
+        echo $env:GITHUB_ENV
+        echo "C:\Program Files\7-Zip" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        echo $env:WXWIN" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        echo $env:GITHUB_PATH
         Invoke-WebRequest https://download.opencpn.org/s/E2p4nLDzeqx4SdX/download -OutFile wxWidgets-3.1.2.7z
 
     - name: Unzip wxWidgets
       shell: cmd
       run: |
-        echo "wxWidgets_ROOT_DIR=%WXWIN%" >> $GITHUB_ENV
-        echo "wxWidgets_LIB_DIR=%WXWIN%\lib\vc_dll" >> $GITHUB_ENV
-        echo "PATH=%WXWIN%;%wxWidgets_LIB_DIR%;%PATH%" >> $GITHUB_ENV
+        echo $env:GITHUB_ENV
+        echo "wxWidgets_ROOT_DIR=%WXWIN%" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        echo $env:GITHUB_ENV
+        echo "wxWidgets_LIB_DIR=%WXWIN%\lib\vc_dll" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        echo $env:GITHUB_ENV
         7z x wxWidgets-3.1.2.7z -o%WXWIN% > null
       
     - name: Get Dependencies
