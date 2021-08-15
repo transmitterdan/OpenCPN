@@ -34,7 +34,7 @@ jobs:
 
     - name: Unzip wxWidgets
       shell: powershell
-      run: 7z x -y wxWidgets-3.1.2.7z -oC:\wxWidgets-3.1.2
+      run: 7z x -y wxWidgets-3.1.2.7z -o${{env.WXWIN}}
       
     - name: Get Dependencies
       shell: powershell
