@@ -32,9 +32,7 @@ jobs:
 
     - name: Unzip wxWidgets
       shell: powershell
-      run: |
-        echo $env:path
-        7z x wxWidgets-3.1.2.7z -o%WXWIN% > null
+      run: 7z x wxWidgets-3.1.2.7z -o%WXWIN% > null
       
     - name: Get Dependencies
       shell: powershell
@@ -50,7 +48,6 @@ jobs:
       shell: cmd
       working-directory: ${{github.workspace}}/build
       run: |
-        call 
         del .\CMakeCache.txt
         cmake -Wno-dev "-AWin32" -G"Visual Studio 16 2019" -T "v142" -D CMAKE_SYSTEM_VERSION=8.1 -D CMAKE_CXX_FLAGS="/MP /EHsc /DWIN32" -D CMAKE_C_FLAGS="/MP" -D OCPN_ENABLE_SYSTEM_CMD_SOUND=ON -D CMAKE_EXE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " -D CMAKE_MODULE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " -D CMAKE_SHARED_MODULE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " ..
       
