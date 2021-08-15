@@ -17,12 +17,15 @@ jobs:
     - name: Setup Environment
       run: call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
       
-    - name: Configure CMake
+    - name: Make folder
       working-directory: ${{github.workspace}}
       run: mkdir ${{github.workspace}}/build
-      run: cd ${{github.workspace}}/build
+      
+    - name: Configure
+      working-directory: ${{github.workspace}}/build
       run: cmake -Wno-dev "-AWin32" -G"Visual Studio 16 2019" -T "v142" -D CMAKE_SYSTEM_VERSION=8.1 -D CMAKE_CXX_FLAGS="/MP /EHsc /DWIN32" -D CMAKE_C_FLAGS="/MP" -D OCPN_ENABLE_SYSTEM_CMD_SOUND=ON -D CMAKE_EXE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " -D CMAKE_MODULE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " -D CMAKE_SHARED_MODULE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " ..
       
     - name: Build
+      working-directory: ${{github.workspace}}/build
       run: cmake --build . --config ${{env.BUILD_TYPE}}
 
