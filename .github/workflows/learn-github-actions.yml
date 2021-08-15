@@ -19,6 +19,19 @@ jobs:
       working-directory: ${{github.workspace}}
       run: mkdir ${{github.workspace}}/build
       
+    - name: Download wxWidgets version 3.1.2
+      shell: powershell
+      run: Invoke-WebRequest https://download.opencpn.org/s/E2p4nLDzeqx4SdX/download -OutFile wxWidgets-3.1.2.7z
+     
+    - name: Unzip wxWidgets
+      shell: cmd
+      run: |
+        set WXWIN=C:\wxWidgets-3.1.2 %%
+        set wxWidgets_ROOT_DIR=%WXWIN% %%
+        set wxWidgets_LIB_DIR=%WXWIN%\lib\vc_dll %%
+        SET PATH=%WXWIN%;%wxWidgets_LIB_DIR%;%PATH% &&
+        7z x wxWidgets-3.1.2.7z -o%WXWIN% > null
+      
     - name: Get Dependencies
       shell: powershell
       working-directory: ${{github.workspace}}/build
@@ -32,7 +45,9 @@ jobs:
     - name: CMake Configure
       shell: cmd
       working-directory: ${{github.workspace}}/build
-      run: cmake -Wno-dev "-AWin32" -G"Visual Studio 16 2019" -T "v142" -D CMAKE_SYSTEM_VERSION=8.1 -D CMAKE_CXX_FLAGS="/MP /EHsc /DWIN32" -D CMAKE_C_FLAGS="/MP" -D OCPN_ENABLE_SYSTEM_CMD_SOUND=ON -D CMAKE_EXE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " -D CMAKE_MODULE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " -D CMAKE_SHARED_MODULE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " ..
+      run: |
+        del .\CMakeCache.txt &&
+        cmake -Wno-dev "-AWin32" -G"Visual Studio 16 2019" -T "v142" -D CMAKE_SYSTEM_VERSION=8.1 -D CMAKE_CXX_FLAGS="/MP /EHsc /DWIN32" -D CMAKE_C_FLAGS="/MP" -D OCPN_ENABLE_SYSTEM_CMD_SOUND=ON -D CMAKE_EXE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " -D CMAKE_MODULE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " -D CMAKE_SHARED_MODULE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " ..
       
     - name: Cmake Build
       shell: cmd
