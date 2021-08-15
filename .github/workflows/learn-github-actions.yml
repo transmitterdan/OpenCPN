@@ -14,9 +14,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Setup Environment
-      run: call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvars32.bat"
-      
     - name: Make folder
       working-directory: ${{github.workspace}}
       run: mkdir ${{github.workspace}}/build
