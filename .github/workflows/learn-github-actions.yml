@@ -15,7 +15,7 @@ jobs:
     - uses: actions/checkout@v2
     
     - name: Make folder
-      shell: cmd
+      shell: powershell
       working-directory: ${{github.workspace}}
       run: mkdir ${{github.workspace}}/build
       
