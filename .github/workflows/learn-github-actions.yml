@@ -21,15 +21,16 @@ jobs:
       
     - name: Download wxWidgets version 3.1.2
       shell: powershell
-      run: Invoke-WebRequest https://download.opencpn.org/s/E2p4nLDzeqx4SdX/download -OutFile wxWidgets-3.1.2.7z
-     
+      run: |
+        Invoke-WebRequest https://download.opencpn.org/s/E2p4nLDzeqx4SdX/download -OutFile wxWidgets-3.1.2.7z &&
+        echo "WXWIN=C:\wxWidgets-3.1.2" >> $GITHUB_ENV
+
     - name: Unzip wxWidgets
       shell: cmd
       run: |
-        set WXWIN=C:\wxWidgets-3.1.2 &&
-        set wxWidgets_ROOT_DIR=%WXWIN% &&
-        set wxWidgets_LIB_DIR=%WXWIN%\lib\vc_dll &&
-        SET PATH=%WXWIN%;%wxWidgets_LIB_DIR%;%PATH% &&
+        echo "wxWidgets_ROOT_DIR=%WXWIN%" >> $GITHUB_ENV &&
+        echo "wxWidgets_LIB_DIR=%WXWIN%\lib\vc_dll" >> $GITHUB_ENV &&
+        echo "PATH=%WXWIN%;%wxWidgets_LIB_DIR%;%PATH%" >> $GITHUB_ENV &&
         7z x wxWidgets-3.1.2.7z -o%WXWIN% > null
       
     - name: Get Dependencies
