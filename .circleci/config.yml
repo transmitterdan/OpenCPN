@@ -14,14 +14,15 @@ jobs:
        - run: cat /etc/apt/sources.list
        - run: ci/generic-build-debian.sh
        - run: ci/generic-upload.sh
-   build-trusty:
+   build-focal:
      docker:
-       - image: circleci/buildpack-deps:trusty-scm
+       - image: circleci/buildpack-deps:focal-scm
          auth:
            username: $DOCKER_USER
            password: $DOCKER_PW
      environment:
-       - OCPN_TARGET:  trusty
+       - OCPN_TARGET:  focal-gtk3
+       - CMAKE_BUILD_PARALLEL_LEVEL: 2
      steps:
        - checkout
        - run: cat /etc/apt/sources.list
@@ -81,7 +82,7 @@ workflows:
             branches:
               only:
                 - master
-      - build-trusty:
+      - build-focal:
           filters:
             branches:
               only:
