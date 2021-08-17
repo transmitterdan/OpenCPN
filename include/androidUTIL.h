@@ -53,6 +53,7 @@ class ArrayOfCDI;
 #define OCPN_ACTION_TRACK_OFF           0x100b
 #define OCPN_ACTION_ENCSOUNDINGS_TOGGLE 0x100c
 #define OCPN_ACTION_ENCLIGHTS_TOGGLE    0x100d
+#define OCPN_ACTION_DOWNLOAD_VALID      0x100e
 
 #define GPS_OFF                         0
 #define GPS_ON                          1
@@ -82,6 +83,7 @@ extern void androidShowBusyIcon();
 extern void androidHideBusyIcon();
 extern void androidEnableBackButton(bool benable);
 extern void androidEnableBackButtonCheck(bool benable);
+extern void androidEnableOptionItems( bool benable );
 
 extern wxString androidGetSupplementalLicense( void );
 
@@ -123,6 +125,7 @@ extern int startAndroidFileDownload( const wxString &url, const wxString& destin
 extern int queryAndroidFileDownload( long dl_ID, wxString *result );
 extern void finishAndroidFileDownload();
 extern void cancelAndroidFileDownload( long dl_ID );
+extern int validateAndroidWriteLocation( const wxString& destination );
 
 extern wxString doAndroidPOST( const wxString &url, wxString &parms, int timeoutMsec);
 
@@ -131,7 +134,7 @@ extern wxSize getAndroidConfigSize();
 void resizeAndroidPersistents();
 bool AndroidSecureCopyFile(wxString in, wxString out);
 
-bool androidPlaySound( wxString soundfile, AudioDoneCallback callBack );
+bool androidPlaySound( wxString soundfile, AudioDoneCallback callBack, void *data );
 
 bool androidGetFullscreen();
 bool androidSetFullscreen( bool bFull );
@@ -174,6 +177,9 @@ void androidDisplayToast(wxString message);
 void androidEnableRotation( void );
 void androidDisableRotation( void );
 int androidGetScreenOrientation();
+
+void androidEnableMulticast(bool benable);
+void androidLastCall();
 
 //      SVG Support
 wxBitmap loadAndroidSVG( const wxString filename, unsigned int width, unsigned int height );

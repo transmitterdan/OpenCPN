@@ -100,7 +100,7 @@ catalog_status CatalogHandler::DownloadCatalog(std::ostream* stream)
     bool ok = downloader.download(stream);
     if (ok) {
         return ServerStatus::OK;
-    } 
+    }
     error_msg = downloader.last_error();
     return ServerStatus::CURL_ERROR;
 }
@@ -111,7 +111,7 @@ catalog_status CatalogHandler::DownloadCatalog(std::ostream* stream, std::string
     bool ok = downloader.download(stream);
     if (ok) {
         return ServerStatus::OK;
-    } 
+    }
     error_msg = downloader.last_error();
     return ServerStatus::CURL_ERROR;
 }
@@ -156,13 +156,34 @@ catalog_status CatalogHandler::DownloadCatalog(std::string& filePath, std::strin
 catalog_status CatalogHandler::DoParseCatalog(const std::string xml,
                                               catalog_ctx* ctx)
 {
+    std::string url;
+
     bool ok = ::ParseCatalog(xml, ctx);
-    while (ok && ctx->meta_urls.size() > 0) {
+    while (ctx->meta_urls.size() > 0) {
         std::ostringstream xml;
-        std::string url = ctx->meta_urls.back();
+        url = ctx->meta_urls.back();
         ctx->meta_urls.pop_back();
-        DownloadCatalog(&xml, url);
-        ok = DoParseCatalog(xml.str(), ctx) == ServerStatus::OK;
+
+        // already parsed this meta file?
+        bool bdone = false;
+        for(std::vector<std::string>::iterator it = ctx->parsed_metas.begin(); it != ctx->parsed_metas.end(); it++) {
+            if(*it == url){
+                bdone = true;
+                break;
+            }
+        }
+
+        if(!bdone){
+            ctx->parsed_metas.push_back(url);
+            if(DownloadCatalog(&xml, url) != ServerStatus::OK){
+                wxLogMessage("CatalogHandler: Cannot download meta-url: %s", url.c_str());
+            }
+            else{
+                ok = DoParseCatalog(xml.str(), ctx) == ServerStatus::OK;
+                if(!ok)
+                    break;
+            }
+        }
     }
     if (!ok){
        wxLogWarning("Cannot parse xml starting with: %s",
@@ -227,7 +248,7 @@ CatalogData CatalogHandler::LatestCatalogData()
 }
 
 
-void 
+void
 CatalogHandler::LoadCatalogData(const std::string& path, CatalogData& data)
 {
     if (!ocpn::exists(path)) {
@@ -303,7 +324,7 @@ catalog_status CatalogHandler::LoadChannels(std::ostream* stream)
     bool ok = downloader.download(stream);
     if (ok) {
         return ServerStatus::OK;
-    } 
+    }
     error_msg = downloader.last_error();
     return ServerStatus::CURL_ERROR;
 }

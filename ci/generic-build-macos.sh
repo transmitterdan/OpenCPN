@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #
-# Build the OSX artifacts 
+# Build the OSX artifacts
 #
 set -xe
 
@@ -48,7 +48,7 @@ fi
 
 wget -q https://download.opencpn.org/s/rwoCNGzx6G34tbC/download \
     -O /tmp/wx312B_opencpn50_macos109.tar.xz
-tar -C /tmp -xJf /tmp/wx312B_opencpn50_macos109.tar.xz 
+tar -C /tmp -xJf /tmp/wx312B_opencpn50_macos109.tar.xz
 export PATH="/usr/local/opt/gettext/bin:$PATH"
 echo 'export PATH="/usr/local/opt/gettext/bin:$PATH"' >> ~/.bash_profile
 
@@ -69,17 +69,6 @@ mkdir -p /tmp/opencpn/bin/OpenCPN.app/Contents/SharedSupport/plugins
 make install
 make install # Dunno why the second is needed but it is, otherwise
              # plugin data is not included in the bundle
-
-#  A truly awful hack...
-#  fixup_bundle (part of MacOS install step) seems to somehow miss the required copy of libpixman
-#  Or the second install kills it...
-#  So we do it explicitely.
-rm /tmp/opencpn/bin/OpenCPN.app/Contents/Frameworks/libpixman-1.0.dylib
-cp /usr/local/Cellar/pixman/0.*.*/lib/libpixman-1.0.*.*.dylib \
-    /tmp/opencpn/bin/OpenCPN.app/Contents/Frameworks/libpixman-1.0.dylib
-# and some dependencies which failed to get softlinks
-cp /usr/local/Cellar/zstd/1.[0-9].*/lib/libzstd.1.[0-9].*.dylib \
-    /tmp/opencpn/bin/OpenCPN.app/Contents/Frameworks/libzstd.1.dylib
 
 sudo ls -l /tmp/opencpn/bin/OpenCPN.app/Contents/Frameworks
 

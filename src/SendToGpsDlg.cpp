@@ -29,7 +29,9 @@
 #include "RoutePoint.h"
 #include "ser_ports.h"
 #include "ConnectionParams.h"
+#include "OCPNPlatform.h"
 
+extern OCPNPlatform              *g_Platform;
 extern wxString g_uploadConnection;
 extern wxArrayOfConnPrm         *g_pConnectionParams;
 
@@ -110,7 +112,7 @@ void SendToGpsDlg::CreateControls( const wxString& hint )
         for( size_t i = 0; i < g_pConnectionParams->Count(); i++ ) {
             ConnectionParams *cp = g_pConnectionParams->Item( i );
             wxString netident;
-            
+
             if( (cp->IOSelect != DS_TYPE_INPUT) && cp->Type == NETWORK && (cp->NetProtocol == TCP) ){
                 netident << _T("TCP:") << cp->NetworkAddress << _T(":") << cp->NetworkPort;
                 m_itemCommListBox->Append( netident );
@@ -121,6 +123,27 @@ void SendToGpsDlg::CreateControls( const wxString& hint )
                 m_itemCommListBox->Append( netident );
                 netconns.Add(netident);
             }
+        }
+    }
+
+    // Add Bluetooth, if the platform supports it natively
+    if(g_Platform){
+        if(g_Platform->startBluetoothScan()){
+            wxSleep(2);
+            wxArrayString btscanResults = g_Platform->getBluetoothScanResults();
+
+            unsigned int i = 1;
+            while ((i + 1) < btscanResults.GetCount()) {
+                wxString item1 = btscanResults[i] + _T(";");
+                wxString item2 = btscanResults.Item(i + 1);
+                wxString port = item1 + item2;
+                port.Prepend(_T("Bluetooth:"));
+                m_itemCommListBox->Append(port);
+
+                i += 2;
+            }
+
+            g_Platform->stopBluetoothScan();
         }
     }
 
@@ -137,7 +160,7 @@ void SendToGpsDlg::CreateControls( const wxString& hint )
             if(b_connExists)
                 m_itemCommListBox->SetValue( g_uploadConnection );
         }
-        else                
+        else
             m_itemCommListBox->SetValue( g_uploadConnection );
     }
     else
@@ -192,16 +215,25 @@ void SendToGpsDlg::OnSendClick( wxCommandEvent& event )
     if (tail != wxNOT_FOUND) {
         src = src.SubString(0, tail);
     }
-    if ( !src.Lower().StartsWith("tcp") && 
+    if ( !src.Lower().StartsWith("tcp") &&
          !src.Lower().StartsWith("udp") &&
-         !src.Lower().StartsWith("serial") && !src.Lower().StartsWith("Usb:")) {
+         !src.Lower().StartsWith("serial") &&
+         !src.Lower().StartsWith("usb:")  &&
+         !src.Lower().StartsWith("bluetooth")){
             src = src.Prepend("Serial:");
     }
     g_uploadConnection = src;                   // save for persistence
 
+    wxString destPort = src.BeforeFirst(' ');               // Serial:
+
+    // For Bluetooth, we need the entire string
+    if(src.Lower().Find(_T("Bluetooth")) != wxNOT_FOUND)
+        destPort = src;
+
+
     //    And send it out
-    if( m_pRoute ) m_pRoute->SendToGPS( src.BeforeFirst(' '), true, this );
-    if( m_pRoutePoint ) m_pRoutePoint->SendToGPS( src.BeforeFirst(' '), this );
+    if( m_pRoute ) m_pRoute->SendToGPS( destPort, true, this );
+    if( m_pRoutePoint ) m_pRoutePoint->SendToGPS( destPort, this );
 
 //    Show( false );
 //    event.Skip();

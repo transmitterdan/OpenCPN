@@ -87,7 +87,7 @@ To build for android, use something like:
         -D_wx_selected_config=androideabi-qt
         -DCMAKE_TOOLCHAIN_FILE=../buildandroid/build_android.cmake
         -DwxQt_Build=build_android_53
-       	-DwxQt_Base=/home/dsr/Projects/wxqt/wxWidgets
+        -DwxQt_Base=/home/dsr/Projects/wxqt/wxWidgets
         -DQt_Base /home/dsr/Qt/5.3)
         ..
 
@@ -321,6 +321,10 @@ option(
   "Use aplay(1), afplay(1) etc. to play sounds if available" ON
 )
 
+if (UNIX AND NOT APPLE AND NOT QT_ANDRIOD)
+  set(LINUX "1")
+endif ()
+
 IF (QT_ANDROID)
   SET(OCPN_NEW_SERIAL OFF)
   SET(OCPN_USE_NEWSERIAL OFF)
@@ -545,7 +549,7 @@ if (NOT WIN32 AND NOT APPLE AND NOT QT_ANDROID)
     elseif (EXISTS "/usr/lib/arm-linux-gnueabihf")
         set(_LIBDIRS "~/.local/lib:/usr/local/lib:/usr/lib/arm-linux-gnueabihf:/usr/lib")
     else ()
-        set(_LIBDIRS "~/.local/lib:/usr/local/lib:/usr/lib")	
+        set(_LIBDIRS "~/.local/lib:/usr/local/lib:/usr/lib")
     endif ()
     set(OCPN_LINUX_LOAD_PATH "${_LIBDIRS}"
         CACHE STRING "Plugin libraries directories (${_LIBDIRS})"
@@ -865,7 +869,7 @@ else( wxWidgets_VERSION_STRING)
     message(STATUS "Forcing wxWidgets_VERSION_STRING: ${wxWidgets_VERSION_STRING}")
     set(wxWidgets_VERSION_STRING "3.0")
 endif( wxWidgets_VERSION_STRING)
-  
+
 message(STATUS "")
 message(STATUS "*** Staging to build ${PACKAGE_NAME}  ***")
 message(STATUS "*** Build type: ${CMAKE_BUILD_TYPE}")
@@ -1011,6 +1015,7 @@ set(
   include/TTYWindow.h
   include/undo.h
   include/update_mgr.h
+  include/usb_devices.h
   include/vector2D.h
   include/viewport.h
   include/WindowDestroyListener.h
@@ -1146,6 +1151,7 @@ if (OCPN_USE_GARMINHOST)
   set(SRCS ${SRCS} src/garmin_wrapper.cpp)
 endif ()
 
+
 if (APPLE)
   if (DARWIN_VERSION LESS 16)
     message(
@@ -1156,6 +1162,11 @@ if (APPLE)
     add_definitions(-DOCPN_USE_DARKMODE)
   endif ()
 endif (APPLE)
+
+if (LINUX)
+  list(APPEND SRCS src/linux_devices.cpp src/udev_rule_mgr.cpp)
+  list(APPEND HDRS include/linux_devices.h include/udev_rule_mgr.h)
+endif ()
 
 if (NOT WIN32 AND NOT APPLE AND NOT QT_ANDROID AND OCPN_USE_CRASHREPORT)
   list(APPEND HDRS include/crashprint.h)
@@ -1237,6 +1248,18 @@ endif ()
 
 if (OCPN_USE_SYSFS_PORTS)
   set(USE_SYSFS_PORTS 1)
+endif ()
+
+find_package(LIBUSB)
+if (LIBUSB_FOUND)
+    target_link_libraries(${PACKAGE_NAME} PRIVATE ocpn::libusb)
+    set(HAVE_LIBUSB_10 1)
+endif ()
+
+find_package(PANGO)
+if (PANGO_FOUND)
+    target_link_libraries(${PACKAGE_NAME} PRIVATE ocpn::pango)
+    set(HAVE_PANGO 1)
 endif ()
 
 find_path(HAVE_UNISTD_H NAMES unistd.h)
@@ -1378,6 +1401,8 @@ if (UNIX)
       target_link_libraries(${PACKAGE_NAME} PRIVATE PNG::PNG)
       find_package(Pixman REQUIRED)
       target_link_libraries(${PACKAGE_NAME} PRIVATE Pixman::Pixman)
+      find_package(ZSTD REQUIRED)
+      target_link_libraries(${PACKAGE_NAME} PRIVATE zstd::zstd)
     endif ()
   endif (NOT QT_ANDROID)
 endif (UNIX)
@@ -1597,7 +1622,7 @@ elseif ( APPLE )
         set(LIBARCHIVE_COMMENT_START "<!--")
         set(LIBARCHIVE_COMMENT_END "-->")
     else()
-        #  TODO This is a hack, due to the way libarchive is built and installed in CI build environment 
+        #  TODO This is a hack, due to the way libarchive is built and installed in CI build environment
         target_include_directories(${PACKAGE_NAME} PRIVATE /usr/local/include)
         target_link_libraries(${PACKAGE_NAME} PRIVATE /usr/local/lib/libarchive.dylib)
     endif()
@@ -1791,7 +1816,7 @@ if (CMAKE_HOST_WIN32)
   target_link_libraries(
     ${PACKAGE_NAME}
     PRIVATE setupapi.lib "GLU_static" psapi.lib
-    # glu32.lib 
+    # glu32.lib
   )
 
   # use gdi plus only on MSVC, it is not a free library
@@ -2314,7 +2339,7 @@ if (NOT APPLE)
 
   IF(PACKAGE_FORMAT MATCHES "DEB")
         INSTALL(FILES "buildlinux/98-sglock-ocpn.rules"
-          PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ 
+          PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
           DESTINATION "/lib/udev/rules.d")
   ENDIF(PACKAGE_FORMAT MATCHES "DEB")
 

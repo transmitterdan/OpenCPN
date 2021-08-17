@@ -73,7 +73,7 @@ public:
 wxMapiSession::wxMapiSession()
 {
     m_data = new wxMapiData;
-    
+
     Initialise();
 }
 
@@ -81,20 +81,20 @@ wxMapiSession::~wxMapiSession()
 {
     //Logoff if logged on
     Logoff();
-    
+
     //Unload the MAPI dll
     Deinitialise();
-    
+
     delete m_data;
 }
 
-void wxMapiSession::Initialise() 
+void wxMapiSession::Initialise()
 {
-    //First make sure the "WIN.INI" entry for MAPI is present aswell 
+    //First make sure the "WIN.INI" entry for MAPI is present aswell
     //as the MAPI32 dll being present on the system
-    bool bMapiInstalled = (GetProfileInt(_T("MAIL"), _T("MAPI"), 0) != 0) && 
+    bool bMapiInstalled = (GetProfileInt(_T("MAIL"), _T("MAPI"), 0) != 0) &&
         (SearchPath(NULL, _T("MAPI32.DLL"), NULL, 0, NULL, NULL) != 0);
-    
+
     if (bMapiInstalled)
     {
         //Load up the MAPI dll and get the function pointers we are interested in
@@ -106,7 +106,7 @@ void wxMapiSession::Initialise()
             m_data->m_lpfnMAPISendMail = (LPMAPISENDMAIL) GetProcAddress(m_data->m_hMapi, "MAPISendMail");
             m_data->m_lpfnMAPIResolveName = (LPMAPIRESOLVENAME) GetProcAddress(m_data->m_hMapi, "MAPIResolveName");
             m_data->m_lpfnMAPIFreeBuffer = (LPMAPIFREEBUFFER) GetProcAddress(m_data->m_hMapi, "MAPIFreeBuffer");
-            
+
             //If any of the functions are not installed then fail the load
             if (m_data->m_lpfnMAPILogon == NULL ||
                 m_data->m_lpfnMAPILogoff == NULL ||
@@ -143,16 +143,16 @@ bool wxMapiSession::Logon(const wxString& sProfileName, const wxString& sPasswor
 {
     wxASSERT(MapiInstalled()); //MAPI must be installed
     wxASSERT(m_data->m_lpfnMAPILogon); //Function pointer must be valid
-    
+
     //Initialise the function return value
     bool bSuccess = FALSE;
-    
+
     //Just in case we are already logged in
     Logoff();
-    
+
     //Setup the ascii versions of the profile name and password
     int nProfileLength = sProfileName.Length();
-    
+
     LPSTR pszProfileName = NULL;
     LPSTR pszPassword = NULL;
     wxCharBuffer cbProfile(1),cbPassword(1);
@@ -168,7 +168,7 @@ bool wxMapiSession::Logon(const wxString& sProfileName, const wxString& sPasswor
         pszPassword = cbPassword.data();
 #endif
     }
-    
+
     //Setup the flags & UIParam parameters used in the MapiLogon call
     FLAGS flags = 0;
     ULONG nUIParam = 0;
@@ -190,7 +190,7 @@ bool wxMapiSession::Logon(const wxString& sProfileName, const wxString& sPasswor
             }
         }
     }
-    
+
     //First try to acquire a new MAPI session using the supplied settings using the MAPILogon functio
     ULONG nError = m_data->m_lpfnMAPILogon(nUIParam, pszProfileName, pszPassword, flags | MAPI_NEW_SESSION, 0, &m_data->m_hSession);
     if (nError != SUCCESS_SUCCESS && nError != MAPI_E_USER_ABORT)
@@ -232,14 +232,14 @@ bool wxMapiSession::Logoff()
 {
     wxASSERT(MapiInstalled()); //MAPI must be installed
     wxASSERT(m_data->m_lpfnMAPILogoff); //Function pointer must be valid
-    
+
     //Initialise the function return value
     bool bSuccess = FALSE;
-    
+
     if (m_data->m_hSession)
     {
         //Call the MAPILogoff function
-        ULONG nError = m_data->m_lpfnMAPILogoff(m_data->m_hSession, 0, 0, 0); 
+        ULONG nError = m_data->m_lpfnMAPILogoff(m_data->m_hSession, 0, 0, 0);
         if (nError != SUCCESS_SUCCESS)
         {
             wxLogMessage(_T("MAIL Error: Failed in call to MapiLogoff, Error:%ld"), nError);
@@ -253,19 +253,19 @@ bool wxMapiSession::Logoff()
         }
         m_data->m_hSession = 0;
     }
-    
+
     return bSuccess;
 }
 
 bool wxMapiSession::Resolve(const wxString& sName, void* lppRecip1)
 {
     lpMapiRecipDesc* lppRecip = (lpMapiRecipDesc*) lppRecip1;
-    
+
     wxASSERT(MapiInstalled()); //MAPI must be installed
     wxASSERT(m_data->m_lpfnMAPIResolveName); //Function pointer must be valid
     wxASSERT(LoggedOn()); //Must be logged on to MAPI
     wxASSERT(m_data->m_hSession); //MAPI session handle must be valid
-    
+
     //Call the MAPIResolveName function
 #ifndef UNICODE
     LPSTR lpszAsciiName = (LPSTR) sName.c_str();
@@ -281,7 +281,7 @@ bool wxMapiSession::Resolve(const wxString& sName, void* lppRecip1)
                    sName.c_str(), nError);
         m_data->m_nLastError = nError;
     }
-    
+
     return (nError == SUCCESS_SUCCESS);
 }
 
@@ -292,10 +292,10 @@ bool wxMapiSession::Send(wxMailMessage& message)
     wxASSERT(m_data->m_lpfnMAPIFreeBuffer); //Function pointer must be valid
     wxASSERT(LoggedOn()); //Must be logged on to MAPI
     wxASSERT(m_data->m_hSession); //MAPI session handle must be valid
-    
+
     //Initialise the function return value
-    bool bSuccess = FALSE;  
-    
+    bool bSuccess = FALSE;
+
     //Create the MapiMessage structure to match the message parameter send into us
     MapiMessage mapiMessage;
     ZeroMemory(&mapiMessage, sizeof(mapiMessage));
@@ -311,7 +311,7 @@ bool wxMapiSession::Send(wxMailMessage& message)
 #endif
     mapiMessage.nRecipCount = message.m_to.GetCount() + message.m_cc.GetCount() + message.m_bcc.GetCount();
     wxASSERT(mapiMessage.nRecipCount); //Must have at least 1 recipient!
-    
+
     //Allocate the recipients array
     mapiMessage.lpRecips = new MapiRecipDesc[mapiMessage.nRecipCount];
 
@@ -330,7 +330,7 @@ bool wxMapiSession::Send(wxMailMessage& message)
         mapiMessage.lpOriginator->lpszName = cbOriginator.data();
 #endif
     }
-    
+
     //Setup the "To" recipients
     int nRecipIndex = 0;
     int nToSize = message.m_to.GetCount();
@@ -343,12 +343,12 @@ bool wxMapiSession::Send(wxMailMessage& message)
         wxString& sName = message.m_to[i];
 
         //Try to resolve the name
-        lpMapiRecipDesc lpTempRecip;  
+        lpMapiRecipDesc lpTempRecip;
         if (Resolve(sName, (void*) &lpTempRecip))
         {
             //Resolve worked, put the resolved name back into the sName
             sName = wxString(lpTempRecip->lpszName,*wxConvCurrent);
-            
+
             //Don't forget to free up the memory MAPI allocated for us
             m_data->m_lpfnMAPIFreeBuffer(lpTempRecip);
         }
@@ -357,10 +357,10 @@ bool wxMapiSession::Send(wxMailMessage& message)
 #else
         recip.lpszName = sName.mb_str().release();
 #endif
-        
+
         ++nRecipIndex;
     }
-    
+
  /*   //Setup the "CC" recipients
     int nCCSize = message.m_cc.GetCount();
     for (i=0; i<nCCSize; i++)
@@ -371,12 +371,12 @@ bool wxMapiSession::Send(wxMailMessage& message)
         wxString& sName = message.m_cc[i];
 
         //Try to resolve the name
-        lpMapiRecipDesc lpTempRecip;  
+        lpMapiRecipDesc lpTempRecip;
         if (Resolve(sName, (void*) &lpTempRecip))
         {
             //Resolve worked, put the resolved name back into the sName
             sName = wxString(lpTempRecip->lpszName,*wxConvCurrent);
-            
+
             //Don't forget to free up the memory MAPI allocated for us
             m_data->m_lpfnMAPIFreeBuffer(lpTempRecip);
         }
@@ -385,10 +385,10 @@ bool wxMapiSession::Send(wxMailMessage& message)
 #else
         recip.lpszName = sName.mb_str().release();
 #endif
-        
+
         ++nRecipIndex;
     }
-    
+
     //Setup the "BCC" recipients
     int nBCCSize = message.m_bcc.GetCount();
     for (i=0; i<nBCCSize; i++)
@@ -399,12 +399,12 @@ bool wxMapiSession::Send(wxMailMessage& message)
         wxString& sName = message.m_bcc[i];
 
         //Try to resolve the name
-        lpMapiRecipDesc lpTempRecip;  
+        lpMapiRecipDesc lpTempRecip;
         if (Resolve(sName, (void*) &lpTempRecip))
         {
             //Resolve worked, put the resolved name back into the sName
             sName = wxString(lpTempRecip->lpszName,wxConvCurrent);
-            
+
             //Don't forget to free up the memory MAPI allocated for us
             m_data->m_lpfnMAPIFreeBuffer(lpTempRecip);
         }
@@ -413,16 +413,16 @@ bool wxMapiSession::Send(wxMailMessage& message)
 #else
         recip.lpszName = sName.mb_str().release();
 #endif
-        
+
         ++nRecipIndex;
     }
-    
-    //Setup the attachments 
+
+    //Setup the attachments
     int nAttachmentSize = message.m_attachments.GetCount();
     int nTitleSize = message.m_attachmentTitles.GetCount();
     if (nTitleSize)
-    { 
-        wxASSERT(nTitleSize == nAttachmentSize); //If you are going to set the attachment titles then you must set 
+    {
+        wxASSERT(nTitleSize == nAttachmentSize); //If you are going to set the attachment titles then you must set
         //the attachment title for each attachment
     }
     if (nAttachmentSize)
@@ -455,7 +455,7 @@ bool wxMapiSession::Send(wxMailMessage& message)
             }
         }
     }*/
-    
+
     //Do the actual send using MAPISendMail
     ULONG nError = m_data->m_lpfnMAPISendMail(m_data->m_hSession, 0, &mapiMessage, MAPI_DIALOG, 0);
     if (nError == SUCCESS_SUCCESS)
@@ -468,7 +468,7 @@ bool wxMapiSession::Send(wxMailMessage& message)
         wxLogMessage(_T("MAIL Error: Failed to send mail message, Error:%ld\n"), nError);
         m_data->m_nLastError = nError;
     }
-    
+
 /*    //Tidy up the Attachements
     if (nAttachmentSize)
     {
@@ -481,7 +481,7 @@ bool wxMapiSession::Send(wxMailMessage& message)
 #endif
         delete [] mapiMessage.lpFiles;
     }*/
-    
+
     //Free up the Recipients and Originator memory
 #ifdef UNICODE
     for (i = 0;i < nRecipIndex;i++)
@@ -490,7 +490,7 @@ bool wxMapiSession::Send(wxMailMessage& message)
     delete [] mapiMessage.lpRecips;
 
     delete mapiMessage.lpOriginator;
-    
+
     return bSuccess;
 }
 
