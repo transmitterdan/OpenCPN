@@ -1,4 +1,4 @@
-name: OpenCPN
+name: OpenCPN_wxTest
 
 on:
   push:
