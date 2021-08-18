@@ -34,7 +34,7 @@ jobs:
     - name: Get Dependencies
       shell: powershell
       run: |
-        Remove-Item * -Recurse -Path ${{github.workspace}}\buildwin\wxWidgets -Force -ErrorAction:Ignore
+        Remove-Item -Recurse -Path ${{github.workspace}}\buildwin\wxWidgets\*.* -Force -ErrorAction:Ignore
         xcopy /C ${(Env.wxWidgets_LIB_DIR)}\*u_*.dll ${{github.workspace}}\buildwin\wxWidgets
         xcopy /C ${(Env.wxWidgets_LIB_DIR)}\*u_*.pdb ${{github.workspace}}\buildwin\wxWidgets
         New-Item ${{github.workspace}}\buildwin\wxWidgets\locale -ErrorAction:Ignore
