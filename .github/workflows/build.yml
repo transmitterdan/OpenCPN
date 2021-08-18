@@ -6,12 +6,6 @@ on:
     - wxTest
     - runner
 
-env:
-  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-  BUILD_TYPE: RelWithDebInfo
-  WXWIN: C:\wxWidgets-3.1.2
-  wxWidgets_LIB_DIR: C:\wxWidgets-3.1.2\lib\vc_dll
-  wxWidgets_ROOT_DIR: C:\wxWidgets-3.1.2
   
 jobs:
   OpenCPN_wxTest:
@@ -19,6 +13,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
+    env:
+      # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+    - BUILD_TYPE: RelWithDebInfo
+    - WXWIN: C:\wxWidgets-3.1.2
+    - WXDIR: C:\wxWidgets-3.1.2
+    - wxWidgets_LIB_DIR: C:\wxWidgets-3.1.2\lib\vc_dll
+    - wxWidgets_ROOT_DIR: C:\wxWidgets-3.1.2
+
     - name: Setup
       shell: powershell
       working-directory: ${{github.workspace}}
