@@ -2,7 +2,9 @@ name: OpenCPN_wxTest
 
 on:
   push:
-    branches: [ wxTest ]
+    branches:
+    - wxTest
+    - runner
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -12,7 +14,7 @@ env:
   wxWidgets_ROOT_DIR: C:\wxWidgets-3.1.2
   
 jobs:
-  OpenCPN:
+  OpenCPN_wxTest:
     runs-on: [self-hosted, Windows, X64]
     steps:
     - uses: actions/checkout@v2
