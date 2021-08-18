@@ -4,7 +4,6 @@ on:
   push:
     branches:
     - wxTest
-    - runner
 
   
 jobs:
@@ -13,10 +12,10 @@ jobs:
     env:
       # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
       BUILD_TYPE: RelWithDebInfo
-      WXWIN: C:\wxWidgets-3.1.2
-      WXDIR: C:\wxWidgets-3.1.2
-      wxWidgets_LIB_DIR: C:\wxWidgets-3.1.2\lib\vc_dll
-      wxWidgets_ROOT_DIR: C:\wxWidgets-3.1.2
+      WXWIN: C:\OA\WXWIDGETS
+      WXDIR: C:\OA\WXWIDGETS
+      wxWidgets_LIB_DIR: C:\OA\WXWIDGETS\lib\vc142_dll
+      wxWidgets_ROOT_DIR: C:\OA\WXWIDGETS
 
     steps:
     - uses: actions/checkout@v2
@@ -35,8 +34,12 @@ jobs:
     - name: Get Dependencies
       shell: powershell
       run: |
-        Invoke-WebRequest https://download.opencpn.org/s/E2p4nLDzeqx4SdX/download -OutFile wxWidgets-3.1.2.7z
-        7z x -y wxWidgets-3.1.2.7z -o${{env.WXWIN}}
+        Remove-Item ${{github.workspace}}\buildwin\wxWidgets\*.* -Force
+        xcopy /C ${(Env.wxWidgets_LIB_DIR)}\*u_*.dll ${{github.workspace}}\buildwin\wxWidgets
+        xcopy /C ${(Env.wxWidgets_LIB_DIR)}\*u_*.pdb ${{github.workspace}}\buildwin\wxWidgets
+        New-Item ${{github.workspace}}\buildwin\wxWidgets\locale
+        xcopy /C ${(Env.WXDIR)}\locale\*.mo ${{github.workspace}}\buildwin\wxWidgets\locale
+        xcopy /C ${(Env.WXDIR)}\locale\*.pot ${{github.workspace}}\buildwin\wxWidgets\locale
         Invoke-WebRequest https://download.opencpn.org/s/oibxM3kzfzKcSc3/download -OutFile OpenCPN_buildwin-4.99a.7z
         7z x -y OpenCPN_buildwin-4.99a.7z -o${{github.workspace}}\buildwin
     - name: CMake Configure
