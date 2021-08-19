@@ -35,7 +35,9 @@ jobs:
       shell: powershell
       working-directory: ${{github.workspace}}/build
       run: |
+        echo " Create: ${{github.workspace}}\buildwin\wxWidgets"
         New-Item -Path "${{github.workspace}}\buildwin\" -Name "wxWidgets" -ItemType "directory"
+        echo " Create: ${{github.workspace}}\buildwin\wxWidgets"
         New-Item -Path "${{github.workspace}}\buildwin\wxWidgets\" -Name "locale" -ItemType "directory"
         Copy-Item -Path "${{Env.wxWidgets_LIB_DIR}}\*u_*.dll" -Destination "${{github.workspace}}\buildwin\wxWidgets"
         Copy-Item -Path "${{Env.wxWidgets_LIB_DIR}}\*u_*.pdb" -Destination "${{github.workspace}}\buildwin\wxWidgets"
