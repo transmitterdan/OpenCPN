@@ -36,8 +36,8 @@ jobs:
       working-directory: ${github.workspace}/build
       run: |
         Remove-Item -Recurse -Path "${{github.workspace}}\buildwin\wxWidgets" -Force -ErrorAction:Ignore
-        New-Item -Path "${{github.workspace}}\buildwin" -Name "wxWidgets" -ItemType "directory"
-        New-Item -Path "${{github.workspace}}\buildwin\wxWidgets" -Name "locale" -ItemType "directory"
+        New-Item -Path "${{github.workspace}}\buildwin\" -Name "wxWidgets" -ItemType "directory"
+        New-Item -Path "${{github.workspace}}\buildwin\wxWidgets\" -Name "locale" -ItemType "directory"
         Copy-Item -Path "${{Env.wxWidgets_LIB_DIR}}\*u_*.dll" -Destination "${{github.workspace}}\buildwin\wxWidgets"
         Copy-Item -Path "${{Env.wxWidgets_LIB_DIR}}\*u_*.pdb" -Destination "${{github.workspace}}\buildwin\wxWidgets"
         Copy-Item -Path "${{Env.WXDIR}}\locale\*.mo" -Destination "${{github.workspace}}\buildwin\wxWidgets\locale"
