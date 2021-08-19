@@ -37,10 +37,10 @@ jobs:
         Remove-Item -Recurse -Path "${{github.workspace}}\buildwin\wxWidgets" -Force -ErrorAction:Ignore
         New-Item -Path "${(github.workspace)}\buildwin\wxWidgets" -ErrorAction:Ignore
         New-Item -Path "${(github.workspace)}\buildwin\wxWidgets\locale" -ErrorAction:Ignore
-        Copy-Item -Path "${(Env.wxWidgets_LIB_DIR)}\*u_*.dll" -Destination "${(github.workspace)}\buildwin\wxWidgets"
-        Copy-Item -Path "${(Env.wxWidgets_LIB_DIR)}\*u_*.pdb" -Destination "${(github.workspace)}\buildwin\wxWidgets"
-        Copy-Item -Path "${(Env.WXDIR)}\locale\*.mo" -Destination "${(github.workspace)}\buildwin\wxWidgets\locale"
-        Copy-Item -Path "${(Env.WXDIR)}\locale\*.pot" -Destination "${(github.workspace)}\buildwin\wxWidgets\locale"
+        Copy-Item -Path "${(Env:wxWidgets_LIB_DIR)}\*u_*.dll" -Destination "${(github.workspace)}\buildwin\wxWidgets"
+        Copy-Item -Path "${(Env:wxWidgets_LIB_DIR)}\*u_*.pdb" -Destination "${(github.workspace)}\buildwin\wxWidgets"
+        Copy-Item -Path "${(Env:WXDIR)}\locale\*.mo" -Destination "${(github.workspace)}\buildwin\wxWidgets\locale"
+        Copy-Item -Path "${(Env:WXDIR)}\locale\*.pot" -Destination "${(github.workspace)}\buildwin\wxWidgets\locale"
         Invoke-WebRequest https://download.opencpn.org/s/oibxM3kzfzKcSc3/download -OutFile OpenCPN_buildwin-4.99a.7z
         7z x -y OpenCPN_buildwin-4.99a.7z -o${{github.workspace}}\buildwin
     - name: CMake Configure
