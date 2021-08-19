@@ -24,20 +24,16 @@ jobs:
       shell: powershell
       working-directory: ${{github.workspace}}
       run: |
-        echo "colon: ${Env:WXWIN}"
-        echo "period. ${{env.WXWIN}}"
-        New-Item -Path "${{github.workspace}}\build" -ErrorAction:Ignore
         echo "C:\Program Files\7-Zip" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
         echo "C:\Program Files (x86)\Poedit\GettextTools\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
         echo "C:\Program Files (x86)\NSIS" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        New-Item -Path "${{github.workspace}}\" -Name "build" -ItemType "directory"
  
     - name: Get Dependencies
       shell: powershell
-      working-directory: ${{github.workspace}}/build
+      working-directory: ${{github.workspace}}
       run: |
-        echo " Create: ${{github.workspace}}\buildwin\wxWidgets"
         New-Item -Path "${{github.workspace}}\buildwin\" -Name "wxWidgets" -ItemType "directory"
-        echo " Create: ${{github.workspace}}\buildwin\wxWidgets"
         New-Item -Path "${{github.workspace}}\buildwin\wxWidgets\" -Name "locale" -ItemType "directory"
         Copy-Item -Path "${{Env.wxWidgets_LIB_DIR}}\*u_*.dll" -Destination "${{github.workspace}}\buildwin\wxWidgets"
         Copy-Item -Path "${{Env.wxWidgets_LIB_DIR}}\*u_*.pdb" -Destination "${{github.workspace}}\buildwin\wxWidgets"
