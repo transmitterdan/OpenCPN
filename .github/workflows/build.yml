@@ -17,7 +17,7 @@ env:
 jobs:
   OpenCPN_wxTest:
     runs-on: [self-hosted, Windows, X64]
-     steps:
+    steps:
     - uses: actions/checkout@v2
 
     - name: Setup
