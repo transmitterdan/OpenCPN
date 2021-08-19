@@ -33,7 +33,7 @@ jobs:
       
     - name: Get Dependencies
       shell: powershell
-      working-directory: ${github.workspace}/build
+      working-directory: ${{github.workspace}}/build
       run: |
         Remove-Item -Recurse -Path "${{github.workspace}}\buildwin\wxWidgets" -Force -ErrorAction:Ignore
         New-Item -Path "${{github.workspace}}\buildwin\" -Name "wxWidgets" -ItemType "directory"
