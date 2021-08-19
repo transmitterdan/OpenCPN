@@ -4,22 +4,21 @@ on:
   push:
     branches:
     - wxTest
+  env:
+    # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+    BUILD_TYPE: RelWithDebInfo
+    WXWIN: C:\OA\WXWIDGETS
+    WXDIR: C:\OA\WXWIDGETS
+    wxWidgets_LIB_DIR: C:\OA\WXWIDGETS\lib\vc142_dll
+    wxWidgets_ROOT_DIR: C:\OA\WXWIDGETS
 
-  
+
 jobs:
   OpenCPN_wxTest:
     runs-on: [self-hosted, Windows, X64]
-    env:
-      # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
-      BUILD_TYPE: RelWithDebInfo
-      WXWIN: C:\OA\WXWIDGETS
-      WXDIR: C:\OA\WXWIDGETS
-      wxWidgets_LIB_DIR: C:\OA\WXWIDGETS\lib\vc142_dll
-      wxWidgets_ROOT_DIR: C:\OA\WXWIDGETS
-
-    steps:
+     steps:
     - uses: actions/checkout@v2
-    
+
     - name: Setup
       shell: powershell
       working-directory: ${{github.workspace}}
@@ -30,7 +29,7 @@ jobs:
         echo "C:\Program Files\7-Zip" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
         echo "C:\Program Files (x86)\Poedit\GettextTools\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
         echo "C:\Program Files (x86)\NSIS" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-      
+ 
     - name: Get Dependencies
       shell: powershell
       working-directory: ${{github.workspace}}/build
@@ -48,20 +47,20 @@ jobs:
       shell: powershell
       working-directory: ${{github.workspace}}/build
       run: cmake -Wno-dev "-AWin32" -G"Visual Studio 16 2019" -T "v142" -DOCPN_CI_BUILD=ON -DCMAKE_SYSTEM_VERSION=8.1 -DCMAKE_CXX_FLAGS="/MP /EHsc /DWIN32" -DCMAKE_C_FLAGS="/MP" -DOCPN_ENABLE_SYSTEM_CMD_SOUND=ON -DCMAKE_EXE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " -DCMAKE_MODULE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " ..
-      
+
     - name: Cmake Build
       shell: powershell
       working-directory: ${{github.workspace}}/build
       run: |
         cmake --build . --config ${{env.BUILD_TYPE}}
         cmake --build . --config ${{env.BUILD_TYPE}}
-      
+
     - name: Create Package
       if: success()
       shell: powershell
       working-directory: ${{github.workspace}}/build
       run: cmake --build . --config ${{env.BUILD_TYPE}} --target Package
-      
+
     - uses: actions/upload-artifact@v2.2.4
       with:
         name:  OpenCPN_5.5.0
