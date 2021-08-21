@@ -42,7 +42,6 @@
 #include <ws2tcpip.h>
 #endif
 
-
 #include <wx/datetime.h>
 
 

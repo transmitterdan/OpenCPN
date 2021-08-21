@@ -46,7 +46,6 @@
   #include "wx/wx.h"
 #endif //precompiled headers
 
-
 #include <wx/datetime.h>
 
 #include <stdlib.h>

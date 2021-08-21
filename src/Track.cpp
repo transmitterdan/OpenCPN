@@ -78,7 +78,6 @@ millions of points.
 #include "wx/wx.h"
 #endif //precompiled headers
 
-
 #include "Route.h"
 #include "Track.h"
 #include "routeman.h"
