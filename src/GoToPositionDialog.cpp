@@ -23,6 +23,11 @@
  */
 
 #include "wx/wxprec.h"
+
+#ifndef  WX_PRECOMP
+#include "wx/wx.h"
+#endif //precompiled headers
+
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/button.h>

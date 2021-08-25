@@ -36,6 +36,10 @@
 #include <ws2tcpip.h>
 #endif
 
+#ifdef _WIN32
+#include <ws2tcpip.h>
+#endif
+
 #include "wx/wxprec.h"
 
 #ifndef  WX_PRECOMP

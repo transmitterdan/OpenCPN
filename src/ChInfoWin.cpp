@@ -24,6 +24,10 @@
 
 #include "wx/wxprec.h"
 
+#ifndef  WX_PRECOMP
+#include "wx/wx.h"
+#endif //precompiled headers
+
 #include <wx/dcclient.h>
 
 #include "ChInfoWin.h"

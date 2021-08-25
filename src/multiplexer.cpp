@@ -22,6 +22,12 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
  **************************************************************************/
+#include "wx/wxprec.h"
+
+#ifndef  WX_PRECOMP
+#include "wx/wx.h"
+#endif //precompiled headers
+
 #include "config.h"
 
 #ifdef HAVE_LIBGEN_H
@@ -32,7 +38,6 @@
 #error Using readlink(3) requires libgen.h which cannot be found.
 #endif
 
-#include "wx/wx.h"
 #include <wx/tokenzr.h>
 #include "config.h"
 #include "multiplexer.h"

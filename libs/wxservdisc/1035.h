@@ -6,6 +6,9 @@ extern "C"
 #ifndef _1035_h
 #define _1035_h
 
+#if defined(_WIN32) && !defined(WIN32)
+#define WIN32 (_WIN32)
+#endif
 
 
 // be familiar with rfc1035 if you want to know what all the variable names mean, but this hides most of the dirty work

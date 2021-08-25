@@ -74,6 +74,9 @@ millions of points.
 
 #include "wx/wxprec.h"
 
+#ifndef  WX_PRECOMP
+#include "wx/wx.h"
+#endif //precompiled headers
 
 #include "Route.h"
 #include "Track.h"
