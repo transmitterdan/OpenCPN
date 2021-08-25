@@ -3,7 +3,7 @@ name: OpenCPN_wxTest
 on:
   push:
     branches:
-    - wxTest
+    - wxV3.1.6
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
