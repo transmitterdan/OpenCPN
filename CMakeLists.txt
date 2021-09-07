@@ -870,6 +870,10 @@ else( wxWidgets_VERSION_STRING)
     set(wxWidgets_VERSION_STRING "3.0")
 endif( wxWidgets_VERSION_STRING)
 
+if ( wxWidgets_VERSION_STRING VERSION_GREATER "3.1.0")
+    add_definitions("-DHAVE_WX_GESTURE_EVENTS")
+endif()
+
 message(STATUS "")
 message(STATUS "*** Staging to build ${PACKAGE_NAME}  ***")
 message(STATUS "*** Build type: ${CMAKE_BUILD_TYPE}")
@@ -1901,8 +1905,9 @@ set(
 if (OCPN_BUNDLE_TCDATA)
   set(
     tcData
-    data/tcdata/HARMONIC
-    data/tcdata/HARMONIC.IDX
+    data/tcdata/HARMONICS_NO_US
+    data/tcdata/HARMONICS_NO_US.IDX
+    data/tcdata/harmonics-dwf-20210110-free.tcd
     data/tcdata/README.harmonics
   )
 endif (OCPN_BUNDLE_TCDATA)
