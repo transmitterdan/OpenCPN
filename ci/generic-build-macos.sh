@@ -80,6 +80,14 @@ done
 #    ln -sf  /usr/local/Cellar/libarchive/$version/lib/libarchive.dylib .
 #popd
 
+pushd /usr/local/include
+    ln -sf /opt/local/include/archive.h .
+    ln -sf /opt/local/include/archive_entry.h .
+    cd ../lib
+    ln -sf  /opt/local/lib/libarchive.13.dylib .
+    ln -sf  /opt/local/lib/libarchive.dylib .
+popd
+
 if brew list --cask --versions packages; then
     version=$(pkg_version packages '--cask')
     sudo installer \
@@ -101,6 +109,7 @@ mkdir build
 cd build
 test -n "$TRAVIS_TAG" && CI_BUILD=OFF || CI_BUILD=ON
 cmake -DOCPN_CI_BUILD=$CI_BUILD \
+  -DOCPN_VERBOSE=ON \
   -DOCPN_USE_LIBCPP=ON \
   -DOCPN_USE_SYSTEM_LIBARCHIVE=OFF \
   -DwxWidgets_CONFIG_EXECUTABLE=/tmp/wx312B_opencpn50_macos109/bin/wx-config \
@@ -116,7 +125,7 @@ make install # Dunno why the second is needed but it is, otherwise
 
 sudo ls -l /tmp/opencpn/bin/OpenCPN.app/Contents/Frameworks
 
-make create-pkg
+#make create-pkg
 make create-dmg
 
 # Install the stuff needed by upload.
