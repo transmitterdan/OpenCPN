@@ -5,13 +5,14 @@
 #
 set -xe
 
+# Build for legacy Mac machines
 export MACOSX_DEPLOYMENT_TARGET=10.9
 
 # allow shell to find Macports executable
 export PATH=/opt/local/bin:$PATH
 
 # Check if the cache is with us. If not, re-install macports
-port diagnose --quiet || {
+port info OCPN_cairo || {
     curl -O https://distfiles.macports.org/MacPorts/MacPorts-2.7.1.tar.bz2
     tar xf MacPorts-2.7.1.tar.bz2
     cd MacPorts-2.7.1/
@@ -23,9 +24,15 @@ port diagnose --quiet || {
 
 sudo port selfupdate
 
-pwd
 # add our local ports to the sources.conf
 sudo cp buildosx/macports/sources.conf /opt/local/etc/macports
+
+# Install curl to get the TLS certificate bundle
+# then immediately deactivate curl to make room for OCPN_curl later
+sudo port -q install curl
+sudo port deactivate curl
+
+sudo port deactivate openssl
 
 # rebuild the port index
 pushd buildosx/macports/ports
@@ -33,6 +40,10 @@ pushd buildosx/macports/ports
 popd
 
 # install the local port libraries
+#  n.b.  ORDER IS IMPORTANT
+
+sudo port -q install OCPN_openssl
+sudo port -q install OCPN_curl
 sudo port -q install OCPN_libpixman
 sudo port -q install OCPN_cairo
 sudo port -q install zstd
@@ -57,39 +68,7 @@ for pkg in cmake python3 wget ; do
     brew link --overwrite $pkg || :
 done
 
-#for pkg in cairo cmake libarchive libexif pixman python3 wget xz; do
-#    brew list --versions $pkg || brew install $pkg || brew install $pkg || :
-#    brew link --overwrite $pkg || :
-#done
-
-# replace libcairo and some dependents
-#wget -q https://www.dropbox.com/s/0egt1gz8oc9olmv/libcairo.2.dylib?dl=1 \
-#    -O /tmp/libcairo.2.dylib
-#cp /tmp/libcairo.2.dylib /tmp/libcairo.dylib
-
-#wget -q https://www.dropbox.com/s/3nfroanhpln4hbk/libxcb-shm.0.0.0.dylib?dl=1 \
-#    -O /tmp/libxcb-shm.0.0.0.dylib
-#cp /tmp/libxcb-shm.0.0.0.dylib /tmp/libxcb-shm.0.dylib
-
-#pushd /usr/local/lib
-#    ln -sf  /tmp/libcairo.2.dylib .
-#    ln -sf  /tmp/libcairo.dylib .
-
-#    ln -sf  /tmp/libxcb-shm.0.0.0.dylib .
-#    ln -sf  /tmp/libxcb-shm.0.dylib .
-#popd
-
-
 # Make sure cmake finds libarchive
-#version=$(pkg_version libarchive)
-#pushd /usr/local/include
-#    ln -sf /usr/local/Cellar/libarchive/$version/include/archive.h .
-#    ln -sf /usr/local/Cellar/libarchive/$version/include/archive_entry.h .
-#    cd ../lib
-#    ln -sf  /usr/local/Cellar/libarchive/$version/lib/libarchive.13.dylib .
-#    ln -sf  /usr/local/Cellar/libarchive/$version/lib/libarchive.dylib .
-#popd
-
 pushd /usr/local/include
     ln -sf /opt/local/include/archive.h .
     ln -sf /opt/local/include/archive_entry.h .
