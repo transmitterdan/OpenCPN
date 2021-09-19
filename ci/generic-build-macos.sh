@@ -11,11 +11,15 @@ export MACOSX_DEPLOYMENT_TARGET=10.9
 # allow shell to find Macports executable
 export PATH=/opt/local/bin:$PATH
 
-# allow caching of macports state in $HOME
-ln -s /opt/local $HOME/opt_local_cache
+# allow caching of macports state in $HOME    "/Users/distiller/project/opt_local_cache"
+sudo mkdir -p ${HOME}/project/opt_local_cache
+sudo ln -s ${HOME}/project/opt_local_cache /opt/local
+
+ls ${HOME}/project/opt_local_cache || echo "OK"
+ls ${HOME}/project/opt_local_cache/bin || echo "OK"
 
 # Check if the cache is with us. If not, re-install macports
-port info OCPN_cairo || {
+port info zstd || {
     curl -O https://distfiles.macports.org/MacPorts/MacPorts-2.7.1.tar.bz2
     tar xf MacPorts-2.7.1.tar.bz2
     cd MacPorts-2.7.1/
@@ -23,12 +27,21 @@ port info OCPN_cairo || {
     make
     sudo make install
     cd ..
+
+    sudo port -v selfupdate
 }
 
-sudo port selfupdate
-
-# add our local ports to the sources.conf
+    # add our local ports to the sources.conf
 sudo cp buildosx/macports/sources.conf /opt/local/etc/macports
+
+# rebuild the port index
+pushd buildosx/macports/ports
+  portindex
+popd
+
+port deactivate OCPN_curl || {
+  echo "OK"
+}
 
 # Install curl to get the TLS certificate bundle
 # then immediately deactivate curl to make room for OCPN_curl later
@@ -37,10 +50,6 @@ sudo port deactivate curl
 
 sudo port deactivate openssl
 
-# rebuild the port index
-pushd buildosx/macports/ports
-  portindex
-popd
 
 # install the local port libraries
 #  n.b.  ORDER IS IMPORTANT
