@@ -61,12 +61,15 @@ sudo port -q install OCPN_cairo
 sudo port -q install zstd
 sudo port -q install OCPN_libarchive
 
+sudo port -q -f install OCPN_libpng
+
+
 # Return latest installed brew version of given package
 pkg_version() { brew list --versions $2 $1 | tail -1 | awk '{print $2}'; }
 
 
 # Check if the cache is with us. If not, re-install brew.
-brew list --versions libexif || {
+brew list --versions wget || {
     brew update-reset
     # As indicated by warning message in CircleCI build log:
     git -C "/usr/local/Homebrew/Library/Taps/homebrew/homebrew-core" \
@@ -75,7 +78,7 @@ brew list --versions libexif || {
         fetch --unshallow
 }
 
-for pkg in cmake python3 wget ; do
+for pkg in cmake python3 wget  ; do
     brew list --versions $pkg || brew install $pkg || brew install $pkg || :
     brew link --overwrite $pkg || :
 done
