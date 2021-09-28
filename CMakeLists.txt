@@ -212,7 +212,7 @@ set(OCPN_TARGET_TUPLE "" CACHE STRING
   "List of target;version;arch like flatpak;20.08;aarch64 [\"\"]"
 )
 
-if (MSVC OR (NOT APPLE AND NOT QT_ANDROID AND NOT MINGW))
+if (MSVC OR MINGW)
   option(OCPN_USE_CRASHREPORT "Enable crash reporting" ON)
 else ()
   set(OCPN_USE_CRASHREPORT FALSE)
@@ -870,8 +870,9 @@ else( wxWidgets_VERSION_STRING)
     set(wxWidgets_VERSION_STRING "3.0")
 endif( wxWidgets_VERSION_STRING)
 
-# Enable zoom gesture
-if ( wxWidgets_VERSION_STRING VERSION_GREATER "3.1.0")
+# Enable gestures on all platforms except MacOS
+# There are no touch capable MacOS machines
+if (( wxWidgets_VERSION_STRING VERSION_GREATER "3.1.0") AND (NOT APPLE))
     add_definitions("-DHAVE_WX_GESTURE_EVENTS")
 endif()
 
