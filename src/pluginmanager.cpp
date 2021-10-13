@@ -1142,7 +1142,8 @@ bool PlugInManager::LoadPlugInDirectory(const wxString &plugin_dir,
     wxLog::FlushActive();
 
     wxString file_name = file_list[i];
-    if (file_name.Contains(_T("draw"))) int yyp = 3;
+//     if (file_name.Contains("aisradar"))
+//       int yyp = 3;
 
     wxString plugin_file = wxFileName(file_name).GetFullName();
     wxLogMessage("Checking plugin candidate: %s", file_name.mb_str().data());
@@ -1154,30 +1155,32 @@ bool PlugInManager::LoadPlugInDirectory(const wxString &plugin_dir,
     // opencpn. For this reason we must check that we didn't already load this
     // plugin
     bool loaded = false;
+    PlugInContainer *loaded_pic = 0;
     for (unsigned int i = 0; i < plugin_array.GetCount(); i++) {
-      PlugInContainer *pic = plugin_array[i];
+      PlugInContainer *pic_test = plugin_array[i];
 
       // Checking for dynamically updated plugins
-      if (pic->m_plugin_filename == plugin_file) {
+      if (pic_test->m_plugin_filename == plugin_file) {
         // Do not re-load same-name plugins from different directories.  Certain
         // to crash...
-        if (pic->m_plugin_file == file_name) {
-          if (pic->m_plugin_modification != plugin_modification) {
+        if (pic_test->m_plugin_file == file_name) {
+          if (pic_test->m_plugin_modification != plugin_modification) {
             // modification times don't match, reload plugin
-            plugin_array.Remove(pic);
+            plugin_array.Remove(pic_test);
             i--;
 
-            DeactivatePlugIn(pic);
-            pic->m_destroy_fn(pic->m_pplugin);
+            DeactivatePlugIn(pic_test);
+            pic_test->m_destroy_fn(pic_test->m_pplugin);
 
-            delete pic;
-            ret = true;
+            delete pic_test;
           } else {
             loaded = true;
+            loaded_pic= pic_test;
             break;
           }
         } else {
           loaded = true;
+          loaded_pic= pic_test;
           break;
         }
       }
@@ -1219,14 +1222,9 @@ bool PlugInManager::LoadPlugInDirectory(const wxString &plugin_dir,
       wxLogMessage(dmsg);
     }
 
-    // Safe mode? If so, refuse to load.
-    //if (safe_mode::get_mode()) {
-    //  continue;
-    //}
-
     PlugInContainer *pic = NULL;
-    wxStopWatch sw;
-    if (b_compat) pic = LoadPlugIn(file_name);
+    if (b_compat)
+        pic = LoadPlugIn(file_name);
 
     wxLog::FlushActive();
 
@@ -1273,6 +1271,9 @@ bool PlugInManager::LoadPlugInDirectory(const wxString &plugin_dir,
         pic->m_version_major = pic->m_pplugin->GetPlugInVersionMajor();
         pic->m_version_minor = pic->m_pplugin->GetPlugInVersionMinor();
         pic->m_bitmap = pic->m_pplugin->GetPlugInBitmap();
+        wxBitmap *pbm = new wxBitmap(pic->m_bitmap->GetSubBitmap(wxRect(
+              0, 0, pic->m_bitmap->GetWidth(), pic->m_bitmap->GetHeight())));
+        pic->m_bitmap = pbm;
 
         ret = true;
 
@@ -1509,11 +1510,16 @@ bool PlugInManager::UpdatePlugIns() {
       pic->m_bitmap = pic->m_pplugin->GetPlugInBitmap();
       bret = true;
     } else if (!pic->m_bEnabled && pic->m_bInitState) {
+
+      // Save a local copy of the plugin icon before unloading
+      wxBitmap *pbm = new wxBitmap(pic->m_bitmap->GetSubBitmap(wxRect(
+              0, 0, pic->m_bitmap->GetWidth(), pic->m_bitmap->GetHeight())));
+      pic->m_bitmap = pbm;
+
       bret = DeactivatePlugIn(pic);
       if (pic->m_pplugin) pic->m_destroy_fn(pic->m_pplugin);
       if (pic->m_library.IsLoaded()) pic->m_library.Unload();
       pic->m_pplugin = NULL;
-      pic->m_bitmap = NULL;
       pic->m_bInitState = false;
     }
   }
@@ -8667,3 +8673,430 @@ ListOfPI_S57Obj *PlugInManager::GetLightsObjRuleListVisibleAtLatLon(
   } else
     return list;
 }
+
+//      PlugInWaypointEx implementation
+WX_DEFINE_LIST(Plugin_WaypointExList);
+
+//  The class implementations
+PlugIn_Waypoint_Ex::PlugIn_Waypoint_Ex()
+{
+  m_HyperlinkList = NULL;
+  scamin = 1e9;
+  nrange_rings = 0;
+  IsNameVisible = false;
+  IsVisible = true;
+
+}
+
+PlugIn_Waypoint_Ex::PlugIn_Waypoint_Ex(double lat, double lon,
+                                 const wxString &icon_ident,
+                                 const wxString &wp_name,
+                                 const wxString &GUID,
+                                 const double ScaMin,
+                                 const bool bNameVisible,
+                                 const int nRangeRings,
+                                 const double RangeDistance,
+                                 const wxColor RangeColor ) {
+  wxDateTime now = wxDateTime::Now();
+  m_CreateTime = now.ToUTC();
+  m_HyperlinkList = NULL;
+
+  m_lat = lat;
+  m_lon = lon;
+  IconName = icon_ident;
+  m_MarkName = wp_name;
+  m_GUID = GUID;
+  scamin = ScaMin;
+  IsNameVisible = bNameVisible;
+  nrange_rings = nRangeRings;
+  RangeRingSpace = RangeDistance;
+  RangeRingColor = RangeColor;
+
+}
+
+bool PlugIn_Waypoint_Ex::GetFSStatus()
+{
+  RoutePoint *prp = pWayPointMan->FindRoutePointByGUID(m_GUID);
+  if (!prp) return false;
+
+  if (prp->m_bIsInRoute && !prp->IsShared())
+    return false;
+
+  return true;
+}
+
+int PlugIn_Waypoint_Ex::GetRouteMembershipCount()
+{
+  // Search all routes to count the membership of this point
+  RoutePoint *pWP = pWayPointMan->FindRoutePointByGUID(m_GUID);
+  if (!pWP)
+    return 0;
+
+  int nCount = 0;
+  wxRouteListNode *node = pRouteList->GetFirst();
+  while (node) {
+    Route *proute = node->GetData();
+    wxRoutePointListNode *pnode = (proute->pRoutePointList)->GetFirst();
+    while (pnode) {
+      RoutePoint *prp = pnode->GetData();
+      if (prp == pWP)
+        nCount++;
+      pnode = pnode->GetNext();
+    }
+
+    node = node->GetNext();
+  }
+
+  return nCount;
+
+}
+
+
+
+PlugIn_Waypoint_Ex::~PlugIn_Waypoint_Ex() {}
+
+//      PlugInRouteExtended implementation
+PlugIn_Route_Ex::PlugIn_Route_Ex(void) { pWaypointList = new Plugin_WaypointExList; }
+
+PlugIn_Route_Ex::~PlugIn_Route_Ex(void) {
+  pWaypointList->DeleteContents(false);  // do not delete Waypoints
+  pWaypointList->Clear();
+
+  delete pWaypointList;
+}
+
+
+//  The utility methods implementations
+
+// translate O route class to PlugIn_Waypoint_Ex
+static void PlugInExFromRoutePoint(PlugIn_Waypoint_Ex *dst,
+                                 /* const*/ RoutePoint *src) {
+  dst->m_lat = src->m_lat;
+  dst->m_lon = src->m_lon;
+  dst->IconName = src->GetIconName();
+  dst->m_MarkName = src->GetName();
+  dst->m_MarkDescription = src->m_MarkDescription;
+  dst->IsVisible = src->IsVisible();
+  dst->m_CreateTime = src->GetCreateTime();  // not const
+  dst->m_GUID = src->m_GUID;
+
+  //  Transcribe (clone) the html HyperLink List, if present
+  if (src->m_HyperlinkList == nullptr) return;
+
+  delete dst->m_HyperlinkList;
+  dst->m_HyperlinkList = nullptr;
+
+  if (src->m_HyperlinkList->GetCount() > 0) {
+    dst->m_HyperlinkList = new Plugin_HyperlinkList;
+
+    wxHyperlinkListNode *linknode = src->m_HyperlinkList->GetFirst();
+    while (linknode) {
+      Hyperlink *link = linknode->GetData();
+
+      Plugin_Hyperlink *h = new Plugin_Hyperlink();
+      h->DescrText = link->DescrText;
+      h->Link = link->Link;
+      h->Type = link->LType;
+
+      dst->m_HyperlinkList->Append(h);
+
+      linknode = linknode->GetNext();
+    }
+  }
+
+  // Get the range ring info
+  dst->nrange_rings = src->m_iWaypointRangeRingsNumber;
+  dst->RangeRingSpace = src->m_fWaypointRangeRingsStep;
+  dst->RangeRingColor = src->m_wxcWaypointRangeRingsColour;
+
+  // Get other extended info
+  dst->IsNameVisible = src->m_bShowName;
+  dst->scamin = src->GetScaMin();
+
+}
+
+static void cloneHyperlinkListEx(RoutePoint *dst, const PlugIn_Waypoint_Ex *src) {
+  //  Transcribe (clone) the html HyperLink List, if present
+  if (src->m_HyperlinkList == nullptr) return;
+
+  if (src->m_HyperlinkList->GetCount() > 0) {
+    wxPlugin_HyperlinkListNode *linknode = src->m_HyperlinkList->GetFirst();
+    while (linknode) {
+      Plugin_Hyperlink *link = linknode->GetData();
+
+      Hyperlink *h = new Hyperlink();
+      h->DescrText = link->DescrText;
+      h->Link = link->Link;
+      h->LType = link->Type;
+
+      dst->m_HyperlinkList->Append(h);
+
+      linknode = linknode->GetNext();
+    }
+  }
+}
+
+bool GetSingleWaypointEx(wxString GUID, PlugIn_Waypoint_Ex *pwaypoint)
+{
+    //  Find the RoutePoint
+  RoutePoint *prp = pWayPointMan->FindRoutePointByGUID(GUID);
+
+  if (!prp) return false;
+
+  PlugInExFromRoutePoint(pwaypoint, prp);
+
+
+  return true;
+}
+
+bool AddSingleWaypointEX(PlugIn_Waypoint_Ex *pwaypoint, bool b_permanent) {
+  //  Validate the waypoint parameters a little bit
+
+  //  GUID
+  //  Make sure that this GUID is indeed unique in the Routepoint list
+  bool b_unique = true;
+  wxRoutePointListNode *prpnode = pWayPointMan->GetWaypointList()->GetFirst();
+  while (prpnode) {
+    RoutePoint *prp = prpnode->GetData();
+
+    if (prp->m_GUID == pwaypoint->m_GUID) {
+      b_unique = false;
+      break;
+    }
+    prpnode = prpnode->GetNext();  // RoutePoint
+  }
+
+  if (!b_unique) return false;
+
+  RoutePoint *pWP =
+      new RoutePoint(pwaypoint->m_lat, pwaypoint->m_lon, pwaypoint->IconName,
+                     pwaypoint->m_MarkName, pwaypoint->m_GUID);
+
+  pWP->m_bIsolatedMark = true;  // This is an isolated mark
+
+  cloneHyperlinkListEx(pWP, pwaypoint);
+
+  pWP->m_MarkDescription = pwaypoint->m_MarkDescription;
+
+  if (pwaypoint->m_CreateTime.IsValid())
+    pWP->SetCreateTime(pwaypoint->m_CreateTime);
+  else {
+    wxDateTime dtnow(wxDateTime::Now());
+    pWP->SetCreateTime(dtnow);
+  }
+
+  pWP->m_btemp = (b_permanent == false);
+
+  // Extended fields
+  pWP->SetIconName( pwaypoint->IconName );
+  pWP->SetWaypointRangeRingsNumber( pwaypoint->nrange_rings );
+  pWP->SetWaypointRangeRingsStep( pwaypoint->RangeRingSpace );
+  pWP->SetWaypointRangeRingsColour( pwaypoint->RangeRingColor );
+  pWP->SetScaMin( pwaypoint->scamin);
+  pWP->SetNameShown( pwaypoint->IsNameVisible );
+
+  pSelect->AddSelectableRoutePoint(pwaypoint->m_lat, pwaypoint->m_lon, pWP);
+  if (b_permanent) pConfig->AddNewWayPoint(pWP, -1);
+
+  if (pRouteManagerDialog && pRouteManagerDialog->IsShown())
+    pRouteManagerDialog->UpdateWptListCtrl();
+
+  return true;
+}
+
+bool UpdateSingleWaypointEX(PlugIn_Waypoint_Ex *pwaypoint) {
+  //  Find the RoutePoint
+  bool b_found = false;
+  RoutePoint *prp = pWayPointMan->FindRoutePointByGUID(pwaypoint->m_GUID);
+
+  if (prp) b_found = true;
+
+  if (b_found) {
+    double lat_save = prp->m_lat;
+    double lon_save = prp->m_lon;
+
+    prp->m_lat = pwaypoint->m_lat;
+    prp->m_lon = pwaypoint->m_lon;
+    prp->SetIconName(pwaypoint->IconName);
+    prp->SetName(pwaypoint->m_MarkName);
+    prp->m_MarkDescription = pwaypoint->m_MarkDescription;
+    prp->SetVisible(pwaypoint->IsVisible);
+    if (pwaypoint->m_CreateTime.IsValid())
+      prp->SetCreateTime(pwaypoint->m_CreateTime);
+
+    //  Transcribe (clone) the html HyperLink List, if present
+
+    if (pwaypoint->m_HyperlinkList) {
+      prp->m_HyperlinkList->Clear();
+      if (pwaypoint->m_HyperlinkList->GetCount() > 0) {
+        wxPlugin_HyperlinkListNode *linknode =
+            pwaypoint->m_HyperlinkList->GetFirst();
+        while (linknode) {
+          Plugin_Hyperlink *link = linknode->GetData();
+
+          Hyperlink *h = new Hyperlink();
+          h->DescrText = link->DescrText;
+          h->Link = link->Link;
+          h->LType = link->Type;
+
+          prp->m_HyperlinkList->Append(h);
+
+          linknode = linknode->GetNext();
+        }
+      }
+
+        // Extended fields
+      prp->SetWaypointRangeRingsNumber( pwaypoint->nrange_rings );
+      prp->SetWaypointRangeRingsStep( pwaypoint->RangeRingSpace );
+      prp->SetWaypointRangeRingsColour( pwaypoint->RangeRingColor );
+      prp->SetScaMin( pwaypoint->scamin);
+      prp->SetNameShown( pwaypoint->IsNameVisible );
+
+    }
+
+    if (prp) prp->ReLoadIcon();
+
+    SelectItem *pFind = pSelect->FindSelection(
+        gFrame->GetPrimaryCanvas(), lat_save, lon_save, SELTYPE_ROUTEPOINT);
+    if (pFind) {
+      pFind->m_slat = pwaypoint->m_lat;  // update the SelectList entry
+      pFind->m_slon = pwaypoint->m_lon;
+    }
+
+    if (!prp->m_btemp) pConfig->UpdateWayPoint(prp);
+
+    if (pRouteManagerDialog && pRouteManagerDialog->IsShown())
+      pRouteManagerDialog->UpdateWptListCtrl();
+  }
+
+  return b_found;
+}
+
+bool AddPlugInRouteEx(PlugIn_Route_Ex *proute, bool b_permanent) {
+  Route *route = new Route();
+
+  PlugIn_Waypoint_Ex *pwaypoint;
+  RoutePoint *pWP_src;
+  int ip = 0;
+  wxDateTime plannedDeparture;
+
+  wxPlugin_WaypointExListNode *pwpnode = proute->pWaypointList->GetFirst();
+  while (pwpnode) {
+    pwaypoint = pwpnode->GetData();
+
+    RoutePoint *pWP = new RoutePoint(pwaypoint->m_lat, pwaypoint->m_lon,
+                                     pwaypoint->IconName,
+                                     pwaypoint->m_MarkName,
+                                     pwaypoint->m_GUID);
+
+    //  Transcribe (clone) the html HyperLink List, if present
+    cloneHyperlinkListEx(pWP, pwaypoint);
+    pWP->m_MarkDescription = pwaypoint->m_MarkDescription;
+    pWP->m_bShowName = false;
+    pWP->SetCreateTime(pwaypoint->m_CreateTime);
+
+    // Set extended fields
+    pWP->SetWaypointRangeRingsNumber( pwaypoint->nrange_rings );
+    pWP->SetWaypointRangeRingsStep( pwaypoint->RangeRingSpace );
+    pWP->SetWaypointRangeRingsColour( pwaypoint->RangeRingColor );
+    pWP->SetScaMin( pwaypoint->scamin);
+    pWP->SetNameShown( pwaypoint->IsNameVisible );
+
+    route->AddPoint(pWP);
+
+    pSelect->AddSelectableRoutePoint(pWP->m_lat, pWP->m_lon, pWP);
+
+    if (ip > 0)
+      pSelect->AddSelectableRouteSegment(pWP_src->m_lat, pWP_src->m_lon,
+                                         pWP->m_lat, pWP->m_lon, pWP_src, pWP,
+                                         route);
+    else
+      plannedDeparture = pwaypoint->m_CreateTime;
+    ip++;
+    pWP_src = pWP;
+
+    pwpnode = pwpnode->GetNext();  // PlugInWaypoint
+  }
+
+  route->m_PlannedDeparture = plannedDeparture;
+
+  route->m_RouteNameString = proute->m_NameString;
+  route->m_RouteStartString = proute->m_StartString;
+  route->m_RouteEndString = proute->m_EndString;
+  if (!proute->m_GUID.IsEmpty()) {
+    route->m_GUID = proute->m_GUID;
+  }
+  route->m_btemp = (b_permanent == false);
+
+  pRouteList->Append(route);
+
+  if (b_permanent) pConfig->AddNewRoute(route);
+
+  if (pRouteManagerDialog && pRouteManagerDialog->IsShown())
+    pRouteManagerDialog->UpdateRouteListCtrl();
+
+  return true;
+}
+
+bool UpdatePlugInRouteEx(PlugIn_Route_Ex *proute) {
+  bool b_found = false;
+
+  //  Find the Route
+  Route *pRoute = g_pRouteMan->FindRouteByGUID(proute->m_GUID);
+  if (pRoute) b_found = true;
+
+  if (b_found) {
+    bool b_permanent = (pRoute->m_btemp == false);
+    g_pRouteMan->DeleteRoute(pRoute);
+
+    b_found = AddPlugInRouteEx(proute, b_permanent);
+  }
+
+  return b_found;
+}
+
+// std::unique_ptr<PlugIn_Waypoint_Ex> GetWaypointEx_Plugin(const wxString &)
+// {
+// }
+
+// std::unique_ptr<PlugIn_Route_Ex> GetRouteEx_Plugin(const wxString &)
+// {
+// }
+
+std::unique_ptr<PlugIn_Waypoint_Ex> GetWaypointEx_Plugin(const wxString &GUID) {
+  std::unique_ptr<PlugIn_Waypoint_Ex> w(new PlugIn_Waypoint_Ex);
+  GetSingleWaypointEx(GUID, w.get());
+  return w;
+}
+
+std::unique_ptr<PlugIn_Route_Ex> GetRouteEx_Plugin(const wxString &GUID) {
+  std::unique_ptr<PlugIn_Route_Ex> r;
+  Route *route = g_pRouteMan->FindRouteByGUID(GUID);
+  if (route == nullptr) return r;
+
+  r = std::unique_ptr<PlugIn_Route_Ex>(new PlugIn_Route_Ex);
+  PlugIn_Route_Ex *dst_route = r.get();
+
+  // PlugIn_Waypoint *pwp;
+  RoutePoint *src_wp;
+  wxRoutePointListNode *node = route->pRoutePointList->GetFirst();
+
+  while (node) {
+    src_wp = node->GetData();
+
+    PlugIn_Waypoint_Ex *dst_wp = new PlugIn_Waypoint_Ex();
+    PlugInExFromRoutePoint(dst_wp, src_wp);
+
+    dst_route->pWaypointList->Append(dst_wp);
+
+    node = node->GetNext();
+  }
+  dst_route->m_NameString = route->m_RouteNameString;
+  dst_route->m_StartString = route->m_RouteStartString;
+  dst_route->m_EndString = route->m_RouteEndString;
+  dst_route->m_GUID = route->m_GUID;
+
+  return r;
+}
+
+
