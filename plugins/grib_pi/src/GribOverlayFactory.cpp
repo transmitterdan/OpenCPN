@@ -186,8 +186,8 @@ void LineBuffer::pushGrandeBarbule(int b, int l) {
 
 void LineBuffer::pushTriangle(int b, int l) {
   int dim = (l * 100) / 250;
-  pushLine(b, 0, b + dim, l);
-  pushLine(b + (dim * 2), 0, b + dim, l);
+  pushLine(b, 0, b + dim, -l);
+  pushLine(b + (dim * 2), 0, b + dim, -l);
 }
 
 void LineBuffer::Finalize() {
@@ -2434,7 +2434,14 @@ void GRIBOverlayFactory::drawWindArrowWithBarbs(int settings, int x, int y,
   if (m_Settings.Settings[settings].m_iBarbedColour == 1)
     arrowColor = GetGraphicColor(settings, vkn);
 
+//TODO
+//  Needs investigation
+//  This conditional should not really be necessary, but is safe.
+#ifndef __MSVC__
+  float penWidth = .6 / m_pixelMM;
+#else
   float penWidth = .4 / m_pixelMM;
+#endif
 
   if (m_pdc) {
     wxPen pen(arrowColor, 2);
