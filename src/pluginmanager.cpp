@@ -4348,6 +4348,36 @@ wxArrayString GetWaypointGUIDArray(void) {
   return result;
 }
 
+wxArrayString GetRouteGUIDArray(void) {
+  wxArrayString result;
+  RouteList *list = pRouteList;
+
+  wxRouteListNode *prpnode = list->GetFirst();
+  while (prpnode) {
+    Route *proute = prpnode->GetData();
+    result.Add(proute->m_GUID);
+
+    prpnode = prpnode->GetNext();  // Route
+  }
+
+  return result;
+}
+
+wxArrayString GetTrackGUIDArray(void) {
+  wxArrayString result;
+  TrackList *list = pTrackList;
+
+  wxTrackListNode *prpnode = list->GetFirst();
+  while (prpnode) {
+    Track *ptrack = prpnode->GetData();
+    result.Add(ptrack->m_GUID);
+
+    prpnode = prpnode->GetNext();  // Track
+  }
+
+  return result;
+}
+
 wxArrayString GetIconNameArray(void) {
   wxArrayString result;
 
@@ -8775,7 +8805,8 @@ static void PlugInExFromRoutePoint(PlugIn_Waypoint_Ex *dst,
   dst->m_lon = src->m_lon;
   dst->IconName = src->GetIconName();
   dst->m_MarkName = src->GetName();
-  dst->m_MarkDescription = src->m_MarkDescription;
+  dst->m_MarkDescription = src->GetDescription();
+  dst->IconDescription = pWayPointMan->GetIconDescription(src->GetIconName());
   dst->IsVisible = src->IsVisible();
   dst->m_CreateTime = src->GetCreateTime();  // not const
   dst->m_GUID = src->m_GUID;
@@ -8812,7 +8843,8 @@ static void PlugInExFromRoutePoint(PlugIn_Waypoint_Ex *dst,
   // Get other extended info
   dst->IsNameVisible = src->m_bShowName;
   dst->scamin = src->GetScaMin();
-
+  dst->b_useScamin = src->GetUseSca();
+  dst->IsActive = src->m_bIsActive;
 }
 
 static void cloneHyperlinkListEx(RoutePoint *dst, const PlugIn_Waypoint_Ex *src) {
@@ -8878,12 +8910,8 @@ bool AddSingleWaypointEx(PlugIn_Waypoint_Ex *pwaypoint, bool b_permanent) {
 
   pWP->m_MarkDescription = pwaypoint->m_MarkDescription;
 
-  if (pwaypoint->m_CreateTime.IsValid())
-    pWP->SetCreateTime(pwaypoint->m_CreateTime);
-  else {
-    wxDateTime dtnow(wxDateTime::Now());
-    pWP->SetCreateTime(dtnow);
-  }
+  wxDateTime dtnow(wxDateTime::Now());
+  pWP->SetCreateTime(dtnow);
 
   pWP->m_btemp = (b_permanent == false);
 
@@ -8893,7 +8921,9 @@ bool AddSingleWaypointEx(PlugIn_Waypoint_Ex *pwaypoint, bool b_permanent) {
   pWP->SetWaypointRangeRingsStep( pwaypoint->RangeRingSpace );
   pWP->SetWaypointRangeRingsColour( pwaypoint->RangeRingColor );
   pWP->SetScaMin( pwaypoint->scamin);
+  pWP->SetUseSca( pwaypoint->b_useScamin );
   pWP->SetNameShown( pwaypoint->IsNameVisible );
+  pWP->SetVisible( pwaypoint->IsVisible );
 
   pSelect->AddSelectableRoutePoint(pwaypoint->m_lat, pwaypoint->m_lon, pWP);
   if (b_permanent) pConfig->AddNewWayPoint(pWP, -1);
@@ -8950,6 +8980,7 @@ bool UpdateSingleWaypointEx(PlugIn_Waypoint_Ex *pwaypoint) {
       prp->SetWaypointRangeRingsStep( pwaypoint->RangeRingSpace );
       prp->SetWaypointRangeRingsColour( pwaypoint->RangeRingColor );
       prp->SetScaMin( pwaypoint->scamin);
+      prp->SetUseSca( pwaypoint->b_useScamin );
       prp->SetNameShown( pwaypoint->IsNameVisible );
 
     }
@@ -9095,6 +9126,7 @@ std::unique_ptr<PlugIn_Route_Ex> GetRouteEx_Plugin(const wxString &GUID) {
   dst_route->m_StartString = route->m_RouteStartString;
   dst_route->m_EndString = route->m_RouteEndString;
   dst_route->m_GUID = route->m_GUID;
+  dst_route->m_isActive = g_pRouteMan->GetpActiveRoute() == route;
 
   return r;
 }
