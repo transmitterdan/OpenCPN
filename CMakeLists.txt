@@ -1895,6 +1895,7 @@ set(
   src/bitmaps/DragHandle.svg
   src/bitmaps/eye.svg
   src/bitmaps/eyex.svg
+  src/bitmaps/eyeGray.svg
   src/bitmaps/iENC_All.svg
   src/bitmaps/iENC_Minimum.svg
   src/bitmaps/iENC_Standard.svg
