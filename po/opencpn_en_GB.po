@@ -1,23 +1,23 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the opencpn package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
 #: src/options.cpp:3648 src/options.cpp:4829 src/pluginmanager.cpp:261
 #: src/pluginmanager.cpp:271 src/pluginmanager.cpp:272 src/TCWin.cpp:113
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: opencpn 5.5.1015\n"
+"Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-10-30 20:47-0400\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"PO-Revision-Date: 2021-10-31 01:42\n"
+"Last-Translator: \n"
+"Language-Team: English, United Kingdom\n"
+"Language: en_GB\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Crowdin-Project: opencpn\n"
+"X-Crowdin-Project-ID: 49843\n"
+"X-Crowdin-Language: en-GB\n"
+"X-Crowdin-File: /po/opencpn.pot\n"
+"X-Crowdin-File-ID: 102\n"
 
 #: include/AboutFrame.h:87 include/AboutFrameImpl.h:68 src/chart1.cpp:5660
 #: src/chart1.cpp:9700 src/toolbar.cpp:1278
@@ -100,8 +100,7 @@ msgid "The OpenCPN Authors"
 msgstr ""
 
 #: src/AboutFrame.cpp:93
-msgid ""
-"OpenCPN is a Free Software project, built by sailors.\n"
+msgid "OpenCPN is a Free Software project, built by sailors.\n"
 "It is freely available to download and distribute without charge."
 msgstr ""
 
@@ -912,8 +911,7 @@ msgid "Instruction: Do not proceed beyond this point/juncture"
 msgstr ""
 
 #: src/ais.cpp:357
-msgid ""
-"Instruction: Await instructions prior to proceeding beyond this point/juncture"
+msgid "Instruction: Await instructions prior to proceeding beyond this point/juncture"
 msgstr ""
 
 #: src/ais.cpp:359
@@ -1013,8 +1011,7 @@ msgid "Report from ship: Icing info"
 msgstr ""
 
 #: src/ais.cpp:389
-msgid ""
-"Report from ship: Miscellaneous information - define in Associated text field"
+msgid "Report from ship: Miscellaneous information - define in Associated text field"
 msgstr ""
 
 #: src/ais.cpp:396
@@ -1270,9 +1267,7 @@ msgid "Passenger ship without accommodation"
 msgstr ""
 
 #: src/AIS_Decoder.cpp:334
-msgid ""
-"Vessel, work maintenance craft, floating derrick, cable-ship, buoy-ship, "
-"dredge"
+msgid "Vessel, work maintenance craft, floating derrick, cable-ship, buoy-ship, dredge"
 msgstr ""
 
 #: src/AIS_Decoder.cpp:336
@@ -2594,10 +2589,8 @@ msgid "Record Track"
 msgstr ""
 
 #: src/AISTargetQueryDialog.cpp:180
-msgid ""
-"The recently captured track of this target has been recorded.\n"
-"Do you want to continue recording until the end of the current OpenCPN "
-"session?"
+msgid "The recently captured track of this target has been recorded.\n"
+"Do you want to continue recording until the end of the current OpenCPN session?"
 msgstr ""
 
 #: src/AISTargetQueryDialog.cpp:210
@@ -2617,16 +2610,13 @@ msgid "Stop Tracking"
 msgstr ""
 
 #: src/androidUTIL.cpp:2088
-msgid ""
-"OpenCPN Help is not installed.\n"
+msgid "OpenCPN Help is not installed.\n"
 "Would you like to install from Google PlayStore now?"
 msgstr ""
 
 #: src/androidUTIL.cpp:2887
-msgid ""
-"Your android device has an internal GPS, but it is disabled.\n"
-"                       Please visit android Settings/Location dialog to "
-"enable GPS"
+msgid "Your android device has an internal GPS, but it is disabled.\n"
+"                       Please visit android Settings/Location dialog to enable GPS"
 msgstr ""
 
 #: src/androidUTIL.cpp:3024
@@ -2943,9 +2933,7 @@ msgid "OpenCPN Route Delete"
 msgstr ""
 
 #: src/canvasMenu.cpp:1486
-msgid ""
-"Waypoints can be renamed to include the new one, the names will be '001', "
-"'002' etc."
+msgid "Waypoints can be renamed to include the new one, the names will be '001', '002' etc."
 msgstr ""
 
 #: src/canvasMenu.cpp:1488
@@ -2971,19 +2959,11 @@ msgid "OpenCPN Track Delete"
 msgstr ""
 
 #: src/chart1.cpp:1030
-msgid ""
-"\n"
-"OpenCPN is distributed in the hope that it will be useful, but WITHOUT ANY "
-"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR "
-"A PARTICULAR PURPOSE.\n"
-"\n"
-"See the GNU General Public License for more details.\n"
-"\n"
-"OpenCPN must only be used in conjunction with approved paper charts and "
-"traditional methods of navigation.\n"
-"\n"
-"DO NOT rely upon OpenCPN for safety of life or property.\n"
-"\n"
+msgid "\n"
+"OpenCPN is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n"
+"See the GNU General Public License for more details.\n\n"
+"OpenCPN must only be used in conjunction with approved paper charts and traditional methods of navigation.\n\n"
+"DO NOT rely upon OpenCPN for safety of life or property.\n\n"
 "Please click \"OK\" to agree and proceed, \"Cancel\" to quit.\n"
 msgstr ""
 
@@ -3016,9 +2996,7 @@ msgid "Amount of logging: error, warning, message, info, debug or trace"
 msgstr ""
 
 #: src/chart1.cpp:1134
-msgid ""
-"Display a slideshow of <num> charts and then exit. Zero or negative <num> "
-"specifies no limit."
+msgid "Display a slideshow of <num> charts and then exit. Zero or negative <num> specifies no limit."
 msgstr ""
 
 #: src/chart1.cpp:1591
@@ -3035,8 +3013,7 @@ msgid "ENC Completed."
 msgstr ""
 
 #: src/chart1.cpp:1779
-msgid ""
-"Sorry, an existing instance of OpenCPN may be too busy too respond.\n"
+msgid "Sorry, an existing instance of OpenCPN may be too busy too respond.\n"
 "Please retry."
 msgstr ""
 
@@ -3329,8 +3306,7 @@ msgid "Rotated Mode"
 msgstr ""
 
 #: src/chart1.cpp:8180 src/routeprintout.cpp:477
-msgid ""
-"There was a problem printing.\n"
+msgid "There was a problem printing.\n"
 "Perhaps your current printer is not set correctly?"
 msgstr ""
 
@@ -3552,9 +3528,7 @@ msgid "For this leg the Great Circle route is "
 msgstr ""
 
 #: src/chcanv.cpp:7734 src/chcanv.cpp:8295
-msgid ""
-" shorter than rhumbline.\n"
-"\n"
+msgid " shorter than rhumbline.\n\n"
 msgstr ""
 
 #: src/chcanv.cpp:7735 src/chcanv.cpp:8296
@@ -3609,10 +3583,7 @@ msgid "Layer"
 msgstr ""
 
 #: src/chcanv.cpp:9696
-msgid ""
-"There is an existing waypoint at the same location as the one you are "
-"pasting. Would you like to merge the pasted data with it?\n"
-"\n"
+msgid "There is an existing waypoint at the same location as the one you are pasting. Would you like to merge the pasted data with it?\n\n"
 msgstr ""
 
 #: src/chcanv.cpp:9698
@@ -3624,10 +3595,7 @@ msgid "Merge waypoint?"
 msgstr ""
 
 #: src/chcanv.cpp:9764
-msgid ""
-"There are existing waypoints at the same location as some of the ones you are "
-"pasting. Would you like to just merge the pasted data into them?\n"
-"\n"
+msgid "There are existing waypoints at the same location as some of the ones you are pasting. Would you like to just merge the pasted data into them?\n\n"
 msgstr ""
 
 #: src/chcanv.cpp:9767
@@ -4205,10 +4173,8 @@ msgid "Description"
 msgstr ""
 
 #: src/options.cpp:665
-msgid ""
-"Create a private configuration template based on current settings.\n"
-"This template will be saved, and may be selected for further use at any "
-"time.\n"
+msgid "Create a private configuration template based on current settings.\n"
+"This template will be saved, and may be selected for further use at any time.\n"
 "               "
 msgstr ""
 
@@ -4249,8 +4215,7 @@ msgid "This MMSI is my Follower - No CPA Alert"
 msgstr ""
 
 #: src/options.cpp:857
-msgid ""
-"An MMSI Id is generally a number of nine digits.\n"
+msgid "An MMSI Id is generally a number of nine digits.\n"
 "Please check your entries and cancel if necessary."
 msgstr ""
 
@@ -4316,31 +4281,25 @@ msgid "Add MMSI Properties"
 msgstr ""
 
 #: src/options.cpp:1536
-msgid ""
-"The device selected is not accessible; opencpn will likely not be able\n"
+msgid "The device selected is not accessible; opencpn will likely not be able\n"
 "to use this device as-is. You might want to exit OpenCPN, reboot and\n"
 "retry after creating a file called /etc/udev/rules.d/70-opencpn.rules\n"
-"with the following contents:\n"
-"\n"
+"with the following contents:\n\n"
 "            KERNEL==\"ttyUSB*\", MODE=\"0666\"\n"
 "            KERNEL==\"ttyACM*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyS*\", MODE=\"0666\"\n"
-"\n"
+"            KERNEL==\"ttyS*\", MODE=\"0666\"\n\n"
 "For more info, see the file LINUX_DEVICES.md in the distribution docs.\n"
 msgstr ""
 
 #: src/options.cpp:1547
-msgid ""
-"\n"
+msgid "\n"
 "The device selected is not accessible; opencpn will likely not be able\n"
 "to use this device as-is. You might want to exit OpenCPN, reboot and\n"
 "retry after creating a file called /etc/udev/rules.d/70-opencpn.rules\n"
-"with the following contents:\n"
-"\n"
+"with the following contents:\n\n"
 "            KERNEL==\"ttyUSB*\", MODE=\"0666\"\n"
 "            KERNEL==\"ttyACM*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyS*\", MODE=\"0666\"\n"
-"\n"
+"            KERNEL==\"ttyS*\", MODE=\"0666\"\n\n"
 "For more info, see the file LINUX_DEVICES.md in the distribution docs.\n"
 msgstr ""
 
@@ -5130,8 +5089,7 @@ msgid "Show Skewed Raster Charts as North-Up"
 msgstr ""
 
 #: src/options.cpp:4247
-msgid ""
-"With a lower value, the same zoom level shows a less detailed chart.\n"
+msgid "With a lower value, the same zoom level shows a less detailed chart.\n"
 "With a higher value, the same zoom level shows a more detailed chart."
 msgstr ""
 
@@ -5473,8 +5431,7 @@ msgid "WMM Plugin calculated magnetic variation"
 msgstr ""
 
 #: src/options.cpp:5648 src/options.cpp:6022
-msgid ""
-" To set the magnetic variation manually,\n"
+msgid " To set the magnetic variation manually,\n"
 " you must disable the WMM plugin."
 msgstr ""
 
@@ -5805,32 +5762,27 @@ msgid "Add a directory containing chart files"
 msgstr ""
 
 #: src/options.cpp:8084
-msgid ""
-"\n"
+msgid "\n"
 " - your ship's length must be > 0"
 msgstr ""
 
 #: src/options.cpp:8086
-msgid ""
-"\n"
+msgid "\n"
 " - your ship's beam must be > 0"
 msgstr ""
 
 #: src/options.cpp:8089
-msgid ""
-"\n"
+msgid "\n"
 " - your GPS offset from midship must be within your ship's beam"
 msgstr ""
 
 #: src/options.cpp:8093
-msgid ""
-"\n"
+msgid "\n"
 " - your GPS offset from bow must be within your ship's length"
 msgstr ""
 
 #: src/options.cpp:8095
-msgid ""
-"\n"
+msgid "\n"
 " - your minimum ship icon size must be between 1 and 100 mm"
 msgstr ""
 
@@ -5843,12 +5795,9 @@ msgid "OpenCPN info"
 msgstr ""
 
 #: src/options.cpp:9011
-msgid ""
-"Compression will alter chart files on disk.\n"
-"This may make them incompatible with other programs or older versions of "
-"OpenCPN.\n"
-"Compressed charts may take slightly longer to load and display on some "
-"systems.\n"
+msgid "Compression will alter chart files on disk.\n"
+"This may make them incompatible with other programs or older versions of OpenCPN.\n"
+"Compressed charts may take slightly longer to load and display on some systems.\n"
 "They can be decompressed again using unxz or 7 zip programs."
 msgstr ""
 
@@ -5866,8 +5815,7 @@ msgstr ""
 
 #: src/options.cpp:9101
 #, c-format
-msgid ""
-"compressed %ld charts\n"
+msgid "compressed %ld charts\n"
 "from %.1fMB to %.1fMB\n"
 "saved %.1fMB (%.1f%%)"
 msgstr ""
@@ -5909,8 +5857,7 @@ msgid "Sentence Filter"
 msgstr ""
 
 #: src/options.cpp:11156
-msgid ""
-"Enter the NMEA sentence (2, 3 or 5 characters)\n"
+msgid "Enter the NMEA sentence (2, 3 or 5 characters)\n"
 "  or a valid REGEX expression (6 characters or longer)"
 msgstr ""
 
@@ -5919,16 +5866,11 @@ msgid "Enter the NMEA sentence"
 msgstr ""
 
 #: src/options.cpp:11174
-msgid ""
-"An NMEA sentence is generally 3 characters long (like RMC, GGA etc.)\n"
-"           It can also have a two letter prefix identifying the source, or "
-"TALKER, of the message.\n"
+msgid "An NMEA sentence is generally 3 characters long (like RMC, GGA etc.)\n"
+"           It can also have a two letter prefix identifying the source, or TALKER, of the message.\n"
 "           The whole sentences then looks like GPGGA or AITXT.\n"
-"           You may filter out all the sentences with certain TALKER prefix "
-"(like GP, AI etc.).\n"
-"           The filter also accepts Regular Expressions (REGEX) with 6 or more "
-"characters. \n"
-"\n"
+"           You may filter out all the sentences with certain TALKER prefix (like GP, AI etc.).\n"
+"           The filter also accepts Regular Expressions (REGEX) with 6 or more characters. \n\n"
 msgstr ""
 
 #: src/options.cpp:11191
@@ -5996,10 +5938,8 @@ msgid "Miscellaneous"
 msgstr ""
 
 #: src/Osenc.cpp:1173
-msgid ""
-"S57 Cell Update failed.\n"
-"ENC features may be incomplete or inaccurate.\n"
-"\n"
+msgid "S57 Cell Update failed.\n"
+"ENC features may be incomplete or inaccurate.\n\n"
 "Check the logfile for details."
 msgstr ""
 
@@ -6008,11 +5948,9 @@ msgid "OpenCPN Create SENC Warning"
 msgstr ""
 
 #: src/Osenc.cpp:1180
-msgid ""
-"S57 Cell Update failed.\n"
+msgid "S57 Cell Update failed.\n"
 "No updates could be applied.\n"
-"ENC features may be incomplete or inaccurate.\n"
-"\n"
+"ENC features may be incomplete or inaccurate.\n\n"
 "Check the logfile for details."
 msgstr ""
 
@@ -6053,9 +5991,7 @@ msgid "Plugin is latest available"
 msgstr ""
 
 #: src/pluginmanager.cpp:512
-msgid ""
-"The plugin is not compatible with this version of OpenCPN, and will be "
-"uninstalled."
+msgid "The plugin is not compatible with this version of OpenCPN, and will be uninstalled."
 msgstr ""
 
 #: src/pluginmanager.cpp:751
@@ -6068,15 +6004,12 @@ msgstr ""
 
 #: src/pluginmanager.cpp:1212
 #, c-format
-msgid ""
-"The plugin %s is not compatible with this version of OpenCPN, please get an "
-"updated version."
+msgid "The plugin %s is not compatible with this version of OpenCPN, please get an updated version."
 msgstr ""
 
 #: src/pluginmanager.cpp:2233
 #, c-format
-msgid ""
-"PlugIn %s (%s), version %i.%i was detected.\n"
+msgid "PlugIn %s (%s), version %i.%i was detected.\n"
 " This version is known to be unstable and will not be loaded.\n"
 " Please update this PlugIn using the PlugIn manager master catalog."
 msgstr ""
@@ -6087,8 +6020,7 @@ msgstr ""
 
 #: src/pluginmanager.cpp:2246
 #, c-format
-msgid ""
-"PlugIn %s (%s), version %i.%i was detected.\n"
+msgid "PlugIn %s (%s), version %i.%i was detected.\n"
 " This version is known to be unstable.\n"
 " Please update this PlugIn using the PlugIn manager master catalog."
 msgstr ""
@@ -6115,10 +6047,7 @@ msgid " is incompatible with this version of OpenCPN."
 msgstr ""
 
 #: src/pluginmanager.cpp:4850
-msgid ""
-"These settings might destabilize OpenCPN and are by default disabled. To "
-"despite the dangers enable them manually add a CatalogExpert=1 line in the "
-"[PlugIns] section in the configuration file."
+msgid "These settings might destabilize OpenCPN and are by default disabled. To despite the dangers enable them manually add a CatalogExpert=1 line in the [PlugIns] section in the configuration file."
 msgstr ""
 
 #: src/pluginmanager.cpp:4866
@@ -6461,8 +6390,7 @@ msgid "&Copy as text"
 msgstr ""
 
 #: src/routemanagerdialog.cpp:1681
-msgid ""
-"Select the maximum error allowed (in meters)\n"
+msgid "Select the maximum error allowed (in meters)\n"
 "after data reduction:"
 msgstr ""
 
@@ -6472,14 +6400,12 @@ msgstr ""
 
 #: src/routemanagerdialog.cpp:1721
 #, c-format
-msgid ""
-"The amount of data used by the track\n"
+msgid "The amount of data used by the track\n"
 " was reduced by %d%%."
 msgstr ""
 
 #: src/routemanagerdialog.cpp:1819
-msgid ""
-"The currently running Track was not merged.\n"
+msgid "The currently running Track was not merged.\n"
 "You can merge it later when it is completed."
 msgstr ""
 
@@ -6504,9 +6430,7 @@ msgid "Overruled"
 msgstr ""
 
 #: src/routemanagerdialog.cpp:2503
-msgid ""
-"The waypoint you want to delete is used in a route, do you really want to "
-"delete it?"
+msgid "The waypoint you want to delete is used in a route, do you really want to delete it?"
 msgstr ""
 
 #: src/routemanagerdialog.cpp:2628
@@ -6514,8 +6438,7 @@ msgid "Are you sure you want to delete <ALL> waypoints?"
 msgstr ""
 
 #: src/routemanagerdialog.cpp:2633
-msgid ""
-"There are some waypoints used in routes or anchor alarms.\n"
+msgid "There are some waypoints used in routes or anchor alarms.\n"
 " Do you want to delete them as well?\n"
 " This will change the routes and disable the anchor alarms.\n"
 " Answering No keeps the waypoints used in routes or alarms."
@@ -6538,18 +6461,12 @@ msgid "You are trying to delete an active AIS MOB route, are you REALLY sure?"
 msgstr ""
 
 #: src/routeman.cpp:1168
-msgid ""
-"Waypoints can be renamed to reflect the new order, the names will be '001', "
-"'002' etc.\n"
-"\n"
+msgid "Waypoints can be renamed to reflect the new order, the names will be '001', '002' etc.\n\n"
 "Do you want to rename the waypoints?"
 msgstr ""
 
 #: src/routeman.cpp:1174
-msgid ""
-"Waypoints will be renamed to reflect the natural order, the names will be "
-"'001', '002' etc.\n"
-"\n"
+msgid "Waypoints will be renamed to reflect the natural order, the names will be '001', '002' etc.\n\n"
 "Do you want to rename the waypoints?"
 msgstr ""
 
@@ -6869,8 +6786,7 @@ msgid "Links are opened for editing."
 msgstr ""
 
 #: src/s57chart.cpp:3752
-msgid ""
-"S57 Cell Update chain incomplete.\n"
+msgid "S57 Cell Update chain incomplete.\n"
 "ENC features may be incomplete or inaccurate.\n"
 "Check the logfile for details."
 msgstr ""
@@ -6988,8 +6904,7 @@ msgid "Yes, hide it."
 msgstr ""
 
 #: src/toolbar.cpp:3070
-msgid ""
-"The Man Over Board button could be an important safety feature.\n"
+msgid "The Man Over Board button could be an important safety feature.\n"
 "Are you sure you want to hide it?"
 msgstr ""
 
@@ -7387,8 +7302,7 @@ msgid "Save some defaults"
 msgstr ""
 
 #: src/MarkInfo.cpp:1833
-msgid ""
-"Check which properties of current waypoint\n"
+msgid "Check which properties of current waypoint\n"
 " should be set as default for NEW waypoints."
 msgstr ""
 
@@ -7423,3 +7337,4 @@ msgstr ""
 #: src/MarkInfo.cpp:1927
 msgid "Tide Station not found"
 msgstr ""
+
