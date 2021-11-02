@@ -5812,8 +5812,8 @@ void options::CreatePanel_Sounds(size_t parent, int border_size,
     StaticBoxSizer1->Add(m_pCheck_AnchorAudio, 1, wxALL, border_size);
 
     m_anchorAudioFileNameText = new wxStaticText(panelSounds, wxID_ANY, _T(""));
-    m_anchorAudioFileNameText->SetLabel(
-        _(" Audio file name: " + g_anchorwatch_sound_file));
+    m_anchorAudioFileNameText->SetLabel( " " + _("Audio file name:") + " " +
+                g_anchorwatch_sound_file);
     StaticBoxSizer1->Add(m_anchorAudioFileNameText, 0, wxLEFT, border_size);
 
     wxFlexGridSizer* soundSizer1 = new wxFlexGridSizer(2);
@@ -5847,8 +5847,8 @@ void options::CreatePanel_Sounds(size_t parent, int border_size,
     StaticBoxSizer2->Add(m_pCheck_AISAudio, 1, wxALL, border_size);
 
     m_aisAudioFileNameText = new wxStaticText(panelSounds, wxID_ANY, _T(""));
-    m_aisAudioFileNameText->SetLabel(
-        _(" Audio file name: " + g_AIS_sound_file));
+    m_aisAudioFileNameText->SetLabel(" " + _("Audio file name:") + " " +
+            g_AIS_sound_file);
     StaticBoxSizer2->Add(m_aisAudioFileNameText, 0, wxLEFT, border_size);
 
     wxFlexGridSizer* soundSizer2 = new wxFlexGridSizer(2);
@@ -5878,8 +5878,8 @@ void options::CreatePanel_Sounds(size_t parent, int border_size,
     StaticBoxSizer3->Add(m_pCheck_SARTAudio, 1, wxALL, border_size);
 
     m_sartAudioFileNameText = new wxStaticText(panelSounds, wxID_ANY, _T(""));
-    m_sartAudioFileNameText->SetLabel(
-        _(" Audio file name: " + g_SART_sound_file));
+    m_sartAudioFileNameText->SetLabel(" " + _("Audio file name:") + " " +
+            g_SART_sound_file);
     StaticBoxSizer3->Add(m_sartAudioFileNameText, 0, wxLEFT, border_size);
 
     wxFlexGridSizer* soundSizer3 = new wxFlexGridSizer(2);
@@ -5910,8 +5910,8 @@ void options::CreatePanel_Sounds(size_t parent, int border_size,
     StaticBoxSizer4->Add(m_pCheck_DSCAudio, 1, wxALL, border_size);
 
     m_dscAudioFileNameText = new wxStaticText(panelSounds, wxID_ANY, _T(""));
-    m_dscAudioFileNameText->SetLabel(
-        _(" Audio file name: " + g_DSC_sound_file));
+    m_dscAudioFileNameText->SetLabel(" " + _("Audio file name:") + " " +
+            g_DSC_sound_file);
     StaticBoxSizer4->Add(m_dscAudioFileNameText, 0, wxLEFT, border_size);
 
     wxFlexGridSizer* soundSizer4 = new wxFlexGridSizer(2);
@@ -8560,7 +8560,7 @@ void options::OnApplyClick(wxCommandEvent& event) {
     }
     assert(itemIndex >= 0);
     OBJLElement* pOLE = (OBJLElement*)(ps52plib->pOBJLArray->Item(itemIndex));
-    if (pOLE->nViz != ps57CtlListBox->IsChecked(iPtr)) bUserStdChange = true;
+    if (pOLE->nViz != (int)(ps57CtlListBox->IsChecked(iPtr))) bUserStdChange = true;
     pOLE->nViz = ps57CtlListBox->IsChecked(iPtr);
   }
 
@@ -9415,8 +9415,8 @@ void options::DoOnPageChange(size_t page) {
 
       for (int it = 0; it < nLang; it++) {
         {
-//          wxLog::EnableLogging(
-//              FALSE);  // avoid "Cannot set locale to..." log message
+          wxLog::EnableLogging(
+              FALSE);  // avoid "Cannot set locale to..." log message
 
           wxLocale ltest(lang_list[it], 0);
 #if wxCHECK_VERSION(2, 9, 0)
@@ -9434,27 +9434,15 @@ void options::DoOnPageChange(size_t page) {
             wxString s0 =
                 wxLocale::GetLanguageInfo(lang_list[it])->CanonicalName;
             wxString sl = wxLocale::GetLanguageName(lang_list[it]);
-            wxString msg("Loaded language: ");
-            msg += s0;  msg += " "; msg += sl;
-            wxLogMessage(msg);
-            if (wxNOT_FOUND == lang_array.Index(s0)){
-              wxLogMessage(" Adding...");
+            if (wxNOT_FOUND == lang_array.Index(s0))
               lang_array.Add(s0);
-            }
-            else
-              wxLogMessage("skipping due to duplicate...");
           }
-          else
-            wxLogMessage("  Not loaded.");
         }
       }
 
       for (unsigned int i = 0; i < lang_array.GetCount(); i++) {
         //  Make opencpn substitutions
         wxString loc_lang_name = GetOCPNKnownLanguage(lang_array[i]);
-        wxString msg;
-        msg += "Adding to list: "; msg += loc_lang_name;
-        wxLogMessage(msg);
         m_itemLangListBox->Append(loc_lang_name);
       }
 #endif
@@ -9627,8 +9615,8 @@ void options::OnButtonSelectAnchorSound(wxCommandEvent& event) {
 
   if (!sel_file.IsEmpty()) {
     g_anchorwatch_sound_file = g_Platform->NormalizePath(sel_file);
-    m_anchorAudioFileNameText->SetLabel(
-        _(" Audio file name: " + g_anchorwatch_sound_file));
+    m_anchorAudioFileNameText->SetLabel(" " + _("Audio file name:") + " " +
+        g_anchorwatch_sound_file);
     g_anchorwatch_sound->Stop();
   }
 }
@@ -9650,8 +9638,8 @@ void options::OnButtonSelectDSCSound(wxCommandEvent& event) {
 
   if (!sel_file.IsEmpty()) {
     g_DSC_sound_file = g_Platform->NormalizePath(sel_file);
-    m_dscAudioFileNameText->SetLabel(
-        _(" Audio file name: " + g_DSC_sound_file));
+    m_dscAudioFileNameText->SetLabel(" " + _("Audio file name:") + " " +
+        g_DSC_sound_file);
   }
 }
 
@@ -9672,8 +9660,8 @@ void options::OnButtonSelectSARTSound(wxCommandEvent& event) {
 
   if (!sel_file.IsEmpty()) {
     g_SART_sound_file = g_Platform->NormalizePath(sel_file);
-    m_sartAudioFileNameText->SetLabel(
-        _(" Audio file name: " + g_SART_sound_file));
+    m_sartAudioFileNameText->SetLabel(" " + _("Audio file name:") + " " +
+        g_SART_sound_file);
   }
 }
 
@@ -9694,8 +9682,8 @@ void options::OnButtonSelectAISSound(wxCommandEvent& event) {
 
   if (!sel_file.IsEmpty()) {
     g_AIS_sound_file = g_Platform->NormalizePath(sel_file);
-    m_aisAudioFileNameText->SetLabel(
-        _(" Audio file name: " + g_AIS_sound_file));
+    m_aisAudioFileNameText->SetLabel(" " + _("Audio file name:") + " " +
+        g_AIS_sound_file);
   }
 }
 
