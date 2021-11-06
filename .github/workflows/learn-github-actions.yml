@@ -29,15 +29,18 @@ jobs:
     - name: Get Dependencies
       shell: powershell
       run: |
+        Remove-Item -path ${{env.WXWIN}} -force -Recurse
         Invoke-WebRequest https://download.opencpn.org/s/E2p4nLDzeqx4SdX/download -OutFile wxWidgets-3.1.2.7z
         7z x -y wxWidgets-3.1.2.7z -o${{env.WXWIN}}
+        Remove-Item wxWidgets-3.1.2.7z
         Invoke-WebRequest https://download.opencpn.org/s/oibxM3kzfzKcSc3/download -OutFile OpenCPN_buildwin-4.99a.7z
         7z x -y OpenCPN_buildwin-4.99a.7z -o${{github.workspace}}\buildwin
+        Remove-Item OpenCPN_buildwin-4.99a.7z
 
     - name: CMake Configure
       shell: powershell
       working-directory: ${{github.workspace}}/build
-      run: cmake -Wno-dev "-AWin32" -G"Visual Studio 16 2019" -T "v142" -DOCPN_CI_BUILD=ON -DCMAKE_SYSTEM_VERSION=8.1 -DCMAKE_CXX_FLAGS="/MP /EHsc /DWIN32" -DCMAKE_C_FLAGS="/MP" -DOCPN_ENABLE_SYSTEM_CMD_SOUND=ON -DCMAKE_EXE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " -DCMAKE_MODULE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " ..
+      run: cmake -Wno-dev "-AWin32" -G"Visual Studio 16 2019" -T "v142" -DWX_LIB_DIR="%wxWidgets_LIB_DIR%" -DOCPN_CI_BUILD=ON -DCMAKE_SYSTEM_VERSION=8.1 -DCMAKE_CXX_FLAGS="/MP /EHsc /DWIN32" -DCMAKE_C_FLAGS="/MP" -DOCPN_ENABLE_SYSTEM_CMD_SOUND=ON -DCMAKE_EXE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " -DCMAKE_MODULE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " ..
 
     - name: Cmake Build
       shell: powershell
