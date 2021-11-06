@@ -8,6 +8,7 @@ env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: RelWithDebInfo
   WXWIN: C:\wxWidgets-3.1.2
+  WXDIR: C:\wxWidgets-3.1.2
   wxWidgets_LIB_DIR: C:\wxWidgets-3.1.2\lib\vc_dll
   wxWidgets_ROOT_DIR: C:\wxWidgets-3.1.2
 
@@ -40,7 +41,7 @@ jobs:
     - name: CMake Configure
       shell: powershell
       working-directory: ${{github.workspace}}/build
-      run: cmake "-AWin32" -T "v141-xp" -DWX_LIB_DIR="${{env.wxWidgets_LIB_DIR}}" -DOCPN_CI_BUILD=ON ..
+      run: cmake -T v141_xp -AWin32 -DWX_LIB_DIR="${{env.wxWidgets_LIB_DIR}}" -DOCPN_CI_BUILD=ON ..
 
     - name: Cmake Build
       shell: powershell
