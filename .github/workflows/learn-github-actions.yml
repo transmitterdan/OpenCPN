@@ -40,7 +40,7 @@ jobs:
     - name: CMake Configure
       shell: powershell
       working-directory: ${{github.workspace}}/build
-      run: cmake -Wno-dev "-AWin32" -G"Visual Studio 16 2019" -T "v142" -DWX_LIB_DIR="%wxWidgets_LIB_DIR%" -DOCPN_CI_BUILD=ON -DCMAKE_SYSTEM_VERSION=8.1 -DCMAKE_CXX_FLAGS="/MP /EHsc /DWIN32" -DCMAKE_C_FLAGS="/MP" -DOCPN_ENABLE_SYSTEM_CMD_SOUND=ON -DCMAKE_EXE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " -DCMAKE_MODULE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " ..
+      run: cmake -Wno-dev "-AWin32" -G"Visual Studio 16 2019" -T "v141-xp" -DWX_LIB_DIR="${{env.wxWidgets_LIB_DIR}}" -DOCPN_CI_BUILD=ON -DCMAKE_SYSTEM_VERSION=8.1 -DCMAKE_CXX_FLAGS="/MP /EHsc /DWIN32" -DCMAKE_C_FLAGS="/MP" -DOCPN_ENABLE_SYSTEM_CMD_SOUND=ON -DCMAKE_EXE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " -DCMAKE_MODULE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " ..
 
     - name: Cmake Build
       shell: powershell
