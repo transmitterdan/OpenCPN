@@ -8,10 +8,10 @@
             "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/Debug/opencpn",
+            "program": "${workspaceFolder}/build/${command:cmake.buildType}/opencpn",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
+            "cwd": "${workspaceRoot}/build/${command:cmake.buildType}",
             // Get DISPLAY value by opening X-windows terminal
             // and issue command: echo $DISPLAY
             "environment": [{"name":"DISPLAY", "value":":10.0"}],
