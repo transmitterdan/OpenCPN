@@ -202,8 +202,12 @@ static usbdata get_device_usbdata(const char* path) {
   std::stringstream syspath("/sys/dev/char/");
   syspath << "/sys/dev/char/" << major(st.st_rdev) << ":" << minor(st.st_rdev);
   char buff[PATH_MAX];
-  realpath(syspath.str().c_str(), buff);
-  std::string real_path(buff);
+  char *pth = realpath(syspath.str().c_str(), buff);
+  if (pth == NULL) {
+    MESSAGE_LOG << "Cannot locate: " << syspath.str() << ": " << strerror(errno);
+    return usbdata(0, 0);
+  }
+  std::string real_path(pth);
 
   // Get the uevent file in each parent dir and parse it.
   while (real_path.length() > 0) {
