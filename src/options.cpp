@@ -2992,9 +2992,9 @@ void options::CreatePanel_NMEA(size_t parent, int border_size,
 #endif
   FillSourceList();
 
-  ShowNMEACommon(FALSE);
-  ShowNMEASerial(FALSE);
-  ShowNMEANet(FALSE);
+  ShowNMEACommon(true);
+  ShowNMEASerial(true);
+  ShowNMEANet(true);
   connectionsaved = TRUE;
 }
 
@@ -10758,8 +10758,10 @@ void options::SetConnectionParams(ConnectionParams* cp) {
 }
 
 void options::SetDefaultConnectionParams(void) {
-  m_comboPort->Select(0);
-  m_comboPort->SetValue(wxEmptyString);
+  if (m_comboPort && !m_comboPort->IsListEmpty()){
+    m_comboPort->Select(0);
+    m_comboPort->SetValue(wxEmptyString);  // These two broke it
+  }
   m_cbCheckCRC->SetValue(TRUE);
   m_cbGarminHost->SetValue(FALSE);
   m_cbInput->SetValue(TRUE);
@@ -10779,6 +10781,10 @@ void options::SetDefaultConnectionParams(void) {
 
   bool bserial = TRUE;
 #ifdef __WXGTK__
+  bserial = FALSE;
+#endif
+
+#ifdef __WXOSX__
   bserial = FALSE;
 #endif
 
@@ -10882,12 +10888,14 @@ void options::UpdateSourceList(bool bResort) {
 }
 
 void options::OnAddDatasourceClick(wxCommandEvent& event) {
+
   //  Unselect all panels
   for (size_t i = 0; i < g_pConnectionParams->Count(); i++)
     g_pConnectionParams->Item(i)->m_optionsPanel->SetSelected(false);
 
   connectionsaved = FALSE;
   SetDefaultConnectionParams();
+
   m_sbConnEdit->SetLabel(_("Configure new connection"));
 
   m_buttonRemove->Hide();  // Disable();
