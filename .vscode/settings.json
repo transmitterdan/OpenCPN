@@ -23,5 +23,11 @@
         "OCPN_USE_CHART_LIST": "ON",
         "OCPN_BUNDLE_GSHHS":   "ON",
         "OCPN_BUNDLE_TCDATA":  "ON"
-    }
+    },
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true,
+        "**/build/**": true
+      }
 }
