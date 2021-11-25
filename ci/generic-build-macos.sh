@@ -12,11 +12,15 @@ export MACOSX_DEPLOYMENT_TARGET=10.9
 export PATH=/opt/local/bin:$PATH
 
 # allow caching of macports state in $HOME    "/Users/distiller/project/opt_local_cache"
-sudo mkdir -p ${HOME}/project/opt_local_cache
-sudo ln -s ${HOME}/project/opt_local_cache /opt/local
+#sudo mkdir -p ${HOME}/project/opt_local_cache
+#sudo ln -s ${HOME}/project/opt_local_cache /opt/local
 
-ls ${HOME}/project/opt_local_cache || echo "OK"
-ls ${HOME}/project/opt_local_cache/bin || echo "OK"
+curl -k -o /tmp/opt_macports.tar.xz  \
+    https://download.opencpn.org/s/FpPXeWqEif8cLCT/download
+sudo tar -C / -xJf /tmp/opt_macports.tar.xz
+
+#ls ${HOME}/project/opt_local_cache || echo "OK"
+#ls ${HOME}/project/opt_local_cache/bin || echo "OK"
 
 #sudo mkdir -p /opt/local/share/curl
 #sudo cp buildosx/cacert.pem /opt/local/share/curl/curl-ca-bundle.crt
@@ -57,7 +61,7 @@ sudo port -fN deactivate OCPN_curl || {
 sudo port -q install curl
 sudo port -fN deactivate curl
 
-sudo port -fN deactivate openssl
+#sudo port -fN deactivate openssl
 
 
 # install the local port libraries
@@ -72,12 +76,12 @@ sudo port -fq install OCPN_cairo
 
 sudo port -q install zstd
 
-sudo port -fN deactivate libarchive
+#sudo port -fN deactivate libarchive
 sudo port -q install OCPN_libarchive
 
 sudo port -q -f install OCPN_libpng
 
-sudo port -fN deactivate curl
+#sudo port -fN deactivate curl
 sudo port -q activate OCPN_curl
 
 # Install curl to get the TLS certificate bundle
@@ -120,7 +124,7 @@ brew list --versions python3 || {
         fetch --unshallow
 }
 
-for pkg in python3  ; do
+for pkg in python3  cmake ; do
     brew list --versions $pkg || brew install $pkg || brew install $pkg || :
     brew link --overwrite $pkg || :
 done
