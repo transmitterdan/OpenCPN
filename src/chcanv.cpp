@@ -9442,6 +9442,11 @@ void ChartCanvas::ShowObjectQueryWindow(int x, int y, float zlat, float zlon) {
     wxColor bg = g_pObjectQueryDialog->GetBackgroundColour();
     wxColor fg = FontMgr::Get().GetFontColor(_("ObjectQuery"));
 
+#ifdef __WXOSX__
+    // Auto Adjustment for dark mode
+    fg = g_pObjectQueryDialog->GetForegroundColour();
+#endif
+
     objText.Printf(
         _T("<html><body bgcolor=#%02x%02x%02x><font color=#%02x%02x%02x>"),
         bg.Red(), bg.Green(), bg.Blue(), fg.Red(), fg.Green(), fg.Blue());
@@ -10261,7 +10266,7 @@ static void RouteLegInfo(ocpnDC &dc, wxPoint ref_point, const wxString &first,
   AlphaBlending(dc, xp, yp, w, h, 0.0, GetGlobalColor(_T ( "YELO1" )), 172);
 
   dc.SetPen(wxPen(GetGlobalColor(_T ( "UBLCK" ))));
-  dc.SetTextForeground(FontMgr::Get().GetFontColor(_("RouteLegInfoRollover")));
+  dc.SetTextForeground(GetGlobalColor(_T ( "UBLCK" )));
 
   dc.DrawText(first, xp, yp);
   if (second.Len()) dc.DrawText(second, xp, yp + h1);
