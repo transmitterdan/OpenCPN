@@ -394,7 +394,7 @@ wxString GetUUID(void) {
     int clock_seq_low;
     int node_hi;
     int node_low;
-  } uuid;
+  } uuid = {};
 
   uuid.time_low = GetRandomNumber(
       0, 2147483647);  // FIXME: the max should be set to something like
@@ -639,11 +639,7 @@ void dashboard_pi::Notify() {
 
   mSatStatus_Wdog--;
   if (mSatStatus_Wdog <= 0) {
-    SAT_INFO sats[4];
-    for (int i = 0; i < 4; i++) {
-      sats[i].SatNumber = 0;
-      sats[i].SignalToNoiseRatio = 0;
-    }
+    SAT_INFO sats[4] = {};
     SendSatInfoToAllInstruments(0, 1, wxEmptyString, sats);
     SendSatInfoToAllInstruments(0, 2, wxEmptyString, sats);
     SendSatInfoToAllInstruments(0, 3, wxEmptyString, sats);
@@ -1999,13 +1995,7 @@ void dashboard_pi::updateSKItem(wxJSONValue &item, wxString &sfixtime) {
         if (value.HasMember("satellites") && value["satellites"].IsArray()) {
           // Update satellites data.
           int iNumSats = value[_T ("satellites")].Size();
-          SAT_INFO SK_SatInfo[4];
-          for (int idx = 0; idx < 4; idx++) {
-            SK_SatInfo[idx].SatNumber = 0;
-            SK_SatInfo[idx].ElevationDegrees = 0;
-            SK_SatInfo[idx].AzimuthDegreesTrue = 0;
-            SK_SatInfo[idx].SignalToNoiseRatio = 0;
-          }
+          SAT_INFO SK_SatInfo[4] = {};
 
           if (iNumSats) {
             // Arrange SK's array[12] to max three messages like NMEA GSV
@@ -2351,7 +2341,7 @@ void dashboard_pi::OnToolbarToolCallback(int id) {
         //  positions. If the requested window title bar does not intersect any
         //  installed monitor, then default to simple primary monitor
         //  positioning.
-        RECT frame_title_rect;
+        RECT frame_title_rect = {};
         frame_title_rect.left = pane.floating_pos.x;
         frame_title_rect.top = pane.floating_pos.y;
         frame_title_rect.right = pane.floating_pos.x + pane.floating_size.x;
@@ -4085,7 +4075,7 @@ void DashboardWindow::SetInstrumentList(wxArrayInt list) {
             this, wxID_ANY, getInstrumentCaption(id), OCPN_DBP_STC_SOG, 0,
             g_iDashSpeedMax);
         ((DashboardInstrument_Dial *)instrument)
-            ->SetOptionLabel(g_iDashSpeedMax / 20 + 1, DIAL_LABEL_HORIZONTAL);
+            ->SetOptionLabel(floor(g_iDashSpeedMax / 20) + 1, DIAL_LABEL_HORIZONTAL);
         //(DashboardInstrument_Dial *)instrument->SetOptionMarker(0.1,
         //DIAL_MARKER_SIMPLE, 5);
         ((DashboardInstrument_Dial *)instrument)

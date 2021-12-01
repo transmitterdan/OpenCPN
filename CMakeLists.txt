@@ -1231,6 +1231,12 @@ target_include_directories(
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
+if (MSVC AND NOT OCPN_CI_BUILD)
+  set_target_properties(${PACKAGE_NAME} PROPERTIES
+	VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PACKAGE_NAME}>"
+	VS_DEBUGGER_COMMAND_ARGUMENTS "-p")
+endif (MSVC AND not OCPN_CI_BUILD)
+
 if (APPLE)
   target_include_directories(
     ${PACKAGE_NAME}
