@@ -4378,7 +4378,7 @@ bool AddPlugInRoute(PlugIn_Route *proute, bool b_permanent) {
   Route *route = new Route();
 
   PlugIn_Waypoint *pwp;
-  RoutePoint *pWP_src;
+  RoutePoint *pWP_src = {};
   int ip = 0;
   wxDateTime plannedDeparture;
 
@@ -9019,7 +9019,8 @@ bool AddPlugInRouteEx(PlugIn_Route_Ex *proute, bool b_permanent) {
   Route *route = new Route();
 
   PlugIn_Waypoint_Ex *pwaypointex;
-  RoutePoint *pWP, *pWP_src;
+  RoutePoint *pWP;
+  RoutePoint *pWP_src = {};
   int ip = 0;
   wxDateTime plannedDeparture;
 
