@@ -72,6 +72,7 @@
 #include "routeman.h"
 #include "CanvasOptions.h"
 #include "SerialDataStream.h"
+#include "gui_lib.h"
 
 const wxString AndroidSuppLicense = wxT(
     "<br><br>The software included in this product contains copyrighted "
@@ -361,6 +362,7 @@ void *s_soundData;
 
 bool g_detect_smt590;
 int g_orientation;
+int g_SDK_Version;
 
 //      Some dummy devices to ensure plugins have static access to these classes
 //      not used elsewhere
@@ -2301,6 +2303,7 @@ wxString androidGetDeviceInfo() {
         wxString b = s1.Mid(a + 1, 2);
         memset(android_plat_spc.msdk, 0, sizeof(android_plat_spc.msdk));
         strncpy(android_plat_spc.msdk, b.c_str(), 2);
+        g_SDK_Version = atoi( android_plat_spc.msdk );
       }
     }
     if (wxNOT_FOUND != s1.Find(_T("opencpn"))) {
@@ -2390,7 +2393,10 @@ androidGetCacheDir()  // Used for raster_texture_cache, mmsitoname.csv, etc
 
 wxString androidGetExtStorageDir()  // Used for Chart storage, typically
 {
-  return g_androidExtStorageDir;
+  if (g_SDK_Version >= 30)
+    return g_androidExtFilesDir;      // Scoped storage model
+  else
+    return g_androidExtStorageDir;
 }
 
 extern void androidSetRouteAnnunciator(bool viz) {
