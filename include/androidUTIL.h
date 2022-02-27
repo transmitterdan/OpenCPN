@@ -63,6 +63,7 @@ class ArrayOfCDI;
 extern bool androidUtilInit(void);
 
 extern wxString androidGetDeviceInfo();
+extern void CheckMigrateCharts();
 
 extern bool androidGetMemoryStatus(int *mem_total, int *mem_used);
 
@@ -125,6 +126,7 @@ androidGetSharedDir();  // Used for assets like uidata, s57data, etc
 extern wxString
 androidGetCacheDir();  // Used for raster_texture_cache, mmsitoname.csv, etc
 extern wxString androidGetExtStorageDir();  // Used for Chart storage, typically
+extern wxString androidGetDownloadDirectory();
 
 extern int startAndroidFileDownload(const wxString &url,
                                     const wxString &destination,
