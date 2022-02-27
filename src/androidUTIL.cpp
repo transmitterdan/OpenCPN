@@ -328,6 +328,10 @@ wxString g_androidCacheDir;
 wxString g_androidExtFilesDir;
 wxString g_androidExtCacheDir;
 wxString g_androidExtStorageDir;
+wxString g_androidGetFilesDirs0;
+wxString g_androidGetFilesDirs1;
+wxString g_androidDownloadDirectory;
+
 
 int g_mask;
 int g_sel;
@@ -882,6 +886,15 @@ bool androidUtilInit(void) {
     g_androidExtCacheDir = token;
     token = tk.GetNextToken();
     g_androidExtStorageDir = token;
+
+    token = tk.GetNextToken();
+    g_androidGetFilesDirs0 = token;
+    token = tk.GetNextToken();
+    g_androidGetFilesDirs1 = token;
+
+    token = tk.GetNextToken();
+    g_androidDownloadDirectory = token;
+
   }
 
   g_mask = -1;
@@ -2470,7 +2483,10 @@ void androidEnableMulticast(bool benable) {
   callActivityMethod_is("enableMulticast", benable ? 1 : 0);
 }
 
-void androidLastCall(void) { callActivityMethod_is("lastCallOnInit", 1); }
+void androidLastCall(void) {
+  CheckMigrateCharts();
+  callActivityMethod_is("lastCallOnInit", 1);
+}
 
 bool androidGetMemoryStatus(int *mem_total, int *mem_used) {
   //  On android, We arbitrarily declare that we have used 50% of available
@@ -4661,3 +4677,114 @@ Java_org_opencpn_OCPNNativeLib_ScheduleCleanExit(JNIEnv *env, jobject obj) {
   return 1;
 }
 }
+
+void CheckMigrateCharts()
+{
+  if (g_SDK_Version < 30)   // Only on Android/11 +
+    return;
+
+  // Scan the global chart directory array.
+  wxArrayString chartDirs = ChartData->GetChartDirArrayString();
+  wxArrayString migrateDirs;
+
+  for (unsigned int i=0; i < chartDirs.GetCount(); i++){
+#if 0     // Found to be unreliable...
+    //  Check to see if it is possible to write on selected directory
+    wxString testFile(chartDirs[i] + wxFileName::GetPathSeparator() + "testfile");
+    qDebug() << "tesfile  " << testFile.mb_str();
+    wxFile ftest( testFile, wxFile::write);
+    bool btestWrite = ftest.IsOpened();
+    if(btestWrite){
+      int buf = 1;
+      size_t nWrite = ftest.Write( &buf, 4);
+      qDebug() << "nWrite " << nWrite;
+      if (nWrite != 4)
+        btestWrite = false;
+    }
+
+    if (!btestWrite) {
+      migrateDirs.Add(chartDirs[i]);
+    }
+    else{
+      ftest.Close();
+      if (wxFileExists(testFile))
+        wxRemoveFile(testFile);
+    }
+#endif
+
+    bool bOK = false;
+    if ( chartDirs[i].StartsWith(g_androidGetFilesDirs0) )
+      bOK = true;
+
+    else if (!g_androidGetFilesDirs1.StartsWith("?")){
+      if ( chartDirs[i].StartsWith(g_androidGetFilesDirs1) )
+        bOK = true;
+    }
+    if (!bOK) {
+      migrateDirs.Add(chartDirs[i]);
+    }
+  }
+
+  if (!migrateDirs.GetCount())
+    return;
+
+  //  Found some migration targets, so build a message
+
+  wxString m1(_("OpenCPN has detected installed charts which are no longer fully accessible in this version of Android.\n\n  \
+    The chart directories are:\n\n"));
+
+  wxString m2(_("These chart directories, and their contents, must be manually moved to a location compatible with OpenCPN on this version of Android.\n\n\
+    For internal storage, the compatible location directory is:\n\n"));
+
+  wxString m3(_("For SD Card storage, if available, the compatible location directory is:\n\n"));
+
+  wxString m4(_("To move the chart directories, there are three possible methods:\n  \
+    1.  For downloaded charts, such as o-charts, or charts installed by the ChartDownloader Plugin, the simplest method is to perform a fresh download of the charts in question. Select a compatible installation directory, either in internal storage, or SD Card, when prompted by OpenCPN.\n\n \
+    2.  Alternatively, you may use a compatible FileManager on your Android device to manually move the chart directories to a compatible location.  If you choose this method, remember to adjust your chart directories in the OpenCPN Settings->Charts->Chart Files dialog.\n\n \
+    3.  Finally, if convenient, you may connect your Android device by USB cable to a Windows desktop or laptop computer.  Use the Windows File Explorer to manually move the chart directories to a compatible location.  As above, if you choose this method, remember to adjust your chart directories in the OpenCPN Settings->Charts->Chart Files dialog.\n\n" \
+    ));
+
+  wxString msg;
+  msg += m1;
+
+  for (unsigned int i=0; i < migrateDirs.GetCount(); i++){
+    msg += wxString("     ");
+    msg += migrateDirs[i];
+    msg += wxString("\n\n");
+  }
+  msg += wxString("\n");
+
+  msg += m2;
+  msg += wxString("    ");
+  msg += g_androidGetFilesDirs0;
+  msg += wxString("/Charts");
+  msg += wxString("\n\n");
+
+  if (!g_androidGetFilesDirs1.StartsWith("?")){
+    msg += m3;
+    msg += wxString("    ");
+    msg += g_androidGetFilesDirs1;
+    msg += wxString("/Charts");
+    msg += wxString("\n");
+  }
+
+  msg += wxString("\n");
+
+  msg += m4;
+
+  androidShowDisclaimer("Chart Migration Required",  msg);
+
+  // Force access to correct home directory, as a hint....
+  pInit_Chart_Dir->Clear();
+
+}
+
+wxString androidGetDownloadDirectory()
+{
+  return g_androidDownloadDirectory;
+}
+
+
+
+
+
