@@ -452,7 +452,7 @@ static void gui_uninstall(PlugInContainer *pic, const char *plugin) {
 }
 
 static void run_update_dialog(PluginListPanel *parent, PlugInContainer *pic,
-                              bool uninstall, const char *name = 0) {
+                              bool uninstall, const char *name = 0, bool b_forceEnable = false) {
   wxString pluginName = pic->m_common_name;
   const char *plugin = name == 0 ? pic->m_common_name.mb_str().data() : name;
   auto updates = getUpdates(plugin);
@@ -522,6 +522,7 @@ static void run_update_dialog(PluginListPanel *parent, PlugInContainer *pic,
 
   std::string manifestPath = PluginHandler::fileListPath(update.name);
   wxTextFile manifest_file(manifestPath);
+  wxString pluginFile;
   if (manifest_file.Open()) {
     wxString val;
     for (wxString str = manifest_file.GetFirstLine(); !manifest_file.Eof();
@@ -540,9 +541,20 @@ static void run_update_dialog(PluginListPanel *parent, PlugInContainer *pic,
 
           PluginHandler::cleanupFiles(manifestPath, update.name);
         }
+        else {
+          pluginFile = str;
+        }
         break;
       }
     }
+  }
+
+  if (b_forceEnable && pluginFile.Length()){
+    wxString config_section = (_T ( "/PlugIns/" ));
+    wxFileName fn(pluginFile);
+    config_section += fn.GetFullName();
+    pConfig->SetPath(config_section);
+    pConfig->Write(_T ( "bEnabled" ), true);
   }
 
   //  Reload all plugins, which will bring in the action results.
@@ -2264,11 +2276,13 @@ bool PlugInManager::CheckBlacklistedPlugin(opencpn_plugin *plugin) {
       }
 
       wxLogMessage(msg1);
-      if (m_benable_blackdialog)
-        OCPNMessageBox(NULL, msg, wxString(_("OpenCPN Info")),
+      if (!PluginBlacklist[i].mute_dialog) {
+        if (m_benable_blackdialog)
+          OCPNMessageBox(NULL, msg, wxString(_("OpenCPN Info")),
                        wxICON_INFORMATION | wxOK, 10);  // 10 second timeout
-      else
-        m_deferred_blacklist_messages.Add(msg);
+        else
+          m_deferred_blacklist_messages.Add(msg);
+      }
 
       return PluginBlacklist[i].hard;
     }
@@ -6049,7 +6063,9 @@ void PluginPanel::DoPluginSelect() {
     // auto dialog = dynamic_cast<PluginListPanel*>(GetParent());
     // auto dialog = dynamic_cast<PluginListPanel*>(m_parent);
     // wxASSERT(dialog != 0);
-    run_update_dialog(m_PluginListPanel, m_pPlugin, false);
+
+    // Install the new plugin, auto-enabling as a convenience measure.
+    run_update_dialog(m_PluginListPanel, m_pPlugin, false, 0, true);
   } else if (m_bSelected) {
     SetSelected(false);
     m_PluginListPanel->SelectPlugin(NULL);
