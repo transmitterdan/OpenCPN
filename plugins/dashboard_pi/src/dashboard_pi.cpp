@@ -1732,14 +1732,22 @@ void dashboard_pi::handleSKUpdate(wxJSONValue &update) {
     sfixtime = update["timestamp"].AsString();
   }
   if (update.HasMember("values") && update["values"].IsArray()) {
+    wxString talker = wxEmptyString;
+    if (update.HasMember("source")) {
+      if (update["source"].HasMember("talker")) {
+        if (update["source"]["talker"].IsString()) {
+          talker = update["source"]["talker"].AsString();
+        }
+      }
+    }
     for (int j = 0; j < update["values"].Size(); ++j) {
       wxJSONValue &item = update["values"][j];
-      updateSKItem(item, sfixtime);
+      updateSKItem(item, talker, sfixtime);
     }
   }
 }
 
-void dashboard_pi::updateSKItem(wxJSONValue &item, wxString &sfixtime) {
+void dashboard_pi::updateSKItem(wxJSONValue &item, wxString &talker, wxString &sfixtime) {
   if (item.HasMember("path") && item.HasMember("value")) {
     const wxString &update_path = item["path"].AsString();
     wxJSONValue &value = item["value"];
@@ -1888,8 +1896,6 @@ void dashboard_pi::updateSKItem(wxJSONValue &item, wxString &sfixtime) {
                                          _T("\u00B0"));
             mPriWDN = 3;
             mWDN_Watchdog = gps_watchdog_timeout_ticks;
-            mPriWDN = 3;
-            mWDN_Watchdog = gps_watchdog_timeout_ticks;
           }
         }
       }
@@ -1982,7 +1988,7 @@ void dashboard_pi::updateSKItem(wxJSONValue &item, wxString &sfixtime) {
     } else if (update_path ==
                _T("navigation.gnss.satellitesInView")) {  // GNSS satellites in
                                                           // view
-      if (mPriSatUsed >= 4 || mPriSatStatus >= 2) {
+      if (mPriSatUsed >= 4 ) {
         if (value.HasMember("count") && value["count"].IsInt()) {
           double m_SK_SatsInView = (value["count"].AsInt());
           SendSentenceToAllInstruments(OCPN_DBP_STC_SAT, m_SK_SatsInView,
@@ -1994,8 +2000,19 @@ void dashboard_pi::updateSKItem(wxJSONValue &item, wxString &sfixtime) {
       if (mPriSatStatus >= 2) {
         if (value.HasMember("satellites") && value["satellites"].IsArray()) {
           // Update satellites data.
-          int iNumSats = value[_T ("satellites")].Size();
-          SAT_INFO SK_SatInfo[4] = {};
+          int iNumSats;
+          if (value.HasMember("count") && value["count"].IsInt()) {
+            iNumSats = ( value["count"].AsInt() );
+          }
+          else iNumSats = value[_T ("satellites")].Size();
+
+          SAT_INFO SK_SatInfo[4];
+          for (int idx = 0; idx < 4; idx++) {
+            SK_SatInfo[idx].SatNumber = 0;
+            SK_SatInfo[idx].ElevationDegrees = 0;
+            SK_SatInfo[idx].AzimuthDegreesTrue = 0;
+            SK_SatInfo[idx].SignalToNoiseRatio = 0;
+          }
 
           if (iNumSats) {
             // Arrange SK's array[12] to max three messages like NMEA GSV
@@ -2008,7 +2025,6 @@ void dashboard_pi::updateSKItem(wxJSONValue &item, wxString &sfixtime) {
             for (int iMesNum = 0; iMesNum < 3; iMesNum++) {
               for (idx = 0; idx < 4; idx++) {
                 arr = idx + 4 * iMesNum;
-                try {
                   if (value["satellites"][arr]["id"].IsInt())
                     iID = value["satellites"][arr]["id"].AsInt();
                   if (value["satellites"][arr]["elevation"].IsDouble())
@@ -2017,10 +2033,7 @@ void dashboard_pi::updateSKItem(wxJSONValue &item, wxString &sfixtime) {
                     dAzimRad = value["satellites"][arr]["azimuth"].AsDouble();
                   if (value["satellites"][arr]["SNR"].IsInt())
                     iSNR = value["satellites"][arr]["SNR"].AsInt();
-                } catch (int e) {
-                  wxLogMessage(
-                      ("_T(SignalK: Could not parse all satellite data: ") + e);
-                }
+
                 if (iID < 1) break;
                 SK_SatInfo[idx].SatNumber = iID;
                 SK_SatInfo[idx].ElevationDegrees = GEODESIC_RAD2DEG(dElevRad);
@@ -2028,10 +2041,11 @@ void dashboard_pi::updateSKItem(wxJSONValue &item, wxString &sfixtime) {
                 SK_SatInfo[idx].SignalToNoiseRatio = iSNR;
               }
               if (idx > 0) {
-                // TODO. Add talkerID to talk when SignalK has incorporated
-                // that.
-                SendSatInfoToAllInstruments(iNumSats, iMesNum + 1,
-                                            wxEmptyString, SK_SatInfo);
+                wxString talkID = wxEmptyString;
+                if (talker.StartsWith(_T("G"))) {
+                  talkID = talker;
+                }
+                SendSatInfoToAllInstruments(iNumSats, iMesNum + 1, talkID, SK_SatInfo);
                 mPriSatStatus = 2;
                 mSatStatus_Wdog = gps_watchdog_timeout_ticks;
               }
