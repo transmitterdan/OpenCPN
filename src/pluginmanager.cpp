@@ -1545,6 +1545,17 @@ bool PlugInManager::UpdatePlugIns() {
 
   UpDateChartDataTypes();
 
+    // Tell all the PlugIns about the current OCPN configuration
+  SendBaseConfigToAllPlugIns();
+  SendS52ConfigToAllPlugIns(true);
+  SendSKConfigToAllPlugIns();
+
+  // Inform Plugins of OpenGL configuration, if enabled
+  if (g_bopengl) {
+    if (gFrame->GetPrimaryCanvas()->GetglCanvas())
+      gFrame->GetPrimaryCanvas()->GetglCanvas()->SendJSONConfigMessage();
+  }
+
   return bret;
 }
 
@@ -4996,6 +5007,8 @@ CatalogMgrPanel::CatalogMgrPanel(wxWindow *parent)
     m_updateButton->Bind(wxEVT_COMMAND_BUTTON_CLICKED,
                          &CatalogMgrPanel::OnUpdateButton, this);
     SetUpdateButtonLabel();
+    m_tarballButton = NULL;
+    m_adv_button = NULL;
   } else {
     // First line
     m_catalogText = new wxStaticText(this, wxID_STATIC, _T(""));
@@ -5038,7 +5051,8 @@ CatalogMgrPanel::CatalogMgrPanel(wxWindow *parent)
 CatalogMgrPanel::~CatalogMgrPanel() {
   m_updateButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED,
                          &CatalogMgrPanel::OnUpdateButton, this);
-  m_tarballButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED,
+  if (m_tarballButton)
+    m_tarballButton->Unbind(wxEVT_COMMAND_BUTTON_CLICKED,
                           &CatalogMgrPanel::OnTarballButton, this);
 }
 
@@ -5118,7 +5132,9 @@ void CatalogMgrPanel::OnUpdateButton(wxCommandEvent &event) {
   g_pi_manager->LoadAllPlugIns(false);
 
   // Update this Panel, and the entire list.
+#ifndef __OCPN__ANDROID__
   m_catalogText->SetLabel(GetCatalogText(true));
+#endif
   if (m_PluginListPanel)
     m_PluginListPanel->ReloadPluginPanels(g_pi_manager->GetPlugInArray());
 
