@@ -2354,6 +2354,20 @@ wxString androidGetDeviceInfo() {
   return g_deviceInfo;
 }
 
+bool androidIsDirWritable( wxString dir )
+{
+  if (g_SDK_Version < 30)
+    return true;
+  else{
+    // This is theorectically most accurate, but slow to execute
+    //wxString result = callActivityMethod_ss("isDirWritable", dir);
+    //return (result.IsSameAs("YES"));
+
+    // This is a practical alternative, for things like chart storage qualification.
+    return (dir.Contains("org.opencpn.opencpn"));
+  }
+}
+
 wxString androidGetHomeDir() { return g_androidFilesDir + _T("/"); }
 
 wxString
@@ -3994,8 +4008,7 @@ wxString androidGetSupplementalLicense(void) {
 
 wxArrayString androidTraverseDir(wxString dir, wxString filespec) {
   wxArrayString result;
-  if (strncmp(android_plat_spc.msdk, "17",
-              2))  // skip unless running Android 4.2.2, especially Samsung...
+  if (g_SDK_Version != 17)  // skip unless running Android 4.2.2, especially Samsung...
     return result;
 
   wxString ir =
