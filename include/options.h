@@ -202,7 +202,6 @@ enum {
   // LIVE ETA OPTION
   ID_CHECK_LIVEETA,
   ID_DEFAULT_BOAT_SPEED,
-  ID_DARKDECORATIONSBOX,
   ID_SCREENCONFIG1,
   ID_SCREENCONFIG2,
   ID_CONFIGEDIT_OK,
@@ -377,7 +376,6 @@ public:
   ArrayOfCDI GetUnSelectedChartDirs();
   void SetDirActionButtons();
 
-
   void OnCreateConfig(wxCommandEvent &event);
   void OnEditConfig(wxCommandEvent &event);
   void OnDeleteConfig(wxCommandEvent &event);
@@ -386,6 +384,7 @@ public:
   void ClearConfigList();
   void BuildConfigList();
   void OnConfigMouseSelected(wxMouseEvent &event);
+  void OnDialogInit(wxInitDialogEvent& event);
 
   void SetSelectedConnectionPanel(ConnectionParamsPanel *panel);
 
@@ -425,8 +424,7 @@ public:
   wxCheckBox *pFullScreenQuilt, *pMobile, *pResponsive, *pOverzoomEmphasis;
   //  wxCheckBox *pOZScaleVector, *pToolbarAutoHideCB, *pInlandEcdis,
   //  *pRollover;
-  wxCheckBox *pOZScaleVector, *pToolbarAutoHideCB, *pInlandEcdis, *pRollover,
-      *pDarkDecorations;
+  wxCheckBox *pOZScaleVector, *pToolbarAutoHideCB, *pInlandEcdis, *pRollover;
   wxCheckBox *pZoomButtons;
   wxTextCtrl *pCOGUPUpdateSecs, *m_pText_OSCOG_Predictor, *pScreenMM;
   wxTextCtrl *pToolbarHideSecs, *m_pText_OSHDT_Predictor;
@@ -436,6 +434,7 @@ public:
   wxChoice *m_pShipIconType, *m_pcTCDatasets;
   wxSlider *m_pSlider_Zoom, *m_pSlider_GUI_Factor, *m_pSlider_Chart_Factor,
       *m_pSlider_Ship_Factor, *m_pSlider_Text_Factor;
+  wxSlider *m_pMouse_Zoom_Slider;
   wxSlider *m_pSlider_Zoom_Vector;
   wxSlider *m_pSlider_CM93_Zoom;
   // LIVE ETA OPTION
@@ -512,7 +511,7 @@ public:
   void OnDiscoverButton(wxCommandEvent &event);
   void UpdateDiscoverStatus(wxString stat);
   void OnAISRolloverClick(wxCommandEvent &event);
-  void UpdateChartDirList( );
+  void UpdateChartDirList();
 
   void OnCanvasConfigSelectClick(int ID, bool selected);
 
@@ -564,6 +563,9 @@ public:
   int m_nCharWidthMax;
   wxBoxSizer *boxSizerCharts;
   wxScrolledWindow *m_scrollWinChartList;
+  wxScrolledWindow* chartPanelWin;
+  wxBoxSizer* cmdButtonSizer;
+  wxStaticBox* loadedBox;
   std::vector<OCPNChartDirPanel *> panelVector;
   wxArrayString activeChartList;
 

@@ -244,6 +244,9 @@ extern wxString g_CmdSoundString;
 extern int g_maintoolbar_x;
 extern int g_maintoolbar_y;
 extern wxArrayString TideCurrentDataSet;
+extern int g_SDK_Version;
+extern wxString g_androidDownloadDirectory;
+extern wxString g_gpx_path;
 
 static const char *const DEFAULT_XDG_DATA_DIRS =
     "~/.local/share:/usr/local/share:/usr/share";
@@ -484,7 +487,7 @@ void OCPNPlatform::Initialize_1(void) {
 
   // URL for sending error reports over HTTP.
 
-  if (1 /*g_bEmailCrashReport*/) {
+  if (g_bEmailCrashReport) {
     info.pszUrl = _T("https://bigdumboat.com/crashrpt/ocpn_crashrpt.php");
     info.uPriorities[CR_HTTP] = 3;  // First try send report over HTTP
   } else {
@@ -686,6 +689,13 @@ void OCPNPlatform::Initialize_2(void) {
     GRIBDir.Append( "GRIBS");
     if (!::wxDirExists(GRIBDir)) {
       ::wxMkdir(GRIBDir);
+    }
+
+    // Set the default Import/Export directory for A11+
+    if (g_SDK_Version >= 30){
+      if (!g_gpx_path.StartsWith(androidGetDownloadDirectory())){
+        g_gpx_path = androidGetDownloadDirectory();
+      }
     }
 
 #endif
