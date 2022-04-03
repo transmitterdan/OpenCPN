@@ -223,7 +223,8 @@ enum {
   ID_AISALERTDIALOG,
   ID_AISALERTSELECTSOUND,
   ID_AISALERTTESTSOUND,
-  ID_TEMPUNITSCHOICE
+  ID_TEMPUNITSCHOICE,
+  ID_BUTTONMIGRATE
 };
 
 /* Define an int bit field for dialog return value
@@ -318,6 +319,7 @@ public:
   void OnButtondeleteClick(wxCommandEvent &event);
   void OnButtonParseENC(wxCommandEvent &event);
   void OnButtoncompressClick(wxCommandEvent &event);
+  void OnButtonmigrateClick(wxCommandEvent &event);
   void OnRadioboxSelected(wxCommandEvent &event);
   void OnApplyClick(wxCommandEvent &event);
   void OnXidOkClick(wxCommandEvent &event);
@@ -391,6 +393,7 @@ public:
   bool GetNeedNew() { return m_bneedNew; }
   void SetNeedNew(bool bnew) { m_bneedNew = bnew; }
   int GetScrollRate() { return m_scrollRate; }
+  void SetForceNewToolbarOnCancel(bool val) { m_bForceNewToolbaronCancel = val; }
 
   // Should we show tooltips?
   static bool ShowToolTips(void);
@@ -559,6 +562,7 @@ public:
   wxCheckBox *pUpdateCheckBox, *pScanCheckBox;
   wxButton *pParseENCButton;
   wxButton *m_removeBtn, *m_compressBtn;
+  wxButton *m_migrateBtn;
   int k_charts;
   int m_nCharWidthMax;
   wxBoxSizer *boxSizerCharts;
@@ -675,6 +679,7 @@ public:
   MyFrame *pParent;
 
   int k_plugins;
+  bool m_bForceNewToolbaronCancel;
 
   // Sounds panel
   wxCheckBox *m_pCheck_AnchorAudio, *m_pCheck_AISAudio, *m_pCheck_SARTAudio,
