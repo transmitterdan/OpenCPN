@@ -363,6 +363,11 @@ extern int osMajor, osMinor;
 extern bool g_bShowMuiZoomButtons;
 extern MyConfig *pConfig;
 
+#ifdef __OCPN__ANDROID__
+extern int g_Android_SDK_Version;
+extern MigrateAssistantDialog *g_migrateDialog;
+#endif
+
 extern wxString GetShipNameFromFile(int);
 
 WX_DEFINE_ARRAY_PTR(ChartCanvas*, arrayofCanvasPtr);
@@ -1578,6 +1583,7 @@ EVT_BUTTON(ID_BUTTONADD, options::OnButtonaddClick)
 EVT_BUTTON(ID_BUTTONDELETE, options::OnButtondeleteClick)
 EVT_BUTTON(ID_PARSEENCBUTTON, options::OnButtonParseENC)
 EVT_BUTTON(ID_BUTTONCOMPRESS, options::OnButtoncompressClick)
+EVT_BUTTON(ID_BUTTONMIGRATE, options::OnButtonmigrateClick)
 EVT_BUTTON(ID_TCDATAADD, options::OnInsertTideDataLocation)
 EVT_BUTTON(ID_TCDATADEL, options::OnRemoveTideDataLocation)
 EVT_BUTTON(ID_APPLY, options::OnApplyClick)
@@ -1782,6 +1788,8 @@ void options::Init(void) {
 
   lastPage = 0;
   m_bneedNew = false;
+
+  m_bForceNewToolbaronCancel = false;
 
   m_cs = (ColorScheme)0;
 
@@ -3981,6 +3989,16 @@ void options::CreatePanel_ChartsLoad(size_t parent, int border_size,
 #else
   m_compressBtn = NULL;
 #endif
+
+#ifdef __OCPN__ANDROID__
+  if (g_Android_SDK_Version >= 30) {
+    m_migrateBtn =
+      new wxButton(chartPanelWin, ID_BUTTONMIGRATE, _("Migrate Charts.."));
+    cmdButtonSizer->Add(m_migrateBtn, 1, wxALL | wxEXPAND, group_item_spacing);
+  }
+#endif
+
+  cmdButtonSizer->AddSpacer( GetCharHeight());
 
   wxStaticBox* itemStaticBoxUpdateStatic =
       new wxStaticBox(chartPanelWin, wxID_ANY, _("Update Control"));
@@ -7806,6 +7824,8 @@ void options::SetInitialSettings(void) {
   connectionsaved = true;
 
   SetSelectedConnectionPanel(nullptr);
+
+  m_bForceNewToolbaronCancel = false;
 }
 
 void options::resetMarStdList(bool bsetConfig, bool bsetStd) {
@@ -9408,6 +9428,20 @@ static bool CompressChart(wxString in, wxString out) {
   return false;
 }
 
+void options::OnButtonmigrateClick(wxCommandEvent& event)
+{
+#ifdef __OCPN__ANDROID__
+
+  // Run the chart migration assistant
+  g_migrateDialog = new MigrateAssistantDialog(gFrame, true);   // skip Folder scan
+  g_migrateDialog->SetSize( gFrame->GetSize());
+  g_migrateDialog->Centre();
+  g_migrateDialog->Raise();
+  g_migrateDialog->ShowModal();
+#endif
+
+}
+
 void options::OnButtoncompressClick(wxCommandEvent& event) {
 #if 0
   wxArrayInt pListBoxSelections;
@@ -9554,7 +9588,10 @@ void options::OnCancelClick(wxCommandEvent& event) {
   pConfig->Write("OptionsSizeX", lastWindowSize.x);
   pConfig->Write("OptionsSizeY", lastWindowSize.y);
 
-  EndModal(0);
+  int rv = 0;
+  if (m_bForceNewToolbaronCancel)
+    rv = TOOLBAR_CHANGED;
+  EndModal(rv);
 }
 
 void options::OnClose(wxCloseEvent& event) {
