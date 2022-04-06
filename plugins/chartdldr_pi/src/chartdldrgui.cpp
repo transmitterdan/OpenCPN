@@ -330,7 +330,7 @@ AddSourceDlg::AddSourceDlg(wxWindow* parent, wxWindowID id,
   wxBoxSizer* dirbox1 = new wxBoxSizer(wxHORIZONTAL);
   sbSizerChartDir->Add(dirbox1, 0, wxALIGN_RIGHT);
   m_buttonChartDirectory = new wxButton(this, wxID_ANY, _("Select a different directory"));
-  dirbox1->Add(m_buttonChartDirectory, 0, wxALL | wxEXPAND | wxALIGN_RIGHT, 5);
+  dirbox1->Add(m_buttonChartDirectory, 0, wxALL | wxEXPAND, 5);
   m_buttonChartDirectory->Disable();
 
   wxBoxSizer* buttons = new wxBoxSizer(wxHORIZONTAL);
