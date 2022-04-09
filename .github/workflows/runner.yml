@@ -8,7 +8,7 @@ env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: RelWithDebInfo
   WXWIN: C:\OA\wxWidgets
-  wxWidgets_LIB_DIR: C:\OA\wxWidgets\lib\vc_dll
+  wxWidgets_LIB_DIR: C:\OA\wxWidgets\lib\vc143_dll
   wxWidgets_ROOT_DIR: C:\OA\wxWidgets
 
 jobs:
@@ -33,6 +33,9 @@ jobs:
         # 7z x -y wxWidgets-3.1.2.7z -o${{env.WXWIN}}
         Invoke-WebRequest https://download.opencpn.org/s/oibxM3kzfzKcSc3/download -OutFile OpenCPN_buildwin-4.99a.7z
         7z x -y OpenCPN_buildwin-4.99a.7z -o${{github.workspace}}\buildwin
+        New-Item -Path "${{github.workspace}}\buildwin" -Name "wxWidgets" -ItemType "directory"
+        Copy-Item "${{env.WXWIDGETS_LIB_DIR}}\*.*" -Destination "${{github.workspace}}\buildwin\wxWidgets"
+        Copy-Item "${{env.WXWIDGETS_LIB_DIR}}\locale" -Destination "${{github.workspace}}\buildwin\wxWidgets\locale"
 
     - name: CMake Configure
       shell: powershell
