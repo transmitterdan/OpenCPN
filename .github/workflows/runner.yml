@@ -7,10 +7,9 @@ on:
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   BUILD_TYPE: RelWithDebInfo
-  WXWIN: C:\wxWidgets-3.1.2
-  WXDIR: C:\wxWidgets-3.1.2
-  wxWidgets_LIB_DIR: C:\wxWidgets-3.1.2\lib\vc_dll
-  wxWidgets_ROOT_DIR: C:\wxWidgets-3.1.2
+  WXWIN: C:\OA\wxWidgets
+  wxWidgets_LIB_DIR: C:\OA\wxWidgets\lib\vc_dll
+  wxWidgets_ROOT_DIR: C:\OA\wxWidgets
 
 jobs:
   OpenCPN_runner:
@@ -30,18 +29,15 @@ jobs:
     - name: Get Dependencies
       shell: powershell
       run: |
-        Remove-Item -path ${{env.WXWIN}} -force -Recurse
-        Invoke-WebRequest https://download.opencpn.org/s/E2p4nLDzeqx4SdX/download -OutFile wxWidgets-3.1.2.7z
-        7z x -y wxWidgets-3.1.2.7z -o${{env.WXWIN}}
-        Remove-Item wxWidgets-3.1.2.7z
+        # Invoke-WebRequest https://download.opencpn.org/s/E2p4nLDzeqx4SdX/download -OutFile wxWidgets-3.1.2.7z
+        # 7z x -y wxWidgets-3.1.2.7z -o${{env.WXWIN}}
         Invoke-WebRequest https://download.opencpn.org/s/oibxM3kzfzKcSc3/download -OutFile OpenCPN_buildwin-4.99a.7z
         7z x -y OpenCPN_buildwin-4.99a.7z -o${{github.workspace}}\buildwin
-        Remove-Item OpenCPN_buildwin-4.99a.7z
 
     - name: CMake Configure
       shell: powershell
       working-directory: ${{github.workspace}}/build
-      run: cmake -T v141_xp -AWin32 -DWX_LIB_DIR="${{env.wxWidgets_LIB_DIR}}" -DOCPN_CI_BUILD=ON ..
+      run: cmake -Wno-dev "-AWin32" -G"Visual Studio 17 2022" -T "v143" -DOCPN_CI_BUILD=ON -DCMAKE_SYSTEM_VERSION=8.1 -DCMAKE_CXX_FLAGS="/MP /EHsc /DWIN32" -DCMAKE_C_FLAGS="/MP" -DOCPN_ENABLE_SYSTEM_CMD_SOUND=ON -DCMAKE_EXE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " -DCMAKE_MODULE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " ..
 
     - name: Cmake Build
       shell: powershell
@@ -56,5 +52,5 @@ jobs:
 
     - uses: actions/upload-artifact@v2.2.4
       with:
-        name:  OpenCPN_5.5.0
+        name:  OpenCPN_Runner
         path: ${{github.workspace}}/build/*.exe
