@@ -35,7 +35,7 @@ jobs:
         7z x -y OpenCPN_buildwin-4.99a.7z -o${{github.workspace}}\buildwin
         Copy-Item "${{env.wxWidgets_LIB_DIR}}\*.*" -Destination "${{github.workspace}}\buildwin\wxWidgets" -Force
         dir "${{github.workspace}}\buildwin\wxWidgets"
-        Copy-Item "${{env.wxWidgets_ROOT_DIR}}\locale" -Force -Destination "${{github.workspace}}\buildwin\wxWidgets"
+        Copy-Item "${{env.wxWidgets_ROOT_DIR}}\locale" -Destination "${{github.workspace}}\buildwin\wxWidgets" -Force
         dir "${{github.workspace}}\buildwin\wxWidgets\locale"
 
     - name: CMake Configure
