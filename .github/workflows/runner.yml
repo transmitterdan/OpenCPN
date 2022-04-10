@@ -33,10 +33,10 @@ jobs:
         # 7z x -y wxWidgets-3.1.2.7z -o${{env.WXWIN}}
         Invoke-WebRequest https://download.opencpn.org/s/oibxM3kzfzKcSc3/download -OutFile OpenCPN_buildwin-4.99a.7z
         7z x -y OpenCPN_buildwin-4.99a.7z -o${{github.workspace}}\buildwin
-        Copy-Item "${{env.wxWidgets_LIB_DIR}}\*.*" -Destination "${{github.workspace}}\buildwin\wxWidgets" -Force
         dir "${{github.workspace}}\buildwin\wxWidgets"
-        Copy-Item "${{env.wxWidgets_ROOT_DIR}}\locale" -Destination "${{github.workspace}}\buildwin\wxWidgets" -Force
-        dir "${{github.workspace}}\buildwin\wxWidgets\locale"
+        Remove-Item "${{github.workspace}}\buildwin\wxWidgets\*.*" -Force -Recurse
+        Copy-Item "${{env.wxWidgets_LIB_DIR}}\*.*" -Destination "${{github.workspace}}\buildwin\wxWidgets"
+        Copy-Item "${{env.wxWidgets_ROOT_DIR}}\locale" -Destination "${{github.workspace}}\buildwin\wxWidgets"
 
     - name: CMake Configure
       shell: powershell
