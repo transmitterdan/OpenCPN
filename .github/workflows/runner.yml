@@ -35,9 +35,11 @@ jobs:
         7z x -y OpenCPN_buildwin-4.99a.7z -o${{github.workspace}}\buildwin
         Get-ChildItem -Path "${{github.workspace}}\buildwin\wxWidgets" -Recurse -Force
         Remove-Item "${{github.workspace}}\buildwin\wxWidgets\*.*" -Force -Recurse
+        Get-ChildItem -Path "${{github.workspace}}\buildwin\wxWidgets" -Recurse -Force
         Copy-Item "${{env.wxWidgets_LIB_DIR}}\*.dll" -Destination "${{github.workspace}}\buildwin\wxWidgets"
         Copy-Item "${{env.wxWidgets_LIB_DIR}}\*.pdb" -Destination "${{github.workspace}}\buildwin\wxWidgets"
         Copy-Item "${{env.wxWidgets_ROOT_DIR}}\locale" -Destination "${{github.workspace}}\buildwin\wxWidgets" -Force -Recurse
+        Get-ChildItem -Path "${{github.workspace}}\buildwin\wxWidgets" -Recurse -Force
 
     - name: CMake Configure
       shell: powershell
