@@ -4298,40 +4298,8 @@ msgstr "Sisäänrakennettu GPS"
 #: src/ConnectionParams.cpp:820 src/options.cpp:2136
 msgid "Built-in Bluetooth"
 msgstr "Sisäänrakennettu Bluetooth"
-#
-msgid "Built-in Bluetooth SPP"
-msgstr "Sisäänrakennettu Bluetooth SPP"
-#
-msgid "Built-in GPS"
-msgstr "Sisäänrakennettu GPS"
-#
-msgid "Bulgaria"
-msgstr "Bulgaria"
-#
-msgid "Bulk carrier maritime"
-msgstr "Bulkkitavara-alus"
-#
-msgid "Bunkership"
-msgstr "Hiilialus"
-#
-msgid "Buoy/Light Labels"
-msgstr "Poiju/Valo otsikot"
-#
-msgid "Buoys/Lights"
-msgstr "Poijut/valot"
-#
-msgid "Burkina Faso"
-msgstr "Burkina Faso"
-#
-msgid "Burundi"
-msgstr "Burundi"
-#
-msgid "C"
-msgstr "C"
-#
-msgid "C&olour:"
-msgstr "&Väri:"
-#
+
+#: src/DetailSlider.cpp:88
 msgid "CM93 Detail Level"
 msgstr "CM93 yksityiskohtien taso"
 
@@ -4446,10 +4414,32 @@ msgstr "OpenCPN-reittipiste"
 #: src/kml.cpp:638
 msgid "Choose Format for Copy"
 msgstr "Valitse kopion muoto"
-#
-msgid "Choose Toolbar Icons"
-msgstr "Valitse työkalurivin kuvakkeet"
-#
+
+#: src/kml.cpp:646
+msgid "KML Standard (Google Earth and others)"
+msgstr "Standardi KML (Google Earth ja muut)"
+
+#: src/kml.cpp:650
+msgid "KML with extended waypoint data (QtVlm)"
+msgstr "KML laajennetuilla reittipisteen tiedoilla (QtVlm)"
+
+#: src/LinkPropDlg.cpp:47
+msgid "Link"
+msgstr "Linkki"
+
+#: src/LinkPropDlg.cpp:49
+msgid "Link description"
+msgstr "Linkin kuvaus"
+
+#: src/LinkPropDlg.cpp:58
+msgid "URL"
+msgstr "URL"
+
+#: src/LinkPropDlg.cpp:67
+msgid "Local file..."
+msgstr "Paikallinen tiedosto..."
+
+#: src/LinkPropDlg.cpp:122
 msgid "Choose a file"
 msgstr "Valitse tiedosto"
 

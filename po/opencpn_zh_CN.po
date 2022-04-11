@@ -229,75 +229,111 @@ msgstr "OpenCPN信息"
 #: src/ais.cpp:113
 msgid "Underway using Engine"
 msgstr ""
-"\n"
-" - 自船艏的GPS补偿必须在船只长度以内"
-#
-msgid ""
-"\n"
-" - your GPS offset from midship must be within your ship's beam"
+
+#: src/ais.cpp:114
+msgid "At Anchor"
+msgstr "锚泊中"
+
+#: src/ais.cpp:115
+msgid "Not Under Command"
+msgstr "失控"
+
+#: src/ais.cpp:116
+msgid "Restricted Manoeuvrability"
+msgstr "操纵性受限"
+
+#: src/ais.cpp:117
+msgid "Constrained by draught"
+msgstr "受限于吃水"
+
+#: src/ais.cpp:118
+msgid "Moored"
+msgstr "系泊"
+
+#: src/ais.cpp:119
+msgid "Aground"
+msgstr "搁浅"
+
+#: src/ais.cpp:120
+msgid "Engaged in Fishing"
+msgstr "捕鱼中"
+
+#: src/ais.cpp:121
+msgid "Underway Sailing"
 msgstr ""
-"\n"
-" - 自船中的GPS补偿必须在船只宽度以内"
-#
-msgid ""
-"\n"
-" - your minimum ship icon size must be between 1 and 100 mm"
+
+#: src/ais.cpp:122 src/ais.cpp:149
+msgid "High Speed Craft"
+msgstr "高速船"
+
+#: src/ais.cpp:123
+msgid "Wing In Ground Effect"
+msgstr "地效翼"
+
+#: src/ais.cpp:124
+msgid "Power-driven vessel towing astern (regional use)"
+msgstr "动力驱动船只尾部拖带（部分区域使用）"
+
+#: src/ais.cpp:125
+msgid "Power-driven vessel pushing ahead or towing alongside (regional use)"
+msgstr "动力驱动船只船头顶推或者侧拖（部分区域使用）"
+
+#: src/ais.cpp:126
+msgid "Reserved 13"
+msgstr "预留13"
+
+#: src/ais.cpp:127
+msgid "Reserved 14"
+msgstr "预留14"
+
+#: src/ais.cpp:128 src/AIS_Target_Data.cpp:402 src/ConnectionParams.cpp:176
+#: src/ConnectionParams.cpp:462 src/ConnectionParams.cpp:600
+#: src/ConnectionParams.cpp:913 src/ConnectionParams.cpp:941
+msgid "Undefined"
+msgstr "未定义"
+
+#: src/ais.cpp:129
+msgid "AtoN Virtual"
+msgstr "AtoN 虚拟机"
+
+#: src/ais.cpp:130
+msgid "AtoN Virtual (On Position)"
+msgstr "AtoN虚拟机（开启）"
+
+#: src/ais.cpp:131
+msgid "AtoN Virtual (Off Position)"
+msgstr "AtoNe虚拟机（关闭）"
+
+#: src/ais.cpp:132
+msgid "AtoN Real"
+msgstr "AtoN实时"
+
+#: src/ais.cpp:133
+msgid "AtoN Real (On Position)"
+msgstr "AtoN实时（开启）"
+
+#: src/ais.cpp:134
+msgid "AtoN Real(Off Position)"
+msgstr "AtoN实时（关闭）"
+
+#: src/ais.cpp:141
+msgid "Fishing Vessel"
 msgstr ""
-"\n"
-" -船只图标的最小规格必须在1和100海里之间"
-#
-msgid ""
-"\n"
-" - your ship's beam must be > 0"
+
+#: src/ais.cpp:142
+msgid "Towing Vessel"
 msgstr ""
-"\n"
-" - 船宽必须 > 0"
-#
-msgid ""
-"\n"
-" - your ship's length must be > 0"
+
+#: src/ais.cpp:143
+msgid "Towing Vessel, Long"
 msgstr ""
-"\n"
-" - 船长必须 > 0"
-#
-msgid ""
-"\n"
-"OpenCPN is distributed in the hope that it will be useful, but WITHOUT ANY "
-"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR "
-"A PARTICULAR PURPOSE.\n"
-"\n"
-"See the GNU General Public License for more details.\n"
-"\n"
-"OpenCPN must only be used in conjunction with approved paper charts and "
-"traditional methods of navigation.\n"
-"\n"
-"DO NOT rely upon OpenCPN for safety of life or property.\n"
-"\n"
-"Please click \"OK\" to agree and proceed, \"Cancel\" to quit.\n"
+
+#: src/ais.cpp:144
+msgid "Dredger"
 msgstr ""
-"\n"
-"OpenCPN的发行希望能提供有关帮助；但不为任何商用及具体用途提供任何担保.\n"
-"\n"
-"查看GNU通用公开许可证获取更多细节.\n"
-"\n"
-"OpenCPN只能和许可的纸质海图及传统航行方式结合使用.\n"
-"\n"
-"不要将OpenCPN用于人命和财产安全用途.\n"
-"\n"
-"点击“确认”继续，点击“取消”退出\n"
-#
-msgid ""
-"\n"
-"The device selected is not accessible; opencpn will likely not be able\n"
-"to use this device as-is. You might want to exit OpenCPN, reboot and\n"
-"retry after creating a file called /etc/udev/rules.d/70-opencpn.rules\n"
-"with the following contents:\n"
-"\n"
-"            KERNEL==\"ttyUSB*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyACM*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyS*\", MODE=\"0666\"\n"
-"\n"
-"For more info, see the file LINUX_DEVICES.md in the distribution docs.\n"
+
+#: src/ais.cpp:145
+msgid "Diving Ops Vessel"
 msgstr ""
 
 #: src/ais.cpp:146
@@ -2967,56 +3003,13 @@ msgstr "反向..."
 #: src/canvasMenu.cpp:690
 msgid "Hide Waypoint Names"
 msgstr ""
-#
-msgid "Cannot parse downloaded data"
+
+#: src/canvasMenu.cpp:693
+msgid "Show Waypoint Names"
 msgstr ""
-#
-msgid "Canvas Layout"
-msgstr "画布布局"
-#
-msgid "Capo Verde"
-msgstr "佛得角"
-#
-msgid "Card. E"
-msgstr "东基准灯标"
-#
-msgid "Card. N"
-msgstr "北基准灯标"
-#
-msgid "Card. S"
-msgstr "南基准灯标"
-#
-msgid "Card. W"
-msgstr "西基准灯标"
-#
-msgid "Cardinal E Beacon"
-msgstr "东界标"
-#
-msgid "Cardinal Mark E"
-msgstr "东界标志E"
-#
-msgid "Cardinal Mark N"
-msgstr "北界标志N"
-#
-msgid "Cardinal Mark S"
-msgstr "南界标志S"
-#
-msgid "Cardinal Mark W"
-msgstr "西基准标志"
-#
-msgid "Cardinal N Beacon"
-msgstr "北界标"
-#
-msgid "Cardinal S Beacon"
-msgstr "南界标"
-#
-msgid "Cardinal W Beacon"
-msgstr "西界标"
-#
-msgid "Cargo Ship"
-msgstr "货船"
-#
-msgid "Catalog Manager"
+
+#: src/canvasMenu.cpp:696
+msgid "Resequence Waypoints..."
 msgstr ""
 
 #: src/canvasMenu.cpp:710 src/canvasMenu.cpp:804
@@ -4075,97 +4068,17 @@ msgstr "窗格"
 #: src/cm93.cpp:6465
 msgid "M_COVR ID"
 msgstr ""
-#
-msgid "Daytime"
-msgstr "白天"
-#
-msgid "De-Cluttered Text"
-msgstr "清理文本"
-#
-msgid "De-skew Raster Charts"
-msgstr "相位补偿栅格海图"
-#
-msgid "Deactivate"
-msgstr "取消激活"
-#
-msgid "Decimal Degrees"
-msgstr "小数点度数"
-#
-msgid "Deep Depth"
-msgstr "深水深度"
-#
-msgid "Default"
-msgstr "默认"
-#
-msgid "Default Boat Speed "
-msgstr "默认船速"
-#
-#, fuzzy
-msgid "Default catalog"
-msgstr "默认颜色"
-#
-msgid "Default color"
-msgstr "默认颜色"
-#
-#, fuzzy
-msgid "Default setting"
-msgstr "默认航迹记录"
-#
-msgid "Default tracking"
-msgstr "默认航迹记录"
-#
-msgid "Degrees, Decimal Minutes"
-msgstr "度数，小数点分钟数"
-#
-msgid "Degrees, Minutes, Seconds"
-msgstr "度，分，秒"
-#
-msgid "Delete"
-msgstr "删除"
-#
-msgid "Delete All"
-msgstr "删除全部"
-#
-msgid "Delete Group"
-msgstr "删除组"
-#
-msgid "Delete Selected Config..."
-msgstr "删除所选配置……"
-#
-msgid "Delete Waypoint"
-msgstr "删除航路点"
-#
-msgid "Dem Rep.of the Congo"
-msgstr "刚果民主共和国"
-#
-msgid "Denmark"
-msgstr "丹麦"
-#
-msgid "Depart From"
-msgstr "驶离自"
-#
-msgid "Departure"
-msgstr "离开"
-#
-msgid "Departure Time"
-msgstr "开航时间"
-#
-msgid "Depth"
-msgstr "深度"
-#
-msgid "Depth Soundings"
-msgstr "测量深度"
-#
-msgid "Description"
-msgstr "描述"
-#
-msgid "Destination"
-msgstr "目的地"
-#
-msgid "Destination: OpenCPN Internal Storage"
+
+#: src/cm93.cpp:6469
+msgid "Cell Scale"
+msgstr "窗格比例尺"
+
+#: src/cm93.cpp:6473
+msgid "wgsox"
 msgstr ""
-#
-msgid "Destination: OpenCPN SDCard Storage"
+
+#: src/cm93.cpp:6477
+msgid "wgsoy"
 msgstr ""
 
 #: src/cm93.cpp:6481 src/cm93.cpp:6495
@@ -4716,133 +4629,13 @@ msgstr ""
 #: src/multiplexer.cpp:413
 msgid "Route Upload"
 msgstr ""
-#
-msgid "Discover now..."
-msgstr "查找中..."
-#
-msgid "Dismiss"
+
+#: src/multiplexer.cpp:642 src/multiplexer.cpp:1257
+msgid "Connecting to "
 msgstr ""
-#
-msgid "Display"
-msgstr "显示"
-#
-msgid "Display Category"
-msgstr "显示分类"
-#
-msgid "Display Features"
-msgstr "显示性能"
-#
-msgid "Display Options"
-msgstr "显示选项"
-#
-msgid ""
-"Display a slideshow of <num> charts and then exit. Zero or negative <num> "
-"specifies no limit."
-msgstr "演示幻灯 <num> 海图然后退出。0及负值 <num> 指明无限制."
-#
-msgid "Display parameters"
-msgstr "显示参数"
-#
-msgid "Distance"
-msgstr "距离"
-#
-msgid "Distance Unit"
-msgstr "距离单位"
-#
-msgid "Distance between rings"
-msgstr "雷达同心圆间距"
-#
-#, c-format
-msgid "Distance from Ownship:  %4.0f NMi"
-msgstr "自本船距离:  %4.0f 海里"
-#
-#, fuzzy, c-format
-msgid "Distance from Ownship:  %4.0f NMi\n"
-msgstr "自本船距离:  %4.0f 海里"
-#
-msgid "Distance from own ship"
-msgstr "自本船距离"
-#
-msgid "Distress"
-msgstr "海难"
-#
-msgid "Distress Area: Person overboard"
-msgstr "海难区：有人落水"
-#
-msgid "Distress Area: Pollution response area"
-msgstr "海难区：污染响应水域"
-#
-msgid "Distress Area: SAR area"
-msgstr "海难区：SAR水域"
-#
-msgid "Distress Area: Vessel abandoning ship"
-msgstr "海难区：在弃船"
-#
-msgid "Distress Area: Vessel collision"
-msgstr "海难区：船只碰撞"
-#
-msgid "Distress Area: Vessel disabled and adrift"
-msgstr "海难区：船只失去动力，在漂流"
-#
-msgid "Distress Area: Vessel fire/explosion"
-msgstr "海难区：船只火灾/爆炸"
-#
-msgid "Distress Area: Vessel flooding"
-msgstr "海难区：船只进水"
-#
-msgid "Distress Area: Vessel grounding"
-msgstr "海难区：船只搁浅"
-#
-msgid "Distress Area: Vessel listing/capsizing"
-msgstr "海难区：船只倾斜/倾覆"
-#
-msgid "Distress Area: Vessel requests medical assistance"
-msgstr "海难区：需要医疗救助"
-#
-msgid "Distress Area: Vessel sinking"
-msgstr "海难区：船只在下沉"
-#
-msgid "Distress Area: Vessel under assault"
-msgstr "海难区：船只遇袭"
-#
-msgid "Diving Ops Vessel"
-msgstr ""
-#
-msgid "Djibouti"
-msgstr "吉布提"
-#
-msgid "Do use"
-msgstr "一定使用"
-#
-msgid "Do you really want to delete and replace this WayPoint"
-msgstr ""
-#
-msgid "Dominica"
-msgstr "多米尼加"
-#
-msgid "Dominican Republic"
-msgstr "多米尼加共和国"
-#
-msgid "Don't use"
-msgstr "不要使用"
-#
-msgid "Donate"
-msgstr "捐助"
-#
-#, fuzzy
-msgid "Done"
-msgstr "完成。"
-#
-msgid "Done."
-msgstr "完成。"
-#
-msgid "Dot"
-msgstr "点线"
-#
-msgid "Dot dash"
-msgstr "点横杠线"
-#
-msgid "Downgrade"
+
+#: src/multiplexer.cpp:663 src/multiplexer.cpp:1276
+msgid "Connected to "
 msgstr ""
 
 #: src/navutil.cpp:1754 src/navutil.cpp:3119 src/options.cpp:1050
@@ -7242,11 +7035,9 @@ msgstr "降低数据准确度"
 
 #: src/routemanagerdialog.cpp:1742
 #, c-format
-msgid ""
-"The amount of data used by the track\n"
+msgid "The amount of data used by the track\n"
 " was reduced by %d%%."
-msgstr ""
-"航迹使用的数据量\n"
+msgstr "航迹使用的数据量\n"
 " 已减少 %d%%."
 
 #: src/routemanagerdialog.cpp:1840
@@ -7287,8 +7078,7 @@ msgid "There are some waypoints used in routes or anchor alarms.\n"
 " Do you want to delete them as well?\n"
 " This will change the routes and disable the anchor alarms.\n"
 " Answering No keeps the waypoints used in routes or alarms."
-msgstr ""
-"航线或锚泊警报仍在使用一些航路点.\n"
+msgstr "航线或锚泊警报仍在使用一些航路点.\n"
 " 也要删除?\n"
 "这将改变航线并禁用锚泊警报.\n"
 " 回答“否”将保留航线或者警报中使用的航路点."
@@ -7458,45 +7248,8 @@ msgstr "至航路点"
 #: src/RoutePropDlg.cpp:268
 msgid "To WP"
 msgstr ""
-#
-msgid "To Waypoint"
-msgstr "至航路点"
-#
-msgid ""
-"To proceed with chart folder migration, choose the chart source folder, and "
-"follow the instructions given."
-msgstr ""
-#
-msgid "To route"
-msgstr "至航线"
-#
-msgid "To waypoint"
-msgstr "至航路点"
-#
-msgid "Today"
-msgstr "今天"
-#
-msgid "Toggle Full Screen"
-msgstr "切换至全屏"
-#
-msgid "Toggle track"
-msgstr "切换航迹"
-#
-msgid "Togolese Republic"
-msgstr "多哥"
-#
-msgid "Tomorrow"
-msgstr "明天"
-#
-msgid "Tonga"
-msgstr "汤加"
-#
-msgid "ToolTips"
-msgstr "工具提示"
-#
-msgid "Toolbar and Window Style"
-msgstr "工具栏及窗口样式"
-#
+
+#: src/RoutePropDlg.cpp:304
 msgid "Total Distance"
 msgstr ""
 
@@ -7574,263 +7327,66 @@ msgstr "驶离自"
 #: src/TrackPropDlg.cpp:769 src/TrackPropDlg.cpp:1343
 msgid "Total distance"
 msgstr "总计距离"
-#
-msgid "Tow"
-msgstr "拖带"
-#
-msgid "Towing Vessel"
+
+#: src/RoutePropDlgImpl.cpp:816
+msgid "Speed (Kts)"
+msgstr "速度（节）"
+
+#: src/RoutePropDlgImpl.cpp:818 src/TrackPropDlg.cpp:1346
+msgid "Departure Time"
+msgstr "开航时间"
+
+#: src/RoutePropDlgImpl.cpp:820 src/TrackPropDlg.cpp:788
+#: src/TrackPropDlg.cpp:1348
+msgid "Time enroute"
+msgstr "航线所需时间"
+
+#: src/RoutePropDlgImpl.cpp:865
+msgid "Are you sure you want to move Up this waypoint?"
 msgstr ""
-#
-msgid "Towing Vessel, Long"
+
+#: src/RoutePropDlgImpl.cpp:866
+msgid "Are you sure you want to move Down this waypoint?"
 msgstr ""
-#
-msgid "Track"
-msgstr "航迹"
-#
-msgid "Track Colour"
-msgstr "航迹色彩"
-#
-msgid "Track Mode"
-msgstr "航迹模式"
-#
-msgid "Track Name"
-msgstr "航迹名字"
-#
-#, fuzzy
-msgid "Track Print"
-msgstr "航迹记录"
-#
-msgid "Track properties"
-msgstr "航迹属性"
-#
-msgid "Tracking"
-msgstr "航迹记录"
-#
-msgid "Tracking Precision"
-msgstr "航迹记录准确性"
-#
-msgid "Tracks"
-msgstr "航迹"
-#
-msgid "Transmit sentences"
-msgstr "发送语句"
-#
-msgid "Transverse Mercator"
-msgstr "墨卡托投影方式"
-#
-msgid "Trinidad and Tobago"
-msgstr "特立尼达和多巴哥"
-#
-msgid "Trk"
-msgstr "航迹"
-#
-msgid "Tug"
-msgstr "拖轮"
-#
-msgid "Tug freighter, coupled"
-msgstr "拖轮货船船并列"
-#
-msgid "Tug, assisting a vessel or linked combination"
-msgstr "拖轮，辅助别船或协同"
-#
-msgid "Tug, freighter"
-msgstr "拖轮，货船船"
-#
-msgid "Tug, freighter/tanker, coupled"
-msgstr "拖轮，货船/油轮并列"
-#
-msgid "Tug, one or more tows"
-msgstr "拖轮，一或多个拖带"
-#
-msgid "Tug, single"
-msgstr "拖轮，单艘"
-#
-msgid "Tug, tanker"
-msgstr "拖轮，油轮"
-#
-msgid "Tunisia"
-msgstr "突尼斯"
-#
-msgid "Turkey"
-msgstr "土耳其"
-#
-msgid "Turkmenistan"
-msgstr "土库曼斯坦"
-#
-msgid "Turks and Caicos Islands"
-msgstr "特克斯和凯科斯群岛"
-#
-msgid "Turn Rate"
-msgstr "旋转率"
-#
-msgid "Tuvalu"
-msgstr "图瓦卢"
-#
-msgid "Type"
-msgstr "类型"
-#
-msgid "UDP"
-msgstr "UDP"
-#
-msgid "URL"
-msgstr "域名"
-#
-msgid "URL:"
-msgstr "网址："
-#
-msgid "UTC"
-msgstr "国际协调时"
-#
-msgid "Uganda"
-msgstr "乌干达"
-#
-msgid "Ukraine"
-msgstr "乌克兰"
-#
-#, fuzzy
-msgid "Ultra advanced"
-msgstr "高级"
-#
-msgid "Un-Installation complete"
-msgstr "卸载完成"
-#
-msgid "Unable to copy catalog file"
+
+#: src/RoutePropDlgImpl.cpp:868
+msgid "OpenCPN Move Waypoint"
 msgstr ""
-#
-msgid "Unable to copy catalog file to cache"
+
+#: src/RoutePropDlgImpl.cpp:902
+msgid "Are you sure you want to remove this waypoint?"
+msgstr "确认移除此航路点吗？"
+
+#: src/RoutePropDlgImpl.cpp:903
+msgid "OpenCPN Remove Waypoint"
+msgstr "OpenCPN移除航路点"
+
+#: src/RoutePropDlgImpl.cpp:938
+msgid "Move Up"
 msgstr ""
-#
-msgid "Unavailable: "
+
+#: src/RoutePropDlgImpl.cpp:940
+msgid "Move Down"
 msgstr ""
-#
-msgid "Undefined"
-msgstr "未定义"
-#
-msgid "Undefined (default)"
-msgstr "未定义(默认)"
-#
-msgid "Underway Sailing"
-msgstr ""
-#
-msgid "Underway using Engine"
-msgstr ""
-#
-msgid "Undo"
-msgstr "撤回"
-#
-msgid "Undock Target List"
-msgstr ""
-#
-msgid "Uninstall"
-msgstr ""
-#
-msgid "Unit carrier maritime"
-msgstr "单装海运货船"
-#
-msgid "United Arab Emirates"
-msgstr "阿联酋"
-#
-msgid "United States Virgin Islands"
-msgstr "美国维尔京群岛"
-#
-msgid "United States of America"
-msgstr "美国"
-#
-msgid "Units"
-msgstr "单位"
-#
-msgid "Unk"
-msgstr "未知"
-#
-msgid "Unknown"
-msgstr "未知"
-#
-msgid "Unknown device :"
-msgstr "未知设备："
-#
+
+#: src/RoutePropDlgImpl.cpp:978 src/TrackPropDlg.cpp:1396
+msgid "&Copy all as text"
+msgstr "&全部复制为文本"
+
+#: src/RoutePropDlgImpl.cpp:1100 src/TrackPropDlg.cpp:1287
+msgid "_plus"
+msgstr "_加"
+
+#: src/RoutePropDlgImpl.cpp:1175
+msgid "Invalid date/time!"
+msgstr "无效日期/时间！"
+
+#: src/RoutePropDlgImpl.cpp:1179
 msgid "Unknown station!"
 msgstr "未知站台！"
-#
-msgid "Unnamed Route"
-msgstr "未命名航线"
-#
-msgid "Unnamed Waypoint"
-msgstr "未命名航路点"
-#
-msgid "Unreadable PlugIn library detected, check the file permissions:\n"
-msgstr "检测到不可读的插件库，检查文件许可性:\n"
-#
-msgid "Unspecified"
-msgstr "未定义"
-#
-#, fuzzy
-msgid "Update"
-msgstr " 跟新:  "
-#
-msgid "Update Control"
-msgstr "更新控制"
-#
-msgid "Update Plugin Catalog"
-msgstr "更新插件目录"
-#
-#, fuzzy
-msgid "Update Plugin Catalog: master"
-msgstr "更新插件目录"
-#
-#, fuzzy
-msgid "Update Plugin Catalog:master"
-msgstr "更新插件目录"
-#
-#, fuzzy
-msgid "Update plugin catalog"
-msgstr "更新插件目录"
-#
-msgid "Update to "
-msgstr ""
-#
-msgid "Update to installed Plugin is available"
-msgstr "有已安装插件更新可用"
-#
-msgid "Update to managed Plugin is available"
-msgstr "可以更新到受管理插件"
-#
-msgid "Upgrade to Version "
-msgstr ""
-#
-msgid "Uploaded:"
-msgstr "已上传："
-#
-msgid "Uruguay"
-msgstr "乌拉圭"
-#
-msgid "Use Accelerated Graphics (OpenGL)"
-msgstr "使用加速图形(OpenGL)"
-#
-msgid "Use Accelerated Panning"
-msgstr "使用加速计划"
-#
-msgid "Use Furuno GP3X for uploads"
-msgstr "使用古野GP3X更新"
-#
-msgid "Use GRMN for uploads"
-msgstr "使用GRMN更新"
-#
-msgid "Use GRMN mode for input"
-msgstr "使用GRMN模式输入"
-#
-msgid "Use Garmin (GRMN) mode for input"
-msgstr "使用Garmin(GRMN)模式收入"
-#
-msgid "Use Garmin GRMN (Host) mode for uploads"
-msgstr "使用GRMN（主机）模式上传"
-#
-msgid "Use Inland ECDIS V2.3"
-msgstr "使用内陆版2.3版电子海图系统"
-#
-msgid "Use WPL position messages. Action when received:"
-msgstr ""
-#
-msgid "Use as active catalog"
+
+#: src/RoutePropDlgImpl.cpp:1194
+msgid "Unavailable: "
 msgstr ""
 
 #: src/RoutePropDlgImpl.cpp:1203
@@ -8100,8 +7656,9 @@ msgstr "(月/日/年 时:分)"
 #: src/TrackPropDlg.cpp:1450
 msgid "track"
 msgstr "航迹"
-#
-msgid "wgsox"
+
+#: src/TrackPropDlg.cpp:1876
+msgid "--"
 msgstr ""
 
 #: src/TTYWindow.cpp:68

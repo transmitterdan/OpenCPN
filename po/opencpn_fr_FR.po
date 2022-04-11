@@ -448,16 +448,28 @@ msgstr "Cardinale OUEST"
 #: src/ais.cpp:174
 msgid "Beacon, Port Hand"
 msgstr "Balise babord"
-#
+
+#: src/ais.cpp:175
+msgid "Beacon, Starboard Hand"
+msgstr "Balise tribord"
+
+#: src/ais.cpp:176
 msgid "Beacon, Preferred Channel Port Hand"
 msgstr "Balise, chenal préférentiel babord"
-#
+
+#: src/ais.cpp:177
 msgid "Beacon, Preferred Channel Starboard Hand"
 msgstr "Balise, chenal préférentiel tribord"
-#
+
+#: src/ais.cpp:178
+msgid "Beacon, Isolated Danger"
+msgstr "Balise, danger isolé"
+
+#: src/ais.cpp:179
 msgid "Beacon, Safe Water"
 msgstr "Balise, eau libre"
-#
+
+#: src/ais.cpp:180
 msgid "Beacon, Special Mark"
 msgstr "Balise, marque spéciale"
 
@@ -640,13 +652,12 @@ msgstr "Card. Nord"
 #: src/ais.cpp:236 src/ais.cpp:247
 msgid "Card. E"
 msgstr "Card. Est"
-#
-msgid "Card. N"
-msgstr "Card. Nord"
-#
+
+#: src/ais.cpp:237 src/ais.cpp:248
 msgid "Card. S"
 msgstr "Card. Sud"
-#
+
+#: src/ais.cpp:238 src/ais.cpp:249
 msgid "Card. W"
 msgstr "Card. O"
 
@@ -729,133 +740,308 @@ msgstr "Prudence dans cette zone : Habitat protégé. Pêche et mouillage interd
 #: src/ais.cpp:278
 msgid "Caution Area: Derelicts (drifting objects)"
 msgstr "Prudence dans cette zone : Epave (Objets dérivants)"
-#
-msgid "Caution Area: Divers down"
-msgstr "Prudence dans cette zone : Présence de plongeurs "
-#
-msgid "Caution Area: Dredge operations"
-msgstr "Prudence dans cette zone : Dragage en cours"
-#
-msgid "Caution Area: Fairway closed"
-msgstr "Prudence dans cette zone : Chenal fermé"
-#
-msgid "Caution Area: Fishery - nets in water"
-msgstr "Prudence dans cette zone : Zone de pêche, présence de filets immergés"
-#
-msgid "Caution Area: Harbour closed"
-msgstr "Prudence dans cette zone : Port fermé"
-#
-msgid "Caution Area: Marine event"
-msgstr "Prudence dans cette zone : Evénement maritime"
-#
-msgid "Caution Area: Marine mammals habitat (implies whales NOT observed)"
-msgstr ""
-"Prudence dans cette zone : Zone fréquentée par des mammifères marins (Aucune "
-"baleine observée)"
-#
-msgid "Caution Area: Marine mammals in area - reduce speed"
-msgstr ""
-"Prudence dans cette zone : Mammifère marins présents. Réduire la vitesse."
-#
-msgid "Caution Area: Marine mammals in area - report sightings"
-msgstr ""
-"Prudence dans cette zone : Mammifères marins présents. Rapportez vos "
-"observations"
-#
-msgid "Caution Area: Marine mammals in area - stay clear"
-msgstr "Prudence dans cette zone : Mammifères marins présents. Restez à l'écart"
-#
-msgid "Caution Area: Protected habitat - no fishing or anchoring"
-msgstr ""
-"Prudence dans cette zone : Habitat protégé. Pêche et mouillage interdit."
-#
-msgid "Caution Area: Protected habitat - reduce speed"
-msgstr "Prudence dans cette zone : Habitat protégé. Réduire la vitesse"
-#
-msgid "Caution Area: Protected habitat - stay clear"
-msgstr "Prudence dans cette zone : Habitat protégé. Restez à l'écart"
-#
-msgid "Caution Area: Risk (define in Associated text field)"
-msgstr "Prudence dans cette zone : Risque (Décrit dans le texte associé)"
-#
-msgid "Caution Area: Seaplane operations"
-msgstr "Prudence dans cette zone : Présence d'hydravion"
-#
-msgid "Caution Area: Survey operations"
-msgstr "Prudence dans cette zone : Mission hydrographique"
-#
-msgid "Caution Area: Swim area"
-msgstr "Prudence dans cette zone : Zone de baignade"
-#
+
+#: src/ais.cpp:279
 msgid "Caution Area: Traffic congestion"
 msgstr "Prudence dans cette zone : Trafic dense"
-#
+
+#: src/ais.cpp:280
+msgid "Caution Area: Marine event"
+msgstr "Prudence dans cette zone : Evénement maritime"
+
+#: src/ais.cpp:281
+msgid "Caution Area: Divers down"
+msgstr "Prudence dans cette zone : Présence de plongeurs "
+
+#: src/ais.cpp:282
+msgid "Caution Area: Swim area"
+msgstr "Prudence dans cette zone : Zone de baignade"
+
+#: src/ais.cpp:283
+msgid "Caution Area: Dredge operations"
+msgstr "Prudence dans cette zone : Dragage en cours"
+
+#: src/ais.cpp:284
+msgid "Caution Area: Survey operations"
+msgstr "Prudence dans cette zone : Mission hydrographique"
+
+#: src/ais.cpp:285
 msgid "Caution Area: Underwater operation"
 msgstr "Prudence dans cette zone : Exploitation sous marine"
-#
+
+#: src/ais.cpp:286
+msgid "Caution Area: Seaplane operations"
+msgstr "Prudence dans cette zone : Présence d'hydravion"
+
+#: src/ais.cpp:287
+msgid "Caution Area: Fishery - nets in water"
+msgstr "Prudence dans cette zone : Zone de pêche, présence de filets immergés"
+
+#: src/ais.cpp:288
+msgid "Caution Area: Cluster of fishing vessels"
+msgstr "Prudence dans cette zone : Flottille de pêche"
+
+#: src/ais.cpp:289
+msgid "Caution Area: Fairway closed"
+msgstr "Prudence dans cette zone : Chenal fermé"
+
+#: src/ais.cpp:290
+msgid "Caution Area: Harbour closed"
+msgstr "Prudence dans cette zone : Port fermé"
+
+#: src/ais.cpp:291
+msgid "Caution Area: Risk (define in Associated text field)"
+msgstr "Prudence dans cette zone : Risque (Décrit dans le texte associé)"
+
+#: src/ais.cpp:292
 msgid "Caution Area: Underwater vehicle operation"
 msgstr "Prudence dans cette zone : Sous-marin présent"
-#
-msgid "Cayman Islands"
-msgstr "Iles Cayman"
-#
-msgid "Cell"
-msgstr "Cellule"
-#
-msgid "Cell Scale"
-msgstr "Echelle de la cellule"
-#
-msgid "Celsius"
-msgstr "Celsius"
-#
-msgid "Center view"
-msgstr "Centrer la vue"
-#
-msgid "Central African Republic"
-msgstr "République Centre-Africaine"
-#
-msgid "Chad"
-msgstr "Tchad"
-#
-msgid "Change Color Scheme"
-msgstr "Choisir l'affichage :  Jour / Crépuscule / Nuit / Aube"
-#
-msgid "Chart Detail"
-msgstr "Détail de la carte"
-#
-msgid "Chart Display"
-msgstr "Cartes"
-#
-msgid "Chart Feature: Bridge closed"
-msgstr "Complément à la carte : Pont fermé"
-#
-msgid "Chart Feature: Bridge fully open"
-msgstr "Complément à la carte : Pont complètement ouvert"
-#
-msgid "Chart Feature: Bridge partially open"
-msgstr "Complément à la carte : Pont partiellement ouvert"
-#
-msgid "Chart Feature: Channel obstruction"
-msgstr "Complément à la carte : Chenal obstrué"
-#
-msgid "Chart Feature: Reduced vertical clearance"
-msgstr "Complément à la carte : Tirant d'air réduit"
-#
+
+#: src/ais.cpp:293 src/ais.cpp:304 src/ais.cpp:312 src/ais.cpp:319
+#: src/ais.cpp:320 src/ais.cpp:321 src/ais.cpp:322 src/ais.cpp:323
+#: src/ais.cpp:324 src/ais.cpp:325 src/ais.cpp:326 src/ais.cpp:327
+#: src/ais.cpp:328 src/ais.cpp:332 src/ais.cpp:333 src/ais.cpp:334
+#: src/ais.cpp:335 src/ais.cpp:336 src/ais.cpp:350 src/ais.cpp:351
+#: src/ais.cpp:352 src/ais.cpp:361 src/ais.cpp:362 src/ais.cpp:384
+#: src/ais.cpp:385 src/ais.cpp:386 src/ais.cpp:388 src/ais.cpp:391
+#: src/ais.cpp:392 src/ais.cpp:393 src/ais.cpp:394 src/ais.cpp:395
+#: src/ais.cpp:399 src/ais.cpp:400
+msgid "(reserved for future use)"
+msgstr "(Réservé pour un usage futur)"
+
+#: src/ais.cpp:294
+msgid "Environmental Caution Area: Storm front (line squall)"
+msgstr "Prudence, environnement hostile : Front d'orage (Ligne de grains)"
+
+#: src/ais.cpp:295
+msgid "Environmental Caution Area: Hazardous sea ice"
+msgstr "Prudence, environnement hostile : Icebergs possibles"
+
+#: src/ais.cpp:296
+msgid "Environmental Caution Area: Storm warning (storm cell or line of storms)"
+msgstr "Prudence, environnement hostile : Alerte aux orages (Cellule orageuse ou ligne d'orages)"
+
+#: src/ais.cpp:298
+msgid "Environmental Caution Area: High wind"
+msgstr "Prudence, environnement hostile : Vent fort"
+
+#: src/ais.cpp:299
+msgid "Environmental Caution Area: High waves"
+msgstr "Prudence, environnement hostile : Hautes vagues"
+
+#: src/ais.cpp:300
+msgid "Environmental Caution Area: Restricted visibility (fog, rain, etc.)"
+msgstr "Prudence, environnement hostile :  Visibilité réduite (Brouillard, pluie, etc ...)"
+
+#: src/ais.cpp:302
+msgid "Environmental Caution Area: Strong currents"
+msgstr "Prudence, environnement hostile : Courants forts"
+
+#: src/ais.cpp:303
+msgid "Environmental Caution Area: Heavy icing"
+msgstr "Prudence, environnement hostile : Givrage important"
+
+#: src/ais.cpp:305
+msgid "Restricted Area: Fishing prohibited"
+msgstr "Zone à accès limité : Pêche interdite"
+
+#: src/ais.cpp:306
+msgid "Restricted Area: No anchoring."
+msgstr "Zone à accès limité : Mouillage interdit"
+
+#: src/ais.cpp:307
+msgid "Restricted Area: Entry approval required prior to transit"
+msgstr "Zone à accès limité :  Autorisation d'entrée requise"
+
+#: src/ais.cpp:308
+msgid "Restricted Area: Entry prohibited"
+msgstr "Zone à accès limité :  Entrée interdite"
+
+#: src/ais.cpp:309
+msgid "Restricted Area: Active military OPAREA"
+msgstr "Zone à accès limité : Opérations militaires en cours OPAREA"
+
+#: src/ais.cpp:310
+msgid "Restricted Area: Firing - danger area."
+msgstr "Zone à accès limité :  Zone de tir"
+
+#: src/ais.cpp:311
+msgid "Restricted Area: Drifting Mines"
+msgstr "Zone à accès limité :  Mines dérivantes"
+
+#: src/ais.cpp:313
+msgid "Anchorage Area: Anchorage open"
+msgstr "Zone de mouillage : Mouillage possible"
+
+#: src/ais.cpp:314
+msgid "Anchorage Area: Anchorage closed"
+msgstr "Zone de mouillage : Mouillage fermé"
+
+#: src/ais.cpp:315
+msgid "Anchorage Area: Anchoring prohibited"
+msgstr "Zone de mouillage : Mouillage interdit"
+
+#: src/ais.cpp:316
+msgid "Anchorage Area: Deep draft anchorage"
+msgstr "Zone de mouillage : Mouillage en eau profonde"
+
+#: src/ais.cpp:317
+msgid "Anchorage Area: Shallow draft anchorage"
+msgstr "Zone de mouillage : Mouillage pour faible tirant d'eau"
+
+#: src/ais.cpp:318
+msgid "Anchorage Area: Vessel transfer operations"
+msgstr "Zone de mouillage : Pour transfert entre navires"
+
+#: src/ais.cpp:329
+msgid "Security Alert - Level 1"
+msgstr "Alerte de sécurité - Niveau 1"
+
+#: src/ais.cpp:330
+msgid "Security Alert - Level 2"
+msgstr "Alerte de sécurité - Niveau 2"
+
+#: src/ais.cpp:331
+msgid "Security Alert - Level 3"
+msgstr "Alerte de sécurité - Niveau 3"
+
+#: src/ais.cpp:337
+msgid "Distress Area: Vessel disabled and adrift"
+msgstr "Zone de détresse : Navire non manœuvrant dérivant"
+
+#: src/ais.cpp:338
+msgid "Distress Area: Vessel sinking"
+msgstr "Zone de détresse : Naufrage d'un navire"
+
+#: src/ais.cpp:339
+msgid "Distress Area: Vessel abandoning ship"
+msgstr "Zone de détresse : Navire en cours d'abandon"
+
+#: src/ais.cpp:340
+msgid "Distress Area: Vessel requests medical assistance"
+msgstr "Zone de détresse : Navire demandant une assistance médicale"
+
+#: src/ais.cpp:341
+msgid "Distress Area: Vessel flooding"
+msgstr "Zone de détresse : Navire prenant l'eau"
+
+#: src/ais.cpp:342
+msgid "Distress Area: Vessel fire/explosion"
+msgstr "Zone de détresse: Incendie/explosion à bord d'un navire"
+
+#: src/ais.cpp:343
+msgid "Distress Area: Vessel grounding"
+msgstr "Zone de détresse : Navire échoué"
+
+#: src/ais.cpp:344
+msgid "Distress Area: Vessel collision"
+msgstr "Zone de détresse : Navire abordé"
+
+#: src/ais.cpp:345
+msgid "Distress Area: Vessel listing/capsizing"
+msgstr "Zone de détresse : Navire gité ou chaviré"
+
+#: src/ais.cpp:346
+msgid "Distress Area: Vessel under assault"
+msgstr "Zone de détresse : Navire assailli"
+
+#: src/ais.cpp:347
+msgid "Distress Area: Person overboard"
+msgstr "Zone de détresse : Homme à la mer"
+
+#: src/ais.cpp:348
+msgid "Distress Area: SAR area"
+msgstr "Zone de détresse : Zone de recherche SAR"
+
+#: src/ais.cpp:349
+msgid "Distress Area: Pollution response area"
+msgstr "Zone de détresse : Zone en cours de dépollution"
+
+#: src/ais.cpp:353
+msgid "Instruction: Contact VTS at this point/juncture"
+msgstr "Instruction : Contactez l'autorité de contrôle du trafic à ce point/cette jonction "
+
+#: src/ais.cpp:354
+msgid "Instruction: Contact Port Administration at this point/juncture"
+msgstr "Instruction : Contactez l'autorité du port à ce point/ cette jonction"
+
+#: src/ais.cpp:356
+msgid "Instruction: Do not proceed beyond this point/juncture"
+msgstr "Instruction : Ne dépasser pas ce point/ cette jonction"
+
+#: src/ais.cpp:357
+msgid "Instruction: Await instructions prior to proceeding beyond this point/juncture"
+msgstr "Instruction : Attendez les consignes avant de dépasser ce point/ cette jonction"
+
+#: src/ais.cpp:359
+msgid "Proceed to this location - await instructions"
+msgstr "Faire route jusqu'à ce point - Attendre les instructions"
+
+#: src/ais.cpp:360
+msgid "Clearance granted - proceed to berth"
+msgstr "Autorisation accordée : Faites route pour accoster "
+
+#: src/ais.cpp:363
+msgid "Information: Pilot boarding position"
+msgstr "Information : Poste d'embarquement du pilote"
+
+#: src/ais.cpp:364
+msgid "Information: Icebreaker waiting area"
+msgstr "Information : Zone d'attente d'un brise glace"
+
+#: src/ais.cpp:365
+msgid "Information: Places of refuge"
+msgstr "Information : Zone d'abris"
+
+#: src/ais.cpp:366
+msgid "Information: Position of icebreakers"
+msgstr "Information : Emplacement des briseglaces"
+
+#: src/ais.cpp:367
+msgid "Information: Location of response units"
+msgstr "Information : Emplacement des unités d'intervention"
+
+#: src/ais.cpp:368
+msgid "VTS active target"
+msgstr "Cible VTS active"
+
+#: src/ais.cpp:369
+msgid "Rogue or suspicious vessel"
+msgstr "Navire voyou ou suspect"
+
+#: src/ais.cpp:370
+msgid "Vessel requesting non-distress assistance"
+msgstr "Navire demandant une assistance simple."
+
+#: src/ais.cpp:371
+msgid "Chart Feature: Sunken vessel"
+msgstr "Complément à la carte : Navire coulé"
+
+#: src/ais.cpp:372
+msgid "Chart Feature: Submerged object"
+msgstr "Complément à la carte : Objet submergé"
+
+#: src/ais.cpp:373
 msgid "Chart Feature: Semi-submerged object"
 msgstr "Complément à la carte : Objet semi submergé"
-#
+
+#: src/ais.cpp:374
 msgid "Chart Feature: Shoal area"
 msgstr "Complément à la carte : Haut fond"
-#
-msgid "Chart Feature: Shoal area due east"
-msgstr "Complément à la carte : Haut-fond plein est"
-#
+
+#: src/ais.cpp:375
 msgid "Chart Feature: Shoal area due north"
 msgstr "Complément à la carte : Haut-fond plein nord"
-#
+
+#: src/ais.cpp:376
+msgid "Chart Feature: Shoal area due east"
+msgstr "Complément à la carte : Haut-fond plein est"
+
+#: src/ais.cpp:377
 msgid "Chart Feature: Shoal area due south"
 msgstr "Complément à la carte : Haut-fond plein sud"
-#
+
+#: src/ais.cpp:378
 msgid "Chart Feature: Shoal area due west"
 msgstr "Complément à la carte : Haut-fond plein ouest"
 

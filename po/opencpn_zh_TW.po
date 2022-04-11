@@ -159,62 +159,58 @@ msgstr ""
 #: src/AboutFrame.cpp:74
 msgid "(c) 2000-2021"
 msgstr ""
-"\n"
-" - 船寬必須 > 0"
-#
-msgid ""
-"\n"
-" - your ship's length must be > 0"
+
+#: src/AboutFrame.cpp:81
+msgid "The OpenCPN Authors"
+msgstr "OpenCP作者"
+
+#: src/AboutFrame.cpp:93
+msgid "OpenCPN is a Free Software project, built by sailors.\n"
+"It is freely available to download and distribute without charge."
 msgstr ""
-"\n"
-" - 船長必須 > 0"
-#
-msgid ""
-"\n"
-"OpenCPN is distributed in the hope that it will be useful, but WITHOUT ANY "
-"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR "
-"A PARTICULAR PURPOSE.\n"
-"\n"
-"See the GNU General Public License for more details.\n"
-"\n"
-"OpenCPN must only be used in conjunction with approved paper charts and "
-"traditional methods of navigation.\n"
-"\n"
-"DO NOT rely upon OpenCPN for safety of life or property.\n"
-"\n"
-"Please click \"OK\" to agree and proceed, \"Cancel\" to quit.\n"
+
+#: src/AboutFrame.cpp:103
+msgid "Want to help?"
+msgstr "說明"
+
+#: src/AboutFrame.cpp:109
+msgid "Donate"
+msgstr "讚助"
+
+#: src/AboutFrame.cpp:118
+msgid "or"
+msgstr "或"
+
+#: src/AboutFrame.cpp:124
+msgid "get involved!"
+msgstr "參與"
+
+#: src/AboutFrame.cpp:139
+msgid "Logfile:"
 msgstr ""
-#
-msgid ""
-"\n"
-"The device selected is not accessible; opencpn will likely not be able\n"
-"to use this device as-is. You might want to exit OpenCPN, reboot and\n"
-"retry after creating a file called /etc/udev/rules.d/70-opencpn.rules\n"
-"with the following contents:\n"
-"\n"
-"            KERNEL==\"ttyUSB*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyACM*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyS*\", MODE=\"0666\"\n"
-"\n"
-"For more info, see the file LINUX_DEVICES.md in the distribution docs.\n"
+
+#: src/AboutFrame.cpp:161
+msgid "Config file:"
 msgstr ""
-#
-msgid "  MOB Position: "
+
+#: src/AboutFrame.cpp:174
+msgid "Copy to clipboard"
 msgstr ""
-#
-msgid "  Ownship Position: "
+
+#: src/AboutFrame.cpp:182
+msgid "Plugin API: "
 msgstr ""
-#
-msgid "  Position: "
+
+#: src/AboutFrame.cpp:226
+msgid "OpenCPN Website"
 msgstr ""
 
 #: src/AboutFrameImpl.cpp:89
 msgid "OpenCPN Help documentation is not available locally."
 msgstr ""
-#
-msgid ""
-" To set the magnetic variation manually,\n"
-" you must disable the WMM plugin."
+
+#: src/AboutFrameImpl.cpp:92
+msgid "Would you like to visit the opencpn.org website for more information?"
 msgstr ""
 
 #: src/AboutFrameImpl.cpp:96 src/AISTargetQueryDialog.cpp:183
@@ -232,158 +228,111 @@ msgstr "OpenCPN 資訊"
 #: src/ais.cpp:113
 msgid "Underway using Engine"
 msgstr ""
-#
-msgid " at "
+
+#: src/ais.cpp:114
+msgid "At Anchor"
+msgstr "锚泊中"
+
+#: src/ais.cpp:115
+msgid "Not Under Command"
+msgstr "無法控制"
+
+#: src/ais.cpp:116
+msgid "Restricted Manoeuvrability"
+msgstr "操縱性受限制"
+
+#: src/ais.cpp:117
+msgid "Constrained by draught"
+msgstr "吃水受限"
+
+#: src/ais.cpp:118
+msgid "Moored"
+msgstr "繫泊中"
+
+#: src/ais.cpp:119
+msgid "Aground"
+msgstr "擱淺"
+
+#: src/ais.cpp:120
+msgid "Engaged in Fishing"
+msgstr "捕撈中"
+
+#: src/ais.cpp:121
+msgid "Underway Sailing"
 msgstr ""
-#
-msgid " for details."
-msgstr " 有關詳細資訊"
-#
-msgid " is incompatible with this version of OpenCPN."
-msgstr " 與此版本的 OpenCPN 不相容。"
-#
-msgid " on "
+
+#: src/ais.cpp:122 src/ais.cpp:149
+msgid "High Speed Craft"
+msgstr "高速船"
+
+#: src/ais.cpp:123
+msgid "Wing In Ground Effect"
+msgstr "翼地效應"
+
+#: src/ais.cpp:124
+msgid "Power-driven vessel towing astern (regional use)"
+msgstr "動力向後拖曳船 (區域使用)"
+
+#: src/ais.cpp:125
+msgid "Power-driven vessel pushing ahead or towing alongside (regional use)"
+msgstr "動力推頂或橫向束缚牽引船 (區域使用)"
+
+#: src/ais.cpp:126
+msgid "Reserved 13"
+msgstr "保留 13"
+
+#: src/ais.cpp:127
+msgid "Reserved 14"
+msgstr "保留 14"
+
+#: src/ais.cpp:128 src/AIS_Target_Data.cpp:402 src/ConnectionParams.cpp:176
+#: src/ConnectionParams.cpp:462 src/ConnectionParams.cpp:600
+#: src/ConnectionParams.cpp:913 src/ConnectionParams.cpp:941
+msgid "Undefined"
+msgstr "未定義"
+
+#: src/ais.cpp:129
+msgid "AtoN Virtual"
 msgstr ""
-#
-msgid ""
-" shorter than rhumbline.\n"
-"\n"
+
+#: src/ais.cpp:130
+msgid "AtoN Virtual (On Position)"
 msgstr ""
-" 較恆向線(rhumbline)為短.\n"
-"\n"
-#
-msgid " successfully installed"
+
+#: src/ais.cpp:131
+msgid "AtoN Virtual (Off Position)"
 msgstr ""
-#
-msgid " successfully installed from cache"
+
+#: src/ais.cpp:132
+msgid "AtoN Real"
 msgstr ""
-#
-msgid " to "
-msgstr " 到 "
-#
-msgid "\" is empty, switching to \"All Active Charts\" group."
-msgstr "\" 是空的, 切換到 \"All Active Charts\" 群組."
-#
-msgid "\" is empty."
+
+#: src/ais.cpp:133
+msgid "AtoN Real (On Position)"
 msgstr ""
-#
-msgid "\"Ship Name\" MMSI (Call Sign)"
-msgstr "\"船名\" MMSI (Call Sign)"
-#
-#, c-format
-msgid "%02X"
+
+#: src/ais.cpp:134
+msgid "AtoN Real(Off Position)"
 msgstr ""
-#
-#, c-format
-msgid "%2dH %2dM"
+
+#: src/ais.cpp:141
+msgid "Fishing Vessel"
 msgstr ""
-#
-#, c-format
-msgid "%2dM %2dS"
+
+#: src/ais.cpp:142
+msgid "Towing Vessel"
 msgstr ""
-#
-msgid "%D Days, %H:%M"
-msgstr "%D 天, %H:%M"
-#
-msgid "%Dd %H:%M"
+
+#: src/ais.cpp:143
+msgid "Towing Vessel, Long"
 msgstr ""
-#
-msgid "%H:%M"
-msgstr "%H:%M"
-#
-#, c-format
-msgid "%dd "
+
+#: src/ais.cpp:144
+msgid "Dredger"
 msgstr ""
-#
-msgid "&AIS"
-msgstr "&AIS"
-#
-msgid "&Acknowledge"
-msgstr "&A確認"
-#
-msgid "&Activate"
-msgstr "啟用(&A)"
-#
-msgid "&Center View"
-msgstr "移至畫面中央(&C)"
-#
-msgid "&Copy all as text"
-msgstr "&複製全部為文字"
-#
-msgid "&Copy as text"
-msgstr "複製成文字(&C)"
-#
-msgid "&Delete"
-msgstr "刪除(&D)"
-#
-msgid "&Delete All"
-msgstr "刪除全部(&D)"
-#
-msgid "&Export selected..."
-msgstr "匯出已選(&E)..."
-#
-msgid "&Font family:"
-msgstr "字型(&F):"
-#
-msgid "&Go To"
-msgstr "前往(&G)"
-#
-msgid "&Help"
-msgstr "&H説明"
-#
-msgid "&Jump To"
-msgstr "&J跳轉到"
-#
-msgid "&Merge Selected Tracks"
-msgstr "合併所選航跡(&M)"
-#
-msgid "&Navigate"
-msgstr "& 導航"
-#
-msgid "&New"
-msgstr "新增(&N)"
-#
-msgid "&OK"
-msgstr "確定(&O)"
-#
-msgid "&Point size:"
-msgstr "點數大小(&P):"
-#
-msgid "&Properties"
-msgstr "屬性(&P)"
-#
-#, fuzzy
-msgid "&Resequence Waypoints"
-msgstr "重新命名轉向點?"
-#
-msgid "&Reverse"
-msgstr "反向(&R)"
-#
-msgid "&Send to GPS"
-msgstr "傳送至GPS(&S)"
-#
-msgid "&Silence Alert"
-msgstr "&S無聲警報"
-#
-msgid "&Start Track"
-msgstr "開始軌跡(&S)"
-#
-msgid "&Style:"
-msgstr "樣式(&S):"
-#
-msgid "&Tools"
-msgstr "&T工具"
-#
-msgid "&Underline"
-msgstr "底線(&U)"
-#
-msgid "&View"
-msgstr "&V檢視"
-#
-msgid "&Weight:"
-msgstr "寬度(&W):"
-#
-msgid "&Window"
+
+#: src/ais.cpp:145
+msgid "Diving Ops Vessel"
 msgstr ""
 
 #: src/ais.cpp:146
@@ -1354,173 +1303,70 @@ msgstr ""
 #: src/AIS_Decoder.cpp:327
 msgid "Tug, assisting a vessel or linked combination"
 msgstr ""
-#
-msgid "(m/d/y h:m)"
+
+#: src/AIS_Decoder.cpp:329
+msgid "Passenger ship, ferry, cruise ship, red cross ship"
 msgstr ""
-#
-msgid "(reserved for future use)"
-msgstr "(保留供未來使用)"
-#
-msgid "(unnamed)"
-msgstr "(未命名)"
-#
-msgid ", Out: None"
+
+#: src/AIS_Decoder.cpp:330
+msgid "Ferry"
 msgstr ""
-#
-msgid ", and all previous versions,"
-msgstr ", 與所有以前的版本,"
-#
-msgid "-"
-msgstr "-"
-#
-msgid "--"
-msgstr "--"
-#
-msgid "...and TCPA is less than (min)"
-msgstr "...且TCPA 小於多少(分鐘)"
-#
-msgid "0"
-msgstr "0"
-#
-msgid "0 (transfer completed)"
+
+#: src/AIS_Decoder.cpp:331
+msgid "Red cross ship"
 msgstr ""
-#
-msgid "0 (transfer paused)"
+
+#: src/AIS_Decoder.cpp:332
+msgid "Cruise ship"
 msgstr ""
-#
-msgid "0.05"
+
+#: src/AIS_Decoder.cpp:333
+msgid "Passenger ship without accommodation"
 msgstr ""
-#
-msgid "1"
-msgstr "1"
-#
-msgid "1 pixel"
-msgstr "1 像素"
-#
-msgid "1 px"
+
+#: src/AIS_Decoder.cpp:334
+msgid "Vessel, work maintenance craft, floating derrick, cable-ship, buoy-ship, dredge"
 msgstr ""
-#
-msgid "1.0 NM along COG"
-msgstr "1.0 NM 沿著 COG"
-#
-msgid "10 pixels"
-msgstr "10 像素"
-#
-msgid "10 px"
+
+#: src/AIS_Decoder.cpp:336
+msgid "Fishing boat"
+msgstr "渔船"
+
+#: src/AIS_Decoder.cpp:337
+msgid "Barge, tanker, chemical"
 msgstr ""
-#
-msgid "115200"
-msgstr "115200"
-#
-msgid "1200"
-msgstr "1200"
-#
-msgid "150"
-msgstr "150"
-#
-msgid "19200"
-msgstr "19200"
-#
-msgid "2"
-msgstr "2"
-#
-msgid "2 Color"
-msgstr "2 色"
-#
-msgid "2 pixels"
-msgstr "2 像素"
-#
-msgid "230400"
-msgstr "230400"
-#
-msgid "2400"
-msgstr "2400"
-#
-msgid "2px"
+
+#: src/AIS_Decoder.cpp:338
+msgid "General cargo Vessel maritime"
 msgstr ""
-#
-msgid "3"
-msgstr "3"
-#
-msgid "3 pixels"
-msgstr "3 像素"
-#
-msgid "3 px"
+
+#: src/AIS_Decoder.cpp:339
+msgid "Unit carrier maritime"
 msgstr ""
-#
-msgid "300"
-msgstr "300"
-#
-msgid "38400"
-msgstr "38400"
-#
-msgid "4"
-msgstr "4"
-#
-msgid "4 Color"
-msgstr "4 色"
-#
-msgid "4 pixels"
-msgstr "4 像素"
-#
-msgid "4 px"
+
+#: src/AIS_Decoder.cpp:340
+msgid "Bulk carrier maritime"
 msgstr ""
-#
-msgid "460800"
-msgstr "460800"
-#
-msgid "4800"
-msgstr "4800"
-#
-msgid "5"
-msgstr "5"
-#
-msgid "5 pixels"
-msgstr "5 像素"
-#
-msgid "5 px"
+
+#: src/AIS_Decoder.cpp:342
+msgid "Liquified gas tanker"
 msgstr ""
-#
-msgid "57600"
-msgstr "57600"
-#
-msgid "6"
-msgstr "6"
-#
-msgid "6 pixels"
-msgstr "6 像素"
-#
-msgid "6 px"
+
+#: src/AIS_Decoder.cpp:343
+msgid "Pleasure craft, longer than 20 metres"
 msgstr ""
-#
-msgid "600"
-msgstr "600"
-#
-msgid "7"
-msgstr "7"
-#
-msgid "7 pixels"
-msgstr "7 像素"
-#
-msgid "7 px"
+
+#: src/AIS_Decoder.cpp:344
+msgid "Fast ship"
 msgstr ""
-#
-msgid "8"
-msgstr "8"
-#
-msgid "8 pixels"
-msgstr "8 像素"
-#
-msgid "8 px"
+
+#: src/AIS_Decoder.cpp:345
+msgid "Hydrofoil"
 msgstr ""
-#
-msgid "9"
-msgstr "9"
-#
-msgid "9 pixels"
-msgstr "9 像素"
-#
-msgid "9 px"
+
+#: src/AIS_Decoder.cpp:1260
+#, c-format
+msgid "%02X"
 msgstr ""
 
 #: src/AIS_Decoder.cpp:3084 src/options.cpp:6227
@@ -3021,9 +2867,9 @@ msgstr ""
 #: src/canvasMenu.cpp:476 src/canvasMenu.cpp:483 src/chart1.cpp:5601
 msgid "Toggle Full Screen"
 msgstr ""
-#
-#, c-format
-msgid "Distance from Ownship:  %4.0f NMi"
+
+#: src/canvasMenu.cpp:489 src/canvasMenu.cpp:653 src/canvasMenu.cpp:671
+msgid "Zero XTE"
 msgstr ""
 
 #: src/canvasMenu.cpp:496
@@ -3049,59 +2895,49 @@ msgstr "海圖群組"
 #: src/canvasMenu.cpp:551
 msgid "temporary"
 msgstr ""
-#
-msgid "Distance from own ship"
+
+#: src/canvasMenu.cpp:554
+msgid "All Active Charts"
+msgstr "所有使用中的海圖"
+
+#: src/canvasMenu.cpp:585 src/CanvasOptions.cpp:214
+msgid "AIS"
+msgstr "AIS"
+
+#: src/canvasMenu.cpp:586
+msgid "Target Query..."
+msgstr "目標查詢..."
+
+#: src/canvasMenu.cpp:590
+msgid "Hide Target CPA"
+msgstr "隱藏目標CPA"
+
+#: src/canvasMenu.cpp:592
+msgid "Show Target CPA"
+msgstr "顯示目標CPA"
+
+#: src/canvasMenu.cpp:594
+msgid "Target List..."
+msgstr "目標清單..."
+
+#: src/canvasMenu.cpp:598
+msgid "Hide Target Track"
+msgstr "隱藏目標軌跡"
+
+#: src/canvasMenu.cpp:601
+msgid "Show Target Track"
+msgstr "顯示目標軌跡"
+
+#: src/canvasMenu.cpp:604
+msgid "Copy Target MMSI"
 msgstr ""
-#
-msgid "Distress"
-msgstr "事故"
-#
-msgid "Distress Area: Person overboard"
-msgstr "事故區域: 人員落水"
-#
-msgid "Distress Area: Pollution response area"
-msgstr "事故區域: 污染處理區域"
-#
-msgid "Distress Area: SAR area"
-msgstr "事故區域: 搜救區域"
-#
-msgid "Distress Area: Vessel abandoning ship"
-msgstr "事故區域: 棄船"
-#
-msgid "Distress Area: Vessel collision"
-msgstr "事故區域: 船舶碰撞"
-#
-msgid "Distress Area: Vessel disabled and adrift"
-msgstr "事故區域: 船舶漂流"
-#
-msgid "Distress Area: Vessel fire/explosion"
-msgstr "事故區域: 船舶火災/爆炸"
-#
-msgid "Distress Area: Vessel flooding"
-msgstr "事故區域: 船舶進水"
-#
-msgid "Distress Area: Vessel grounding"
-msgstr "事故區域: 船舶擱淺"
-#
-msgid "Distress Area: Vessel listing/capsizing"
-msgstr "事故區域: 船舶傾斜/翻覆"
-#
-msgid "Distress Area: Vessel requests medical assistance"
-msgstr "事故區域: 船舶請求醫療協助"
-#
-msgid "Distress Area: Vessel sinking"
-msgstr "事故區域: 船舶沈沒"
-#
-msgid "Distress Area: Vessel under assault"
-msgstr "事故區域: 船舶遭受攻擊"
-#
-msgid "Diving Ops Vessel"
+
+#: src/canvasMenu.cpp:611 src/canvasMenu.cpp:619
+msgid "Object Query..."
 msgstr ""
-#
-msgid "Djibouti"
-msgstr "吉布地"
-#
-msgid "Do use"
+
+#: src/canvasMenu.cpp:633
+msgid "Unnamed Route"
 msgstr ""
 
 #: src/canvasMenu.cpp:641
@@ -3164,63 +3000,13 @@ msgstr "反向..."
 #: src/canvasMenu.cpp:690
 msgid "Hide Waypoint Names"
 msgstr ""
-#
-msgid "Donate"
-msgstr "讚助"
-#
-#, fuzzy
-msgid "Done"
-msgstr "完成."
-#
-msgid "Done."
-msgstr "完成."
-#
-msgid "Dot"
-msgstr "點"
-#
-msgid "Dot dash"
-msgstr "點折線"
-#
-msgid "Downgrade"
+
+#: src/canvasMenu.cpp:693
+msgid "Show Waypoint Names"
 msgstr ""
-#
-msgid "Downloaded:"
-msgstr ""
-#
-msgid "Downloading"
-msgstr ""
-#
-msgid "Downloading "
-msgstr ""
-#
-msgid "Draw AIS realtime prediction, target speed min (kn)"
-msgstr ""
-#
-msgid "Dredge"
-msgstr "濬挖船"
-#
-msgid "Dredger"
-msgstr ""
-#
-msgid "Drop"
-msgstr "丟棄"
-#
-msgid "Drop MOB Marker"
-msgstr "標定人員落水標記"
-#
-msgid "Drop Mark"
-msgstr "放置标记"
-#
-msgid "Drop Mark at Boat"
-msgstr "在船舶位置放置標記"
-#
-msgid "Drop Mark at Cursor"
-msgstr "在游標位置放置標記"
-#
-msgid "Drop sentences"
-msgstr "丟棄下列字串"
-#
-msgid "ENC Completed."
+
+#: src/canvasMenu.cpp:696
+msgid "Resequence Waypoints..."
 msgstr ""
 
 #: src/canvasMenu.cpp:710 src/canvasMenu.cpp:804
@@ -3238,14 +3024,37 @@ msgstr "航迹"
 #: src/canvasMenu.cpp:746 src/canvasMenu.cpp:816
 msgid "Unnamed Waypoint"
 msgstr ""
-#
-msgid "ETA"
-msgstr "ETA"
-#
-msgid "ETA  @SOG"
+
+#: src/canvasMenu.cpp:754 src/canvasMenu.cpp:824
+msgid "Layer Waypoint"
+msgstr "圖層轉向點"
+
+#: src/canvasMenu.cpp:761 src/canvasMenu.cpp:828
+msgid "Waypoint"
+msgstr "转向点"
+
+#: src/canvasMenu.cpp:779
+msgid "Remove from Route"
+msgstr "從航路中移除"
+
+#: src/canvasMenu.cpp:784
+msgid "Split Route at Waypoint"
 msgstr ""
-#
-msgid "ETA  @VMG"
+
+#: src/canvasMenu.cpp:833
+msgid "Navigate To This"
+msgstr "導航至此處"
+
+#: src/canvasMenu.cpp:855
+msgid "Clear Anchor Watch"
+msgstr "清除流錨警報"
+
+#: src/canvasMenu.cpp:866
+msgid "Set Anchor Watch"
+msgstr "設定流錨警報"
+
+#: src/canvasMenu.cpp:907
+msgid "Main Menu"
 msgstr ""
 
 #: src/canvasMenu.cpp:920
@@ -4416,56 +4225,13 @@ msgstr ""
 #: src/ConnectionParams.cpp:238
 msgid "In: None"
 msgstr ""
-#
-msgid "Iran"
-msgstr "伊朗"
-#
-msgid "Iraq"
-msgstr "伊拉克"
-#
-msgid "Ireland"
-msgstr "愛爾蘭"
-#
-msgid "Isol. Dngr"
-msgstr "孤立危險區域"
-#
-msgid "Isolated Danger"
-msgstr "孤立危險物"
-#
-msgid "Israel"
-msgstr "以色列"
-#
-msgid "It seems you have no tide/current harmonic data installed."
-msgstr "看起來您尚未安裝潮汐、海流資料。"
-#
-msgid "Italy"
-msgstr "義大利"
-#
-msgid "Ivory Coast"
-msgstr "象牙海岸"
-#
-msgid "Jamaica"
-msgstr "牙買加"
-#
-msgid "Japan"
-msgstr "日本"
-#
-msgid "Jordan"
-msgstr "約旦"
-#
-msgid "K"
+
+#: src/ConnectionParams.cpp:242
+msgid "Out"
 msgstr ""
-#
-msgid "KML Standard (Google Earth and others)"
-msgstr "KML 標準(Google Earth 與其他)"
-#
-msgid "KML with extended waypoint data (QtVlm)"
-msgstr "KML 具延伸轉向點資料(QtVlm)"
-#
-msgid "Kazakhstan"
-msgstr "哈薩克"
-#
-msgid "Kelvin"
+
+#: src/ConnectionParams.cpp:248
+msgid ", Out: None"
 msgstr ""
 
 #: src/ConnectionParams.cpp:367 src/options.cpp:3284
@@ -4503,23 +4269,13 @@ msgstr "優先權"
 #: src/ConnectionParams.cpp:956 src/ConnectionParams.cpp:960
 msgid "Comment: "
 msgstr ""
-#
-msgid "LW"
-msgstr "LW"
-#
-msgid "Language"
-msgstr "語系"
-#
-msgid "Lao People's Dem. Rep."
-msgstr "老撾人民民主共和國。"
-#
-msgid "Larger Scale Chart"
-msgstr "較大比例尺海圖"
-#
-msgid "Last Applied Template Title:"
+
+#: src/ConnectionParams.cpp:546
+msgid "Network Address"
 msgstr ""
-#
-msgid "Last Catalog"
+
+#: src/ConnectionParams.cpp:552
+msgid "Network Port"
 msgstr ""
 
 #: src/ConnectionParams.cpp:702 src/options.cpp:2127 src/options.cpp:2779
@@ -4537,8 +4293,9 @@ msgstr "CM93 詳細度"
 #: src/DetailSlider.cpp:92
 msgid "Rasterchart Zoom/Scale Weighting"
 msgstr ""
-#
-msgid "Last part of route to be appended to dragged route?"
+
+#: src/DetailSlider.cpp:96
+msgid "Vectorchart Zoom/Scale Weighting"
 msgstr ""
 
 #: src/download_mgr.cpp:212 src/update_mgr.cpp:209
@@ -7378,187 +7135,97 @@ msgstr "計畫速度"
 #: src/RoutePropDlg.cpp:124
 msgid "Enroute"
 msgstr ""
-#
-msgid "Tankbarge"
-msgstr "油貨駁船"
-#
-msgid "Tankbarge, dry cargo as if liquid (e.g. cement)"
-msgstr "油貨駁船, 液態乾貨(例如水泥)"
-#
-msgid "Tankbarge, gas"
-msgstr "油貨駁船, 氣體"
-#
-msgid "Tankbarge, liquid cargo, type C"
-msgstr "油貨駁船, 液態貨, C 型"
-#
-msgid "Tankbarge, liquid cargo, type N"
-msgstr "油貨駁船, 液態貨, N 型"
-#
-msgid "Tanker"
-msgstr "油輪"
-#
-msgid "Tanzania"
-msgstr "坦尚尼亞"
-#
-msgid "Target Count"
-msgstr "目標計數"
-#
-msgid "Target List..."
-msgstr "目標清單..."
-#
-msgid "Target Query..."
-msgstr "目標查詢..."
-#
-msgid "Target info"
-msgstr "目標資訊"
-#
-msgid "Temperature"
+
+#: src/RoutePropDlg.cpp:140
+msgid "Departure"
 msgstr ""
 
 #: src/RoutePropDlg.cpp:173 src/trackprintout.cpp:96 src/trackprintout.cpp:329
 msgid "Time"
 msgstr ""
-#
-msgid "Templates"
+
+#: src/RoutePropDlg.cpp:178
+msgid "Local@PC"
 msgstr ""
-#
-msgid "Temporary"
+
+#: src/RoutePropDlg.cpp:179
+msgid "LMT@Location"
 msgstr ""
-#
-msgid "Temporary AISMOB Route"
-msgstr "臨時的 AISMOB 航路"
-#
-msgid "Temporary GOTO Route"
-msgstr "臨時航路"
-#
-msgid "Temporary MOB Route"
-msgstr "暫時 MOB 路徑"
-#
-msgid "Tender"
-msgstr "工作船"
-#
-msgid "Test AIS Alert Sound"
+
+#: src/RoutePropDlg.cpp:201 src/TrackPropDlg.cpp:477 src/TrackPropDlg.cpp:721
+msgid "Default color"
+msgstr "預設顏色"
+
+#: src/RoutePropDlg.cpp:238 src/TrackPropDlg.cpp:511 src/TrackPropDlg.cpp:745
+msgid "Width"
+msgstr "寬度"
+
+#: src/RoutePropDlg.cpp:244
+msgid "1 px"
 msgstr ""
-#
-msgid "Test AIS SART Alert Sound"
+
+#: src/RoutePropDlg.cpp:244
+msgid "2px"
 msgstr ""
-#
-msgid "Test Anchor Alarm Sound"
+
+#: src/RoutePropDlg.cpp:244
+msgid "3 px"
 msgstr ""
-#
-msgid "Test DSC notification Sound"
+
+#: src/RoutePropDlg.cpp:244
+msgid "4 px"
 msgstr ""
-#
-msgid "Testing"
-msgstr "測試"
-#
-msgid "Texture Cache"
-msgstr "紋理貼圖快取"
-#
-msgid "Texture Compression"
-msgstr "紋理壓縮"
-#
-msgid "Texture Compression Caching"
-msgstr "紋理壓縮快取"
-#
-msgid "Texture Compression with Caching"
-msgstr "貼圖壓縮快取"
-#
-msgid "Texture Memory Size (MB)"
-msgstr "紋理記憶體大小(MB)"
-#
-msgid "Texture Settings"
-msgstr "紋理貼圖設定"
-#
-msgid "Thailand"
-msgstr "泰國"
-#
-msgid ""
-"The Man Over Board button could be an important safety feature.\n"
-"Are you sure you want to hide it?"
+
+#: src/RoutePropDlg.cpp:244
+msgid "5 px"
 msgstr ""
-"人員落水按鍵為重要安全功能.\n"
-"確定要隱藏它?"
-#
-msgid "The Open Source Chart Plotter/Navigator"
+
+#: src/RoutePropDlg.cpp:245
+msgid "6 px"
 msgstr ""
-#
-msgid "The OpenCPN Authors"
-msgstr "OpenCP作者"
-#
-msgid "The ScaMin value for new waypoints is set to"
+
+#: src/RoutePropDlg.cpp:245
+msgid "7 px"
 msgstr ""
-#
-#, c-format
-msgid ""
-"The amount of data used by the track\n"
-" was reduced by %d%%."
+
+#: src/RoutePropDlg.cpp:245
+msgid "8 px"
 msgstr ""
-"航跡使用的資料量\n"
-"減少至 %d%%."
-#
-msgid ""
-"The currently running Track was not merged.\n"
-"You can merge it later when it is completed."
+
+#: src/RoutePropDlg.cpp:245
+msgid "9 px"
 msgstr ""
-"目前執行航跡尚未合併.\n"
-"您可在完成後合併."
-#
-msgid ""
-"The device selected is not accessible; opencpn will likely not be able\n"
-"to use this device as-is. You might want to exit OpenCPN, reboot and\n"
-"retry after creating a file called /etc/udev/rules.d/70-opencpn.rules\n"
-"with the following contents:\n"
-"\n"
-"            KERNEL==\"ttyUSB*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyACM*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyS*\", MODE=\"0666\"\n"
-"\n"
-"For more info, see the file LINUX_DEVICES.md in the distribution docs.\n"
+
+#: src/RoutePropDlg.cpp:245
+msgid "10 px"
 msgstr ""
-#
-msgid "The file will also be deleted from OpenCPN's layer directory."
+
+#: src/RoutePropDlg.cpp:258
+msgid "To waypoint"
 msgstr ""
-#
-msgid "The font colour."
-msgstr "字型色彩"
-#
-msgid "The font family."
-msgstr "字型系"
-#
-msgid "The font point size."
-msgstr "字型點數大小"
-#
-msgid "The font style."
-msgstr "字型樣式"
-#
-msgid "The font weight."
-msgstr "字體寬度"
-#
-msgid ""
-"The last opencpn run seems to have failed. Do you want to run\n"
-"in safe mode without plugins and other possibly problematic\n"
-"features?\n"
+
+#: src/RoutePropDlg.cpp:268
+msgid "To WP"
 msgstr ""
-#
-msgid "The necessary configuration files were not found. "
-msgstr "找不到所需的組態檔."
-#
-#, c-format
-msgid ""
-"The plugin %s is not compatible with this version of OpenCPN, please get an "
-"updated version."
-msgstr "插件 %s 與此版本的 OpenCPN 不相容，請取得最新版本."
-#
-msgid ""
-"The plugin is not compatible with this version of OpenCPN, and will be "
-"uninstalled."
+
+#: src/RoutePropDlg.cpp:304
+msgid "Total Distance"
 msgstr ""
-#
-msgid ""
-"The recently captured track of this target has been recorded.\n"
-"Do you want to continue recording until the end of the current OpenCPN "
-"session?"
+
+#: src/RoutePropDlg.cpp:317
+msgid "ETE"
+msgstr "ETE"
+
+#: src/RoutePropDlg.cpp:321
+msgid "ETA"
+msgstr "ETA"
+
+#: src/RoutePropDlg.cpp:329
+msgid "Next tide event"
+msgstr "下一個潮汐事件"
+
+#: src/RoutePropDlg.cpp:341
+msgid "ETD"
 msgstr ""
 
 #: src/RoutePropDlg.cpp:382 src/TrackPropDlg.cpp:883
@@ -7609,57 +7276,80 @@ msgstr "夜晚"
 #: src/RoutePropDlgImpl.cpp:408
 msgid "Arrived"
 msgstr ""
-"在要貼上的位置已有現存的轉向點, 您要合併嗎？\n"
-"\n"
-#
-msgid ""
-"There are some waypoints used in routes or anchor alarms.\n"
-" Do you want to delete them as well?\n"
-" This will change the routes and disable the anchor alarms.\n"
-" Answering No keeps the waypoints used in routes or alarms."
+
+#: src/RoutePropDlgImpl.cpp:813 src/TrackPropDlg.cpp:348
+#: src/TrackPropDlg.cpp:1341
+msgid "Depart From"
+msgstr "出發點"
+
+#: src/RoutePropDlgImpl.cpp:815 src/TrackPropDlg.cpp:386
+#: src/TrackPropDlg.cpp:769 src/TrackPropDlg.cpp:1343
+msgid "Total distance"
+msgstr "總距離"
+
+#: src/RoutePropDlgImpl.cpp:816
+msgid "Speed (Kts)"
+msgstr "速度 (節)"
+
+#: src/RoutePropDlgImpl.cpp:818 src/TrackPropDlg.cpp:1346
+msgid "Departure Time"
+msgstr "出發時間"
+
+#: src/RoutePropDlgImpl.cpp:820 src/TrackPropDlg.cpp:788
+#: src/TrackPropDlg.cpp:1348
+msgid "Time enroute"
+msgstr "航程所需時間"
+
+#: src/RoutePropDlgImpl.cpp:865
+msgid "Are you sure you want to move Up this waypoint?"
 msgstr ""
-"有一些轉向點已用於航路或錨泊警報. 你要刪除它嗎？這將會改變航路並取消錨泊警報."
-#
-msgid ""
-"There is an existing waypoint at the same location as the one you are "
-"pasting. Would you like to merge the pasted data with it?\n"
-"\n"
+
+#: src/RoutePropDlgImpl.cpp:866
+msgid "Are you sure you want to move Down this waypoint?"
 msgstr ""
-"在即將貼上的位置上已有一個現存的航路點. 要合併貼上的資料嗎? \n"
-"\n"
-#
-msgid ""
-"There was a problem printing.\n"
-"Perhaps your current printer is not set correctly?"
+
+#: src/RoutePropDlgImpl.cpp:868
+msgid "OpenCPN Move Waypoint"
 msgstr ""
-"列印發生錯誤.\n"
-"印表機是否連接妥當?"
-#
-msgid "Therefore the new waypoint will not be visible at this zoom level."
+
+#: src/RoutePropDlgImpl.cpp:902
+msgid "Are you sure you want to remove this waypoint?"
+msgstr "確定刪除這個轉向點?"
+
+#: src/RoutePropDlgImpl.cpp:903
+msgid "OpenCPN Remove Waypoint"
+msgstr "OpenCPN 移除轉向點"
+
+#: src/RoutePropDlgImpl.cpp:938
+msgid "Move Up"
 msgstr ""
-#
-msgid ""
-"These settings might destabilize OpenCPN and are by default disabled. To "
-"despite the dangers enable them manually add a CatalogExpert=1 line in the "
-"[PlugIns] section in the configuration file."
+
+#: src/RoutePropDlgImpl.cpp:940
+msgid "Move Down"
 msgstr ""
-#
-msgid "This Leg"
-msgstr "本區段"
-#
-msgid "This MMSI is my Follower - No CPA Alert"
+
+#: src/RoutePropDlgImpl.cpp:978 src/TrackPropDlg.cpp:1396
+msgid "&Copy all as text"
+msgstr "&複製全部為文字"
+
+#: src/RoutePropDlgImpl.cpp:1100 src/TrackPropDlg.cpp:1287
+msgid "_plus"
+msgstr "_plus"
+
+#: src/RoutePropDlgImpl.cpp:1175
+msgid "Invalid date/time!"
 msgstr ""
-#
-msgid "This entire folder will be migrated.\n"
+
+#: src/RoutePropDlgImpl.cpp:1179
+msgid "Unknown station!"
 msgstr ""
-#
-msgid "This waypoint is part of a layer and can't be edited"
+
+#: src/RoutePropDlgImpl.cpp:1194
+msgid "Unavailable: "
 msgstr ""
-#
-msgid "Tide"
-msgstr "潮汐"
-#
-msgid "Tide Station"
+
+#: src/RoutePropDlgImpl.cpp:1203
+msgid "Local"
 msgstr ""
 
 #: src/RoutePropDlgImpl.cpp:1360 src/TrackPropDlg.cpp:1631
@@ -7747,19 +7437,28 @@ msgstr "下一個"
 #: src/TCWin.cpp:152
 msgid "LMT@Station"
 msgstr ""
-#
+
+#: src/TCWin.cpp:243
+msgid "Reference Station :"
+msgstr "參考站："
+
+#: src/TCWin.cpp:257
+msgid "Data Source :"
+msgstr "資料來源："
+
+#: src/TCWin.cpp:648
+msgid "HW"
+msgstr "HW"
+
+#: src/TCWin.cpp:648
+msgid "LW"
+msgstr "LW"
+
+#: src/TCWin.cpp:849
 msgid "Today"
 msgstr "今天"
-#
-msgid "Toggle Full Screen"
-msgstr ""
-#
-msgid "Toggle track"
-msgstr "切換航跡顯示"
-#
-msgid "Togolese Republic"
-msgstr "多哥共和國"
-#
+
+#: src/TCWin.cpp:851 src/TCWin.cpp:856
 msgid "Tomorrow"
 msgstr "明天"
 
@@ -7900,11 +7599,17 @@ msgstr "航跡開始的本地時間"
 #: src/TrackPropDlg.cpp:971
 msgid "Extend track"
 msgstr ""
-#
-msgid "Total Length: "
-msgstr "總長度:"
-#
-msgid "Total Track: "
+
+#: src/TrackPropDlg.cpp:981
+msgid "Export"
+msgstr "匯出"
+
+#: src/TrackPropDlg.cpp:1172
+msgid "%D Days, %H:%M"
+msgstr "%D 天, %H:%M"
+
+#: src/TrackPropDlg.cpp:1346
+msgid "(m/d/y h:m)"
 msgstr ""
 
 #: src/TrackPropDlg.cpp:1450
@@ -7967,202 +7672,96 @@ msgstr ""
 #: libs/wxcurl/src/dialog.cpp:137
 msgid "Not available"
 msgstr ""
-#
-msgid "Track"
-msgstr "航迹"
-#
-msgid "Track Colour"
-msgstr ""
-#
-msgid "Track Mode"
-msgstr "追蹤模式"
-#
-msgid "Track Name"
-msgstr "航跡名稱"
-#
-#, fuzzy
-msgid "Track Print"
-msgstr "追跡"
-#
-msgid "Track properties"
-msgstr "航迹属性"
-#
-msgid "Tracking"
-msgstr "追跡"
-#
-msgid "Tracking Precision"
-msgstr "追跡精確度"
-#
-msgid "Tracks"
-msgstr "航跡"
-#
-msgid "Transmit sentences"
-msgstr "發送下列字串"
-#
-msgid "Transverse Mercator"
-msgstr "橫向麥卡托"
-#
-msgid "Trinidad and Tobago"
-msgstr "千里達及托巴哥"
-#
-msgid "Trk"
-msgstr "Track"
-#
-msgid "Tug"
-msgstr "拖船"
-#
-msgid "Tug freighter, coupled"
-msgstr "貨物拖船, 成對"
-#
-msgid "Tug, assisting a vessel or linked combination"
-msgstr ""
-#
-msgid "Tug, freighter"
-msgstr "拖船, 貨輪"
-#
-msgid "Tug, freighter/tanker, coupled"
-msgstr "拖輪, 貨輪/油輪, 成對"
-#
-msgid "Tug, one or more tows"
-msgstr ""
-#
-msgid "Tug, single"
-msgstr ""
-#
-msgid "Tug, tanker"
-msgstr "拖船, 油輪"
-#
-msgid "Tunisia"
-msgstr "突尼西亞"
-#
-msgid "Turkey"
-msgstr "土耳其"
-#
-msgid "Turkmenistan"
-msgstr "土庫曼"
-#
-msgid "Turks and Caicos Islands"
-msgstr "特克斯和凱科斯群島"
-#
-msgid "Turn Rate"
-msgstr "迴轉率"
-#
-msgid "Tuvalu"
-msgstr "吐瓦魯"
-#
-msgid "Type"
-msgstr "型式"
-#
-msgid "UDP"
-msgstr "UDP"
-#
-msgid "URL"
-msgstr "URL"
-#
+
+#: libs/wxcurl/src/dialog.cpp:168
 msgid "URL:"
 msgstr ""
-#
-msgid "UTC"
-msgstr "UTC"
-#
-msgid "Uganda"
-msgstr "烏干達"
-#
-msgid "Ukraine"
-msgstr "烏克蘭"
-#
-#, fuzzy
-msgid "Ultra advanced"
-msgstr "進階"
-#
-msgid "Un-Installation complete"
+
+#: libs/wxcurl/src/dialog.cpp:187
+msgid "Speed:"
 msgstr ""
-#
-msgid "Unable to copy catalog file"
+
+#: libs/wxcurl/src/dialog.cpp:196
+msgid "Elapsed time:"
 msgstr ""
-#
-msgid "Unable to copy catalog file to cache"
+
+#: libs/wxcurl/src/dialog.cpp:198
+msgid "Estimated total time:"
 msgstr ""
-#
-msgid "Unavailable: "
+
+#: libs/wxcurl/src/dialog.cpp:200
+msgid "Estimated remaining time:"
 msgstr ""
-#
-msgid "Undefined"
-msgstr "未定義"
-#
-msgid "Undefined (default)"
-msgstr "未定義(預設)"
-#
-msgid "Underway Sailing"
+
+#: libs/wxcurl/src/dialog.cpp:243 libs/wxcurl/src/dialog.cpp:399
+msgid "Abort"
 msgstr ""
-#
-msgid "Underway using Engine"
+
+#: libs/wxcurl/src/dialog.cpp:245
+msgid "Settings"
 msgstr ""
-#
-msgid "Undo"
-msgstr "撤销"
-#
-msgid "Undock Target List"
+
+#: libs/wxcurl/src/dialog.cpp:252
+msgid "Start"
+msgstr "開始"
+
+#: libs/wxcurl/src/dialog.cpp:413
+msgid "0 (transfer paused)"
 msgstr ""
-#
-msgid "Uninstall"
+
+#: libs/wxcurl/src/dialog.cpp:461
+msgid "Connection settings"
 msgstr ""
-#
-msgid "Unit carrier maritime"
+
+#: libs/wxcurl/src/dialog.cpp:461
+msgid "Connection settings used for the transfer:"
 msgstr ""
-#
-msgid "United Arab Emirates"
-msgstr "阿拉伯聯合大公國"
-#
-msgid "United States Virgin Islands"
-msgstr "美屬維京群島"
-#
-msgid "United States of America"
-msgstr "美國"
-#
-msgid "Units"
-msgstr "單位"
-#
-msgid "Unk"
-msgstr "Unk"
-#
-msgid "Unknown"
-msgstr "未知"
-#
-msgid "Unknown device :"
+
+#: libs/wxcurl/src/dialog.cpp:516
+msgid "0 (transfer completed)"
 msgstr ""
-#
-msgid "Unknown station!"
+
+#: libs/wxcurl/src/dialog.cpp:537
+msgid "Downloaded:"
 msgstr ""
-#
-msgid "Unnamed Route"
+
+#: libs/wxcurl/src/dialog.cpp:585
+msgid "Uploaded:"
 msgstr ""
-#
-msgid "Unnamed Waypoint"
+
+#: libs/wxcurl/src/panel.cpp:111
+msgid "Username:"
 msgstr ""
-#
-msgid "Unreadable PlugIn library detected, check the file permissions:\n"
-msgstr "檢測到無法讀取的外掛程式庫，請檢查檔案權限:\n"
-#
-msgid "Unspecified"
-msgstr "未指定"
-#
-#, fuzzy
-msgid "Update"
-msgstr " 更新: "
-#
-msgid "Update Control"
-msgstr "更新控制"
-#
-msgid "Update Plugin Catalog"
+
+#: libs/wxcurl/src/panel.cpp:112
+msgid "Password:"
 msgstr ""
-#
-msgid "Update Plugin Catalog: master"
+
+#: libs/wxcurl/src/panel.cpp:120
+msgid "Port:"
 msgstr ""
-#
-msgid "Update Plugin Catalog:master"
+
+#: libs/wxcurl/src/panel.cpp:134
+msgid "Proxy settings"
 msgstr ""
-#
-msgid "Update plugin catalog"
+
+#: libs/wxcurl/src/panel.cpp:136
+msgid "Use proxy"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:141
+msgid "Proxy host:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:142
+msgid "Proxy username:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:143
+msgid "Proxy password:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:144
+msgid "Proxy port:"
 msgstr ""
 

@@ -151,133 +151,66 @@ msgstr "Tanca"
 #: src/AboutFrame.cpp:36
 msgid "< Back"
 msgstr ""
-"\n"
-" - la teva manga ha de ser major que 0"
-#
-msgid ""
-"\n"
-" - your ship's length must be > 0"
+
+#: src/AboutFrame.cpp:52
+msgid "OpenCPN"
 msgstr ""
 
 #: src/AboutFrame.cpp:74
 msgid "(c) 2000-2021"
 msgstr ""
-#
-msgid ""
-"\n"
-"The device selected is not accessible; opencpn will likely not be able\n"
-"to use this device as-is. You might want to exit OpenCPN, reboot and\n"
-"retry after creating a file called /etc/udev/rules.d/70-opencpn.rules\n"
-"with the following contents:\n"
-"\n"
-"            KERNEL==\"ttyUSB*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyACM*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyS*\", MODE=\"0666\"\n"
-"\n"
-"For more info, see the file LINUX_DEVICES.md in the distribution docs.\n"
+
+#: src/AboutFrame.cpp:81
+msgid "The OpenCPN Authors"
 msgstr ""
-#
-msgid "  MOB Position: "
+
+#: src/AboutFrame.cpp:93
+msgid "OpenCPN is a Free Software project, built by sailors.\n"
+"It is freely available to download and distribute without charge."
 msgstr ""
-#
-msgid "  Ownship Position: "
+
+#: src/AboutFrame.cpp:103
+msgid "Want to help?"
 msgstr ""
-#
-msgid "  Position: "
+
+#: src/AboutFrame.cpp:109
+msgid "Donate"
 msgstr ""
-#
-msgid " (Ctrl-Space)"
-msgstr " (Ctrl-Espai)"
-#
-msgid " (Last Known)"
-msgstr " (Últim conegut)"
-#
-msgid " - "
-msgstr " - "
-#
-msgid " -- [Portable(-p) executing from "
-msgstr " -- [Portable(-p) executant-se des de "
-#
-msgid " COG Unavailable"
-msgstr "Cap Carta Disponible"
-#
-msgid " ChartFile:  "
-msgstr " Arxius de Cartes:  "
-#
-msgid " Datum:  "
-msgstr " Datum:  "
-#
-msgid " Depth Units:  "
-msgstr " Unitats de Fondària: "
-#
-msgid " ID:  "
-msgstr " ID:  "
-#
-msgid " Name:  "
-msgstr " Nom:   "
-#
-msgid " Never track"
-msgstr " Mai track"
-#
-msgid " Projection:  "
-msgstr " Projecció:  "
-#
-msgid " Ship "
-msgstr "Vaixell:"
-#
-msgid " Soundings:  "
-msgstr " Sondejos: "
-#
-msgid " Source Edition:  "
-msgstr " Source Edition:  "
-#
-msgid " Time: "
+
+#: src/AboutFrame.cpp:118
+msgid "or"
 msgstr ""
-#
-msgid ""
-" To set the magnetic variation manually,\n"
-" you must disable the WMM plugin."
+
+#: src/AboutFrame.cpp:124
+msgid "get involved!"
 msgstr ""
-#
-msgid " Updated:  "
-msgstr " Actualitzat:  "
-#
-msgid " [Modified]"
+
+#: src/AboutFrame.cpp:139
+msgid "Logfile:"
 msgstr ""
-#
-msgid " at "
+
+#: src/AboutFrame.cpp:161
+msgid "Config file:"
 msgstr ""
-#
-msgid " for details."
-msgstr " per a més detalls."
-#
-msgid " is incompatible with this version of OpenCPN."
-msgstr " és incompatible amb aquesta versió de OpenCPN."
-#
-msgid " on "
+
+#: src/AboutFrame.cpp:174
+msgid "Copy to clipboard"
 msgstr ""
-#
-msgid ""
-" shorter than rhumbline.\n"
-"\n"
+
+#: src/AboutFrame.cpp:182
+msgid "Plugin API: "
 msgstr ""
-" més curta que loxodròmica.\n"
-"\n"
-#
-msgid " successfully installed"
+
+#: src/AboutFrame.cpp:226
+msgid "OpenCPN Website"
 msgstr ""
 
 #: src/AboutFrameImpl.cpp:89
 msgid "OpenCPN Help documentation is not available locally."
 msgstr ""
-#
-msgid " to "
-msgstr " fins "
-#
-msgid "\" is empty, switching to \"All Active Charts\" group."
-msgstr "\" és buit, canviant al grup de \"Totes les cartes actives\"."
-#
-msgid "\" is empty."
+
+#: src/AboutFrameImpl.cpp:92
+msgid "Would you like to visit the opencpn.org website for more information?"
 msgstr ""
 
 #: src/AboutFrameImpl.cpp:96 src/AISTargetQueryDialog.cpp:183
@@ -295,186 +228,111 @@ msgstr "Informació de l'OpenCPN"
 #: src/ais.cpp:113
 msgid "Underway using Engine"
 msgstr ""
-#
-#, c-format
-msgid "%2dH %2dM"
+
+#: src/ais.cpp:114
+msgid "At Anchor"
+msgstr "Ancorat "
+
+#: src/ais.cpp:115
+msgid "Not Under Command"
+msgstr "Fora de Control"
+
+#: src/ais.cpp:116
+msgid "Restricted Manoeuvrability"
+msgstr "Maniobrabilitat Restringida"
+
+#: src/ais.cpp:117
+msgid "Constrained by draught"
+msgstr "Constret pel corrent"
+
+#: src/ais.cpp:118
+msgid "Moored"
+msgstr "Amarrat"
+
+#: src/ais.cpp:119
+msgid "Aground"
+msgstr "Embarrancat"
+
+#: src/ais.cpp:120
+msgid "Engaged in Fishing"
+msgstr "Pesquer Enfeinat"
+
+#: src/ais.cpp:121
+msgid "Underway Sailing"
 msgstr ""
-#
-#, c-format
-msgid "%2dM %2dS"
+
+#: src/ais.cpp:122 src/ais.cpp:149
+msgid "High Speed Craft"
+msgstr "Llanxa Ràpida"
+
+#: src/ais.cpp:123
+msgid "Wing In Ground Effect"
+msgstr "Ala en Efecte Terra"
+
+#: src/ais.cpp:124
+msgid "Power-driven vessel towing astern (regional use)"
+msgstr "Vaixell a motor remolcat per popa (us regional)"
+
+#: src/ais.cpp:125
+msgid "Power-driven vessel pushing ahead or towing alongside (regional use)"
+msgstr "Vaixell a motor empentat o remolcat abarloat (us regional)"
+
+#: src/ais.cpp:126
+msgid "Reserved 13"
+msgstr "Reservat 13"
+
+#: src/ais.cpp:127
+msgid "Reserved 14"
+msgstr "Reservat 14"
+
+#: src/ais.cpp:128 src/AIS_Target_Data.cpp:402 src/ConnectionParams.cpp:176
+#: src/ConnectionParams.cpp:462 src/ConnectionParams.cpp:600
+#: src/ConnectionParams.cpp:913 src/ConnectionParams.cpp:941
+msgid "Undefined"
+msgstr "Indefinit"
+
+#: src/ais.cpp:129
+msgid "AtoN Virtual"
 msgstr ""
-#
-msgid "%D Days, %H:%M"
-msgstr "%D Dies, %H:%M"
-#
-msgid "%Dd %H:%M"
+
+#: src/ais.cpp:130
+msgid "AtoN Virtual (On Position)"
 msgstr ""
-#
-msgid "%H:%M"
-msgstr "%H:%M"
-#
-#, c-format
-msgid "%dd "
+
+#: src/ais.cpp:131
+msgid "AtoN Virtual (Off Position)"
 msgstr ""
-#
-msgid "&AIS"
-msgstr "&AIS"
-#
-msgid "&Acknowledge"
-msgstr "&Reconèixer"
-#
-msgid "&Activate"
-msgstr "&Activació"
-#
-msgid "&Center View"
-msgstr "&Centrar Vista"
-#
-msgid "&Copy all as text"
-msgstr "&Copiar tot com a text"
-#
-msgid "&Copy as text"
-msgstr "&Copiar com a text"
-#
-msgid "&Delete"
-msgstr " [&D] Esborrar"
-#
-msgid "&Delete All"
-msgstr "[&D] Esborrar-ho Tot"
-#
-msgid "&Export selected..."
-msgstr "&Exportar la Ruta..."
-#
-msgid "&Font family:"
-msgstr "&Família de LLetres"
-#
-msgid "&Go To"
-msgstr "Anar-hi [&G]"
-#
-msgid "&Help"
-msgstr "&Ajuda"
-#
-msgid "&Jump To"
-msgstr "&Anar a"
-#
-msgid "&Merge Selected Tracks"
-msgstr "Esborrar la Derrota"
-#
-msgid "&Navigate"
-msgstr "&Navegar"
-#
-msgid "&New"
-msgstr "&Nou"
-#
-msgid "&OK"
-msgstr "d'Ac&ord"
-#
-msgid "&Point size:"
-msgstr "Mida del &Punt: "
-#
-msgid "&Properties"
-msgstr "&Propietats"
-#
-#, fuzzy
-msgid "&Resequence Waypoints"
-msgstr "Reanomenar Waypoints?"
-#
-msgid "&Reverse"
-msgstr "Inve&rsió"
-#
-msgid "&Send to GPS"
-msgstr "Enviar al GP&S"
-#
-msgid "&Silence Alert"
-msgstr "&Silenciar Alerta"
-#
-msgid "&Start Track"
-msgstr "Inícia la Derota [&S]"
-#
-msgid "&Style:"
-msgstr "E&stil"
-#
-msgid "&Tools"
-msgstr "&Eines"
-#
-msgid "&Underline"
-msgstr "S&Ubratllat"
-#
-msgid "&View"
-msgstr "&Veure"
-#
-msgid "&Weight:"
-msgstr "Gruix [&W]:"
-#
-msgid "&Window"
+
+#: src/ais.cpp:132
+msgid "AtoN Real"
 msgstr ""
-#
-msgid "(Unnamed Layer)"
-msgstr "(Capa Sense Nom)"
-#
-msgid "(Unnamed Route)"
-msgstr "(Ruta Sense Nom)"
-#
-msgid "(Unnamed Track)"
-msgstr "(Derrota Sense Nom)"
-#
-msgid "(Unnamed Waypoint)"
-msgstr "(Waypoint sense Nom)"
-#
-msgid "(c) 2000-2021"
+
+#: src/ais.cpp:133
+msgid "AtoN Real (On Position)"
 msgstr ""
-#
-msgid "(m/d/y h:m)"
+
+#: src/ais.cpp:134
+msgid "AtoN Real(Off Position)"
 msgstr ""
-#
-msgid "(reserved for future use)"
-msgstr "(reservat per un futur ús)"
-#
-msgid "(unnamed)"
-msgstr "(Ruta Sense Nom)"
-#
-msgid ", Out: None"
-msgstr ", Sortida; Cap"
-#
-msgid ", and all previous versions,"
-msgstr ", i totes les versions anteriors,"
-#
-msgid "-"
-msgstr "-"
-#
-msgid "--"
-msgstr "--"
-#
-msgid "...and TCPA is less than (min)"
-msgstr "  ..i si el TCPA és menor que (Minuts):"
-#
-msgid "0"
-msgstr "0"
-#
-msgid "0 (transfer completed)"
+
+#: src/ais.cpp:141
+msgid "Fishing Vessel"
 msgstr ""
-#
-msgid "0 (transfer paused)"
+
+#: src/ais.cpp:142
+msgid "Towing Vessel"
 msgstr ""
-#
-msgid "0.05"
+
+#: src/ais.cpp:143
+msgid "Towing Vessel, Long"
 msgstr ""
-#
-msgid "1"
-msgstr "1"
-#
-msgid "1 pixel"
-msgstr "1 pixel"
-#
-msgid "1 px"
+
+#: src/ais.cpp:144
+msgid "Dredger"
 msgstr ""
-#
-msgid "1.0 NM along COG"
-msgstr "1,0 MN sobre Rumb COG"
-#
-msgid "10 pixels"
-msgstr "10 pixels"
-#
-msgid "10 px"
+
+#: src/ais.cpp:145
+msgid "Diving Ops Vessel"
 msgstr ""
 
 #: src/ais.cpp:146
@@ -669,13 +527,12 @@ msgstr "Amic de GPSGate"
 #: src/ais.cpp:194
 msgid "Position Report"
 msgstr "Hora del Darrer Informe:"
-#
-msgid "APRS position report"
-msgstr ""
-#
-msgid "ARPA"
-msgstr "ARPA"
-#
+
+#: src/ais.cpp:195 src/ais.cpp:260
+msgid "Distress"
+msgstr "Distància"
+
+#: src/ais.cpp:196
 msgid "ARPA radar target"
 msgstr "Objectiu radar ARPA"
 
@@ -1242,62 +1099,274 @@ msgstr "Indefinit"
 #: src/ais.cpp:1768 src/ais.cpp:1769
 msgid "AIS Target Name"
 msgstr ""
-#
-#, fuzzy
-msgid "About"
-msgstr "Djibouti"
-#
-msgid "About OpenCPN"
-msgstr "Quant a l'OpenCPN"
-#
-msgid "Accept"
-msgstr "Accepta"
-#
-msgid "Accept only sentences"
-msgstr "Acceptar només sentències"
-#
-msgid "Activate"
-msgstr "Activació"
-#
-msgid "Activate Next Waypoint"
-msgstr "Activar nou Waypoint"
-#
-msgid "Active"
-msgstr "Activació"
-#
-msgid "Active Catalog"
+
+#: src/AIS_Decoder.cpp:269
+msgid "Vessel, type unknown"
+msgstr "Vaixell, tipus desconegut"
+
+#: src/AIS_Decoder.cpp:270
+msgid "Freightbarge"
+msgstr "Barcassa de càrrega"
+
+#: src/AIS_Decoder.cpp:271
+msgid "Tankbarge"
+msgstr "Barcassa cisterna"
+
+#: src/AIS_Decoder.cpp:272
+msgid "Tankbarge, dry cargo as if liquid (e.g. cement)"
+msgstr "Barcassa cisterna, càrrega seca fluida (p.e. ciment)"
+
+#: src/AIS_Decoder.cpp:273
+msgid "Service vessel, police patrol, port service"
+msgstr "Vaixell de serveis, policia, serveis portuaris"
+
+#: src/AIS_Decoder.cpp:274 src/AIS_Decoder.cpp:328
+msgid "Pushboat, single"
+msgstr "Remolcador d'empènyer, sol"
+
+#: src/AIS_Decoder.cpp:275
+msgid "Object, not otherwise specified"
+msgstr "Objecte, no especificat"
+
+#: src/AIS_Decoder.cpp:276
+msgid "Object, towed, not otherwise specified"
+msgstr "Objecte remolcat, no especificat"
+
+#: src/AIS_Decoder.cpp:277
+msgid "Bunkership"
+msgstr "Vaixell nodrissa"
+
+#: src/AIS_Decoder.cpp:278
+msgid "Motor freighter"
+msgstr "Barcassa autopropulsada"
+
+#: src/AIS_Decoder.cpp:279
+msgid "Motor tanker"
+msgstr "Barcassa cisterna a motor"
+
+#: src/AIS_Decoder.cpp:280
+msgid "Motor tanker, liquid cargo, type N"
+msgstr "Barcassa cisterna a motor, càrrega líquida tipus N"
+
+#: src/AIS_Decoder.cpp:281
+msgid "Motor tanker, liquid cargo, type C"
+msgstr "Barcassa cisterna a motor, càrrega líquida tipus C"
+
+#: src/AIS_Decoder.cpp:282
+msgid "Motor tanker, dry cargo as if liquid (e.g. cement)"
+msgstr "Barcassa cisterna a motor, càrrega seca fluida (p.e. ciment)"
+
+#: src/AIS_Decoder.cpp:283
+msgid "Container vessel"
+msgstr "Vaixel portacontenidors"
+
+#: src/AIS_Decoder.cpp:284
+msgid "Gas tanker"
+msgstr "Vaixell transport de gas"
+
+#: src/AIS_Decoder.cpp:285
+msgid "Motor freighter, tug"
+msgstr "Carguer, remolcador"
+
+#: src/AIS_Decoder.cpp:286
+msgid "Motor tanker, tug"
+msgstr "Vaixell cisterna, remolcador"
+
+#: src/AIS_Decoder.cpp:287
+msgid "Motor freighter with one or more ships alongside"
+msgstr "Vaixell cisterna amb un o més vaixells abarloats"
+
+#: src/AIS_Decoder.cpp:288
+msgid "Motor freighter with tanker"
+msgstr "Carguer a motor amb cisterna"
+
+#: src/AIS_Decoder.cpp:289
+msgid "Motor freighter pushing one or more freighters"
+msgstr "Carguer a motor empentant un o més carguers"
+
+#: src/AIS_Decoder.cpp:290
+msgid "Motor freighter pushing at least one tank-ship"
+msgstr "Carguer a motor empenyent un vaixell cisterna"
+
+#: src/AIS_Decoder.cpp:291
+msgid "Tug, freighter"
+msgstr "Remolcador, carguer"
+
+#: src/AIS_Decoder.cpp:292
+msgid "Tug, tanker"
+msgstr "Remolcador, cisterna"
+
+#: src/AIS_Decoder.cpp:293
+msgid "Tug freighter, coupled"
+msgstr "Remolcador i carguer, acoblats"
+
+#: src/AIS_Decoder.cpp:294
+msgid "Tug, freighter/tanker, coupled"
+msgstr "Remolcador, carguer/cisterna, acoblats"
+
+#: src/AIS_Decoder.cpp:295
+msgid "Tankbarge, liquid cargo, type N"
+msgstr "Barcassa cisterna, càrrega líquida, tipus N"
+
+#: src/AIS_Decoder.cpp:296
+msgid "Tankbarge, liquid cargo, type C"
+msgstr "Barcassa cisterna, càrrega líquida, tipus C"
+
+#: src/AIS_Decoder.cpp:297
+msgid "Freightbarge with containers"
+msgstr "Barcassa de càrrega amb contenidors"
+
+#: src/AIS_Decoder.cpp:298
+msgid "Tankbarge, gas"
+msgstr "Barcassa cisterna, gas"
+
+#: src/AIS_Decoder.cpp:299
+msgid "Pushtow, one cargo barge"
+msgstr "Comboi empentat, una barcassa de càrrega"
+
+#: src/AIS_Decoder.cpp:300
+msgid "Pushtow, two cargo barges"
+msgstr "Comboi empentat, dues barcasses de càrrega"
+
+#: src/AIS_Decoder.cpp:301
+msgid "Pushtow, three cargo barges"
+msgstr "Comboi empentat, tres barcasses de càrrega"
+
+#: src/AIS_Decoder.cpp:302
+msgid "Pushtow, four cargo barges"
+msgstr "Comboi empentat, quatre barcasses de càrrega"
+
+#: src/AIS_Decoder.cpp:303
+msgid "Pushtow, five cargo barges"
+msgstr "Comboi empentat, cinc barcasses de càrrega"
+
+#: src/AIS_Decoder.cpp:304
+msgid "Pushtow, six cargo barges"
+msgstr "Comboi empentat, sis barcasses de càrrega"
+
+#: src/AIS_Decoder.cpp:305
+msgid "Pushtow, seven cargo barges"
+msgstr "Comboi empentat, set barcasses de càrrega"
+
+#: src/AIS_Decoder.cpp:306
+msgid "Pushtow, eight cargo barges"
+msgstr "Comboi empentat, vuit barcasses de càrrega"
+
+#: src/AIS_Decoder.cpp:307
+msgid "Pushtow, nine or more barges"
+msgstr "Comboi empentat, nou o més barcasses de càrrega"
+
+#: src/AIS_Decoder.cpp:308
+msgid "Pushtow, one tank/gas barge"
+msgstr "Comboi empentat, una barcassa petroliera/gas"
+
+#: src/AIS_Decoder.cpp:310
+msgid "Pushtow, two barges at least one tanker or gas barge"
+msgstr "Comboi empentat, dues barcasses al menys una petroliera o gas"
+
+#: src/AIS_Decoder.cpp:312
+msgid "Pushtow, three barges at least one tanker or gas barge"
+msgstr "Comboi empentat, tres barcasses al menys una petroliera o gas"
+
+#: src/AIS_Decoder.cpp:314
+msgid "Pushtow, four barges at least one tanker or gas barge"
+msgstr "Comboi empentat, quatre barcasses al menys una petroliera o gas"
+
+#: src/AIS_Decoder.cpp:316
+msgid "Pushtow, five barges at least one tanker or gas barge"
+msgstr "Comboi empentat, cinc barcasses al menys una petroliera o gas"
+
+#: src/AIS_Decoder.cpp:318
+msgid "Pushtow, six barges at least one tanker or gas barge"
+msgstr "Comboi empentat, sis barcasses al menys una petroliera o gas"
+
+#: src/AIS_Decoder.cpp:320
+msgid "Pushtow, seven barges at least one tanker or gas barge"
+msgstr "Comboi empentat, set barcasses al menys una petroliera o gas"
+
+#: src/AIS_Decoder.cpp:322
+msgid "Pushtow, eight barges at least one tanker or gas barge"
+msgstr "Comboi empentat, vuit barcasses al menys una petroliera o gas"
+
+#: src/AIS_Decoder.cpp:324
+msgid "Pushtow, nine or more barges at least one tanker or gas barge"
+msgstr "Comboi empentat, nou o més barcasses al menys una petroliera o gas"
+
+#: src/AIS_Decoder.cpp:325
+msgid "Tug, single"
+msgstr "Remolcador, sol"
+
+#: src/AIS_Decoder.cpp:326
+msgid "Tug, one or more tows"
+msgstr "Remolcador, un o més remolcs"
+
+#: src/AIS_Decoder.cpp:327
+msgid "Tug, assisting a vessel or linked combination"
+msgstr "Remolcador assistint a un vaixell o remolcant abarloat"
+
+#: src/AIS_Decoder.cpp:329
+msgid "Passenger ship, ferry, cruise ship, red cross ship"
+msgstr "Vaixell de passatgers, ferry, vaixell de creuer, vaixell de la Creu Roja"
+
+#: src/AIS_Decoder.cpp:330
+msgid "Ferry"
+msgstr "Ferry"
+
+#: src/AIS_Decoder.cpp:331
+msgid "Red cross ship"
+msgstr "Vaixell de la Creu Roja"
+
+#: src/AIS_Decoder.cpp:332
+msgid "Cruise ship"
+msgstr "Vaixell de creuer"
+
+#: src/AIS_Decoder.cpp:333
+msgid "Passenger ship without accommodation"
 msgstr ""
-#
-msgid "Active Datasets"
-msgstr "Directoris Actius de Cartes"
-#
-#, fuzzy
-msgid "Active catalog"
-msgstr "Directoris Actius de Cartes"
-#
-msgid "Active catalog updated."
+
+#: src/AIS_Decoder.cpp:334
+msgid "Vessel, work maintenance craft, floating derrick, cable-ship, buoy-ship, dredge"
 msgstr ""
-#
-#, fuzzy
-msgid "Active setting:"
-msgstr "Directoris Actius de Cartes"
-#
-msgid "Add"
-msgstr "Afegir"
-#
-msgid "Add Connection"
-msgstr "Opcions en vers les Fonts de Lletra"
-#
-msgid "Add Dataset..."
-msgstr "Afegir dades..."
-#
-msgid "Add Directory..."
-msgstr "Directori d'Escannejats OpenCPN..."
-#
-msgid "Add MMSI Properties"
-msgstr "Afegir Propietats MMSI"
-#
-msgid "Add New"
+
+#: src/AIS_Decoder.cpp:336
+msgid "Fishing boat"
+msgstr "Vaixell de pesca"
+
+#: src/AIS_Decoder.cpp:337
+msgid "Barge, tanker, chemical"
+msgstr "Barcassa, petrolier, química"
+
+#: src/AIS_Decoder.cpp:338
+msgid "General cargo Vessel maritime"
+msgstr "Vaixell carguer en gereral"
+
+#: src/AIS_Decoder.cpp:339
+msgid "Unit carrier maritime"
+msgstr "Vaixell de transport marítim"
+
+#: src/AIS_Decoder.cpp:340
+msgid "Bulk carrier maritime"
+msgstr "Transport a granel marítim"
+
+#: src/AIS_Decoder.cpp:342
+msgid "Liquified gas tanker"
+msgstr "Cisterna per a gasos liquats"
+
+#: src/AIS_Decoder.cpp:343
+msgid "Pleasure craft, longer than 20 metres"
+msgstr "Embarcació d'esbarjo de més de 20m"
+
+#: src/AIS_Decoder.cpp:344
+msgid "Fast ship"
+msgstr "Vaixell ràpid"
+
+#: src/AIS_Decoder.cpp:345
+msgid "Hydrofoil"
+msgstr "Hidroplà"
+
+#: src/AIS_Decoder.cpp:1260
+#, c-format
+msgid "%02X"
 msgstr ""
 
 #: src/AIS_Decoder.cpp:3084 src/options.cpp:6227
@@ -2524,15 +2593,21 @@ msgstr "Info d'Objecte"
 #: src/AISTargetListDialog.cpp:707
 msgid "Create WPT"
 msgstr "Esborrar el Waypoint"
-#
-msgid "Create Waypoint"
-msgstr "Esborrar el Waypoint"
-#
-msgid ""
-"Create a private configuration template based on current settings.\n"
-"This template will be saved, and may be selected for further use at any "
-"time.\n"
-"               "
+
+#: src/AISTargetListDialog.cpp:716
+msgid "Hide All Tracks"
+msgstr "Consulta d'objecte AIS"
+
+#: src/AISTargetListDialog.cpp:724
+msgid "Show All Tracks"
+msgstr "Mostrar-hi els Objectes AIS"
+
+#: src/AISTargetListDialog.cpp:732
+msgid "Toggle track"
+msgstr "Activa/Desact. la Derrota"
+
+#: src/AISTargetListDialog.cpp:740
+msgid "Copy MMSI"
 msgstr ""
 
 #: src/AISTargetListDialog.cpp:748
@@ -2820,25 +2895,49 @@ msgstr "Cartes"
 #: src/canvasMenu.cpp:551
 msgid "temporary"
 msgstr ""
-#
-msgid "Dismiss"
+
+#: src/canvasMenu.cpp:554
+msgid "All Active Charts"
+msgstr "Tots les cartes actives"
+
+#: src/canvasMenu.cpp:585 src/CanvasOptions.cpp:214
+msgid "AIS"
+msgstr "AIS"
+
+#: src/canvasMenu.cpp:586
+msgid "Target Query..."
+msgstr "Consultar sobre l'objectiu..."
+
+#: src/canvasMenu.cpp:590
+msgid "Hide Target CPA"
+msgstr "Amagar objectiu CPA"
+
+#: src/canvasMenu.cpp:592
+msgid "Show Target CPA"
+msgstr "Mostrar objectiu CPA"
+
+#: src/canvasMenu.cpp:594
+msgid "Target List..."
+msgstr "Llista de objectius..."
+
+#: src/canvasMenu.cpp:598
+msgid "Hide Target Track"
+msgstr "Amagar track de l'objectiu"
+
+#: src/canvasMenu.cpp:601
+msgid "Show Target Track"
+msgstr "Mostrar track de l'objectiu"
+
+#: src/canvasMenu.cpp:604
+msgid "Copy Target MMSI"
 msgstr ""
-#
-msgid "Display"
-msgstr "Pantalla"
-#
-msgid "Display Category"
-msgstr "Nivell de Presentació"
-#
-msgid "Display Features"
-msgstr "Opcions de visualització"
-#
-msgid "Display Options"
-msgstr "Opcions en la Presentació de la Carta"
-#
-msgid ""
-"Display a slideshow of <num> charts and then exit. Zero or negative <num> "
-"specifies no limit."
+
+#: src/canvasMenu.cpp:611 src/canvasMenu.cpp:619
+msgid "Object Query..."
+msgstr "Consulta sobre l'Objecte..."
+
+#: src/canvasMenu.cpp:633
+msgid "Unnamed Route"
 msgstr ""
 
 #: src/canvasMenu.cpp:641
@@ -2901,56 +3000,13 @@ msgstr "Inversa..."
 #: src/canvasMenu.cpp:690
 msgid "Hide Waypoint Names"
 msgstr ""
-#
-msgid "Distress"
-msgstr "Distància"
-#
-msgid "Distress Area: Person overboard"
-msgstr "Àrea d'auxili: Home a l'aigua"
-#
-msgid "Distress Area: Pollution response area"
-msgstr "Àrea d'auxili: Zona de resposta a la contaminació"
-#
-msgid "Distress Area: SAR area"
-msgstr "Àrea d'auxili: Àrea SAR"
-#
-msgid "Distress Area: Vessel abandoning ship"
-msgstr "Àrea d'auxili: Vaixell abandonat"
-#
-msgid "Distress Area: Vessel collision"
-msgstr "Àrea d'auxili: Colisió de vaixell"
-#
-msgid "Distress Area: Vessel disabled and adrift"
-msgstr "Àrea d'auxili: Vaixell a la deriva i sense govern"
-#
-msgid "Distress Area: Vessel fire/explosion"
-msgstr "Àrea d'auxili: Incendi/Explosió al vaixell"
-#
-msgid "Distress Area: Vessel flooding"
-msgstr "Àrea d'auxili: Vaixell inundant"
-#
-msgid "Distress Area: Vessel grounding"
-msgstr "Àrea d'auxili: Vaixell varant"
-#
-msgid "Distress Area: Vessel listing/capsizing"
-msgstr "Àrea d'auxili: Vaixell escorat"
-#
-msgid "Distress Area: Vessel requests medical assistance"
-msgstr "Àrea d'auxili: Vaixell solicitant ajuda mèdica"
-#
-msgid "Distress Area: Vessel sinking"
-msgstr "Àrea d'auxili: Vaixell enfonsant-se"
-#
-msgid "Distress Area: Vessel under assault"
-msgstr "Àrea d'auxili: Vaixell sota assalt"
-#
-msgid "Diving Ops Vessel"
+
+#: src/canvasMenu.cpp:693
+msgid "Show Waypoint Names"
 msgstr ""
-#
-msgid "Djibouti"
-msgstr "Djibouti"
-#
-msgid "Do use"
+
+#: src/canvasMenu.cpp:696
+msgid "Resequence Waypoints..."
 msgstr ""
 
 #: src/canvasMenu.cpp:710 src/canvasMenu.cpp:804
@@ -2968,17 +3024,37 @@ msgstr "Track"
 #: src/canvasMenu.cpp:746 src/canvasMenu.cpp:816
 msgid "Unnamed Waypoint"
 msgstr ""
-#
-msgid "Dominica"
-msgstr "Dominica"
-#
-msgid "Dominican Republic"
-msgstr "República Dominicana"
-#
-msgid "Don't use"
+
+#: src/canvasMenu.cpp:754 src/canvasMenu.cpp:824
+msgid "Layer Waypoint"
+msgstr "Capa Waypoint"
+
+#: src/canvasMenu.cpp:761 src/canvasMenu.cpp:828
+msgid "Waypoint"
+msgstr "Waypoint"
+
+#: src/canvasMenu.cpp:779
+msgid "Remove from Route"
+msgstr "Treure de la ruta"
+
+#: src/canvasMenu.cpp:784
+msgid "Split Route at Waypoint"
 msgstr ""
-#
-msgid "Donate"
+
+#: src/canvasMenu.cpp:833
+msgid "Navigate To This"
+msgstr "Navegar fins a"
+
+#: src/canvasMenu.cpp:855
+msgid "Clear Anchor Watch"
+msgstr "Treure la Vigilància d'Àncora"
+
+#: src/canvasMenu.cpp:866
+msgid "Set Anchor Watch"
+msgstr "Configurar la Vigilància d'Àncora"
+
+#: src/canvasMenu.cpp:907
+msgid "Main Menu"
 msgstr ""
 
 #: src/canvasMenu.cpp:920
@@ -3689,8 +3765,41 @@ msgstr " Nom:   "
 #: src/chcanv.cpp:5379 src/chcanv.cpp:5417 src/routemanagerdialog.cpp:696
 msgid "Scale"
 msgstr ""
-#
-msgid "Fishing Vessel"
+
+#: src/chartdbs.cpp:1384
+msgid " ID:  "
+msgstr " ID:  "
+
+#: src/chartdbs.cpp:1392
+msgid " Depth Units:  "
+msgstr " Unitats de Fondària: "
+
+#: src/chartdbs.cpp:1400
+msgid " Soundings:  "
+msgstr " Sondejos: "
+
+#: src/chartdbs.cpp:1408
+msgid " Datum:  "
+msgstr " Datum:  "
+
+#: src/chartdbs.cpp:1416
+msgid " Projection:  "
+msgstr " Projecció:  "
+
+#: src/chartdbs.cpp:1420
+msgid "Mercator"
+msgstr "Mercator"
+
+#: src/chartdbs.cpp:1422
+msgid "Transverse Mercator"
+msgstr "Transversal de Mercator"
+
+#: src/chartdbs.cpp:1424
+msgid "Polyconic"
+msgstr "Policònic "
+
+#: src/chartdbs.cpp:1426
+msgid "Web Mercator (EPSG:3857)"
 msgstr ""
 
 #: src/chartdbs.cpp:1434
@@ -4160,23 +4269,13 @@ msgstr "Prioritat"
 #: src/ConnectionParams.cpp:956 src/ConnectionParams.cpp:960
 msgid "Comment: "
 msgstr ""
-#
-msgid "LW"
-msgstr "LW"
-#
-msgid "Language"
-msgstr "Idioma"
-#
-msgid "Lao People's Dem. Rep."
-msgstr "Rep. Dem. Popular de Lao"
-#
-msgid "Larger Scale Chart"
-msgstr "Escala de la Carta més Gran"
-#
-msgid "Last Applied Template Title:"
+
+#: src/ConnectionParams.cpp:546
+msgid "Network Address"
 msgstr ""
-#
-msgid "Last Catalog"
+
+#: src/ConnectionParams.cpp:552
+msgid "Network Port"
 msgstr ""
 
 #: src/ConnectionParams.cpp:702 src/options.cpp:2127 src/options.cpp:2779
@@ -4194,8 +4293,9 @@ msgstr "Aquí el Màx. Detall"
 #: src/DetailSlider.cpp:92
 msgid "Rasterchart Zoom/Scale Weighting"
 msgstr ""
-#
-msgid "Last part of route to be appended to dragged route?"
+
+#: src/DetailSlider.cpp:96
+msgid "Vectorchart Zoom/Scale Weighting"
 msgstr ""
 
 #: src/download_mgr.cpp:212 src/update_mgr.cpp:209
@@ -6433,8 +6533,7 @@ msgstr "OpenCPN crea una alerta SENC"
 #: src/Osenc.cpp:1180
 msgid "S57 Cell Update failed.\n"
 "No updates could be applied.\n"
-"ENC features may be incomplete or inaccurate.\n"
-"\n"
+"ENC features may be incomplete or inaccurate.\n\n"
 "Check the logfile for details."
 msgstr ""
 
@@ -7036,231 +7135,101 @@ msgstr "Cap a"
 #: src/RoutePropDlg.cpp:107
 msgid "Plan speed"
 msgstr "Velocitat de la Ruta"
-#
-msgid "Speed (Kts)"
-msgstr "Velocitat (nusos)"
-#
-msgid "Speed:"
+
+#: src/RoutePropDlg.cpp:124
+msgid "Enroute"
 msgstr ""
-#
-msgid "Split"
-msgstr "Dividir la Ruta"
-#
-msgid "Split Route at Waypoint"
+
+#: src/RoutePropDlg.cpp:140
+msgid "Departure"
 msgstr ""
 
 #: src/RoutePropDlg.cpp:173 src/trackprintout.cpp:96 src/trackprintout.cpp:329
 msgid "Time"
 msgstr ""
-#
-msgid "Sri Lanka"
-msgstr "Sri Lanka"
-#
-msgid "Standard"
-msgstr "Estàndard"
-#
-msgid "Starboard Hand Mark"
-msgstr "Marca de Mà a Estribord"
-#
-msgid "Start"
-msgstr "Inici"
-#
-msgid "Statistics"
-msgstr "Estadístiques"
-#
-#, fuzzy
-msgid "Status"
-msgstr "Mostra la Barra d'Estat"
-#
-msgid "Status Bar"
+
+#: src/RoutePropDlg.cpp:178
+msgid "Local@PC"
 msgstr ""
-#
-msgid "Status Bar Option"
+
+#: src/RoutePropDlg.cpp:179
+msgid "LMT@Location"
 msgstr ""
-#
-msgid "StatusBar"
-msgstr "Mostra la Barra d'Estat"
-#
-msgid "Statute miles"
-msgstr "Milles terrestres"
-#
-msgid "Stbd"
-msgstr "Estrb"
-#
-msgid "Stbd Hand"
-msgstr "Mà Estribor"
-#
-msgid "Stop Scan"
-msgstr "Aturar l'escaneig"
-#
-msgid "Stop Tracking"
-msgstr "Atura el seguiment"
-#
-msgid "Style"
-msgstr "E&stil"
-#
-msgid "Sudan"
-msgstr "Sudan"
-#
-msgid "Sunrise"
-msgstr "Sortida del sol"
-#
-msgid "Sunset"
-msgstr "Posta de sol"
-#
-msgid "Suppress Alerts for anchored/moored targets"
+
+#: src/RoutePropDlg.cpp:201 src/TrackPropDlg.cpp:477 src/TrackPropDlg.cpp:721
+msgid "Default color"
+msgstr "El color de la lletra"
+
+#: src/RoutePropDlg.cpp:238 src/TrackPropDlg.cpp:511 src/TrackPropDlg.cpp:745
+msgid "Width"
+msgstr "Amplada"
+
+#: src/RoutePropDlg.cpp:244
+msgid "1 px"
 msgstr ""
-#
-msgid "Suppress anchored/moored targets, speed max (kn)"
+
+#: src/RoutePropDlg.cpp:244
+msgid "2px"
 msgstr ""
-#
-msgid "Suriname"
-msgstr "Suriname"
-#
-msgid "Sweden"
-msgstr "Suècia"
-#
-msgid "Switch to full screen mode on start."
+
+#: src/RoutePropDlg.cpp:244
+msgid "3 px"
 msgstr ""
-#
-msgid "Switzerland"
-msgstr "Suïssa"
-#
-msgid "Symbolized"
-msgstr "Amb símbols"
-#
-msgid "Syrian Arab Republic"
-msgstr "República Àrab Síria"
-#
-msgid "TCP"
-msgstr "TCP"
-#
-msgid "TCPA"
-msgstr "CPA TCPA"
-#
-msgid "TTG  @SOG"
+
+#: src/RoutePropDlg.cpp:244
+msgid "4 px"
 msgstr ""
-#
-msgid "TTG  @VMG"
+
+#: src/RoutePropDlg.cpp:244
+msgid "5 px"
 msgstr ""
-#
-msgid "Taiwan"
-msgstr "Taiwan"
-#
-msgid "Tajikistan"
-msgstr "Tadjikistan"
-#
-msgid "Talker ID"
-msgstr "ID del parlant"
-#
-msgid "Tankbarge"
-msgstr "Barcassa cisterna"
-#
-msgid "Tankbarge, dry cargo as if liquid (e.g. cement)"
-msgstr "Barcassa cisterna, càrrega seca fluida (p.e. ciment)"
-#
-msgid "Tankbarge, gas"
-msgstr "Barcassa cisterna, gas"
-#
-msgid "Tankbarge, liquid cargo, type C"
-msgstr "Barcassa cisterna, càrrega líquida, tipus C"
-#
-msgid "Tankbarge, liquid cargo, type N"
-msgstr "Barcassa cisterna, càrrega líquida, tipus N"
-#
-msgid "Tanker"
-msgstr "Vaixell Cisterna"
-#
-msgid "Tanzania"
-msgstr "Tanzania"
-#
-msgid "Target Count"
-msgstr "Info d'Objecte"
-#
-msgid "Target List..."
-msgstr "Llista de objectius..."
-#
-msgid "Target Query..."
-msgstr "Consultar sobre l'objectiu..."
-#
-msgid "Target info"
-msgstr "Info d'Objecte"
-#
-msgid "Temperature"
+
+#: src/RoutePropDlg.cpp:245
+msgid "6 px"
 msgstr ""
-#
-msgid "Template Status"
+
+#: src/RoutePropDlg.cpp:245
+msgid "7 px"
 msgstr ""
-#
-msgid "Templates"
+
+#: src/RoutePropDlg.cpp:245
+msgid "8 px"
 msgstr ""
-#
-msgid "Temporary"
+
+#: src/RoutePropDlg.cpp:245
+msgid "9 px"
 msgstr ""
-#
-msgid "Temporary AISMOB Route"
-msgstr "Ruta AISMOB Temporal"
-#
-msgid "Temporary GOTO Route"
-msgstr "Seguir Ruta destí temporal"
-#
-msgid "Temporary MOB Route"
-msgstr "Ruta Temporal cap a MOB "
-#
-msgid "Tender"
-msgstr "Llanxa de Serveis"
-#
-msgid "Test AIS Alert Sound"
+
+#: src/RoutePropDlg.cpp:245
+msgid "10 px"
 msgstr ""
-#
-msgid "Test AIS SART Alert Sound"
+
+#: src/RoutePropDlg.cpp:258
+msgid "To waypoint"
 msgstr ""
-#
-msgid "Test Anchor Alarm Sound"
+
+#: src/RoutePropDlg.cpp:268
+msgid "To WP"
 msgstr ""
-#
-msgid "Test DSC notification Sound"
+
+#: src/RoutePropDlg.cpp:304
+msgid "Total Distance"
 msgstr ""
-#
-msgid "Testing"
-msgstr "Configuracions"
-#
-msgid "Texture Cache"
-msgstr "Memòria cau de textura"
-#
-msgid "Texture Compression"
-msgstr "Compressió de textura"
-#
-msgid "Texture Compression Caching"
-msgstr "Cau compressió de textura"
-#
-msgid "Texture Compression with Caching"
-msgstr "Compressió de Textures en memòria cau"
-#
-msgid "Texture Memory Size (MB)"
-msgstr "Tamany de memòria de textura (MB)"
-#
-msgid "Texture Settings"
-msgstr "Configuració de textura"
-#
-msgid "Thailand"
-msgstr "Tailàndia"
-#
-msgid ""
-"The Man Over Board button could be an important safety feature.\n"
-"Are you sure you want to hide it?"
-msgstr ""
-"L'icona de l'home a l'aigua (MOB) és una característica de seguretat "
-"important.\n"
-"Segur que vols ocultar-lo?"
-#
-msgid "The Open Source Chart Plotter/Navigator"
-msgstr ""
-#
-msgid "The OpenCPN Authors"
-msgstr ""
-#
-msgid "The ScaMin value for new waypoints is set to"
+
+#: src/RoutePropDlg.cpp:317
+msgid "ETE"
+msgstr "ETE"
+
+#: src/RoutePropDlg.cpp:321
+msgid "ETA"
+msgstr "ETA:"
+
+#: src/RoutePropDlg.cpp:329
+msgid "Next tide event"
+msgstr "Marea Següent"
+
+#: src/RoutePropDlg.cpp:341
+msgid "ETD"
 msgstr ""
 
 #: src/RoutePropDlg.cpp:382 src/TrackPropDlg.cpp:883
@@ -7311,104 +7280,80 @@ msgstr "Nocturn"
 #: src/RoutePropDlgImpl.cpp:408
 msgid "Arrived"
 msgstr ""
-"La quantitat de dades utilitzades per la derrota\n"
-" s'ha reduït un %d%%."
-#
-msgid ""
-"The currently running Track was not merged.\n"
-"You can merge it later when it is completed."
+
+#: src/RoutePropDlgImpl.cpp:813 src/TrackPropDlg.cpp:348
+#: src/TrackPropDlg.cpp:1341
+msgid "Depart From"
+msgstr "Indret de Partença"
+
+#: src/RoutePropDlgImpl.cpp:815 src/TrackPropDlg.cpp:386
+#: src/TrackPropDlg.cpp:769 src/TrackPropDlg.cpp:1343
+msgid "Total distance"
+msgstr "Distància Total"
+
+#: src/RoutePropDlgImpl.cpp:816
+msgid "Speed (Kts)"
+msgstr "Velocitat (nusos)"
+
+#: src/RoutePropDlgImpl.cpp:818 src/TrackPropDlg.cpp:1346
+msgid "Departure Time"
+msgstr "Hora de sortida"
+
+#: src/RoutePropDlgImpl.cpp:820 src/TrackPropDlg.cpp:788
+#: src/TrackPropDlg.cpp:1348
+msgid "Time enroute"
+msgstr "Temps en Ruta"
+
+#: src/RoutePropDlgImpl.cpp:865
+msgid "Are you sure you want to move Up this waypoint?"
 msgstr ""
-"La derrota actual no s'ha afegit.\n"
-"Podeu afegir-la més tard, quan s'hagi completat."
-#
-msgid ""
-"The device selected is not accessible; opencpn will likely not be able\n"
-"to use this device as-is. You might want to exit OpenCPN, reboot and\n"
-"retry after creating a file called /etc/udev/rules.d/70-opencpn.rules\n"
-"with the following contents:\n"
-"\n"
-"            KERNEL==\"ttyUSB*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyACM*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyS*\", MODE=\"0666\"\n"
-"\n"
-"For more info, see the file LINUX_DEVICES.md in the distribution docs.\n"
+
+#: src/RoutePropDlgImpl.cpp:866
+msgid "Are you sure you want to move Down this waypoint?"
 msgstr ""
-#
-msgid "The file will also be deleted from OpenCPN's layer directory."
+
+#: src/RoutePropDlgImpl.cpp:868
+msgid "OpenCPN Move Waypoint"
 msgstr ""
-#
-msgid "The font colour."
-msgstr "El color de la lletra"
-#
-msgid "The font family."
-msgstr "La família de lletres"
-#
-msgid "The font point size."
-msgstr "La mida del punt de lletra."
-#
-msgid "The font style."
-msgstr "L'estil de lletra"
-#
-msgid "The font weight."
-msgstr "El griux de les lletres"
-#
-msgid ""
-"The last opencpn run seems to have failed. Do you want to run\n"
-"in safe mode without plugins and other possibly problematic\n"
-"features?\n"
+
+#: src/RoutePropDlgImpl.cpp:902
+msgid "Are you sure you want to remove this waypoint?"
+msgstr "N'està segur de voler esborrar <TOTS> els waypoints?"
+
+#: src/RoutePropDlgImpl.cpp:903
+msgid "OpenCPN Remove Waypoint"
+msgstr "Creador de Rutes OpenCPN"
+
+#: src/RoutePropDlgImpl.cpp:938
+msgid "Move Up"
 msgstr ""
-#
-msgid "The necessary configuration files were not found. "
-msgstr "No s'han trobat els fitxers de configuració. "
-#
-#, c-format
-msgid ""
-"The plugin %s is not compatible with this version of OpenCPN, please get an "
-"updated version."
+
+#: src/RoutePropDlgImpl.cpp:940
+msgid "Move Down"
 msgstr ""
-"El plugin %s no és compatible amb aquesta versió d'OpenCPN. Si us plau, "
-"obtingui una versió actualitzada."
-#
-msgid ""
-"The plugin is not compatible with this version of OpenCPN, and will be "
-"uninstalled."
+
+#: src/RoutePropDlgImpl.cpp:978 src/TrackPropDlg.cpp:1396
+msgid "&Copy all as text"
+msgstr "&Copiar tot com a text"
+
+#: src/RoutePropDlgImpl.cpp:1100 src/TrackPropDlg.cpp:1287
+msgid "_plus"
+msgstr "_plus"
+
+#: src/RoutePropDlgImpl.cpp:1175
+msgid "Invalid date/time!"
 msgstr ""
-#
-msgid ""
-"The recently captured track of this target has been recorded.\n"
-"Do you want to continue recording until the end of the current OpenCPN "
-"session?"
+
+#: src/RoutePropDlgImpl.cpp:1179
+msgid "Unknown station!"
 msgstr ""
-"La derrota d'aquest objecte ha estat enregistrada.\n"
-"Vols continuar enregistrant fins a acabar aquesta sessió d'OpenCPN?"
-#
-msgid "The settings for own ship real size are not correct:"
-msgstr "La configuració del tamany real del vaixell no és correcta:"
-#
-msgid ""
-"The waypoint you want to delete is used in a route, do you really want to "
-"delete it?"
+
+#: src/RoutePropDlgImpl.cpp:1194
+msgid "Unavailable: "
 msgstr ""
-"El waypoint que vols esborrar s'utilitza a aquesta ruta, estàs segur que vols "
-"esborrar-lo?"
-#
-msgid "There"
-msgstr "Allà"
-#
-msgid ""
-"There are existing waypoints at the same location as some of the ones you are "
-"pasting. Would you like to just merge the pasted data into them?\n"
-"\n"
-msgstr ""
-"Ja hi han waypoints al mateix lloc on estàs enganxant els nous. Vols unir-"
-"los?\n"
-"\n"
-#
-msgid ""
-"There are some waypoints used in routes or anchor alarms.\n"
-" Do you want to delete them as well?\n"
-" This will change the routes and disable the anchor alarms.\n"
-" Answering No keeps the waypoints used in routes or alarms."
+
+#: src/RoutePropDlgImpl.cpp:1203
+msgid "Local"
 msgstr ""
 
 #: src/RoutePropDlgImpl.cpp:1360 src/TrackPropDlg.cpp:1631
@@ -7582,17 +7527,93 @@ msgstr "Velocitat mitja (Kts)"
 #: src/TrackPropDlg.cpp:413
 msgid "Time Enroute"
 msgstr "Temps en Ruta"
-#
-msgid "Time enroute"
-msgstr "Temps en Ruta"
-#
+
+#: src/TrackPropDlg.cpp:441 src/TrackPropDlg.cpp:455 src/TrackPropDlg.cpp:817
+msgid "Local @ PC"
+msgstr "La local del PC"
+
+#: src/TrackPropDlg.cpp:441 src/TrackPropDlg.cpp:461
+msgid "LMT @ Location"
+msgstr "Local de la posició"
+
+#: src/TrackPropDlg.cpp:444 src/TrackPropDlg.cpp:808
 msgid "Time shown as"
 msgstr "Hora indicada com"
-#
-msgid "Timestamp"
-msgstr "Hora-de-Pas/ETE"
-#
-msgid "Title"
+
+#: src/TrackPropDlg.cpp:515 src/TrackPropDlg.cpp:750
+msgid "1 pixel"
+msgstr "1 pixel"
+
+#: src/TrackPropDlg.cpp:515 src/TrackPropDlg.cpp:750
+msgid "2 pixels"
+msgstr "2 pixels"
+
+#: src/TrackPropDlg.cpp:516 src/TrackPropDlg.cpp:751
+msgid "3 pixels"
+msgstr "3 pixels"
+
+#: src/TrackPropDlg.cpp:516 src/TrackPropDlg.cpp:751
+msgid "4 pixels"
+msgstr "4 pixels"
+
+#: src/TrackPropDlg.cpp:516 src/TrackPropDlg.cpp:751
+msgid "5 pixels"
+msgstr "5 pixels"
+
+#: src/TrackPropDlg.cpp:517 src/TrackPropDlg.cpp:752
+msgid "6 pixels"
+msgstr "6 pixels"
+
+#: src/TrackPropDlg.cpp:517 src/TrackPropDlg.cpp:752
+msgid "7 pixels"
+msgstr "7 pixels"
+
+#: src/TrackPropDlg.cpp:517 src/TrackPropDlg.cpp:752
+msgid "8 pixels"
+msgstr "8 pixels"
+
+#: src/TrackPropDlg.cpp:518 src/TrackPropDlg.cpp:753
+msgid "9 pixels"
+msgstr "9 pixels"
+
+#: src/TrackPropDlg.cpp:518 src/TrackPropDlg.cpp:753
+msgid "10 pixels"
+msgstr "10 pixels"
+
+#: src/TrackPropDlg.cpp:590 src/TrackPropDlg.cpp:976
+msgid "To route"
+msgstr "Temps en Ruta"
+
+#: src/TrackPropDlg.cpp:707
+msgid "Display parameters"
+msgstr "Nivell de Presentació"
+
+#: src/TrackPropDlg.cpp:762
+msgid "Statistics"
+msgstr "Estadístiques"
+
+#: src/TrackPropDlg.cpp:802
+msgid "Recorded points"
+msgstr "Reanomenar Waypoints?"
+
+#: src/TrackPropDlg.cpp:822
+msgid "LMT @ Track Start"
+msgstr "LMT @ Inici Derrota"
+
+#: src/TrackPropDlg.cpp:971
+msgid "Extend track"
+msgstr ""
+
+#: src/TrackPropDlg.cpp:981
+msgid "Export"
+msgstr "&Exportar Wpt..."
+
+#: src/TrackPropDlg.cpp:1172
+msgid "%D Days, %H:%M"
+msgstr "%D Dies, %H:%M"
+
+#: src/TrackPropDlg.cpp:1346
+msgid "(m/d/y h:m)"
 msgstr ""
 
 #: src/TrackPropDlg.cpp:1450
@@ -7615,8 +7636,37 @@ msgstr "Pausa"
 #: src/TTYWindow.cpp:83
 msgid "Copy NMEA Debug window to clipboard."
 msgstr ""
-#
-msgid "To Waypoint"
+
+#: src/TTYWindow.cpp:124
+msgid "Message accepted"
+msgstr "Missatge acceptat"
+
+#: src/TTYWindow.cpp:132
+msgid "Input message filtered, output message filtered and dropped"
+msgstr "Missatge d'entrada filtrat, missatge de sortida filtrada i caigut"
+
+#: src/TTYWindow.cpp:140
+msgid "Input Message filtered and dropped"
+msgstr "Missatge d'entrada filtrat i caigut"
+
+#: src/TTYWindow.cpp:147
+msgid "Output Message"
+msgstr "Missatge de Sortida"
+
+#: src/TTYWindow.cpp:154
+msgid "Information Message or Message with errors"
+msgstr "Missatge d'Informació o Missatge amb errors"
+
+#: src/TTYWindow.cpp:163 libs/wxcurl/src/dialog.cpp:410
+msgid "Resume"
+msgstr "Continua"
+
+#: src/undo.cpp:82
+msgid "Delete Waypoint"
+msgstr "Esborrar el Waypoint"
+
+#: src/undo.cpp:85
+msgid "Move Waypoint"
 msgstr "Al Waypoint"
 
 #: src/update_mgr.cpp:409
@@ -7626,246 +7676,96 @@ msgstr ""
 #: libs/wxcurl/src/dialog.cpp:137
 msgid "Not available"
 msgstr ""
-#
-msgid "To route"
-msgstr "Temps en Ruta"
-#
-msgid "To waypoint"
-msgstr ""
-#
-msgid "Today"
-msgstr "Avui"
-#
-msgid "Toggle Full Screen"
-msgstr "Canviar a Pantalla Completa"
-#
-msgid "Toggle track"
-msgstr "Activa/Desact. la Derrota"
-#
-msgid "Togolese Republic"
-msgstr "República Togolesa"
-#
-msgid "Tomorrow"
-msgstr "Demà"
-#
-msgid "Tonga"
-msgstr "Tonga"
-#
-msgid "ToolTips"
-msgstr "Aclaracions"
-#
-msgid "Toolbar and Window Style"
-msgstr "Estil de la Barra d'icones i Finestra"
-#
-msgid "Total Distance"
-msgstr ""
-#
-msgid "Total Length: "
-msgstr "Distància"
-#
-msgid "Total Track: "
-msgstr ""
-#
-msgid "Total distance"
-msgstr "Distància Total"
-#
-msgid "Tow"
-msgstr "Remolcador"
-#
-msgid "Towing Vessel"
-msgstr ""
-#
-msgid "Towing Vessel, Long"
-msgstr ""
-#
-msgid "Track"
-msgstr "Track"
-#
-msgid "Track Colour"
-msgstr ""
-#
-msgid "Track Mode"
-msgstr "Mode de Pista"
-#
-msgid "Track Name"
-msgstr "Nom de la Derrota"
-#
-#, fuzzy
-msgid "Track Print"
-msgstr "Seguiment"
-#
-msgid "Track properties"
-msgstr ""
-#
-msgid "Tracking"
-msgstr "Seguiment"
-#
-msgid "Tracking Precision"
-msgstr "Característiques de la Derrota"
-#
-msgid "Tracks"
-msgstr "Derrotes"
-#
-msgid "Transmit sentences"
-msgstr "Transmetre sentències"
-#
-msgid "Transverse Mercator"
-msgstr "Transversal de Mercator"
-#
-msgid "Trinidad and Tobago"
-msgstr "Trinitat i Tobago"
-#
-msgid "Trk"
-msgstr "Derrotes"
-#
-msgid "Tug"
-msgstr "Remolcador"
-#
-msgid "Tug freighter, coupled"
-msgstr "Remolcador i carguer, acoblats"
-#
-msgid "Tug, assisting a vessel or linked combination"
-msgstr "Remolcador assistint a un vaixell o remolcant abarloat"
-#
-msgid "Tug, freighter"
-msgstr "Remolcador, carguer"
-#
-msgid "Tug, freighter/tanker, coupled"
-msgstr "Remolcador, carguer/cisterna, acoblats"
-#
-msgid "Tug, one or more tows"
-msgstr "Remolcador, un o més remolcs"
-#
-msgid "Tug, single"
-msgstr "Remolcador, sol"
-#
-msgid "Tug, tanker"
-msgstr "Remolcador, cisterna"
-#
-msgid "Tunisia"
-msgstr "Tunisia"
-#
-msgid "Turkey"
-msgstr "Turquía"
-#
-msgid "Turkmenistan"
-msgstr "Turkmenistan"
-#
-msgid "Turks and Caicos Islands"
-msgstr "Illes Turks i Caicos"
-#
-msgid "Turn Rate"
-msgstr "Velocitat de gir"
-#
-msgid "Tuvalu"
-msgstr "Tuvalu"
-#
-msgid "Type"
-msgstr "Tipus"
-#
-msgid "UDP"
-msgstr "UDP"
-#
-msgid "URL"
-msgstr "URL"
-#
+
+#: libs/wxcurl/src/dialog.cpp:168
 msgid "URL:"
 msgstr ""
-#
-msgid "UTC"
-msgstr "UTC"
-#
-msgid "Uganda"
-msgstr "Uganda"
-#
-msgid "Ukraine"
-msgstr "Ucrània"
-#
-#, fuzzy
-msgid "Ultra advanced"
-msgstr "Avançat"
-#
-msgid "Un-Installation complete"
+
+#: libs/wxcurl/src/dialog.cpp:187
+msgid "Speed:"
 msgstr ""
-#
-msgid "Unable to copy catalog file"
+
+#: libs/wxcurl/src/dialog.cpp:196
+msgid "Elapsed time:"
 msgstr ""
-#
-msgid "Unable to copy catalog file to cache"
+
+#: libs/wxcurl/src/dialog.cpp:198
+msgid "Estimated total time:"
 msgstr ""
-#
-msgid "Unavailable: "
+
+#: libs/wxcurl/src/dialog.cpp:200
+msgid "Estimated remaining time:"
 msgstr ""
-#
-msgid "Undefined"
-msgstr "Indefinit"
-#
-msgid "Undefined (default)"
-msgstr "Indefinit"
-#
-msgid "Underway Sailing"
+
+#: libs/wxcurl/src/dialog.cpp:243 libs/wxcurl/src/dialog.cpp:399
+msgid "Abort"
 msgstr ""
-#
-msgid "Underway using Engine"
+
+#: libs/wxcurl/src/dialog.cpp:245
+msgid "Settings"
 msgstr ""
-#
-msgid "Undo"
-msgstr "Desfer"
-#
-msgid "Undock Target List"
+
+#: libs/wxcurl/src/dialog.cpp:252
+msgid "Start"
+msgstr "Inici"
+
+#: libs/wxcurl/src/dialog.cpp:413
+msgid "0 (transfer paused)"
 msgstr ""
-#
-msgid "Uninstall"
+
+#: libs/wxcurl/src/dialog.cpp:461
+msgid "Connection settings"
 msgstr ""
-#
-msgid "Unit carrier maritime"
-msgstr "Vaixell de transport marítim"
-#
-msgid "United Arab Emirates"
-msgstr "Emirats Àrabs Units"
-#
-msgid "United States Virgin Islands"
-msgstr "Illes Verges dels Estats Units"
-#
-msgid "United States of America"
-msgstr "Estats Units d'Amèrica"
-#
-msgid "Units"
-msgstr "Unitats"
-#
-msgid "Unk"
-msgstr "Desc."
-#
-msgid "Unknown"
-msgstr "Desconegut"
-#
-msgid "Unknown device :"
+
+#: libs/wxcurl/src/dialog.cpp:461
+msgid "Connection settings used for the transfer:"
 msgstr ""
-#
-msgid "Unknown station!"
+
+#: libs/wxcurl/src/dialog.cpp:516
+msgid "0 (transfer completed)"
 msgstr ""
-#
-msgid "Unnamed Route"
+
+#: libs/wxcurl/src/dialog.cpp:537
+msgid "Downloaded:"
 msgstr ""
-#
-msgid "Unnamed Waypoint"
+
+#: libs/wxcurl/src/dialog.cpp:585
+msgid "Uploaded:"
 msgstr ""
-#
-msgid "Unreadable PlugIn library detected, check the file permissions:\n"
+
+#: libs/wxcurl/src/panel.cpp:111
+msgid "Username:"
 msgstr ""
-"La biblioteca d'aquest Connector és incompatible, comproveu els permisos de "
-"fitxer:\n"
-#
-msgid "Unspecified"
-msgstr "Indefinit"
-#
-#, fuzzy
-msgid "Update"
-msgstr " Actualitzat:  "
-#
-msgid "Update Control"
-msgstr "Actualitzar el Control"
-#
-msgid "Update Plugin Catalog"
+
+#: libs/wxcurl/src/panel.cpp:112
+msgid "Password:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:120
+msgid "Port:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:134
+msgid "Proxy settings"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:136
+msgid "Use proxy"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:141
+msgid "Proxy host:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:142
+msgid "Proxy username:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:143
+msgid "Proxy password:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:144
+msgid "Proxy port:"
 msgstr ""
 

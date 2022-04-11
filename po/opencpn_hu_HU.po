@@ -4073,11 +4073,17 @@ msgstr "Cella"
 #: src/cm93.cpp:6465
 msgid "M_COVR ID"
 msgstr ""
-#
-msgid "Motor freighter pushing one or more freighters"
+
+#: src/cm93.cpp:6469
+msgid "Cell Scale"
+msgstr "Cella lépték"
+
+#: src/cm93.cpp:6473
+msgid "wgsox"
 msgstr ""
-#
-msgid "Motor freighter with one or more ships alongside"
+
+#: src/cm93.cpp:6477
+msgid "wgsoy"
 msgstr ""
 
 #: src/cm93.cpp:6481 src/cm93.cpp:6495
@@ -6558,8 +6564,12 @@ msgstr ""
 #: src/Osenc.cpp:1175 src/Osenc.cpp:1183 src/s57chart.cpp:3755
 msgid "OpenCPN Create SENC Warning"
 msgstr ""
-#
-msgid "Slovenia"
+
+#: src/Osenc.cpp:1180
+msgid "S57 Cell Update failed.\n"
+"No updates could be applied.\n"
+"ENC features may be incomplete or inaccurate.\n\n"
+"Check the logfile for details."
 msgstr ""
 
 #: src/Osenc.cpp:1664
@@ -7023,18 +7033,15 @@ msgstr "Adat összevonás pontossága"
 
 #: src/routemanagerdialog.cpp:1742
 #, c-format
-msgid ""
-"The amount of data used by the track\n"
+msgid "The amount of data used by the track\n"
 " was reduced by %d%%."
-msgstr ""
-"Az útvonal által használt adat\n"
+msgstr "Az útvonal által használt adat\n"
 "csökkenése %d%%."
 
 #: src/routemanagerdialog.cpp:1840
 msgid "The currently running Track was not merged.\n"
 "You can merge it later when it is completed."
-msgstr ""
-"Az aktuális nyomvonal nincs egyesíteve.\n"
+msgstr "Az aktuális nyomvonal nincs egyesíteve.\n"
 "Később, a lezárás után egyesíthető."
 
 #: src/routemanagerdialog.cpp:2111
@@ -7333,20 +7340,37 @@ msgstr "Út időtartama"
 #: src/RoutePropDlgImpl.cpp:865
 msgid "Are you sure you want to move Up this waypoint?"
 msgstr ""
-#
-msgid "UTC"
+
+#: src/RoutePropDlgImpl.cpp:866
+msgid "Are you sure you want to move Down this waypoint?"
 msgstr ""
-#
-msgid "Uganda"
+
+#: src/RoutePropDlgImpl.cpp:868
+msgid "OpenCPN Move Waypoint"
 msgstr ""
-#
-msgid "Ukraine"
+
+#: src/RoutePropDlgImpl.cpp:902
+msgid "Are you sure you want to remove this waypoint?"
+msgstr "Biztos, hogy törölni akarod ezt az útpontot?"
+
+#: src/RoutePropDlgImpl.cpp:903
+msgid "OpenCPN Remove Waypoint"
+msgstr "OpenCPN útpont eltávolítása"
+
+#: src/RoutePropDlgImpl.cpp:938
+msgid "Move Up"
 msgstr ""
-#
-msgid "Ultra advanced"
+
+#: src/RoutePropDlgImpl.cpp:940
+msgid "Move Down"
 msgstr ""
-#
-msgid "Un-Installation complete"
+
+#: src/RoutePropDlgImpl.cpp:978 src/TrackPropDlg.cpp:1396
+msgid "&Copy all as text"
+msgstr "Másol mindent szövegként"
+
+#: src/RoutePropDlgImpl.cpp:1100 src/TrackPropDlg.cpp:1287
+msgid "_plus"
 msgstr ""
 
 #: src/RoutePropDlgImpl.cpp:1175
@@ -7420,17 +7444,13 @@ msgstr "GPS/Plotter Port"
 #: src/SendToGpsDlg.cpp:177
 msgid "Prepare GPS for Route/Waypoint upload and press Send..."
 msgstr ""
-#
-msgid "Units"
+
+#: src/SendToGpsDlg.cpp:181
+msgid "Progress..."
 msgstr ""
-#
-msgid "Unk"
-msgstr "Ismeretlen"
-#
-msgid "Unknown"
-msgstr "Ismeretlen"
-#
-msgid "Unknown device :"
+
+#: src/tcmgr.cpp:691
+msgid "It seems you have no tide/current harmonic data installed."
 msgstr ""
 
 #: src/TCWin.cpp:90
@@ -7452,8 +7472,9 @@ msgstr "Következő"
 #: src/TCWin.cpp:152
 msgid "LMT@Station"
 msgstr ""
-#
-msgid "Update Plugin Catalog: master"
+
+#: src/TCWin.cpp:243
+msgid "Reference Station :"
 msgstr ""
 
 #: src/TCWin.cpp:257
@@ -7463,8 +7484,9 @@ msgstr "Adatforrás:"
 #: src/TCWin.cpp:648
 msgid "HW"
 msgstr ""
-#
-msgid "Update to "
+
+#: src/TCWin.cpp:648
+msgid "LW"
 msgstr ""
 
 #: src/TCWin.cpp:849
@@ -7620,11 +7642,17 @@ msgstr "Útpont export..."
 #: src/TrackPropDlg.cpp:1172
 msgid "%D Days, %H:%M"
 msgstr ""
-#
-msgid "Use as active catalog"
+
+#: src/TrackPropDlg.cpp:1346
+msgid "(m/d/y h:m)"
 msgstr ""
-#
-msgid "Use default location"
+
+#: src/TrackPropDlg.cpp:1450
+msgid "track"
+msgstr "Nyomvonal"
+
+#: src/TrackPropDlg.cpp:1876
+msgid "--"
 msgstr ""
 
 #: src/TTYWindow.cpp:68
@@ -7647,14 +7675,9 @@ msgstr "Üzenet elfogadott"
 #: src/TTYWindow.cpp:132
 msgid "Input message filtered, output message filtered and dropped"
 msgstr ""
-#
-msgid "User X Offset"
-msgstr "Felhasználói X eltolás"
-#
-msgid "User Y Offset"
-msgstr "Felhasználói Y eltolás"
-#
-msgid "User set magnetic variation"
+
+#: src/TTYWindow.cpp:140
+msgid "Input Message filtered and dropped"
 msgstr ""
 
 #: src/TTYWindow.cpp:147
@@ -7728,8 +7751,9 @@ msgstr "Kapcsolat beállításai"
 #: libs/wxcurl/src/dialog.cpp:461
 msgid "Connection settings used for the transfer:"
 msgstr ""
-#
-msgid "Waiting for permission grant...."
+
+#: libs/wxcurl/src/dialog.cpp:516
+msgid "0 (transfer completed)"
 msgstr ""
 
 #: libs/wxcurl/src/dialog.cpp:537

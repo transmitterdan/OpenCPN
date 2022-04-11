@@ -16,118 +16,66 @@ msgstr ""
 "X-Crowdin-Language: it\n"
 "X-Crowdin-File: /plugins/chartdldr_pi/po/chartdldr_pi.pot\n"
 "X-Crowdin-File-ID: 160\n"
-#
-msgid " from "
-msgstr ""
-#
-#, c-format
-msgid ""
-"%d out of %d charts failed to download.\n"
-"Check the list, verify there is a working Internet connection and repeat the "
-"operation if needed."
-msgstr ""
-"%d su %d carte non sono state scaricate. \n"
-"Controllare l'elenco, verificare la connessione Internet e ripetere "
-"l'operazione, se necessario."
-#
-#, c-format
-msgid "%lu charts total, %lu updated, %lu new"
-msgstr "%lu carte totali, %lu aggiornate, %lu nuove"
-#
-#, c-format
-msgid "%lu charts total, %lu updated, %lu new, %lu selected"
-msgstr ""
-#
-#, c-format
-msgid "%s"
-msgstr "%s"
-#
+
+#: src/chartcatalog.cpp:46
+msgid "Catalog is not valid."
+msgstr "Catalogo non valido."
+
+#: src/chartcatalog.cpp:447
 #, c-format
 msgid "%s (%s to %s), river miles %3.1f - %3.1f"
 msgstr "%s (%s a %s), miglia dalla sorgente %3.1f - %3.1f"
-#
+
+#: src/chartcatalog.cpp:454
 #, c-format
-msgid "%u charts total, %u updated, %u new"
-msgstr "%u carte totali, %u aggiornate, %u nuove"
-#
-#, c-format
-msgid "%u charts total, %u updated, %u new, %u selected"
-msgstr ""
-#
-msgid "(Please update first)"
-msgstr "(Si prega di aggiornare prima)"
-#
-msgid "Abort download"
-msgstr "Annulla download"
-#
-msgid "Add Catalog"
-msgstr ""
-#
-msgid "Add a new chart catalog."
-msgstr "Aggiungere un nuovo catalogo carte."
-#
-msgid "After catalog update select for download"
-msgstr "Dopo l'aggiornamento del catalogo, seleziona per il download"
-#
-msgid "All new charts"
-msgstr "Tutte le nuove carte"
-#
-msgid "All updated charts"
-msgstr "Tutte le carte aggiornate"
-#
-msgid "Allow bulk update of all configured chart sources and charts"
-msgstr ""
-"Consentire l'aggiornamento di massa di tutte le sorgenti configurate e delle "
-"carte"
-#
-msgid "Cancel"
-msgstr ""
-#
-msgid "Catalog"
-msgstr "Catalogo"
-#
-msgid "Catalog is not valid."
-msgstr "Catalogo non valido."
-#
-msgid "Chart Catalogs Available"
-msgstr ""
-#
-msgid "Chart Description"
-msgstr ""
-#
-msgid "Chart Downloader"
-msgstr "Chart Downloader"
-#
-msgid "Chart Downloader PlugIn for OpenCPN"
-msgstr "Plug-in Chart Downloader per OpenCPN"
-#
-msgid ""
-"Chart Downloader PlugIn for OpenCPN\n"
-"Manages chart downloads and updates from sources supporting\n"
-"NOAA Chart Catalog format"
-msgstr ""
-"Plug-in Chart Downloader per OpenCPN\n"
-"Gestisce i download e gli aggiornamenti delle carte da fonti che supportano \n"
-"il formato NOAA Chart Catalog"
-#
-msgid "Chart Downloader Preferences"
-msgstr "Preferenze Chart Downloader"
-#
-msgid "Chart download cancelled."
-msgstr ""
-#
-msgid "Chart downloader"
-msgstr "Scarico grafici"
-#
-msgid "Chart source definition problem"
-msgstr "Problema di definizione sorgente carte"
-#
+msgid "%s"
+msgstr "%s"
+
+#: src/chartdldr_pi.cpp:275
 msgid "ChartDownloader"
 msgstr "ChartDownloader"
-#
-msgid "Charts"
-msgstr "Carte"
-#
+
+#: src/chartdldr_pi.cpp:280
+msgid "Chart Downloader PlugIn for OpenCPN"
+msgstr "Plug-in Chart Downloader per OpenCPN"
+
+#: src/chartdldr_pi.cpp:285
+msgid "Chart Downloader PlugIn for OpenCPN\n"
+"Manages chart downloads and updates from sources supporting\n"
+"NOAA Chart Catalog format"
+msgstr "Plug-in Chart Downloader per OpenCPN\n"
+"Gestisce i download e gli aggiornamenti delle carte da fonti che supportano \n"
+"il formato NOAA Chart Catalog"
+
+#: src/chartdldr_pi.cpp:292 src/chartdldr_pi.cpp:929 src/chartdldr_pi.cpp:936
+#: src/chartdldr_pi.cpp:942 src/chartdldr_pi.cpp:962 src/chartdldr_pi.cpp:999
+#: src/chartdldr_pi.cpp:1058 src/chartdldr_pi.cpp:1064 src/chartdldr_pi.cpp:1414
+#: src/chartdldr_pi.cpp:1506 src/chartdldr_pi.cpp:1509 src/chartdldr_pi.cpp:1590
+#: src/chartdldr_pi.cpp:1687 src/chartdldr_pi.cpp:2443
+msgid "Chart Downloader"
+msgstr "Chart Downloader"
+
+#: src/chartdldr_pi.cpp:617 src/chartdldr_pi.cpp:639
+msgid "Select all"
+msgstr "Seleziona tutto"
+
+#: src/chartdldr_pi.cpp:621 src/chartdldr_pi.cpp:640
+msgid "Deselect all"
+msgstr "Deseleziona tutto"
+
+#: src/chartdldr_pi.cpp:625 src/chartdldr_pi.cpp:641
+msgid "Invert selection"
+msgstr "Inverti selezione"
+
+#: src/chartdldr_pi.cpp:629 src/chartdldr_pi.cpp:642
+msgid "Select updated"
+msgstr "Selezione aggiornata"
+
+#: src/chartdldr_pi.cpp:633 src/chartdldr_pi.cpp:643
+msgid "Select new"
+msgstr "Seleziona nuovo"
+
+#: src/chartdldr_pi.cpp:689
 #, c-format
 msgid "Charts: %s"
 msgstr "Carte : %s"
@@ -261,39 +209,22 @@ msgstr "Sconosciuto/a"
 
 #: src/chartdldr_pi.cpp:1413
 #, c-format
-msgid "Downloading chart %u of %u, %u downloads failed (%s / %s)"
-msgstr "Download delle carte %u di %u, %u download non riusciti (%s / %s)"
-#
-msgid "Downloading chart sources"
-msgstr "Scarico sorgente grafico"
-#
-msgid "Downloading file"
-msgstr "Scaricamento in corso del file"
-#
-msgid "Edit Chart Source"
-msgstr "Modificare l'origine delle carte"
-#
-msgid "Edit..."
-msgstr "Modifica..."
-#
-msgid "Error"
-msgstr "Errore"
-#
+msgid "The selected chart '%s' can't be downloaded automatically, do you want me to open a browser window and download them manually?\n\n"
+" After downloading the charts, please extract them to %s"
+msgstr "La carta selezionata '%s' non può essere scaricata automaticamente. Vuoi aprire una finestra del browser e scaricarli manualmente?\n\n"
+" dopo aver scaricato le carte, si prega di estrarle nella cartella %s"
+
+#: src/chartdldr_pi.cpp:1425
 #, c-format
 msgid "Error, the URL to the chart (%s) data seems wrong."
 msgstr "Errore, l'URL ai dati delle carte (%s) sembra sbagliato."
-#
-msgid "Error, the URL to the chart source data seems wrong."
-msgstr "Errore, l'URL dei dati sorgente delle carte sembra errata."
-#
+
+#: src/chartdldr_pi.cpp:1462
 #, c-format
-msgid ""
-"Failed to Download Catalog: %s \n"
-"Verify there is a working Internet connection."
-msgstr ""
-"Non sono riuscito a scaricare il catalogo: %s \n"
-"Verificare la connessione inernet e riprovare."
-#
+msgid "Downloading chart %u of %u, %u downloads failed (%s / %s)"
+msgstr "Download delle carte %u di %u, %u download non riusciti (%s / %s)"
+
+#: src/chartdldr_pi.cpp:1466
 #, c-format
 msgid "Downloading chart %u of %u (%s / %s)"
 msgstr "Scaricamento carte %u di %u (%s / %s)"
@@ -391,16 +322,8 @@ msgstr "Annulla"
 #: src/chartdldrgui.cpp:205 src/chartdldrgui.cpp:660
 msgid "Choose Chart File Directory"
 msgstr "Scegli la Directory Carte"
-#
-msgid "Reading Headers: "
-msgstr "Intestazioni di lettura: "
-#
-msgid "Released"
-msgstr "Pubblicato"
-#
-msgid "Select All"
-msgstr ""
-#
+
+#: src/chartdldrgui.cpp:228
 msgid "Select Catalog..."
 msgstr "Seleziona il catalogo"
 

@@ -208,8 +208,9 @@ msgstr "OpenCPN वेबसाइट"
 #: src/AboutFrameImpl.cpp:89
 msgid "OpenCPN Help documentation is not available locally."
 msgstr ""
-#
-msgid "&Delete All"
+
+#: src/AboutFrameImpl.cpp:92
+msgid "Would you like to visit the opencpn.org website for more information?"
 msgstr ""
 
 #: src/AboutFrameImpl.cpp:96 src/AISTargetQueryDialog.cpp:183
@@ -227,57 +228,111 @@ msgstr "ओपनसीपीएन जानकारी"
 #: src/ais.cpp:113
 msgid "Underway using Engine"
 msgstr ""
-#
-msgid "&Help"
+
+#: src/ais.cpp:114
+msgid "At Anchor"
+msgstr "जिसका लंगर डाला गया हो"
+
+#: src/ais.cpp:115
+msgid "Not Under Command"
+msgstr "आदेश के तहत नहीं"
+
+#: src/ais.cpp:116
+msgid "Restricted Manoeuvrability"
+msgstr "प्रतिबंधित गतिशीलता"
+
+#: src/ais.cpp:117
+msgid "Constrained by draught"
+msgstr "मसौदे से विवश"
+
+#: src/ais.cpp:118
+msgid "Moored"
+msgstr "बंधा हुआ"
+
+#: src/ais.cpp:119
+msgid "Aground"
+msgstr "टिका हुआ"
+
+#: src/ais.cpp:120
+msgid "Engaged in Fishing"
+msgstr "मत्स्य पालन में लगे"
+
+#: src/ais.cpp:121
+msgid "Underway Sailing"
 msgstr ""
-#
-msgid "&Jump To"
-msgstr "&पर कूदना"
-#
-msgid "&Merge Selected Tracks"
-msgstr "&चयनित ट्रैक मर्ज करें"
-#
-msgid "&Navigate"
+
+#: src/ais.cpp:122 src/ais.cpp:149
+msgid "High Speed Craft"
+msgstr "हाई स्पीड क्राफ्ट"
+
+#: src/ais.cpp:123
+msgid "Wing In Ground Effect"
+msgstr "जमीन प्रभाव में विंग"
+
+#: src/ais.cpp:124
+msgid "Power-driven vessel towing astern (regional use)"
+msgstr "शक्ति संचालित पोत टोविंग अस्तर (क्षेत्रीय उपयोग)"
+
+#: src/ais.cpp:125
+msgid "Power-driven vessel pushing ahead or towing alongside (regional use)"
+msgstr "शक्ति -संचालित पोत आगे बढ़ते या साथ-साथ रस्सा (क्षेत्रीय उपयोग)"
+
+#: src/ais.cpp:126
+msgid "Reserved 13"
+msgstr "आरक्षित १३"
+
+#: src/ais.cpp:127
+msgid "Reserved 14"
+msgstr "आरक्षित १४"
+
+#: src/ais.cpp:128 src/AIS_Target_Data.cpp:402 src/ConnectionParams.cpp:176
+#: src/ConnectionParams.cpp:462 src/ConnectionParams.cpp:600
+#: src/ConnectionParams.cpp:913 src/ConnectionParams.cpp:941
+msgid "Undefined"
+msgstr "अपरिभाषित"
+
+#: src/ais.cpp:129
+msgid "AtoN Virtual"
 msgstr ""
-#
-msgid "&New"
+
+#: src/ais.cpp:130
+msgid "AtoN Virtual (On Position)"
 msgstr ""
-#
-msgid "&OK"
+
+#: src/ais.cpp:131
+msgid "AtoN Virtual (Off Position)"
 msgstr ""
-#
-msgid "&Point size:"
+
+#: src/ais.cpp:132
+msgid "AtoN Real"
 msgstr ""
-#
-msgid "&Properties"
+
+#: src/ais.cpp:133
+msgid "AtoN Real (On Position)"
 msgstr ""
-#
-#, fuzzy
-msgid "&Resequence Waypoints"
-msgstr "मार्ग का नाम बदलें?"
-#
-msgid "&Reverse"
+
+#: src/ais.cpp:134
+msgid "AtoN Real(Off Position)"
 msgstr ""
-#
-msgid "&Send to GPS"
-msgstr "&जीपीएस पर भेजें"
-#
-msgid "&Silence Alert"
-msgstr "&मौन सचेतक"
-#
-msgid "&Start Track"
+
+#: src/ais.cpp:141
+msgid "Fishing Vessel"
 msgstr ""
-#
-msgid "&Style:"
+
+#: src/ais.cpp:142
+msgid "Towing Vessel"
 msgstr ""
-#
-msgid "&Tools"
+
+#: src/ais.cpp:143
+msgid "Towing Vessel, Long"
 msgstr ""
-#
-msgid "&Underline"
+
+#: src/ais.cpp:144
+msgid "Dredger"
 msgstr ""
-#
-msgid "&View"
+
+#: src/ais.cpp:145
+msgid "Diving Ops Vessel"
 msgstr ""
 
 #: src/ais.cpp:146
@@ -532,112 +587,109 @@ msgstr "एसएआर / वी"
 #: src/ais.cpp:217
 msgid "Tender"
 msgstr ""
-#
-msgid "&Window"
+
+#: src/ais.cpp:218
+msgid "PC/V"
 msgstr ""
-#
-msgid "(Unnamed Layer)"
-msgstr "(अनाम परत)"
-#
-msgid "(Unnamed Route)"
-msgstr "(अनाम मार्ग)"
-#
-msgid "(Unnamed Track)"
-msgstr "(अनाम ट्रैक)"
-#
-msgid "(Unnamed Waypoint)"
-msgstr "(अनाम मार्ग)"
-#
-#, fuzzy
-msgid "(c) 2000-2021"
-msgstr "(c) 2000-2019"
-#
-msgid "(m/d/y h:m)"
+
+#: src/ais.cpp:219
+msgid "LE/V"
 msgstr ""
-#
-msgid "(reserved for future use)"
-msgstr "(भविष्य उपयोग के लिए आरक्षित)"
-#
-msgid "(unnamed)"
-msgstr "(बेनाम)"
-#
-msgid ", Out: None"
-msgstr "बाहर कोई भी नहीं"
-#
-msgid ", and all previous versions,"
-msgstr "और सभी पिछले संस्करणों,"
-#
-msgid "-"
+
+#: src/ais.cpp:220
+msgid "Med/V"
 msgstr ""
-#
-msgid "--"
+
+#: src/ais.cpp:221
+msgid "Pass/V"
 msgstr ""
-#
-msgid "...and TCPA is less than (min)"
-msgstr "...और टीसीपीए (मिनट) से कम है"
-#
-msgid "0"
+
+#: src/ais.cpp:222
+msgid "M/V"
 msgstr ""
-#
-msgid "0 (transfer completed)"
+
+#: src/ais.cpp:223
+msgid "M/T"
 msgstr ""
-#
-msgid "0 (transfer paused)"
+
+#: src/ais.cpp:224 src/ais.cpp:230
+msgid "?"
 msgstr ""
 
 #: src/ais.cpp:226 src/AIS_Target_Data.cpp:904
 msgid "AtoN"
 msgstr ""
-#
-msgid "1"
+
+#: src/ais.cpp:227
+msgid "Ref. Pt"
 msgstr ""
-#
-msgid "1 pixel"
+
+#: src/ais.cpp:229
+msgid "Fix.Struct."
 msgstr ""
-#
-msgid "1 px"
+
+#: src/ais.cpp:231
+msgid "Lt"
 msgstr ""
-#
-msgid "1.0 NM along COG"
-msgstr "1.0 एनएम के साथ सीओजी"
-#
-msgid "10 pixels"
+
+#: src/ais.cpp:232
+msgid "Lt sect."
 msgstr ""
-#
-msgid "10 px"
+
+#: src/ais.cpp:233
+msgid "Ldg Lt Front"
+msgstr "एलडीजी लेफ्ट फ्रंट फ्रंट"
+
+#: src/ais.cpp:234
+msgid "Ldg Lt Rear"
+msgstr "एलडीजी लेफ्ट फ्रंट फ्रंट"
+
+#: src/ais.cpp:235 src/ais.cpp:246
+msgid "Card. N"
 msgstr ""
-#
-msgid "115200"
+
+#: src/ais.cpp:236 src/ais.cpp:247
+msgid "Card. E"
 msgstr ""
-#
-msgid "1200"
+
+#: src/ais.cpp:237 src/ais.cpp:248
+msgid "Card. S"
 msgstr ""
-#
-msgid "150"
+
+#: src/ais.cpp:238 src/ais.cpp:249
+msgid "Card. W"
 msgstr ""
-#
-msgid "19200"
+
+#: src/ais.cpp:239
+msgid "Port"
 msgstr ""
-#
-msgid "2"
+
+#: src/ais.cpp:240
+msgid "Stbd"
 msgstr ""
-#
-msgid "2 Color"
+
+#: src/ais.cpp:241 src/ais.cpp:242 src/ais.cpp:252 src/ais.cpp:253
+msgid "Pref. Chnl"
 msgstr ""
-#
-msgid "2 pixels"
+
+#: src/ais.cpp:243 src/ais.cpp:254
+msgid "Isol. Dngr"
 msgstr ""
-#
-msgid "230400"
+
+#: src/ais.cpp:245 src/ais.cpp:256
+msgid "Special"
 msgstr ""
-#
-msgid "2400"
+
+#: src/ais.cpp:250
+msgid "Port Hand"
 msgstr ""
-#
-msgid "2px"
+
+#: src/ais.cpp:251
+msgid "Stbd Hand"
 msgstr ""
-#
-msgid "3"
+
+#: src/ais.cpp:257
+msgid "LtV/Rig"
 msgstr ""
 
 #: src/ais.cpp:258 src/AIS_Target_Data.cpp:908
@@ -1083,74 +1135,238 @@ msgstr "ऑब्जेक्ट, टूवेड, अन्यथा निर�
 #: src/AIS_Decoder.cpp:277
 msgid "Bunkership"
 msgstr ""
-#
-msgid "4 Color"
+
+#: src/AIS_Decoder.cpp:278
+msgid "Motor freighter"
+msgstr "मोटर मालवाहक"
+
+#: src/AIS_Decoder.cpp:279
+msgid "Motor tanker"
+msgstr "मोटर टैंकर"
+
+#: src/AIS_Decoder.cpp:280
+msgid "Motor tanker, liquid cargo, type N"
+msgstr "मोटर टैंकर, तरल कार्गो, प्रकार एन"
+
+#: src/AIS_Decoder.cpp:281
+msgid "Motor tanker, liquid cargo, type C"
+msgstr "मोटर टैंकर, तरल कार्गो, प्रकार सी"
+
+#: src/AIS_Decoder.cpp:282
+msgid "Motor tanker, dry cargo as if liquid (e.g. cement)"
+msgstr "मोटर टैंकर, शुष्क माल जैसे तरल (जैसे सीमेंट)"
+
+#: src/AIS_Decoder.cpp:283
+msgid "Container vessel"
+msgstr "कंटेनर पोत"
+
+#: src/AIS_Decoder.cpp:284
+msgid "Gas tanker"
+msgstr "गैस टैंकर"
+
+#: src/AIS_Decoder.cpp:285
+msgid "Motor freighter, tug"
+msgstr "मोटर मालवाहक, टाग"
+
+#: src/AIS_Decoder.cpp:286
+msgid "Motor tanker, tug"
+msgstr "मोटर टैंकर, टाग"
+
+#: src/AIS_Decoder.cpp:287
+msgid "Motor freighter with one or more ships alongside"
+msgstr "साथ में एक या अधिक जहाजों के साथ मोटर मालवाहक"
+
+#: src/AIS_Decoder.cpp:288
+msgid "Motor freighter with tanker"
+msgstr "टैंकर के साथ मोटर मालवाहक"
+
+#: src/AIS_Decoder.cpp:289
+msgid "Motor freighter pushing one or more freighters"
+msgstr "मोटर मालवाहक एक या अधिक मालवाहक को आगे बढ़ाते हैं"
+
+#: src/AIS_Decoder.cpp:290
+msgid "Motor freighter pushing at least one tank-ship"
+msgstr "मोटर मालवाहक कम से कम एक टैंक-जहाज को धक्का दे रहा है"
+
+#: src/AIS_Decoder.cpp:291
+msgid "Tug, freighter"
+msgstr "टग, मालवाहक"
+
+#: src/AIS_Decoder.cpp:292
+msgid "Tug, tanker"
+msgstr "टग, टैंकर"
+
+#: src/AIS_Decoder.cpp:293
+msgid "Tug freighter, coupled"
+msgstr "टग मालवाहक, युग्मित"
+
+#: src/AIS_Decoder.cpp:294
+msgid "Tug, freighter/tanker, coupled"
+msgstr "टग, माल ढुलाई / टैंकर, युग्मित"
+
+#: src/AIS_Decoder.cpp:295
+msgid "Tankbarge, liquid cargo, type N"
+msgstr "टैंकबार्ज, तरल कार्गो, प्रकार एन"
+
+#: src/AIS_Decoder.cpp:296
+msgid "Tankbarge, liquid cargo, type C"
+msgstr "टैंकबार्ज, तरल कार्गो, प्रकार सी"
+
+#: src/AIS_Decoder.cpp:297
+msgid "Freightbarge with containers"
+msgstr "कंटेनरों के साथ माल ढुलाई"
+
+#: src/AIS_Decoder.cpp:298
+msgid "Tankbarge, gas"
+msgstr "टैंकबार्ज, गैस"
+
+#: src/AIS_Decoder.cpp:299
+msgid "Pushtow, one cargo barge"
+msgstr "पुशूटो, एक कार्गो बजरा"
+
+#: src/AIS_Decoder.cpp:300
+msgid "Pushtow, two cargo barges"
+msgstr "पुशतो, दो कार्गो बार्जियां"
+
+#: src/AIS_Decoder.cpp:301
+msgid "Pushtow, three cargo barges"
+msgstr "पुशतो, तीन कार्गो बार्जियां"
+
+#: src/AIS_Decoder.cpp:302
+msgid "Pushtow, four cargo barges"
+msgstr "पुशतो, चारकार्गो बार्जियां"
+
+#: src/AIS_Decoder.cpp:303
+msgid "Pushtow, five cargo barges"
+msgstr "पुशतो, पांच कार्गो बार्जियां"
+
+#: src/AIS_Decoder.cpp:304
+msgid "Pushtow, six cargo barges"
+msgstr "पुशतो, छह कार्गो बार्जियां"
+
+#: src/AIS_Decoder.cpp:305
+msgid "Pushtow, seven cargo barges"
+msgstr "पुशतो, सात कार्गो बार्जियां"
+
+#: src/AIS_Decoder.cpp:306
+msgid "Pushtow, eight cargo barges"
+msgstr "पुशतो, आठ कार्गो बार्जियां"
+
+#: src/AIS_Decoder.cpp:307
+msgid "Pushtow, nine or more barges"
+msgstr "पुशतो, नौ कार्गो बार्जियां"
+
+#: src/AIS_Decoder.cpp:308
+msgid "Pushtow, one tank/gas barge"
+msgstr "पुशूटो, एक टैंक / गैस बजरा"
+
+#: src/AIS_Decoder.cpp:310
+msgid "Pushtow, two barges at least one tanker or gas barge"
+msgstr "पुशूटो, कम से कम एक टैंकर या गैस बार्ज के दो बार्जियां"
+
+#: src/AIS_Decoder.cpp:312
+msgid "Pushtow, three barges at least one tanker or gas barge"
+msgstr "पुशतो, कम से कम एक टैंकर या गैस बार्गे में तीन बार्जियां"
+
+#: src/AIS_Decoder.cpp:314
+msgid "Pushtow, four barges at least one tanker or gas barge"
+msgstr "पुशटोव, कम से कम एक टैंकर या गैस बार्गे के चार बार्गियां"
+
+#: src/AIS_Decoder.cpp:316
+msgid "Pushtow, five barges at least one tanker or gas barge"
+msgstr "पुशूटो, कम से कम एक टैंकर या गैस बार्गे में पांच बार्जियां"
+
+#: src/AIS_Decoder.cpp:318
+msgid "Pushtow, six barges at least one tanker or gas barge"
+msgstr "पुशूटो, कम से कम एक टैंकर या गैस बार्गे में छह बार्गियां"
+
+#: src/AIS_Decoder.cpp:320
+msgid "Pushtow, seven barges at least one tanker or gas barge"
+msgstr "पुशटोव, गैस के कम से कम एक टैंकर के टैंक में सात बार्जियां"
+
+#: src/AIS_Decoder.cpp:322
+msgid "Pushtow, eight barges at least one tanker or gas barge"
+msgstr "पुशूटो, कम से कम एक टैंकर या गैस बार्गे पर आठ बार्जियां"
+
+#: src/AIS_Decoder.cpp:324
+msgid "Pushtow, nine or more barges at least one tanker or gas barge"
+msgstr "पुशूटो, कम से कम एक टैंकर या गैस बार्गे नौ या अधिक बार्जियां"
+
+#: src/AIS_Decoder.cpp:325
+msgid "Tug, single"
+msgstr "टग, एकल"
+
+#: src/AIS_Decoder.cpp:326
+msgid "Tug, one or more tows"
+msgstr "टग, एक या अधिक टो"
+
+#: src/AIS_Decoder.cpp:327
+msgid "Tug, assisting a vessel or linked combination"
+msgstr "टग, एक पोत या लिंक किए गए संयोजन की सहायता करना"
+
+#: src/AIS_Decoder.cpp:329
+msgid "Passenger ship, ferry, cruise ship, red cross ship"
+msgstr "यात्री जहाज, नौका, क्रूज जहाज, लाल क्रॉस जहाज"
+
+#: src/AIS_Decoder.cpp:330
+msgid "Ferry"
+msgstr "नौका"
+
+#: src/AIS_Decoder.cpp:331
+msgid "Red cross ship"
+msgstr "लाल क्रॉस जहाज"
+
+#: src/AIS_Decoder.cpp:332
+msgid "Cruise ship"
+msgstr "क्रूज जहाज"
+
+#: src/AIS_Decoder.cpp:333
+msgid "Passenger ship without accommodation"
 msgstr ""
-#
-msgid "4 pixels"
+
+#: src/AIS_Decoder.cpp:334
+msgid "Vessel, work maintenance craft, floating derrick, cable-ship, buoy-ship, dredge"
 msgstr ""
-#
-msgid "4 px"
-msgstr ""
-#
-msgid "460800"
-msgstr ""
-#
-msgid "4800"
-msgstr ""
-#
-msgid "5"
-msgstr ""
-#
-msgid "5 pixels"
-msgstr ""
-#
-msgid "5 px"
-msgstr ""
-#
-msgid "57600"
-msgstr ""
-#
-msgid "6"
-msgstr ""
-#
-msgid "6 pixels"
-msgstr ""
-#
-msgid "6 px"
-msgstr ""
-#
-msgid "600"
-msgstr ""
-#
-msgid "7"
-msgstr ""
-#
-msgid "7 pixels"
-msgstr ""
-#
-msgid "7 px"
-msgstr ""
-#
-msgid "8"
-msgstr ""
-#
-msgid "8 pixels"
-msgstr ""
-#
-msgid "8 px"
-msgstr ""
-#
-msgid "9"
-msgstr ""
-#
-msgid "9 pixels"
-msgstr ""
-#
-msgid "9 px"
-msgstr ""
-#
-msgid "921600"
+
+#: src/AIS_Decoder.cpp:336
+msgid "Fishing boat"
+msgstr "मछली पकड़ने की नाव"
+
+#: src/AIS_Decoder.cpp:337
+msgid "Barge, tanker, chemical"
+msgstr "बार्ज, टैंकर, रासायनिक"
+
+#: src/AIS_Decoder.cpp:338
+msgid "General cargo Vessel maritime"
+msgstr "सामान्य कार्गो पोत समुद्री"
+
+#: src/AIS_Decoder.cpp:339
+msgid "Unit carrier maritime"
+msgstr "मात्रक वाहक समुद्री"
+
+#: src/AIS_Decoder.cpp:340
+msgid "Bulk carrier maritime"
+msgstr "थोक वाहक समुद्री"
+
+#: src/AIS_Decoder.cpp:342
+msgid "Liquified gas tanker"
+msgstr "तरल गैस टैंकर"
+
+#: src/AIS_Decoder.cpp:343
+msgid "Pleasure craft, longer than 20 metres"
+msgstr "आनंद शिल्प, 20 मीटर से अधिक लंबा"
+
+#: src/AIS_Decoder.cpp:344
+msgid "Fast ship"
+msgstr "तेज जहाज"
+
+#: src/AIS_Decoder.cpp:345
+msgid "Hydrofoil"
+msgstr "हीड्रोफ़ोइल"
+
+#: src/AIS_Decoder.cpp:1260
+#, c-format
+msgid "%02X"
 msgstr ""
 
 #: src/AIS_Decoder.cpp:3084 src/options.cpp:6227
@@ -1214,32 +1430,22 @@ msgstr " (अंतिम ज्ञात)"
 #: src/trackprintout.cpp:297
 msgid "Position"
 msgstr ""
-#
-msgid "All"
+
+#: src/AIS_Target_Data.cpp:502
+msgid "Report Age"
 msgstr ""
-#
-msgid "All Active Charts"
-msgstr "सभी सक्रिय चार्ट"
-#
-msgid "All Available Charts"
-msgstr "सभी उपलब्ध चार्ट"
-#
-msgid "All Charts"
-msgstr "सभी चार्ट"
-#
-msgid "Allow attenuation of less critical targets if more than ... targets"
-msgstr "कम महत्वपूर्ण लक्ष्यों के क्षीणन की अनुमति दें अगर लक्ष्य ... से अधिक"
-#
-msgid "Altitude"
-msgstr "ऊंचाई"
-#
-msgid "Always"
+
+#: src/AIS_Target_Data.cpp:524
+msgid "Report as of"
+msgstr "के रूप में की रिपोर्ट"
+
+#: src/AIS_Target_Data.cpp:529 src/RoutePropDlgImpl.cpp:814
+#: src/TrackPropDlg.cpp:362 src/TrackPropDlg.cpp:1342
+msgid "Destination"
 msgstr ""
-#
-msgid "Always track"
-msgstr "हमेशा ट्रैक करें"
-#
-msgid "American Samoa"
+
+#: src/AIS_Target_Data.cpp:530
+msgid "ETA (UTC)"
 msgstr ""
 
 #: src/AIS_Target_Data.cpp:592 src/AIS_Target_Data.cpp:598
@@ -2349,14 +2555,9 @@ msgstr ""
 #: src/TrackPropDlg.cpp:674 src/TrackPropDlg.cpp:1340
 msgid "Name"
 msgstr ""
-#
-msgid "Disable OpenGL video acceleration. This setting will be remembered."
-msgstr "ओपनजीएल वीडियो त्वरण अक्षम करें। यह सेटिंग याद रखी जाएगी।"
-#
-msgid "Disable Tracking"
-msgstr "ट्रैकिंग अक्षम करें"
-#
-msgid "Disabled"
+
+#: src/AISTargetListDialog.cpp:560
+msgid "Call"
 msgstr ""
 
 #: src/AISTargetListDialog.cpp:587 src/ConnectionParams.cpp:387
@@ -2364,104 +2565,53 @@ msgstr ""
 #: src/ConnectionParams.cpp:777 src/options.cpp:2571 src/options.cpp:3284
 msgid "Type"
 msgstr ""
-#
-msgid "Dismiss"
+
+#: src/AISTargetListDialog.cpp:596
+msgid "Nav Status"
+msgstr "नव स्थिति"
+
+#: src/AISTargetListDialog.cpp:605
+msgid "Brg"
 msgstr ""
-#
-msgid "Display"
+
+#: src/AISTargetListDialog.cpp:623
+msgid "CoG"
 msgstr ""
-#
-msgid "Display Category"
-msgstr "प्रदर्शन श्रेणी"
-#
-msgid "Display Features"
-msgstr "प्रदर्शन सुविधाएँ"
-#
-msgid "Display Options"
-msgstr "प्रदर्शित विकल्प"
-#
-msgid ""
-"Display a slideshow of <num> charts and then exit. Zero or negative <num> "
-"specifies no limit."
+
+#: src/AISTargetListDialog.cpp:632
+msgid "SoG"
 msgstr ""
-"चार्ट का एक स्लाइडशो <num> प्रदर्शित करें और फिर बाहर निकलें। शून्य या नकारात्मक <num> "
-"कोई सीमा नहीं निर्दिष्ट करता है"
-#
-msgid "Display parameters"
-msgstr "प्रदर्शन पैरामीटर"
-#
-msgid "Distance"
+
+#: src/AISTargetListDialog.cpp:648
+msgid "TCPA"
 msgstr ""
-#
-msgid "Distance Unit"
-msgstr "दूरी इकाई"
-#
-msgid "Distance between rings"
-msgstr "रिंगों के बीच की दूरी"
-#
-#, c-format
-msgid "Distance from Ownship:  %4.0f NMi"
-msgstr "स्वैच्छिक से दूरी:  %4.0f एनएमऑय"
-#
-#, fuzzy, c-format
-msgid "Distance from Ownship:  %4.0f NMi\n"
-msgstr "स्वैच्छिक से दूरी:  %4.0f एनएमऑय"
-#
-msgid "Distance from own ship"
-msgstr "अपने जहाज से दूरी"
-#
-msgid "Distress"
-msgstr "संकट"
-#
-msgid "Distress Area: Person overboard"
-msgstr "परेशान क्षेत्र: व्यक्ति पानी/जहाज़ के बाहर"
-#
-msgid "Distress Area: Pollution response area"
-msgstr "परेशान क्षेत्र: प्रदूषण प्रतिक्रिया क्षेत्र"
-#
-msgid "Distress Area: SAR area"
-msgstr "परेशान क्षेत्र: एसएआर क्षेत्र"
-#
-msgid "Distress Area: Vessel abandoning ship"
-msgstr "परेशान क्षेत्र: पोत जहाज छोड़ने"
-#
-msgid "Distress Area: Vessel collision"
-msgstr "परेशान क्षेत्र: पोत टक्कर"
-#
-msgid "Distress Area: Vessel disabled and adrift"
-msgstr "परेशान क्षेत्र: पोत विकलांग और बदले"
-#
-msgid "Distress Area: Vessel fire/explosion"
-msgstr "परेशान क्षेत्र: पोत आग / विस्फोट"
-#
-msgid "Distress Area: Vessel flooding"
-msgstr "परेशान क्षेत्र: पोत बाढ़"
-#
-msgid "Distress Area: Vessel grounding"
-msgstr "परेशान क्षेत्र: पोत ग्राउंडिंग"
-#
-msgid "Distress Area: Vessel listing/capsizing"
-msgstr "परेशान क्षेत्र: पोत लिस्टिंग / कैप्सिंग"
-#
-msgid "Distress Area: Vessel requests medical assistance"
-msgstr "परेशान क्षेत्र: पोत चिकित्सा सहायता का अनुरोध करता है"
-#
-msgid "Distress Area: Vessel sinking"
-msgstr "परेशान क्षेत्र: पोत डूबने"
-#
-msgid "Distress Area: Vessel under assault"
-msgstr "परेशान क्षेत्र: हमले के तहत पोत"
-#
-msgid "Diving Ops Vessel"
+
+#: src/AISTargetListDialog.cpp:690
+msgid "Target info"
+msgstr "लक्ष्य जानकारी"
+
+#: src/AISTargetListDialog.cpp:707
+msgid "Create WPT"
 msgstr ""
-#
-msgid "Djibouti"
-msgstr ""
-#
-msgid "Do use"
-msgstr ""
-#
-msgid "Do you really want to delete and replace this WayPoint"
+
+#: src/AISTargetListDialog.cpp:716
+msgid "Hide All Tracks"
+msgstr "सभी ट्रैक छिपाएं"
+
+#: src/AISTargetListDialog.cpp:724
+msgid "Show All Tracks"
+msgstr "सभी ट्रैक दिखाएं"
+
+#: src/AISTargetListDialog.cpp:732
+msgid "Toggle track"
+msgstr "टॉगल ट्रैक"
+
+#: src/AISTargetListDialog.cpp:740
+msgid "Copy MMSI"
+msgstr "एमएमएसआई कॉपी करें"
+
+#: src/AISTargetListDialog.cpp:748
+msgid "AutoSort"
 msgstr ""
 
 #: src/AISTargetListDialog.cpp:759
@@ -2649,37 +2799,40 @@ msgstr ""
 #: src/options.cpp:1269
 msgid "Menu"
 msgstr ""
-#
-msgid "Dot dash"
+
+#: src/canvasMenu.cpp:311
+msgid "Undo"
 msgstr ""
-#
-msgid "Downgrade"
+
+#: src/canvasMenu.cpp:318
+msgid "Redo"
 msgstr ""
-#
-msgid "Downloaded:"
+
+#: src/canvasMenu.cpp:331
+msgid "End Route"
 msgstr ""
-#
-msgid "Downloading"
+
+#: src/canvasMenu.cpp:337
+msgid "Measure Off"
+msgstr "उपाय बंद करें"
+
+#: src/canvasMenu.cpp:340
+msgid "Measure"
 msgstr ""
-#
-msgid "Downloading "
+
+#: src/canvasMenu.cpp:402
+msgid "Max Detail Here"
 msgstr ""
-#
-msgid "Draw AIS realtime prediction, target speed min (kn)"
+
+#: src/canvasMenu.cpp:404 src/canvasMenu.cpp:427
+msgid "Scale In"
 msgstr ""
-#
-msgid "Dredge"
-msgstr "छिड़कना"
-#
-msgid "Dredger"
+
+#: src/canvasMenu.cpp:406 src/canvasMenu.cpp:429
+msgid "Scale Out"
 msgstr ""
-#
-msgid "Drop"
-msgstr "ड्रॉप"
-#
-msgid "Drop MOB Marker"
-msgstr "मोब मार्कर गिराना"
-#
+
+#: src/canvasMenu.cpp:437
 msgid "Drop Mark"
 msgstr ""
 
@@ -2719,14 +2872,17 @@ msgstr "पूर्णस्क्रीन चालू करें"
 #: src/canvasMenu.cpp:489 src/canvasMenu.cpp:653 src/canvasMenu.cpp:671
 msgid "Zero XTE"
 msgstr ""
-#
-msgid "ETA  @SOG"
+
+#: src/canvasMenu.cpp:496
+msgid "Paste Waypoint"
 msgstr ""
-#
-msgid "ETA  @VMG"
+
+#: src/canvasMenu.cpp:500 src/canvasMenu.cpp:508
+msgid "Paste Route"
 msgstr ""
-#
-msgid "ETA (UTC)"
+
+#: src/canvasMenu.cpp:504 src/canvasMenu.cpp:509
+msgid "Paste Track"
 msgstr ""
 
 #: src/canvasMenu.cpp:519
@@ -2736,17 +2892,53 @@ msgstr "CM93 ऑफ़सेट डायलॉग..."
 #: src/canvasMenu.cpp:544 src/options.cpp:5251 src/options.cpp:5313
 msgid "Chart Groups"
 msgstr ""
-#
-msgid "ETD (UTC)"
+
+#: src/canvasMenu.cpp:551
+msgid "temporary"
 msgstr ""
-#
-msgid "ETE"
+
+#: src/canvasMenu.cpp:554
+msgid "All Active Charts"
+msgstr "सभी सक्रिय चार्ट"
+
+#: src/canvasMenu.cpp:585 src/CanvasOptions.cpp:214
+msgid "AIS"
 msgstr ""
-#
-msgid "East Timor"
+
+#: src/canvasMenu.cpp:586
+msgid "Target Query..."
 msgstr ""
-#
-msgid "Ecuador"
+
+#: src/canvasMenu.cpp:590
+msgid "Hide Target CPA"
+msgstr "लक्ष्य सीपीए छुपाएं"
+
+#: src/canvasMenu.cpp:592
+msgid "Show Target CPA"
+msgstr "Show Target CPA"
+
+#: src/canvasMenu.cpp:594
+msgid "Target List..."
+msgstr "लक्ष्य सूची..."
+
+#: src/canvasMenu.cpp:598
+msgid "Hide Target Track"
+msgstr "लक्ष्य ट्रैक छिपाएं"
+
+#: src/canvasMenu.cpp:601
+msgid "Show Target Track"
+msgstr "लक्ष्य ट्रैक दिखाएं"
+
+#: src/canvasMenu.cpp:604
+msgid "Copy Target MMSI"
+msgstr "प्रतिलिपि लक्ष्य एमएमएसआई"
+
+#: src/canvasMenu.cpp:611 src/canvasMenu.cpp:619
+msgid "Object Query..."
+msgstr "ऑब्जेक्ट क्वेरी..."
+
+#: src/canvasMenu.cpp:633
+msgid "Unnamed Route"
 msgstr ""
 
 #: src/canvasMenu.cpp:641
@@ -2777,11 +2969,17 @@ msgstr ""
 #: src/concanv.cpp:140 src/concanv.cpp:155 src/concanv.cpp:194
 msgid "Route"
 msgstr ""
-#
-msgid "Elapsed time : "
-msgstr "बीता हुआ समय : "
-#
-msgid "Elapsed time:"
+
+#: src/canvasMenu.cpp:676
+msgid "Insert Waypoint"
+msgstr "वेपॉइंट सम्मिलित करें"
+
+#: src/canvasMenu.cpp:677 src/undo.cpp:88
+msgid "Append Waypoint"
+msgstr "वेपेंड जोड़ें"
+
+#: src/canvasMenu.cpp:682
+msgid "Split around Leg"
 msgstr ""
 
 #: src/canvasMenu.cpp:684 src/canvasMenu.cpp:736 src/canvasMenu.cpp:787
@@ -2795,38 +2993,21 @@ msgstr "केएमएल के रूप में कॉपी करें"
 #: src/RoutePropDlg.cpp:400 src/TrackPropDlg.cpp:898
 msgid "Delete"
 msgstr ""
-#
-msgid "Enable Chart Quilting"
-msgstr "चार्ट क्विंटिंग सक्षम करें"
-#
-msgid "Enable Scaled Graphics interface"
-msgstr "स्केल किए गए ग्राफ़िक्स इंटरफ़ेस सक्षम करें"
-#
-msgid "Enable Target Alert Acknowledge timeout (min)"
-msgstr "लक्ष्य चेतावनी को सक्षम करें स्वीकार करें समय समाप्ति (न्यूनतम)"
-#
-msgid "Enable Toolbar auto-hide"
-msgstr "टूलबार स्वतःछिपाना सक्षम करें"
-#
-msgid "Enable Touchscreen interface"
-msgstr "टचस्क्रीन इंटरफ़ेस सक्षम करें"
-#
-msgid "Enable Tracking"
-msgstr "ट्रैकिंग सक्षम करें"
-#
-msgid "Enable route/AIS info block"
+
+#: src/canvasMenu.cpp:686
+msgid "Reverse..."
 msgstr ""
-#
-msgid "Enabled"
+
+#: src/canvasMenu.cpp:690
+msgid "Hide Waypoint Names"
 msgstr ""
-#
-msgid "End Route"
+
+#: src/canvasMenu.cpp:693
+msgid "Show Waypoint Names"
 msgstr ""
-#
-msgid "Engaged in Fishing"
-msgstr "मत्स्य पालन में लगे"
-#
-msgid "Enroute"
+
+#: src/canvasMenu.cpp:696
+msgid "Resequence Waypoints..."
 msgstr ""
 
 #: src/canvasMenu.cpp:710 src/canvasMenu.cpp:804
@@ -2840,41 +3021,41 @@ msgstr "परत ट्रैक"
 #: src/canvasMenu.cpp:733 src/chcanv.cpp:3968
 msgid "Track"
 msgstr ""
-#
-msgid "Environmental Caution Area: Hazardous sea ice"
-msgstr "पर्यावरण सावधानी क्षेत्र: खतरनाक समुद्री बर्फ"
-#
-msgid "Environmental Caution Area: Heavy icing"
-msgstr "पर्यावरण सावधानी क्षेत्र: भारी टुकड़े करना"
-#
-msgid "Environmental Caution Area: High waves"
-msgstr "पर्यावरण सावधानी क्षेत्र: उच्च लहरें"
-#
-msgid "Environmental Caution Area: High wind"
-msgstr "पर्यावरण सावधानी क्षेत्र: उच्च हवा"
-#
-msgid "Environmental Caution Area: Restricted visibility (fog, rain, etc.)"
-msgstr "पर्यावरण सावधानी क्षेत्र: प्रतिबंधित दृश्यता (कोहरे, बारिश, आदि)"
-#
-msgid "Environmental Caution Area: Storm front (line squall)"
-msgstr "पर्यावरण सावधानी क्षेत्र: तूफान सामने(लाइन स्क्वाल)"
-#
-msgid "Environmental Caution Area: Storm warning (storm cell or line of storms)"
-msgstr "पर्यावरण सावधानी क्षेत्र: तूफान की चेतावनी (तूफान सेल या तूफान की रेखा)"
-#
-msgid "Environmental Caution Area: Strong currents"
-msgstr "पर्यावरण सावधानी क्षेत्र: सशक्त धाराओं"
-#
-msgid "Equatorial Guinea"
+
+#: src/canvasMenu.cpp:746 src/canvasMenu.cpp:816
+msgid "Unnamed Waypoint"
 msgstr ""
-#
-msgid "Eritrea"
+
+#: src/canvasMenu.cpp:754 src/canvasMenu.cpp:824
+msgid "Layer Waypoint"
+msgstr "परत वेपॉइंट"
+
+#: src/canvasMenu.cpp:761 src/canvasMenu.cpp:828
+msgid "Waypoint"
 msgstr ""
-#
-msgid "Error"
+
+#: src/canvasMenu.cpp:779
+msgid "Remove from Route"
+msgstr "रूट से निकालें"
+
+#: src/canvasMenu.cpp:784
+msgid "Split Route at Waypoint"
 msgstr ""
-#
-msgid "Error extracting import plugin tarball."
+
+#: src/canvasMenu.cpp:833
+msgid "Navigate To This"
+msgstr "इस पर नेविगेट करें"
+
+#: src/canvasMenu.cpp:855
+msgid "Clear Anchor Watch"
+msgstr "एंकर वॉच साफ़ करें"
+
+#: src/canvasMenu.cpp:866
+msgid "Set Anchor Watch"
+msgstr "एंकर वॉच सेट करें"
+
+#: src/canvasMenu.cpp:907
+msgid "Main Menu"
 msgstr ""
 
 #: src/canvasMenu.cpp:920
@@ -2893,8 +3074,9 @@ msgstr "अस्थायी गोटो मार्ग"
 #: src/routemanagerdialog.cpp:2584
 msgid "Here"
 msgstr ""
-#
-msgid "Error, import plugin tarball does not contain required metadata."
+
+#: src/canvasMenu.cpp:1100
+msgid "There"
 msgstr ""
 
 #: src/canvasMenu.cpp:1161 src/routemanagerdialog.cpp:2218
@@ -3579,8 +3761,9 @@ msgstr " (स्टर्ल -स्पेस)"
 #: src/chartdbs.cpp:1331
 msgid " ChartFile:  "
 msgstr ""
-#
-msgid "Full route to be appended to dragged route?"
+
+#: src/chartdbs.cpp:1349
+msgid " Name:  "
 msgstr ""
 
 #: src/chartdbs.cpp:1373 src/chartdbs.cpp:1375 src/chcanv.cpp:5366
@@ -3588,77 +3771,49 @@ msgstr ""
 #: src/chcanv.cpp:5379 src/chcanv.cpp:5417 src/routemanagerdialog.cpp:696
 msgid "Scale"
 msgstr ""
-#
-msgid "GPS"
+
+#: src/chartdbs.cpp:1384
+msgid " ID:  "
 msgstr ""
-#
-msgid "GPS Offset from Bow (m)"
-msgstr "बो (एम) से जीपीएस ऑफ़सेट"
-#
-msgid "GPS Offset from Midship (m)"
-msgstr "मिडशिप से जीपीएस ऑफ़सेट (मी)"
-#
-msgid "GPS/Plotter Port"
-msgstr "जीपीएस / प्लॉटर पोर्ट"
-#
-msgid "GPSD"
+
+#: src/chartdbs.cpp:1392
+msgid " Depth Units:  "
+msgstr " गहराई इकाइयां:  "
+
+#: src/chartdbs.cpp:1400
+msgid " Soundings:  "
 msgstr ""
-#
-msgid "GPSGate Buddy"
-msgstr "जीपीएसगेट बडी"
-#
-msgid "GUID"
+
+#: src/chartdbs.cpp:1408
+msgid " Datum:  "
 msgstr ""
-#
-msgid "Gabonese Republic"
+
+#: src/chartdbs.cpp:1416
+msgid " Projection:  "
 msgstr ""
-#
-msgid "Gambia"
+
+#: src/chartdbs.cpp:1420
+msgid "Mercator"
 msgstr ""
-#
-msgid "Gas tanker"
-msgstr "गैस टैंकर"
-#
-msgid "General"
+
+#: src/chartdbs.cpp:1422
+msgid "Transverse Mercator"
 msgstr ""
-#
-msgid "General Options"
-msgstr "आम विकल्प"
-#
-msgid "General cargo Vessel maritime"
-msgstr "सामान्य कार्गो पोत समुद्री"
-#
-msgid "Georgia"
-msgstr "जॉर्जिया"
-#
-msgid "Germany"
-msgstr "जर्मनी"
-#
-msgid "Ghana"
+
+#: src/chartdbs.cpp:1424
+msgid "Polyconic"
 msgstr ""
-#
-msgid "Gibraltar"
-msgstr "जिब्राल्टर"
-#
-msgid "Go to "
+
+#: src/chartdbs.cpp:1426
+msgid "Web Mercator (EPSG:3857)"
 msgstr ""
-#
-msgid "GpsGate Buddy"
-msgstr "जीपीएसगेट बडी"
-#
-msgid "Graphics"
+
+#: src/chartdbs.cpp:1434
+msgid " Source Edition:  "
 msgstr ""
-#
-msgid "Graphics Style"
-msgstr "ग्राफिक्स शैली"
-#
-msgid "Great Britain"
-msgstr "ग्रेट ब्रिटेन"
-#
-msgid "Greece"
-msgstr "यूनान"
-#
-msgid "Green"
+
+#: src/chartdbs.cpp:1442
+msgid " Updated:  "
 msgstr ""
 
 #: src/chartdbs.cpp:1670
@@ -3899,80 +4054,37 @@ msgstr "यह चार्ट दिखाएं"
 #: src/chcanv.cpp:13564
 msgid "Hide This Chart"
 msgstr ""
-#
-msgid "Important Text Only"
-msgstr "महत्वपूर्ण पाठ केवल"
-#
-msgid "In"
-msgstr "में"
-#
-msgid "In/Out"
-msgstr "अंदर बाहर"
-#
-msgid "In: None"
-msgstr "अंदर: कोई भी नहीं"
-#
-msgid "Incompatible import plugin detected."
+
+#: src/cm93.cpp:6433
+msgid "OpenCPN CM93 Cell Offset Adjustments"
+msgstr "ओपनसीपीएन सीएम९३ सेल ऑफसेट समायोजन"
+
+#: src/cm93.cpp:6462
+msgid "Cell"
 msgstr ""
-#
-msgid "Incompatible plugin detected"
-msgstr "असंगत प्लगइन का पता चला"
-#
-msgid "India"
-msgstr "इंडिया"
-#
-msgid "Indonesia"
+
+#: src/cm93.cpp:6465
+msgid "M_COVR ID"
 msgstr ""
-#
-msgid "Information Message or Message with errors"
-msgstr "त्रुटियों के साथ सूचना संदेश या संदेश"
-#
-msgid "Information: Icebreaker waiting area"
-msgstr "जानकारी: बर्फबारी प्रतीक्षा क्षेत्र"
-#
-msgid "Information: Location of response units"
-msgstr "सूचना: प्रतिक्रिया इकाइयों का स्थान"
-#
-msgid "Information: Pilot boarding position"
-msgstr "सूचना: पायलट बोर्डिंग स्थिति"
-#
-msgid "Information: Places of refuge"
-msgstr "सूचना: शरण स्थल"
-#
-msgid "Information: Position of icebreakers"
-msgstr "सूचना: बर्फब्रेकरों की स्थिति"
-#
-msgid "Inland Blue Flag"
-msgstr "अंतर्देशीय ब्लू फ्लैग"
-#
-msgid "Input"
+
+#: src/cm93.cpp:6469
+msgid "Cell Scale"
 msgstr ""
-#
-msgid "Input Message filtered and dropped"
-msgstr "इनपुट संदेश फ़िल्टर्ड और गिरा दिया"
-#
-msgid "Input device :"
+
+#: src/cm93.cpp:6473
+msgid "wgsox"
 msgstr ""
-#
-msgid "Input filtering"
-msgstr "इनपुट फ़िल्टरिंग"
-#
-msgid "Input message filtered, output message filtered and dropped"
-msgstr "इनपुट संदेश फ़िल्टर्ड, आउटपुट संदेश फ़िल्टर्ड और गिरा दिया"
-#
-msgid "Insert Waypoint"
-msgstr "वेपॉइंट सम्मिलित करें"
-#
-msgid "Insert first part of this route in the new route?"
+
+#: src/cm93.cpp:6477
+msgid "wgsoy"
 msgstr ""
-#
-msgid "Insert this route in the new route?"
+
+#: src/cm93.cpp:6481 src/cm93.cpp:6495
+msgid "User X Offset"
 msgstr ""
-#
-msgid "Install"
-msgstr ""
-#
-msgid "Install..."
+
+#: src/cm93.cpp:6485 src/cm93.cpp:6509
+msgid "User Y Offset"
 msgstr ""
 
 #: src/cm93.cpp:6495 src/cm93.cpp:6509 src/options.cpp:4919 src/options.cpp:4929
@@ -4059,8 +4171,9 @@ msgstr "नेटवर्क"
 #: src/ConnectionParams.cpp:143
 msgid "GPS"
 msgstr ""
-#
-msgid "LMT@Station"
+
+#: src/ConnectionParams.cpp:145
+msgid "BT"
 msgstr ""
 
 #: src/ConnectionParams.cpp:157
@@ -4082,11 +4195,13 @@ msgstr ""
 #: src/ConnectionParams.cpp:174 src/options.cpp:2220 src/options.cpp:2872
 msgid "Signal K"
 msgstr ""
-#
-msgid "Last change: "
+
+#: src/ConnectionParams.cpp:197
+msgid "Input"
 msgstr ""
-#
-msgid "Last part of route to be appended to dragged route?"
+
+#: src/ConnectionParams.cpp:199
+msgid "Output"
 msgstr ""
 
 #: src/ConnectionParams.cpp:201
@@ -4128,8 +4243,10 @@ msgstr "बाहर कोई भी नहीं"
 #: src/ConnectionParams.cpp:367 src/options.cpp:3284
 msgid "Enable"
 msgstr ""
-#
-msgid "Latest available catalog:"
+
+#: src/ConnectionParams.cpp:399 src/ConnectionParams.cpp:534
+#: src/ConnectionParams.cpp:671 src/ConnectionParams.cpp:789
+msgid "Direction"
 msgstr ""
 
 #: src/ConnectionParams.cpp:405 src/ConnectionParams.cpp:540
@@ -4137,8 +4254,9 @@ msgstr ""
 #: src/options.cpp:2942
 msgid "Protocol"
 msgstr ""
-#
-msgid "Latvia"
+
+#: src/ConnectionParams.cpp:411
+msgid "Serial Port"
 msgstr ""
 
 #: src/ConnectionParams.cpp:417 src/options.cpp:2263 src/options.cpp:2925
@@ -4150,35 +4268,20 @@ msgstr ""
 #: src/options.cpp:2296 src/options.cpp:2958 src/options.cpp:3285
 msgid "Priority"
 msgstr ""
-#
-msgid "Ldg Lt Front"
-msgstr "एलडीजी लेफ्ट फ्रंट फ्रंट"
-#
-msgid "Ldg Lt Rear"
-msgstr "एलडीजी लेफ्ट फ्रंट फ्रंट"
-#
-msgid "Leading Light Front"
-msgstr "अग्रणी लाइट फ्रंट"
-#
-msgid "Leading Light Rear"
-msgstr "अग्रणी प्रकाश रियर"
-#
-msgid "Lebanon"
-msgstr "लेबनान"
-#
-msgid "Left"
+
+#: src/ConnectionParams.cpp:507 src/ConnectionParams.cpp:645
+#: src/ConnectionParams.cpp:764 src/ConnectionParams.cpp:882
+#: src/ConnectionParams.cpp:924 src/ConnectionParams.cpp:954
+#: src/ConnectionParams.cpp:956 src/ConnectionParams.cpp:960
+msgid "Comment: "
 msgstr ""
-#
-msgid "Leg"
-msgstr "टांग"
-#
-msgid "Leg: from "
-msgstr "लेग: से "
-#
-msgid "Legend"
+
+#: src/ConnectionParams.cpp:546
+msgid "Network Address"
 msgstr ""
-#
-msgid "Length"
+
+#: src/ConnectionParams.cpp:552
+msgid "Network Port"
 msgstr ""
 
 #: src/ConnectionParams.cpp:702 src/options.cpp:2127 src/options.cpp:2779
@@ -4196,8 +4299,9 @@ msgstr "सीएम 9 3 विस्तार स्तर"
 #: src/DetailSlider.cpp:92
 msgid "Rasterchart Zoom/Scale Weighting"
 msgstr ""
-#
-msgid "Less"
+
+#: src/DetailSlider.cpp:96
+msgid "Vectorchart Zoom/Scale Weighting"
 msgstr ""
 
 #: src/download_mgr.cpp:212 src/update_mgr.cpp:209
@@ -4287,22 +4391,52 @@ msgstr ""
 #: src/TrackPropDlg.cpp:303
 msgid "Longitude"
 msgstr ""
-#
-msgid "Limit range: NM"
-msgstr "सीमा सीमा: एनएम"
-#
-msgid "Line Smoothing"
-msgstr "लाइन चिकनाई"
-#
+
+#: src/kml.cpp:474
+msgid "OpenCPN Route"
+msgstr "ओपनसीपीएन रूट"
+
+#: src/kml.cpp:518
+msgid "OpenCPN Track"
+msgstr "ओपनसीपीएन ट्रैक"
+
+#: src/kml.cpp:567
+msgid "OpenCPN Waypoint"
+msgstr "ओपनसीपीएन वेपॉइंट"
+
+#: src/kml.cpp:638
+msgid "Choose Format for Copy"
+msgstr "प्रतिलिपि के लिए स्वरूप चुनें"
+
+#: src/kml.cpp:646
+msgid "KML Standard (Google Earth and others)"
+msgstr "केएमएल मानक (गूगल धरती और अन्य)"
+
+#: src/kml.cpp:650
+msgid "KML with extended waypoint data (QtVlm)"
+msgstr "विस्तारित मार्ग बिंदु डेटा के साथ केएमएल (क्यूटीवीएलएम)"
+
+#: src/LinkPropDlg.cpp:47
 msgid "Link"
 msgstr ""
-#
-msgid "Link Properties"
-msgstr "लिंक गुण"
-#
+
+#: src/LinkPropDlg.cpp:49
 msgid "Link description"
 msgstr "लिंक का वर्णन"
-#
+
+#: src/LinkPropDlg.cpp:58
+msgid "URL"
+msgstr "यूआरएल"
+
+#: src/LinkPropDlg.cpp:67
+msgid "Local file..."
+msgstr "स्थानीय फ़ाइल..."
+
+#: src/LinkPropDlg.cpp:122
+msgid "Choose a file"
+msgstr "एक फाइल चुनें"
+
+#: src/LinkPropDlg.cpp:133
 msgid "Link not complete, can't be saved."
 msgstr "लिंक पूर्ण नहीं है, सहेजा नहीं जा सकता."
 
@@ -4663,11 +4797,17 @@ msgstr ""
 #: src/RoutePropDlgImpl.cpp:361
 msgid "N/A"
 msgstr ""
-#
-msgid "Martinique"
+
+#: src/NMEALogWindow.cpp:59
+msgid "NMEA Debug Window"
+msgstr "एनएमईए डिबग विंडो"
+
+#: src/OCPNListCtrl.cpp:86
+msgid "Yes"
 msgstr ""
-#
-msgid "Mauritania"
+
+#: src/OCPNListCtrl.cpp:88
+msgid "No"
 msgstr ""
 
 #: src/options.cpp:962
@@ -6688,33 +6828,30 @@ msgstr ""
 #: src/TTYWindow.cpp:60
 msgid "Filter"
 msgstr ""
-#
-#, fuzzy
-msgid "Source: "
-msgstr "बीटी स्रोत"
-#
-msgid "South Africa"
+
+#: src/routemanagerdialog.cpp:370
+msgid "Show all routes"
 msgstr ""
 
 #: src/routemanagerdialog.cpp:407 src/routemanagerdialog.cpp:567
 msgid "Show"
 msgstr ""
-#
-msgid "Special Mark"
-msgstr "विशेष मार्क"
-#
-msgid "Speed"
+
+#: src/routemanagerdialog.cpp:409
+msgid "Route Name"
 msgstr ""
-#
-msgid "Speed (Kts)"
+
+#: src/routemanagerdialog.cpp:411
+msgid "From <-> To"
 msgstr ""
 
 #: src/routemanagerdialog.cpp:428 src/routemanagerdialog.cpp:593
 #: src/routemanagerdialog.cpp:722
 msgid "&Properties"
 msgstr ""
-#
-msgid "Split"
+
+#: src/routemanagerdialog.cpp:436
+msgid "&Activate"
 msgstr ""
 
 #: src/routemanagerdialog.cpp:446 src/routemanagerdialog.cpp:729
@@ -7006,199 +7143,109 @@ msgstr "रूट प्रिंट"
 #: src/RoutePropDlg.cpp:60 src/TrackPropDlg.cpp:687
 msgid "From"
 msgstr ""
-#
-msgid "Test Anchor Alarm Sound"
+
+#: src/RoutePropDlg.cpp:69 src/TrackPropDlg.cpp:696
+msgid "To"
 msgstr ""
-#
-msgid "Test DSC notification Sound"
+
+#: src/RoutePropDlg.cpp:107
+msgid "Plan speed"
 msgstr ""
-#
-msgid "Testing"
-msgstr "परिक्षण"
-#
-msgid "Texture Cache"
-msgstr "बनावट कैश"
-#
-msgid "Texture Compression"
-msgstr "बनावट संपीड़न"
-#
-msgid "Texture Compression Caching"
-msgstr "बनावट संपीड़न कैशिंग"
-#
-msgid "Texture Compression with Caching"
-msgstr "कैशिंग के साथ बनावट संपीड़न"
-#
-msgid "Texture Memory Size (MB)"
-msgstr "बनावट मेमोरी आकार (एमबी)"
-#
-msgid "Texture Settings"
-msgstr "बनावट सेटिंग्स"
-#
-msgid "Thailand"
+
+#: src/RoutePropDlg.cpp:124
+msgid "Enroute"
 msgstr ""
-#
-msgid ""
-"The Man Over Board button could be an important safety feature.\n"
-"Are you sure you want to hide it?"
+
+#: src/RoutePropDlg.cpp:140
+msgid "Departure"
 msgstr ""
 
 #: src/RoutePropDlg.cpp:173 src/trackprintout.cpp:96 src/trackprintout.cpp:329
 msgid "Time"
 msgstr ""
-#
-msgid "The OpenCPN Authors"
-msgstr "OpenCPN लेखक"
-#
-msgid "The ScaMin value for new waypoints is set to"
+
+#: src/RoutePropDlg.cpp:178
+msgid "Local@PC"
 msgstr ""
-#
-#, c-format
-msgid ""
-"The amount of data used by the track\n"
-" was reduced by %d%%."
+
+#: src/RoutePropDlg.cpp:179
+msgid "LMT@Location"
 msgstr ""
-"ट्रैक द्वारा उपयोग किए जाने वाले डेटा की मात्रा \n"
-" द्वारा कम कर दिया गया था %d%%."
-#
-msgid ""
-"The currently running Track was not merged.\n"
-"You can merge it later when it is completed."
+
+#: src/RoutePropDlg.cpp:201 src/TrackPropDlg.cpp:477 src/TrackPropDlg.cpp:721
+msgid "Default color"
+msgstr "डिफ़ॉल्ट रंग"
+
+#: src/RoutePropDlg.cpp:238 src/TrackPropDlg.cpp:511 src/TrackPropDlg.cpp:745
+msgid "Width"
 msgstr ""
-"वर्तमान में चल रहे ट्रैक को मर्ज नहीं किया गया था.\n"
-"आप इसे पूरा होने पर बाद में इसे मर्ज कर सकते हैं।\n"
-"\n"
-#
-msgid ""
-"The device selected is not accessible; opencpn will likely not be able\n"
-"to use this device as-is. You might want to exit OpenCPN, reboot and\n"
-"retry after creating a file called /etc/udev/rules.d/70-opencpn.rules\n"
-"with the following contents:\n"
-"\n"
-"            KERNEL==\"ttyUSB*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyACM*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyS*\", MODE=\"0666\"\n"
-"\n"
-"For more info, see the file LINUX_DEVICES.md in the distribution docs.\n"
+
+#: src/RoutePropDlg.cpp:244
+msgid "1 px"
 msgstr ""
-#
-msgid "The file will also be deleted from OpenCPN's layer directory."
+
+#: src/RoutePropDlg.cpp:244
+msgid "2px"
 msgstr ""
-#
-msgid "The font colour."
-msgstr "फ़ॉन्ट रंग"
-#
-msgid "The font family."
-msgstr "फ़ॉन्ट परिवार"
-#
-msgid "The font point size."
-msgstr "फ़ॉन्ट बिंदु आकार।"
-#
-msgid "The font style."
-msgstr "फ़ॉन्ट शैली"
-#
-msgid "The font weight."
-msgstr "फ़ॉन्ट वजन"
-#
-msgid ""
-"The last opencpn run seems to have failed. Do you want to run\n"
-"in safe mode without plugins and other possibly problematic\n"
-"features?\n"
+
+#: src/RoutePropDlg.cpp:244
+msgid "3 px"
 msgstr ""
-#
-msgid "The necessary configuration files were not found. "
-msgstr "आवश्यक कॉन्फ़िगरेशन फ़ाइलें नहीं मिलीं "
-#
-#, c-format
-msgid ""
-"The plugin %s is not compatible with this version of OpenCPN, please get an "
-"updated version."
+
+#: src/RoutePropDlg.cpp:244
+msgid "4 px"
 msgstr ""
-"प्लगइन %sओपनसीपीएन के इस संस्करण के साथ संगत नहीं है, कृपया एक अद्यतन संस्करण प्राप्त करें।"
-#
-msgid ""
-"The plugin is not compatible with this version of OpenCPN, and will be "
-"uninstalled."
+
+#: src/RoutePropDlg.cpp:244
+msgid "5 px"
 msgstr ""
-#
-msgid ""
-"The recently captured track of this target has been recorded.\n"
-"Do you want to continue recording until the end of the current OpenCPN "
-"session?"
+
+#: src/RoutePropDlg.cpp:245
+msgid "6 px"
 msgstr ""
-"इस लक्ष्य का हाल ही में ट्रैक किया गया ट्रैक रिकॉर्ड किया गया है। \n"
-"क्या आप चालू ओपनसीपीएन सत्र के अंत तक रिकॉर्डिंग जारी रखना चाहते हैं?"
-#
-msgid "The settings for own ship real size are not correct:"
-msgstr "स्वयं जहाज के आकार की सेटिंग्स सही नहीं हैं:"
-#
-msgid ""
-"The waypoint you want to delete is used in a route, do you really want to "
-"delete it?"
+
+#: src/RoutePropDlg.cpp:245
+msgid "7 px"
 msgstr ""
-"जिस मार्ग को आप हटाना चाहते हैं, उसे किसी मार्ग में उपयोग किया जाता है, क्या आप वाकई इसे "
-"हटाना चाहते हैं?"
-#
-msgid "There"
+
+#: src/RoutePropDlg.cpp:245
+msgid "8 px"
 msgstr ""
-#
-msgid ""
-"There are existing waypoints at the same location as some of the ones you are "
-"pasting. Would you like to just merge the pasted data into them?\n"
-"\n"
+
+#: src/RoutePropDlg.cpp:245
+msgid "9 px"
 msgstr ""
-"आपके पास चिपकाने वाले कुछ लोगों के समान स्थान पर मौजूद मौजूदा बिंदु बिंदु हैं। क्या आप उसमें "
-"चिपकाए गए डेटा को मर्ज करना चाहते हैं?\n"
-"\n"
-#
-msgid ""
-"There are some waypoints used in routes or anchor alarms.\n"
-" Do you want to delete them as well?\n"
-" This will change the routes and disable the anchor alarms.\n"
-" Answering No keeps the waypoints used in routes or alarms."
+
+#: src/RoutePropDlg.cpp:245
+msgid "10 px"
 msgstr ""
-"मार्ग या एंकर अलार्म में उपयोग किए गए कुछ मार्ग बिंदु हैं.\n"
-" क्या आप उन्हें भी हटाना चाहते हैं? \n"
-" यह मार्गों को बदल देगा और एंकर अलार्म अक्षम कर देगा\n"
-"उत्तर देना पथ या अलार्म में उपयोग किए गए मार्ग बिंदुओं को नहीं रखता है।"
-#
-msgid ""
-"There is an existing waypoint at the same location as the one you are "
-"pasting. Would you like to merge the pasted data with it?\n"
-"\n"
+
+#: src/RoutePropDlg.cpp:258
+msgid "To waypoint"
 msgstr ""
-"उसी स्थान पर मौजूद एक मौजूदा तरीका है जो आप पेस्ट कर रहे हैं। क्या आप इसके साथ चिपकाए गए "
-"डेटा को मर्ज करना चाहते हैं?\n"
-"\n"
-#
-msgid ""
-"There was a problem printing.\n"
-"Perhaps your current printer is not set correctly?"
+
+#: src/RoutePropDlg.cpp:268
+msgid "To WP"
 msgstr ""
-"प्रिंट करने में कोई समस्या थी\n"
-" क्या शायद आपका वर्तमान प्रिंटर ठीक से सेट नहीं है?"
-#
-msgid "Therefore the new waypoint will not be visible at this zoom level."
+
+#: src/RoutePropDlg.cpp:304
+msgid "Total Distance"
 msgstr ""
-#
-msgid ""
-"These settings might destabilize OpenCPN and are by default disabled. To "
-"despite the dangers enable them manually add a CatalogExpert=1 line in the "
-"[PlugIns] section in the configuration file."
+
+#: src/RoutePropDlg.cpp:317
+msgid "ETE"
 msgstr ""
-#
-msgid "This Leg"
+
+#: src/RoutePropDlg.cpp:321
+msgid "ETA"
 msgstr ""
-#
-msgid "This MMSI is my Follower - No CPA Alert"
-msgstr "यह एमएमएसआई मेरा अनुसरणकर्ता है - नहीं सीपीए अलर्ट"
-#
-msgid "This entire folder will be migrated.\n"
-msgstr ""
-#
-msgid "This waypoint is part of a layer and can't be edited"
-msgstr ""
-#
-msgid "Tide"
+
+#: src/RoutePropDlg.cpp:329
+msgid "Next tide event"
+msgstr "अगला ज्वार घटना"
+
+#: src/RoutePropDlg.cpp:341
+msgid "ETD"
 msgstr ""
 
 #: src/RoutePropDlg.cpp:382 src/TrackPropDlg.cpp:883
@@ -7221,85 +7268,108 @@ msgstr ""
 #: src/RoutePropDlg.cpp:474 src/TrackPropDlg.cpp:579 src/TrackPropDlg.cpp:965
 msgid "Split"
 msgstr ""
-#
-msgid "Time shown as"
-msgstr "समय दिखाया गया"
-#
-msgid "Timestamp"
+
+#: src/RoutePropDlgImpl.cpp:90
+msgid "MoTwilight"
+msgstr "सांझ"
+
+#: src/RoutePropDlgImpl.cpp:92
+msgid "Sunrise"
+msgstr "सूर्योदय"
+
+#: src/RoutePropDlgImpl.cpp:94
+msgid "Daytime"
+msgstr "दिन"
+
+#: src/RoutePropDlgImpl.cpp:96
+msgid "Sunset"
+msgstr "सूर्य का अस्त होना"
+
+#: src/RoutePropDlgImpl.cpp:98
+msgid "EvTwilight"
+msgstr "सांझ"
+
+#: src/RoutePropDlgImpl.cpp:100
+msgid "Nighttime"
 msgstr ""
-#
-msgid "Title"
+
+#: src/RoutePropDlgImpl.cpp:408
+msgid "Arrived"
 msgstr ""
-#
-msgid "To"
+
+#: src/RoutePropDlgImpl.cpp:813 src/TrackPropDlg.cpp:348
+#: src/TrackPropDlg.cpp:1341
+msgid "Depart From"
 msgstr ""
-#
-msgid "To WP"
-msgstr ""
-#
-msgid "To Waypoint"
-msgstr "रास्ते बिंदु को"
-#
-msgid ""
-"To proceed with chart folder migration, choose the chart source folder, and "
-"follow the instructions given."
-msgstr ""
-#
-msgid "To route"
-msgstr ""
-#
-msgid "To waypoint"
-msgstr ""
-#
-msgid "Today"
-msgstr ""
-#
-msgid "Toggle Full Screen"
-msgstr "पूर्णस्क्रीन चालू करें"
-#
-msgid "Toggle track"
-msgstr "टॉगल ट्रैक"
-#
-msgid "Togolese Republic"
-msgstr "टोगोलीज गणराज्य"
-#
-msgid "Tomorrow"
-msgstr ""
-#
-msgid "Tonga"
-msgstr ""
-#
-msgid "ToolTips"
-msgstr ""
-#
-msgid "Toolbar and Window Style"
-msgstr "टूलबार और विंडो शैली"
-#
-msgid "Total Distance"
-msgstr ""
-#
-msgid "Total Length: "
-msgstr "कुल लंबाई: "
-#
-msgid "Total Track: "
-msgstr ""
-#
+
+#: src/RoutePropDlgImpl.cpp:815 src/TrackPropDlg.cpp:386
+#: src/TrackPropDlg.cpp:769 src/TrackPropDlg.cpp:1343
 msgid "Total distance"
 msgstr ""
-#
-msgid "Tow"
-msgstr "खींचते ले जाना"
-#
-msgid "Towing Vessel"
+
+#: src/RoutePropDlgImpl.cpp:816
+msgid "Speed (Kts)"
 msgstr ""
-#
-msgid "Towing Vessel, Long"
+
+#: src/RoutePropDlgImpl.cpp:818 src/TrackPropDlg.cpp:1346
+msgid "Departure Time"
 msgstr ""
-#
-msgid "Track"
+
+#: src/RoutePropDlgImpl.cpp:820 src/TrackPropDlg.cpp:788
+#: src/TrackPropDlg.cpp:1348
+msgid "Time enroute"
 msgstr ""
-#
-msgid "Track Colour"
+
+#: src/RoutePropDlgImpl.cpp:865
+msgid "Are you sure you want to move Up this waypoint?"
+msgstr ""
+
+#: src/RoutePropDlgImpl.cpp:866
+msgid "Are you sure you want to move Down this waypoint?"
+msgstr ""
+
+#: src/RoutePropDlgImpl.cpp:868
+msgid "OpenCPN Move Waypoint"
+msgstr ""
+
+#: src/RoutePropDlgImpl.cpp:902
+msgid "Are you sure you want to remove this waypoint?"
+msgstr "क्या आप वाकई इस मार्ग को हटाना चाहते हैं?"
+
+#: src/RoutePropDlgImpl.cpp:903
+msgid "OpenCPN Remove Waypoint"
+msgstr "ओपनसीपीएन Waypoint निकालें"
+
+#: src/RoutePropDlgImpl.cpp:938
+msgid "Move Up"
+msgstr ""
+
+#: src/RoutePropDlgImpl.cpp:940
+msgid "Move Down"
+msgstr ""
+
+#: src/RoutePropDlgImpl.cpp:978 src/TrackPropDlg.cpp:1396
+msgid "&Copy all as text"
+msgstr ""
+
+#: src/RoutePropDlgImpl.cpp:1100 src/TrackPropDlg.cpp:1287
+msgid "_plus"
+msgstr ""
+
+#: src/RoutePropDlgImpl.cpp:1175
+msgid "Invalid date/time!"
+msgstr ""
+
+#: src/RoutePropDlgImpl.cpp:1179
+msgid "Unknown station!"
+msgstr ""
+
+#: src/RoutePropDlgImpl.cpp:1194
+msgid "Unavailable: "
+msgstr ""
+
+#: src/RoutePropDlgImpl.cpp:1203
+msgid "Local"
 msgstr ""
 
 #: src/RoutePropDlgImpl.cpp:1360 src/TrackPropDlg.cpp:1631
@@ -7363,47 +7433,53 @@ msgstr "रूट / वेपॉप अपलोड करने के लि�
 #: src/SendToGpsDlg.cpp:181
 msgid "Progress..."
 msgstr ""
-#
-msgid "Turkmenistan"
-msgstr "तुर्कमेनिस्तान"
-#
-msgid "Turks and Caicos Islands"
-msgstr "तुर्क्स और कैकोज़ द्वीपसमूह"
-#
-msgid "Turn Rate"
+
+#: src/tcmgr.cpp:691
+msgid "It seems you have no tide/current harmonic data installed."
+msgstr "ऐसा लगता है कि आपके पास कोई ज्वार नहीं है / वर्तमान हार्मोनिक डेटा स्थापित है।"
+
+#: src/TCWin.cpp:90
+msgid "Tide"
 msgstr ""
-#
-msgid "Tuvalu"
+
+#: src/TCWin.cpp:95
+msgid "Current"
 msgstr ""
-#
-msgid "Type"
+
+#: src/TCWin.cpp:133
+msgid "Prev"
 msgstr ""
-#
-msgid "UDP"
+
+#: src/TCWin.cpp:149
+msgid "Next"
 msgstr ""
-#
-msgid "URL"
-msgstr "यूआरएल"
-#
-msgid "URL:"
+
+#: src/TCWin.cpp:152
+msgid "LMT@Station"
 msgstr ""
-#
-msgid "UTC"
-msgstr "यु. टी. सी"
-#
-msgid "Uganda"
+
+#: src/TCWin.cpp:243
+msgid "Reference Station :"
+msgstr "संदर्भ स्टेशन:"
+
+#: src/TCWin.cpp:257
+msgid "Data Source :"
 msgstr ""
-#
-msgid "Ukraine"
+
+#: src/TCWin.cpp:648
+msgid "HW"
 msgstr ""
-#
-msgid "Ultra advanced"
+
+#: src/TCWin.cpp:648
+msgid "LW"
 msgstr ""
-#
-msgid "Un-Installation complete"
+
+#: src/TCWin.cpp:849
+msgid "Today"
 msgstr ""
-#
-msgid "Unable to copy catalog file"
+
+#: src/TCWin.cpp:851 src/TCWin.cpp:856
+msgid "Tomorrow"
 msgstr ""
 
 #: src/toolbar.cpp:1178
@@ -7459,144 +7535,118 @@ msgstr ""
 #: src/TrackPropDlg.cpp:305
 msgid "Timestamp"
 msgstr ""
-#
-msgid "Undefined"
-msgstr "अपरिभाषित"
-#
-msgid "Undefined (default)"
-msgstr "अपरिभाषित (डिफ़ॉल्ट)"
-#
-msgid "Underway Sailing"
+
+#: src/TrackPropDlg.cpp:400 src/TrackPropDlg.cpp:779
+msgid "Avg. speed"
 msgstr ""
-#
-msgid "Underway using Engine"
+
+#: src/TrackPropDlg.cpp:413
+msgid "Time Enroute"
 msgstr ""
-#
-msgid "Undo"
+
+#: src/TrackPropDlg.cpp:441 src/TrackPropDlg.cpp:455 src/TrackPropDlg.cpp:817
+msgid "Local @ PC"
 msgstr ""
-#
-msgid "Undock Target List"
+
+#: src/TrackPropDlg.cpp:441 src/TrackPropDlg.cpp:461
+msgid "LMT @ Location"
 msgstr ""
-#
-msgid "Uninstall"
+
+#: src/TrackPropDlg.cpp:444 src/TrackPropDlg.cpp:808
+msgid "Time shown as"
+msgstr "समय दिखाया गया"
+
+#: src/TrackPropDlg.cpp:515 src/TrackPropDlg.cpp:750
+msgid "1 pixel"
 msgstr ""
-#
-msgid "Unit carrier maritime"
-msgstr "मात्रक वाहक समुद्री"
-#
-msgid "United Arab Emirates"
-msgstr "संयुक्त अरब अमीरात"
-#
-msgid "United States Virgin Islands"
-msgstr "संयुक्त राज्य वर्जिन द्वीप समूह"
-#
-msgid "United States of America"
-msgstr "संयुक्त राज्य अमरीका"
-#
-msgid "Units"
+
+#: src/TrackPropDlg.cpp:515 src/TrackPropDlg.cpp:750
+msgid "2 pixels"
 msgstr ""
-#
-msgid "Unk"
-msgstr "उनक"
-#
-msgid "Unknown"
-msgstr "अनजान"
-#
-msgid "Unknown device :"
+
+#: src/TrackPropDlg.cpp:516 src/TrackPropDlg.cpp:751
+msgid "3 pixels"
 msgstr ""
-#
-msgid "Unknown station!"
+
+#: src/TrackPropDlg.cpp:516 src/TrackPropDlg.cpp:751
+msgid "4 pixels"
 msgstr ""
-#
-msgid "Unnamed Route"
+
+#: src/TrackPropDlg.cpp:516 src/TrackPropDlg.cpp:751
+msgid "5 pixels"
 msgstr ""
-#
-msgid "Unnamed Waypoint"
+
+#: src/TrackPropDlg.cpp:517 src/TrackPropDlg.cpp:752
+msgid "6 pixels"
 msgstr ""
-#
-msgid "Unreadable PlugIn library detected, check the file permissions:\n"
-msgstr "अपठनीय प्लगइन लाइब्रेरी मिली, फ़ाइल अनुमतियों की जांच करें:\n"
-#
-msgid "Unspecified"
-msgstr "अनिर्दिष्ट"
-#
-#, fuzzy
-msgid "Update"
-msgstr "अद्यतन करें नियंत्रण"
-#
-msgid "Update Control"
-msgstr "अद्यतन करें नियंत्रण"
-#
-msgid "Update Plugin Catalog"
+
+#: src/TrackPropDlg.cpp:517 src/TrackPropDlg.cpp:752
+msgid "7 pixels"
 msgstr ""
-#
-msgid "Update Plugin Catalog: master"
+
+#: src/TrackPropDlg.cpp:517 src/TrackPropDlg.cpp:752
+msgid "8 pixels"
 msgstr ""
-#
-msgid "Update Plugin Catalog:master"
+
+#: src/TrackPropDlg.cpp:518 src/TrackPropDlg.cpp:753
+msgid "9 pixels"
 msgstr ""
-#
-msgid "Update plugin catalog"
+
+#: src/TrackPropDlg.cpp:518 src/TrackPropDlg.cpp:753
+msgid "10 pixels"
 msgstr ""
-#
-msgid "Update to "
+
+#: src/TrackPropDlg.cpp:590 src/TrackPropDlg.cpp:976
+msgid "To route"
 msgstr ""
-#
-msgid "Update to installed Plugin is available"
+
+#: src/TrackPropDlg.cpp:707
+msgid "Display parameters"
+msgstr "प्रदर्शन पैरामीटर"
+
+#: src/TrackPropDlg.cpp:762
+msgid "Statistics"
 msgstr ""
-#
-msgid "Update to managed Plugin is available"
+
+#: src/TrackPropDlg.cpp:802
+msgid "Recorded points"
+msgstr "दर्ज अंक"
+
+#: src/TrackPropDlg.cpp:822
+msgid "LMT @ Track Start"
+msgstr "एलएमटी @ ट्रैक शुरू करें"
+
+#: src/TrackPropDlg.cpp:971
+msgid "Extend track"
 msgstr ""
-#
-msgid "Upgrade to Version "
+
+#: src/TrackPropDlg.cpp:981
+msgid "Export"
 msgstr ""
-#
-msgid "Uploaded:"
+
+#: src/TrackPropDlg.cpp:1172
+msgid "%D Days, %H:%M"
 msgstr ""
-#
-msgid "Uruguay"
+
+#: src/TrackPropDlg.cpp:1346
+msgid "(m/d/y h:m)"
 msgstr ""
-#
-msgid "Use Accelerated Graphics (OpenGL)"
-msgstr "त्वरित ग्राफिक्स का उपयोग करें (ओपनजीएल)"
-#
-msgid "Use Accelerated Panning"
-msgstr "त्वरित पैनिंग का उपयोग करें"
-#
-msgid "Use Furuno GP3X for uploads"
-msgstr "अपलोड के लिए फरयूनओ जीपी३एक्स का उपयोग करें"
-#
-msgid "Use GRMN for uploads"
-msgstr "अपलोड के लिए जीआरएमएन का उपयोग करें"
-#
-msgid "Use GRMN mode for input"
-msgstr "इनपुट के लिए जीआरएमएन मोड का उपयोग करें"
-#
-msgid "Use Garmin (GRMN) mode for input"
-msgstr "इनपुट के लिए गार्मिन (जीआरएमएन) मोड का उपयोग करें"
-#
-msgid "Use Garmin GRMN (Host) mode for uploads"
-msgstr "अपलोड के लिए गार्मिन जीआरएमएन (होस्ट) मोड का उपयोग करें"
-#
-msgid "Use Inland ECDIS V2.3"
+
+#: src/TrackPropDlg.cpp:1450
+msgid "track"
 msgstr ""
-#
-msgid "Use WPL position messages. Action when received:"
+
+#: src/TrackPropDlg.cpp:1876
+msgid "--"
 msgstr ""
-#
-msgid "Use as active catalog"
+
+#: src/TTYWindow.cpp:68
+msgid "Legend"
 msgstr ""
-#
-msgid "Use default location"
-msgstr ""
-#
-msgid "Use magnetic bearings in output sentence ECAPB"
-msgstr "उत्पादन की सजा ईकपब में चुंबकीय बीयरिंग का उपयोग करें"
-#
-msgid "Use nearby waypoint?"
-msgstr "पास के रास्ते का उपयोग करें?"
-#
-msgid "Use proxy"
+
+#: src/TTYWindow.cpp:79 src/TTYWindow.cpp:168 libs/wxcurl/src/dialog.cpp:250
+#: libs/wxcurl/src/dialog.cpp:420
+msgid "Pause"
 msgstr ""
 
 #: src/TTYWindow.cpp:83
@@ -7642,161 +7692,96 @@ msgstr ""
 #: libs/wxcurl/src/dialog.cpp:137
 msgid "Not available"
 msgstr ""
-#
-msgid "User X Offset"
+
+#: libs/wxcurl/src/dialog.cpp:168
+msgid "URL:"
 msgstr ""
-#
-msgid "User Y Offset"
+
+#: libs/wxcurl/src/dialog.cpp:187
+msgid "Speed:"
 msgstr ""
-#
-msgid "User set magnetic variation"
-msgstr "उपयोगकर्ता सेट चुंबकीय विविधता"
-#
+
+#: libs/wxcurl/src/dialog.cpp:196
+msgid "Elapsed time:"
+msgstr ""
+
+#: libs/wxcurl/src/dialog.cpp:198
+msgid "Estimated total time:"
+msgstr ""
+
+#: libs/wxcurl/src/dialog.cpp:200
+msgid "Estimated remaining time:"
+msgstr ""
+
+#: libs/wxcurl/src/dialog.cpp:243 libs/wxcurl/src/dialog.cpp:399
+msgid "Abort"
+msgstr ""
+
+#: libs/wxcurl/src/dialog.cpp:245
+msgid "Settings"
+msgstr ""
+
+#: libs/wxcurl/src/dialog.cpp:252
+msgid "Start"
+msgstr ""
+
+#: libs/wxcurl/src/dialog.cpp:413
+msgid "0 (transfer paused)"
+msgstr ""
+
+#: libs/wxcurl/src/dialog.cpp:461
+msgid "Connection settings"
+msgstr ""
+
+#: libs/wxcurl/src/dialog.cpp:461
+msgid "Connection settings used for the transfer:"
+msgstr ""
+
+#: libs/wxcurl/src/dialog.cpp:516
+msgid "0 (transfer completed)"
+msgstr ""
+
+#: libs/wxcurl/src/dialog.cpp:537
+msgid "Downloaded:"
+msgstr ""
+
+#: libs/wxcurl/src/dialog.cpp:585
+msgid "Uploaded:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:111
 msgid "Username:"
 msgstr ""
-#
-msgid "Uzbekistan"
-msgstr "उज़्बेकिस्तान"
-#
-msgid "VDM->VDO"
+
+#: libs/wxcurl/src/panel.cpp:112
+msgid "Password:"
 msgstr ""
-#
-msgid "VTS active target"
-msgstr "व्तस सक्रिय लक्ष्य"
-#
-msgid "Vanuatu"
+
+#: libs/wxcurl/src/panel.cpp:120
+msgid "Port:"
 msgstr ""
-#
-msgid "Vatican City State"
-msgstr "वेटिकन सिटी राज्य"
-#
-msgid "Vector"
+
+#: libs/wxcurl/src/panel.cpp:134
+msgid "Proxy settings"
 msgstr ""
-#
-msgid "Vector Chart Display"
-msgstr "वेक्टर चार्ट प्रदर्शन"
-#
-msgid "Vector Charts"
+
+#: libs/wxcurl/src/panel.cpp:136
+msgid "Use proxy"
 msgstr ""
-#
-msgid "Vectorchart Zoom/Scale Weighting"
+
+#: libs/wxcurl/src/panel.cpp:141
+msgid "Proxy host:"
 msgstr ""
-#
-msgid "Venezuela"
+
+#: libs/wxcurl/src/panel.cpp:142
+msgid "Proxy username:"
 msgstr ""
-#
-msgid "Vessel requesting non-distress assistance"
-msgstr "गैर-संकट सहायता का अनुरोध करने वाले पोत"
-#
-msgid "Vessel, type unknown"
-msgstr "पोत, अज्ञात प्रकार"
-#
-msgid ""
-"Vessel, work maintenance craft, floating derrick, cable-ship, buoy-ship, "
-"dredge"
+
+#: libs/wxcurl/src/panel.cpp:143
+msgid "Proxy password:"
 msgstr ""
-#
-msgid "Viet Nam"
-msgstr ""
-#
-msgid "WMM Plugin calculated magnetic variation"
-msgstr "वमम प्लगइन की गणना चुंबकीय भिन्नता है"
-#
-#, fuzzy
-msgid "Waiting for permission grant...."
-msgstr "रास्टर चार्ट संपीड़न धागा निकास के लिए प्रतीक्षा कर रहा है"
-#
-msgid "Waiting for raster chart compression thread exit."
-msgstr "रास्टर चार्ट संपीड़न धागा निकास के लिए प्रतीक्षा कर रहा है"
-#
-msgid "Wallis and Futuna Islands"
-msgstr "वालिस और फ़्यूचूना द्वीप समूह"
-#
-msgid "Want to help?"
-msgstr "मदद करना चाहता हूँ?"
-#
-msgid "Warn if CPA less than (NMi)"
-msgstr "चेतावनी दें कि सीपीए (एनएमआई) से कम है"
-#
-msgid "Waypoint"
-msgstr ""
-#
-msgid "Waypoint Arrival Circle Radius (NMi)"
-msgstr "वेपॉइंट आगमन सर्कल रेडियस (एनएमआई)"
-#
-msgid "Waypoint Name"
-msgstr ""
-#
-msgid "Waypoint Properties"
-msgstr "वैपोइन्ट गुण"
-#
-msgid "Waypoint Range Ring Colours"
-msgstr "वेपॉइंट रेंज अंगूठी रंग"
-#
-msgid "Waypoint default icon"
-msgstr ""
-#
-msgid "Waypoint range rings"
-msgstr "वेपॉइंट रेंज रिंग्स"
-#
-msgid "Waypoint(s) Transmitted."
-msgstr "वेपॉइंट प्रेषित"
-#
-msgid "Waypoints"
-msgstr ""
-#
-msgid ""
-"Waypoints can be renamed to reflect the new order, the names will be '001', "
-"'002' etc.\n"
-"\n"
-"Do you want to rename the waypoints?"
-msgstr ""
-"नए ऑर्डर को प्रतिबिंबित करने के लिए वेपॉइंट का नाम बदला जा सकता है, नाम '001', '002' "
-"आदि होंगे.\n"
-"\n"
-" क्या आप वेपॉइंट का नाम बदलना चाहते हैं?"
-#
-msgid ""
-"Waypoints will be renamed to reflect the natural order, the names will be "
-"'001', '002' etc.\n"
-"\n"
-"Do you want to rename the waypoints?"
-msgstr ""
-#
-msgid "Web Mercator (EPSG:3857)"
-msgstr ""
-#
-msgid "Website"
-msgstr ""
-#
-msgid "Welcome to OpenCPN"
-msgstr "ओपनसीपीएन में आपका स्वागत है"
-#
-msgid "Whether the font is underlined."
-msgstr "क्या फॉन्ट को रेखांकित किया जाता है."
-#
-msgid "White"
-msgstr ""
-#
-msgid "Width"
-msgstr ""
-#
-msgid "Width Over All (m)"
-msgstr "सभी की चौड़ाई (मी)"
-#
-msgid "Wing In Ground Effect"
-msgstr "जमीन प्रभाव में विंग"
-#
-msgid ""
-"With a lower value, the same zoom level shows a less detailed chart.\n"
-"With a higher value, the same zoom level shows a more detailed chart."
-msgstr ""
-"कम मूल्य के साथ, एक समान ज़ूम स्तर कम विस्तृत चार्ट दिखाता है.\n"
-" उच्च मूल्य के साथ, एक ही ज़ूम स्तर अधिक विस्तृत चार्ट दिखाता है."
-#
-msgid "Would you like include the Great Circle routing points for this leg?"
-msgstr "क्या आप चाहते हैं कि इस चरण के लिए ग्रेट सर्कल रूटिंग पॉइंट्स शामिल हों?"
-#
-msgid "Would you like to visit the opencpn.org website for more information?"
+
+#: libs/wxcurl/src/panel.cpp:144
+msgid "Proxy port:"
 msgstr ""
 

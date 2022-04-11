@@ -4294,40 +4294,8 @@ msgstr "Ingebouwde GPS"
 #: src/ConnectionParams.cpp:820 src/options.cpp:2136
 msgid "Built-in Bluetooth"
 msgstr "Ingebouwde Bluetooth"
-#
-msgid "Built-in Bluetooth SPP"
-msgstr "Ingebouwde Bluetooth SPP"
-#
-msgid "Built-in GPS"
-msgstr "Ingebouwde GPS"
-#
-msgid "Bulgaria"
-msgstr "Bulgarije"
-#
-msgid "Bulk carrier maritime"
-msgstr "bulkcarrier (zee)"
-#
-msgid "Bunkership"
-msgstr "bunkerschip"
-#
-msgid "Buoy/Light Labels"
-msgstr "Boei- en lichtlabels"
-#
-msgid "Buoys/Lights"
-msgstr "Boeien en lichten"
-#
-msgid "Burkina Faso"
-msgstr "Burkina Faso"
-#
-msgid "Burundi"
-msgstr "Burundi"
-#
-msgid "C"
-msgstr "C"
-#
-msgid "C&olour:"
-msgstr "&Kleur: "
-#
+
+#: src/DetailSlider.cpp:88
 msgid "CM93 Detail Level"
 msgstr "CM93 detailniveau"
 
@@ -4442,10 +4410,32 @@ msgstr "OpenCPN Markeringspunt"
 #: src/kml.cpp:638
 msgid "Choose Format for Copy"
 msgstr "Kies format voor het kopiëren"
-#
-msgid "Choose Toolbar Icons"
-msgstr "Kies werkbalkpictogrammen"
-#
+
+#: src/kml.cpp:646
+msgid "KML Standard (Google Earth and others)"
+msgstr "KML standaard (Google Earth en andere)"
+
+#: src/kml.cpp:650
+msgid "KML with extended waypoint data (QtVlm)"
+msgstr "KML met uitgebreide markeringspuntgegevens (QtVlm)"
+
+#: src/LinkPropDlg.cpp:47
+msgid "Link"
+msgstr "Koppeling"
+
+#: src/LinkPropDlg.cpp:49
+msgid "Link description"
+msgstr "Link-beschrijving"
+
+#: src/LinkPropDlg.cpp:58
+msgid "URL"
+msgstr "URL"
+
+#: src/LinkPropDlg.cpp:67
+msgid "Local file..."
+msgstr "Lokaal bestand..."
+
+#: src/LinkPropDlg.cpp:122
 msgid "Choose a file"
 msgstr "Kies een bestand"
 
@@ -4828,11 +4818,8 @@ msgstr "Nee"
 msgid "Create a private configuration template based on current settings.\n"
 "This template will be saved, and may be selected for further use at any time.\n"
 "               "
-msgstr ""
-"Maak een persoonlijk configuratiesjabloon, gebaseerd op de huidige "
-"instellingen.\n"
-" Dit sjabloon wordt opgeslagen en kan op ieder moment worden geselecteerd "
-"voor verder gebruik.\n"
+msgstr "Maak een persoonlijk configuratiesjabloon, gebaseerd op de huidige instellingen.\n"
+" Dit sjabloon wordt opgeslagen en kan op ieder moment worden geselecteerd voor verder gebruik.\n"
 "               "
 
 #: src/options.cpp:1020

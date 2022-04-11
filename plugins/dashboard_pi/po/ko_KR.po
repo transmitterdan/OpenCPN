@@ -454,8 +454,10 @@ msgstr "자기"
 #: src/wind_history.cpp:58 src/wind_history.cpp:109
 msgid "--"
 msgstr ""
-#
-msgid "Undock"
+
+#: src/wind_history.cpp:333
+#, c-format
+msgid "--- %s"
 msgstr ""
 
 #: src/wind_history.cpp:438

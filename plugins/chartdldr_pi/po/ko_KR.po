@@ -28,7 +28,7 @@ msgstr "%s (%s to %s), river miles %3.1f - %3.1f"
 
 #: src/chartcatalog.cpp:454
 #, c-format
-msgid "%lu charts total, %lu updated, %lu new"
+msgid "%s"
 msgstr ""
 
 #: src/chartdldr_pi.cpp:275

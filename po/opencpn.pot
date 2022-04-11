@@ -6607,11 +6607,11 @@ msgstr ""
 msgid "OpenCPN S57 SENC File Create..."
 msgstr ""
 
-#: src/PluginHandler.cpp:1160
+#: src/PluginHandler.cpp:1154
 msgid "Please check system log for more info."
 msgstr ""
 
-#: src/PluginHandler.cpp:1169
+#: src/PluginHandler.cpp:1163
 msgid " successfully installed from cache"
 msgstr ""
 

@@ -151,152 +151,66 @@ msgstr "Sarado"
 #: src/AboutFrame.cpp:36
 msgid "< Back"
 msgstr ""
-"\n"
-" - ang iyong GPS offset mula sa midship ay kailangang nasa loob ng sinag ng "
-"iyong barko"
-#
-msgid ""
-"\n"
-" - your minimum ship icon size must be between 1 and 100 mm"
+
+#: src/AboutFrame.cpp:52
+msgid "OpenCPN"
 msgstr ""
 
 #: src/AboutFrame.cpp:74
 msgid "(c) 2000-2021"
 msgstr ""
-"\n"
-" - ang sinag ng iyong barko ay kailangang > 0"
-#
-msgid ""
-"\n"
-" - your ship's length must be > 0"
+
+#: src/AboutFrame.cpp:81
+msgid "The OpenCPN Authors"
 msgstr ""
-"\n"
-" - ang haba ng iyong barko ay kailangang > 0"
-#
-msgid ""
-"\n"
-"OpenCPN is distributed in the hope that it will be useful, but WITHOUT ANY "
-"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR "
-"A PARTICULAR PURPOSE.\n"
-"\n"
-"See the GNU General Public License for more details.\n"
-"\n"
-"OpenCPN must only be used in conjunction with approved paper charts and "
-"traditional methods of navigation.\n"
-"\n"
-"DO NOT rely upon OpenCPN for safety of life or property.\n"
-"\n"
-"Please click \"OK\" to agree and proceed, \"Cancel\" to quit.\n"
+
+#: src/AboutFrame.cpp:93
+msgid "OpenCPN is a Free Software project, built by sailors.\n"
+"It is freely available to download and distribute without charge."
 msgstr ""
-"\n"
-"Ang OpenCPN ay naipamahagi sa pag-asang ito ay magiging kapaki-pakinabang "
-"ngunit WALANG ANUMANG WARRANTY; wala rin miski ang KAKAYAHANG MAPAGKALOOBAN o "
-"ANG PAGKASYA PARA SA ISANG PARTIKULAR NA LAYUNIN.\n"
-"\n"
-"Tingnan ang GNU Kabuuang Pampublikong Lisensya para sa mga detalye.\n"
-"\n"
-"Ang OpenCPN ay dapat na gagamitin lamang sa kasabay na naaprubahan na nga "
-"tsart ng papel at tradisyonal na nga paraan ng nabigasyon.\n"
-"\n"
-"HUWAG kang umasa sa OpenCPN para saakaligtasan ng buhay o ng ari-arian.\n"
-"\n"
-"Mangyaring pindutin ang \"OK\" para sumang-ayon at magpatuloy, \"Kanselahin\" "
-"para sumuko.\n"
-#
-msgid ""
-"\n"
-"The device selected is not accessible; opencpn will likely not be able\n"
-"to use this device as-is. You might want to exit OpenCPN, reboot and\n"
-"retry after creating a file called /etc/udev/rules.d/70-opencpn.rules\n"
-"with the following contents:\n"
-"\n"
-"            KERNEL==\"ttyUSB*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyACM*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyS*\", MODE=\"0666\"\n"
-"\n"
-"For more info, see the file LINUX_DEVICES.md in the distribution docs.\n"
+
+#: src/AboutFrame.cpp:103
+msgid "Want to help?"
 msgstr ""
-#
-msgid "  MOB Position: "
+
+#: src/AboutFrame.cpp:109
+msgid "Donate"
 msgstr ""
-#
-msgid "  Ownship Position: "
+
+#: src/AboutFrame.cpp:118
+msgid "or"
 msgstr ""
-#
-msgid "  Position: "
+
+#: src/AboutFrame.cpp:124
+msgid "get involved!"
 msgstr ""
-#
-msgid " (Ctrl-Space)"
-msgstr " (Ctrl-Space)"
-#
-msgid " (Last Known)"
-msgstr " (Huling Kilala)"
-#
-msgid " - "
+
+#: src/AboutFrame.cpp:139
+msgid "Logfile:"
 msgstr ""
-#
-msgid " -- [Portable(-p) executing from "
-msgstr " -- [Portable(-p) isinasagawa mula sa "
-#
-msgid " COG Unavailable"
-msgstr " COG ay hindi magagamit"
-#
-msgid " ChartFile:  "
-msgstr " ChartFile:  "
-#
-msgid " Datum:  "
-msgstr " Petsa:  "
-#
-msgid " Depth Units:  "
-msgstr " Depth Units:  "
-#
-msgid " ID:  "
-msgstr " ID:  "
-#
-msgid " Name:  "
-msgstr " Pangalan:  "
-#
-msgid " Never track"
-msgstr " Hindi kailanmang susubaybayan"
-#
-msgid " Projection:  "
-msgstr " Projection:  "
-#
-msgid " Ship "
-msgstr " Barko "
-#
-msgid " Soundings:  "
-msgstr " Soundings:  "
-#
-msgid " Source Edition:  "
-msgstr " Pinagmulan ng Edisyon:  "
-#
-msgid " Time: "
+
+#: src/AboutFrame.cpp:161
+msgid "Config file:"
 msgstr ""
-#
-msgid ""
-" To set the magnetic variation manually,\n"
-" you must disable the WMM plugin."
+
+#: src/AboutFrame.cpp:174
+msgid "Copy to clipboard"
 msgstr ""
-" Para e set ang magnetic variation ng mano-mano,\n"
-"kailangan mong i-disable ang WMM plugin."
-#
-msgid " Updated:  "
-msgstr " Nai-update na:  "
-#
-msgid " [Modified]"
+
+#: src/AboutFrame.cpp:182
+msgid "Plugin API: "
 msgstr ""
-#
-msgid " at "
+
+#: src/AboutFrame.cpp:226
+msgid "OpenCPN Website"
 msgstr ""
 
 #: src/AboutFrameImpl.cpp:89
 msgid "OpenCPN Help documentation is not available locally."
 msgstr ""
-#
-msgid ""
-" shorter than rhumbline.\n"
-"\n"
+
+#: src/AboutFrameImpl.cpp:92
+msgid "Would you like to visit the opencpn.org website for more information?"
 msgstr ""
 
 #: src/AboutFrameImpl.cpp:96 src/AISTargetQueryDialog.cpp:183
@@ -314,181 +228,111 @@ msgstr "OpenCPN Info"
 #: src/ais.cpp:113
 msgid "Underway using Engine"
 msgstr ""
-#
-msgid " successfully installed from cache"
+
+#: src/ais.cpp:114
+msgid "At Anchor"
+msgstr "Sa angkla"
+
+#: src/ais.cpp:115
+msgid "Not Under Command"
+msgstr "Hindi sa Ilalim ng Utos"
+
+#: src/ais.cpp:116
+msgid "Restricted Manoeuvrability"
+msgstr "Mahigpit ang Kadaliang Pagkilos"
+
+#: src/ais.cpp:117
+msgid "Constrained by draught"
+msgstr "Pinigilan ng draft"
+
+#: src/ais.cpp:118
+msgid "Moored"
+msgstr "Pinalaya"
+
+#: src/ais.cpp:119
+msgid "Aground"
+msgstr "Agrawn"
+
+#: src/ais.cpp:120
+msgid "Engaged in Fishing"
+msgstr "Sumabak sa Pangingisda"
+
+#: src/ais.cpp:121
+msgid "Underway Sailing"
 msgstr ""
-#
-msgid " to "
-msgstr " sa "
-#
-msgid "\" is empty, switching to \"All Active Charts\" group."
-msgstr "\" ay walang laman, lumipat sa grupong \"Lahat ng mga Aktidong Tsart\"."
-#
-msgid "\" is empty."
+
+#: src/ais.cpp:122 src/ais.cpp:149
+msgid "High Speed Craft"
+msgstr "Mabilis na Bapor"
+
+#: src/ais.cpp:123
+msgid "Wing In Ground Effect"
+msgstr "Epektong Lupa sa Pakpak"
+
+#: src/ais.cpp:124
+msgid "Power-driven vessel towing astern (regional use)"
+msgstr "Ang sasakyang panghimpapawid na hinimok ng kapangyarihan ay naghihiwalay sa labas (rehiyonal ang paggamit)"
+
+#: src/ais.cpp:125
+msgid "Power-driven vessel pushing ahead or towing alongside (regional use)"
+msgstr "Ang lalagyan ng lakas na itinutulak ng lakas o sa paghila (rehiyonal ang paggamit)"
+
+#: src/ais.cpp:126
+msgid "Reserved 13"
+msgstr "Nakalaan 13"
+
+#: src/ais.cpp:127
+msgid "Reserved 14"
+msgstr "Nakalaan 14"
+
+#: src/ais.cpp:128 src/AIS_Target_Data.cpp:402 src/ConnectionParams.cpp:176
+#: src/ConnectionParams.cpp:462 src/ConnectionParams.cpp:600
+#: src/ConnectionParams.cpp:913 src/ConnectionParams.cpp:941
+msgid "Undefined"
+msgstr "Hindi matukoy"
+
+#: src/ais.cpp:129
+msgid "AtoN Virtual"
 msgstr ""
-#
-msgid "\"Ship Name\" MMSI (Call Sign)"
-msgstr "\"Pangalan ng Barko\" MMSI (Palatandaang Tawag)"
-#
-#, c-format
-msgid "%02X"
+
+#: src/ais.cpp:130
+msgid "AtoN Virtual (On Position)"
 msgstr ""
-#
-#, c-format
-msgid "%2dH %2dM"
+
+#: src/ais.cpp:131
+msgid "AtoN Virtual (Off Position)"
 msgstr ""
-#
-#, c-format
-msgid "%2dM %2dS"
+
+#: src/ais.cpp:132
+msgid "AtoN Real"
 msgstr ""
-#
-msgid "%D Days, %H:%M"
-msgstr "%D Mga araw, %H:%M"
-#
-msgid "%Dd %H:%M"
-msgstr "%Dd %H:%M"
-#
-msgid "%H:%M"
-msgstr "%H:%M"
-#
-#, c-format
-msgid "%dd "
+
+#: src/ais.cpp:133
+msgid "AtoN Real (On Position)"
 msgstr ""
-#
-msgid "&AIS"
-msgstr "&AIS"
-#
-msgid "&Acknowledge"
-msgstr "&Kilalanin"
-#
-msgid "&Activate"
-msgstr "&Aktibo"
-#
-msgid "&Center View"
-msgstr "&Tingnan sa gitna"
-#
-msgid "&Copy all as text"
-msgstr "&Kopyahin lahat bilang teksto"
-#
-msgid "&Copy as text"
-msgstr "&Kopyahin bilang teksto"
-#
-msgid "&Delete"
-msgstr "&Tanggalin"
-#
-msgid "&Delete All"
-msgstr "&Tanggalin lahat"
-#
-msgid "&Export selected..."
-msgstr "&Napiling Export..."
-#
-msgid "&Font family:"
-msgstr "&Font family:"
-#
-msgid "&Go To"
-msgstr "&Pumunta Sa"
-#
-msgid "&Help"
-msgstr "&Tulong"
-#
-msgid "&Jump To"
-msgstr "&Tumalon sa"
-#
-msgid "&Merge Selected Tracks"
-msgstr "&Pagsamahin ang mga Piniling Track"
-#
-msgid "&Navigate"
-msgstr "$Maglakbay"
-#
-msgid "&New"
-msgstr "&Bago"
-#
-msgid "&OK"
-msgstr "&OK"
-#
-msgid "&Point size:"
-msgstr "&Laki ng punto:"
-#
-msgid "&Properties"
-msgstr "&Mga ari-arian"
-#
-#, fuzzy
-msgid "&Resequence Waypoints"
-msgstr "Baguhin ang pangalan ng mga Waypoint?"
-#
-msgid "&Reverse"
-msgstr "Baligtarin"
-#
-msgid "&Send to GPS"
-msgstr "$Ipadala sa GPS"
-#
-msgid "&Silence Alert"
-msgstr "&Alerto sa Katahimikan"
-#
-msgid "&Start Track"
-msgstr "&Simulang track"
-#
-msgid "&Style:"
-msgstr "&Istilo:"
-#
-msgid "&Tools"
-msgstr "&Mga Kasangkapan"
-#
-msgid "&Underline"
-msgstr "&Salungguhitan"
-#
-msgid "&View"
-msgstr "&Tingnan"
-#
-msgid "&Weight:"
-msgstr "&Timbang:"
-#
-msgid "&Window"
+
+#: src/ais.cpp:134
+msgid "AtoN Real(Off Position)"
 msgstr ""
-#
-msgid "(Unnamed Layer)"
-msgstr "(Walang pangalang patong)"
-#
-msgid "(Unnamed Route)"
-msgstr "(Walang pangalang Ruta)"
-#
-msgid "(Unnamed Track)"
-msgstr "(Walang pangalang Track)"
-#
-msgid "(Unnamed Waypoint)"
-msgstr "(Walang Pangalang Waypoint)"
-#
-msgid "(c) 2000-2021"
+
+#: src/ais.cpp:141
+msgid "Fishing Vessel"
 msgstr ""
-#
-msgid "(m/d/y h:m)"
-msgstr "(m/d/y h:m)"
-#
-msgid "(reserved for future use)"
-msgstr "(nakalaan para sa hinaharap na paggamit)"
-#
-msgid "(unnamed)"
-msgstr "(walangpangalan)"
-#
-msgid ", Out: None"
-msgstr ", Labas: Wala"
-#
-msgid ", and all previous versions,"
-msgstr ", at lahat ng mga nakaraang bersions,"
-#
-msgid "-"
+
+#: src/ais.cpp:142
+msgid "Towing Vessel"
 msgstr ""
-#
-msgid "--"
+
+#: src/ais.cpp:143
+msgid "Towing Vessel, Long"
 msgstr ""
-#
-msgid "...and TCPA is less than (min)"
-msgstr "...at TCPA ay mas maliit pa sa (min)"
-#
-msgid "0"
+
+#: src/ais.cpp:144
+msgid "Dredger"
 msgstr ""
-#
-msgid "0 (transfer completed)"
+
+#: src/ais.cpp:145
+msgid "Diving Ops Vessel"
 msgstr ""
 
 #: src/ais.cpp:146
@@ -3052,8 +2896,49 @@ msgstr "Mga grupo ng tsart"
 #: src/canvasMenu.cpp:551
 msgid "temporary"
 msgstr ""
-#
-msgid "Chart migration is ready to proceed."
+
+#: src/canvasMenu.cpp:554
+msgid "All Active Charts"
+msgstr "Lahat ng Aktibong Tsart"
+
+#: src/canvasMenu.cpp:585 src/CanvasOptions.cpp:214
+msgid "AIS"
+msgstr "AIS"
+
+#: src/canvasMenu.cpp:586
+msgid "Target Query..."
+msgstr "Target Query..."
+
+#: src/canvasMenu.cpp:590
+msgid "Hide Target CPA"
+msgstr "Itago ang Target CPA"
+
+#: src/canvasMenu.cpp:592
+msgid "Show Target CPA"
+msgstr "Ipakita ang Target CPA"
+
+#: src/canvasMenu.cpp:594
+msgid "Target List..."
+msgstr "Listahan ng Target..."
+
+#: src/canvasMenu.cpp:598
+msgid "Hide Target Track"
+msgstr "Itago ang Track ng Target"
+
+#: src/canvasMenu.cpp:601
+msgid "Show Target Track"
+msgstr "Ipakita ang Track ng Target"
+
+#: src/canvasMenu.cpp:604
+msgid "Copy Target MMSI"
+msgstr "Kopyahin ang Target MMSI"
+
+#: src/canvasMenu.cpp:611 src/canvasMenu.cpp:619
+msgid "Object Query..."
+msgstr "Object Query..."
+
+#: src/canvasMenu.cpp:633
+msgid "Unnamed Route"
 msgstr ""
 
 #: src/canvasMenu.cpp:641
@@ -3116,75 +3001,13 @@ msgstr "Baligtarin..."
 #: src/canvasMenu.cpp:690
 msgid "Hide Waypoint Names"
 msgstr ""
-#
-msgid ""
-"Check which properties of current waypoint\n"
-" should be set as default for NEW waypoints."
+
+#: src/canvasMenu.cpp:693
+msgid "Show Waypoint Names"
 msgstr ""
-#
-msgid "Chile"
-msgstr "Chile"
-#
-msgid "China"
-msgstr "Tsina"
-#
-msgid "Choose Font Color..."
-msgstr "Pumili ng Kulay ng Font..."
-#
-msgid "Choose Font..."
-msgstr "Pumili ng Font..."
-#
-msgid "Choose Format for Copy"
-msgstr "Pumili ng Format para sa Kopya"
-#
-msgid "Choose Toolbar Icons"
-msgstr "Pumili ng mga icon ng toolbar"
-#
-msgid "Choose a file"
-msgstr "Pumili ng file"
-#
-#, fuzzy
-msgid "Choose chart source folder."
-msgstr "Pumili ng file"
-#
-msgid "Christmas Island"
-msgstr "Christmas Island"
-#
-msgid "Class"
-msgstr "Klase"
-#
-msgid "Clear"
-msgstr "Malinaw"
-#
-msgid "Clear All"
-msgstr "Alisin lahat"
-#
-msgid "Clear Anchor Watch"
-msgstr "Linisin ang Angklang Relo"
-#
-msgid "Clear Texture Cache"
-msgstr "Linisin ang Texture Cache"
-#
-#, fuzzy
-msgid "Clear cache"
-msgstr "Linisin ang Angklang Relo"
-#
-msgid "Clearance granted - proceed to berth"
-msgstr "Napahintulutan ang pagpapakinaw - magpatuloy sa berth"
-#
-msgid "Click to cancel the font selection."
-msgstr "Pindutin ang kansel sa pagpipilian ng font."
-#
-msgid "Click to confirm the font selection."
-msgstr "Pindutin para ikumpirma ang pagpili sa font."
-#
-msgid "Close"
-msgstr "Sarado"
-#
-msgid "CoG"
-msgstr "CoG"
-#
-msgid "Cocos (Keeling) Islands"
+
+#: src/canvasMenu.cpp:696
+msgid "Resequence Waypoints..."
 msgstr ""
 
 #: src/canvasMenu.cpp:710 src/canvasMenu.cpp:804
@@ -3202,17 +3025,37 @@ msgstr "Subaybay"
 #: src/canvasMenu.cpp:746 src/canvasMenu.cpp:816
 msgid "Unnamed Waypoint"
 msgstr ""
-#
-msgid "Comment: "
+
+#: src/canvasMenu.cpp:754 src/canvasMenu.cpp:824
+msgid "Layer Waypoint"
+msgstr "Leyer ng Waypoint"
+
+#: src/canvasMenu.cpp:761 src/canvasMenu.cpp:828
+msgid "Waypoint"
+msgstr "Waypoint"
+
+#: src/canvasMenu.cpp:779
+msgid "Remove from Route"
+msgstr "Tanggalin mula sa Ruta"
+
+#: src/canvasMenu.cpp:784
+msgid "Split Route at Waypoint"
 msgstr ""
-#
-msgid "Comoros"
-msgstr "Comoros"
-#
-msgid "Comoros (Union of the)"
-msgstr "Comoros (Union of the)"
-#
-msgid "Compatibility"
+
+#: src/canvasMenu.cpp:833
+msgid "Navigate To This"
+msgstr "Pumunta Ka Dito"
+
+#: src/canvasMenu.cpp:855
+msgid "Clear Anchor Watch"
+msgstr "Linisin ang Angklang Relo"
+
+#: src/canvasMenu.cpp:866
+msgid "Set Anchor Watch"
+msgstr "Magtakda ng Nakaangklang Relo"
+
+#: src/canvasMenu.cpp:907
+msgid "Main Menu"
 msgstr ""
 
 #: src/canvasMenu.cpp:920
@@ -4223,24 +4066,17 @@ msgstr "Cell"
 #: src/cm93.cpp:6465
 msgid "M_COVR ID"
 msgstr ""
-#
-msgid "Donate"
+
+#: src/cm93.cpp:6469
+msgid "Cell Scale"
+msgstr "Laki ng Selda"
+
+#: src/cm93.cpp:6473
+msgid "wgsox"
 msgstr ""
-#
-#, fuzzy
-msgid "Done"
-msgstr "Tapos na."
-#
-msgid "Done."
-msgstr "Tapos na."
-#
-msgid "Dot"
-msgstr "Tuldok"
-#
-msgid "Dot dash"
-msgstr "Tuldok gitling"
-#
-msgid "Downgrade"
+
+#: src/cm93.cpp:6477
+msgid "wgsoy"
 msgstr ""
 
 #: src/cm93.cpp:6481 src/cm93.cpp:6495
@@ -4359,7 +4195,28 @@ msgstr "GPSD"
 #: src/ConnectionParams.cpp:174 src/options.cpp:2220 src/options.cpp:2872
 msgid "Signal K"
 msgstr ""
-#
+
+#: src/ConnectionParams.cpp:197
+msgid "Input"
+msgstr "Input"
+
+#: src/ConnectionParams.cpp:199
+msgid "Output"
+msgstr "Output"
+
+#: src/ConnectionParams.cpp:201
+msgid "In/Out"
+msgstr "Papasok/Palabas"
+
+#: src/ConnectionParams.cpp:208
+msgid "Reject"
+msgstr "Tanggihan"
+
+#: src/ConnectionParams.cpp:210
+msgid "Accept"
+msgstr "Tanggapin"
+
+#: src/ConnectionParams.cpp:213
 msgid "Drop"
 msgstr "Ihulog"
 
@@ -4418,14 +4275,13 @@ msgstr "Prayoridad"
 #: src/ConnectionParams.cpp:956 src/ConnectionParams.cpp:960
 msgid "Comment: "
 msgstr ""
-#
-msgid "ETA (UTC)"
-msgstr "ETA (UTC)"
-#
-msgid "ETD"
+
+#: src/ConnectionParams.cpp:546
+msgid "Network Address"
 msgstr ""
-#
-msgid "ETD (UTC)"
+
+#: src/ConnectionParams.cpp:552
+msgid "Network Port"
 msgstr ""
 
 #: src/ConnectionParams.cpp:702 src/options.cpp:2127 src/options.cpp:2779
@@ -4443,17 +4299,9 @@ msgstr "Detalyeng lebel ng CM93"
 #: src/DetailSlider.cpp:92
 msgid "Rasterchart Zoom/Scale Weighting"
 msgstr ""
-#
-msgid "Ecuador"
-msgstr "Ecuador"
-#
-msgid "Edit"
-msgstr "I-edit"
-#
-msgid "Edit MMSI Properties"
-msgstr "I-edit ang MMSI Properties"
-#
-msgid "Edit Selected Connection"
+
+#: src/DetailSlider.cpp:96
+msgid "Vectorchart Zoom/Scale Weighting"
 msgstr ""
 
 #: src/download_mgr.cpp:212 src/update_mgr.cpp:209
@@ -4778,35 +4626,13 @@ msgstr ""
 #: src/multiplexer.cpp:413
 msgid "Route Upload"
 msgstr ""
-#
-msgid "Elements to print..."
-msgstr "Mga elemento para i-print..."
-#
-msgid "Enable"
-msgstr "Paganahin"
-#
-msgid "Enable Chart Quilting"
-msgstr "Paganahin ang Chart Quilting"
-#
-msgid "Enable Scaled Graphics interface"
-msgstr "Paganahin ang interface ng Scale Graphics"
-#
-msgid "Enable Target Alert Acknowledge timeout (min)"
-msgstr "Paganahin ang timeout ng Target Alert Acknowledge (min)"
-#
-msgid "Enable Toolbar auto-hide"
-msgstr "Pagahanin ang Toolbar auto-hide"
-#
-msgid "Enable Touchscreen interface"
-msgstr "Paganahin ang interface ng Touchscreen"
-#
-msgid "Enable Tracking"
-msgstr "Paganahin ang Tracking"
-#
-msgid "Enable route/AIS info block"
+
+#: src/multiplexer.cpp:642 src/multiplexer.cpp:1257
+msgid "Connecting to "
 msgstr ""
-#
-msgid "Enabled"
+
+#: src/multiplexer.cpp:663 src/multiplexer.cpp:1276
+msgid "Connected to "
 msgstr ""
 
 #: src/navutil.cpp:1754 src/navutil.cpp:3119 src/options.cpp:1050
@@ -7331,302 +7157,97 @@ msgstr "Bilis ng Plano"
 #: src/RoutePropDlg.cpp:124
 msgid "Enroute"
 msgstr ""
-#
-msgid "Signal K server not found."
+
+#: src/RoutePropDlg.cpp:140
+msgid "Departure"
 msgstr ""
 
 #: src/RoutePropDlg.cpp:173 src/trackprintout.cpp:96 src/trackprintout.cpp:329
 msgid "Time"
 msgstr ""
-#
-msgid "Slovak Republic"
-msgstr "Slovak Republic"
-#
-msgid "Slovenia"
-msgstr "Slovenia"
-#
-msgid "Smaller Scale Chart"
-msgstr "Mas maliit na Scale Chart"
-#
-msgid "Smooth Panning / Zooming"
-msgstr "Makinis na pag-pan / pag-zoom"
-#
-msgid "SoG"
-msgstr "SoG"
-#
-msgid "Software OpenGL (restart OpenCPN)"
-msgstr "OpenGL na Software (buksang muli ang OpenCPN)"
-#
-msgid "Solid"
-msgstr "Matatag"
-#
-msgid "Solomon Islands"
-msgstr "Solomon Islands"
-#
-msgid "Somalia"
+
+#: src/RoutePropDlg.cpp:178
+msgid "Local@PC"
 msgstr ""
-#
-msgid ""
-"Some chart folders may be inaccessible to OpenCPN on this version of Android. "
+
+#: src/RoutePropDlg.cpp:179
+msgid "LMT@Location"
 msgstr ""
-#
-msgid ""
-"Sorry, an existing instance of OpenCPN may be too busy too respond.\n"
-"Please retry."
+
+#: src/RoutePropDlg.cpp:201 src/TrackPropDlg.cpp:477 src/TrackPropDlg.cpp:721
+msgid "Default color"
+msgstr "Nakadefault na kulay"
+
+#: src/RoutePropDlg.cpp:238 src/TrackPropDlg.cpp:511 src/TrackPropDlg.cpp:745
+msgid "Width"
+msgstr "Lapad"
+
+#: src/RoutePropDlg.cpp:244
+msgid "1 px"
 msgstr ""
-#
-msgid "Sound CPA Alarms"
-msgstr "Tunog ng mga CPA Alarm"
-#
-msgid "Sound Device"
+
+#: src/RoutePropDlg.cpp:244
+msgid "2px"
 msgstr ""
-#
-msgid "Sounds"
+
+#: src/RoutePropDlg.cpp:244
+msgid "3 px"
 msgstr ""
-#
-#, fuzzy
-msgid "Source: "
-msgstr "BT Sources"
-#
-msgid "South Africa"
-msgstr "South Africa"
-#
-msgid "South Sudan (Republic of)"
-msgstr "South Sudan (Republic of)"
-#
-msgid "Spain"
-msgstr "Espanya"
-#
-msgid "Spare"
-msgstr "Ekstrang"
-#
-msgid "Special"
-msgstr "Espesyal"
-#
-msgid "Special Mark"
-msgstr "Espesyal na Marka"
-#
-msgid "Speed"
-msgstr "Bilis"
-#
-msgid "Speed (Kts)"
-msgstr "Bilis (Kts)"
-#
-msgid "Speed:"
+
+#: src/RoutePropDlg.cpp:244
+msgid "4 px"
 msgstr ""
-#
-msgid "Split"
-msgstr "Nahati"
-#
-msgid "Split Route at Waypoint"
+
+#: src/RoutePropDlg.cpp:244
+msgid "5 px"
 msgstr ""
-#
-msgid "Split around Leg"
+
+#: src/RoutePropDlg.cpp:245
+msgid "6 px"
 msgstr ""
-#
-msgid "Sri Lanka"
-msgstr "Sri Lanka"
-#
-msgid "Standard"
-msgstr "Pamantayan"
-#
-msgid "Starboard Hand Mark"
-msgstr "Starboard Hand Mark"
-#
-msgid "Start"
-msgstr "Simulan"
-#
-msgid "Statistics"
-msgstr "Mga istatistiko"
-#
-#, fuzzy
-msgid "Status"
-msgstr "StatusBar"
-#
-msgid "Status Bar"
+
+#: src/RoutePropDlg.cpp:245
+msgid "7 px"
 msgstr ""
-#
-msgid "Status Bar Option"
-msgstr "Pagpipilian ng katayuan ng bar"
-#
-msgid "StatusBar"
-msgstr "StatusBar"
-#
-msgid "Statute miles"
-msgstr "Batas na mga milya"
-#
-msgid "Stbd"
-msgstr "Stbd"
-#
-msgid "Stbd Hand"
-msgstr "Stbd Hand"
-#
-msgid "Stop Scan"
-msgstr "Ihinto ang scan"
-#
-msgid "Stop Tracking"
-msgstr "Ihinto ang pagsunod"
-#
-msgid "Style"
-msgstr "Istilo"
-#
-msgid "Sudan"
-msgstr "Sudan"
-#
-msgid "Sunrise"
-msgstr "Pagsikat ng araw"
-#
-msgid "Sunset"
-msgstr "Paglubog ng araw"
-#
-msgid "Suppress Alerts for anchored/moored targets"
+
+#: src/RoutePropDlg.cpp:245
+msgid "8 px"
 msgstr ""
-#
-msgid "Suppress anchored/moored targets, speed max (kn)"
+
+#: src/RoutePropDlg.cpp:245
+msgid "9 px"
 msgstr ""
-"Supilin ang nakaangkla/nakapugal na mga target, pinakamataas na bilis (kn)"
-#
-msgid "Suriname"
-msgstr "Suriname"
-#
-msgid "Sweden"
-msgstr "Sweden"
-#
-msgid "Switch to full screen mode on start."
-msgstr "E-switch sa malaking iskrin sa pagsimula."
-#
-msgid "Switzerland"
-msgstr "Switzerland"
-#
-msgid "Symbolized"
-msgstr "Isinisimbolo"
-#
-msgid "Syrian Arab Republic"
-msgstr "Syrian Arab Republic"
-#
-msgid "TCP"
-msgstr "TCP"
-#
-msgid "TCPA"
-msgstr "TCPA"
-#
-msgid "TTG  @SOG"
+
+#: src/RoutePropDlg.cpp:245
+msgid "10 px"
 msgstr ""
-#
-msgid "TTG  @VMG"
+
+#: src/RoutePropDlg.cpp:258
+msgid "To waypoint"
 msgstr ""
-#
-msgid "Taiwan"
-msgstr "Taiwan"
-#
-msgid "Tajikistan"
-msgstr "Tajikistan"
-#
-msgid "Talker ID"
-msgstr "Talker ID"
-#
-msgid "Tankbarge"
-msgstr "Tankbarge"
-#
-msgid "Tankbarge, dry cargo as if liquid (e.g. cement)"
-msgstr "Tankbarge, tuyong karga na parang likido (e.g. semento)"
-#
-msgid "Tankbarge, gas"
-msgstr "Tankbarge, gas"
-#
-msgid "Tankbarge, liquid cargo, type C"
-msgstr "Tangke, likidong kargo, uri C"
-#
-msgid "Tankbarge, liquid cargo, type N"
-msgstr "Tangke, kargo ng likido, uri N"
-#
-msgid "Tanker"
-msgstr "Tangke"
-#
-msgid "Tanzania"
-msgstr "Tanzania"
-#
-msgid "Target Count"
-msgstr "Tagabilang ng Target"
-#
-msgid "Target List..."
-msgstr "Listahan ng Target..."
-#
-msgid "Target Query..."
-msgstr "Target Query..."
-#
-msgid "Target info"
-msgstr "Target info"
-#
-msgid "Temperature"
+
+#: src/RoutePropDlg.cpp:268
+msgid "To WP"
 msgstr ""
-#
-msgid "Template Status"
+
+#: src/RoutePropDlg.cpp:304
+msgid "Total Distance"
 msgstr ""
-#
-msgid "Templates"
-msgstr ""
-#
-msgid "Temporary"
-msgstr ""
-#
-msgid "Temporary AISMOB Route"
-msgstr "Pansamantalang AISMOB na Ruta"
-#
-msgid "Temporary GOTO Route"
-msgstr "Pansamantalang PUMUNTA sa Ruta"
-#
-msgid "Temporary MOB Route"
-msgstr "Pansamantalng Ruta ng MOB"
-#
-msgid "Tender"
-msgstr "Malambot"
-#
-msgid "Test AIS Alert Sound"
-msgstr ""
-#
-msgid "Test AIS SART Alert Sound"
-msgstr ""
-#
-msgid "Test Anchor Alarm Sound"
-msgstr ""
-#
-msgid "Test DSC notification Sound"
-msgstr ""
-#
-msgid "Testing"
-msgstr "Pagsubok"
-#
-msgid "Texture Cache"
-msgstr "Cache ng texture"
-#
-msgid "Texture Compression"
-msgstr "Pagkakasiksik ng Texture"
-#
-msgid "Texture Compression Caching"
-msgstr "Pagkakasiksik ng Texture na may Caching"
-#
-msgid "Texture Compression with Caching"
-msgstr "Pagkakasiksik ng Texture na may Caching"
-#
-msgid "Texture Memory Size (MB)"
-msgstr "Texture Memory Size (MB)"
-#
-msgid "Texture Settings"
-msgstr "Mga setting ng texture"
-#
-msgid "Thailand"
-msgstr "Thailand"
-#
-msgid ""
-"The Man Over Board button could be an important safety feature.\n"
-"Are you sure you want to hide it?"
-msgstr ""
-"Ang tao sa ibabaw ng pindutan ng board ay maaaring maging importanteng "
-"feature ng kaligtasa.\n"
-"Sigurado ka bang gusto mong itago ito?"
-#
-msgid "The Open Source Chart Plotter/Navigator"
+
+#: src/RoutePropDlg.cpp:317
+msgid "ETE"
+msgstr "ETE"
+
+#: src/RoutePropDlg.cpp:321
+msgid "ETA"
+msgstr "ETA"
+
+#: src/RoutePropDlg.cpp:329
+msgid "Next tide event"
+msgstr "Susunod na pangyayari ng tide"
+
+#: src/RoutePropDlg.cpp:341
+msgid "ETD"
 msgstr ""
 
 #: src/RoutePropDlg.cpp:382 src/TrackPropDlg.cpp:883
@@ -7677,93 +7298,80 @@ msgstr "Gabi"
 #: src/RoutePropDlgImpl.cpp:408
 msgid "Arrived"
 msgstr ""
-#
-msgid "The ScaMin value for new waypoints is set to"
+
+#: src/RoutePropDlgImpl.cpp:813 src/TrackPropDlg.cpp:348
+#: src/TrackPropDlg.cpp:1341
+msgid "Depart From"
+msgstr "Lumayo ka sa"
+
+#: src/RoutePropDlgImpl.cpp:815 src/TrackPropDlg.cpp:386
+#: src/TrackPropDlg.cpp:769 src/TrackPropDlg.cpp:1343
+msgid "Total distance"
+msgstr "Kabuuang distansiya"
+
+#: src/RoutePropDlgImpl.cpp:816
+msgid "Speed (Kts)"
+msgstr "Bilis (Kts)"
+
+#: src/RoutePropDlgImpl.cpp:818 src/TrackPropDlg.cpp:1346
+msgid "Departure Time"
+msgstr "Oras ng Pag-alis"
+
+#: src/RoutePropDlgImpl.cpp:820 src/TrackPropDlg.cpp:788
+#: src/TrackPropDlg.cpp:1348
+msgid "Time enroute"
+msgstr "Oras ng pagpunta"
+
+#: src/RoutePropDlgImpl.cpp:865
+msgid "Are you sure you want to move Up this waypoint?"
 msgstr ""
-#
-#, c-format
-msgid ""
-"The amount of data used by the track\n"
-" was reduced by %d%%."
+
+#: src/RoutePropDlgImpl.cpp:866
+msgid "Are you sure you want to move Down this waypoint?"
 msgstr ""
-"Ang halaga ng nagamit na datos ng track\n"
-" ay nabawasan ng %d%%."
-#
-msgid ""
-"The currently running Track was not merged.\n"
-"You can merge it later when it is completed."
+
+#: src/RoutePropDlgImpl.cpp:868
+msgid "OpenCPN Move Waypoint"
 msgstr ""
-"Ang kasalukuyang tumatakbong track ay hindi pinagsama.\n"
-"Maaari mong ipagsama ito mamaya kapag ito ay kumpleto na."
-#
-msgid ""
-"The device selected is not accessible; opencpn will likely not be able\n"
-"to use this device as-is. You might want to exit OpenCPN, reboot and\n"
-"retry after creating a file called /etc/udev/rules.d/70-opencpn.rules\n"
-"with the following contents:\n"
-"\n"
-"            KERNEL==\"ttyUSB*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyACM*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyS*\", MODE=\"0666\"\n"
-"\n"
-"For more info, see the file LINUX_DEVICES.md in the distribution docs.\n"
+
+#: src/RoutePropDlgImpl.cpp:902
+msgid "Are you sure you want to remove this waypoint?"
+msgstr "Sigurado ka bang gusto mong tanggalin itong waypoint?"
+
+#: src/RoutePropDlgImpl.cpp:903
+msgid "OpenCPN Remove Waypoint"
+msgstr "Tanggalin ang OpenCPN Waypoint"
+
+#: src/RoutePropDlgImpl.cpp:938
+msgid "Move Up"
 msgstr ""
-#
-msgid "The file will also be deleted from OpenCPN's layer directory."
+
+#: src/RoutePropDlgImpl.cpp:940
+msgid "Move Down"
 msgstr ""
-#
-msgid "The font colour."
-msgstr "Ang kulay sa font."
-#
-msgid "The font family."
-msgstr "Ang font family."
-#
-msgid "The font point size."
-msgstr "Ang laki ng font na punto."
-#
-msgid "The font style."
-msgstr "Ang istilo ng font."
-#
-msgid "The font weight."
-msgstr "Ang font sa timbang."
-#
-msgid ""
-"The last opencpn run seems to have failed. Do you want to run\n"
-"in safe mode without plugins and other possibly problematic\n"
-"features?\n"
+
+#: src/RoutePropDlgImpl.cpp:978 src/TrackPropDlg.cpp:1396
+msgid "&Copy all as text"
+msgstr "&Kopyahin lahat bilang teksto"
+
+#: src/RoutePropDlgImpl.cpp:1100 src/TrackPropDlg.cpp:1287
+msgid "_plus"
+msgstr "_idagdag"
+
+#: src/RoutePropDlgImpl.cpp:1175
+msgid "Invalid date/time!"
 msgstr ""
-#
-msgid "The necessary configuration files were not found. "
-msgstr "Ang kailangan na mga kompigurasyon na file ay hindi natagpuan. "
-#
-#, c-format
-msgid ""
-"The plugin %s is not compatible with this version of OpenCPN, please get an "
-"updated version."
+
+#: src/RoutePropDlgImpl.cpp:1179
+msgid "Unknown station!"
 msgstr ""
-"Ang plugin %s ay hindi magkatugma sa bersiyong ito ng OpenCPN, pakiusap "
-"kumuha ng updated na bersiyon."
-#
-msgid ""
-"The plugin is not compatible with this version of OpenCPN, and will be "
-"uninstalled."
+
+#: src/RoutePropDlgImpl.cpp:1194
+msgid "Unavailable: "
 msgstr ""
-#
-msgid ""
-"The recently captured track of this target has been recorded.\n"
-"Do you want to continue recording until the end of the current OpenCPN "
-"session?"
-msgstr ""
-"Ang kamakailang nahuling track ng target na ito ay naitala.\n"
-"Gusto mo bang ipagpatuloy ang pagtatala hanggang sa katapusan ng kasalukuyang "
-"sesyon ng OpenCPN?"
-#
-msgid "The settings for own ship real size are not correct:"
-msgstr "Ang mga setting para sa tunay na sukat ng sariling barko ay hindi tama:"
-#
-msgid ""
-"The waypoint you want to delete is used in a route, do you really want to "
-"delete it?"
+
+#: src/RoutePropDlgImpl.cpp:1203
+msgid "Local"
 msgstr ""
 
 #: src/RoutePropDlgImpl.cpp:1360 src/TrackPropDlg.cpp:1631
@@ -7823,11 +7431,33 @@ msgstr "GPS/Tagabalangkas ng daungan"
 #: src/SendToGpsDlg.cpp:177
 msgid "Prepare GPS for Route/Waypoint upload and press Send..."
 msgstr ""
-#
+
+#: src/SendToGpsDlg.cpp:181
+msgid "Progress..."
+msgstr "Pag-unlad..."
+
+#: src/tcmgr.cpp:691
+msgid "It seems you have no tide/current harmonic data installed."
+msgstr "Tila wala kang tubig/alon na maharmonyang datos na-install."
+
+#: src/TCWin.cpp:90
 msgid "Tide"
 msgstr "Taas ng tubig"
-#
-msgid "Tide Station"
+
+#: src/TCWin.cpp:95
+msgid "Current"
+msgstr "Alon"
+
+#: src/TCWin.cpp:133
+msgid "Prev"
+msgstr "Prev"
+
+#: src/TCWin.cpp:149
+msgid "Next"
+msgstr "Susunod"
+
+#: src/TCWin.cpp:152
+msgid "LMT@Station"
 msgstr ""
 
 #: src/TCWin.cpp:243
@@ -7915,64 +7545,101 @@ msgstr "Katamtamang bilis"
 #: src/TrackPropDlg.cpp:413
 msgid "Time Enroute"
 msgstr "Papuntang oras"
-#
-msgid "Time enroute"
-msgstr "Oras ng pagpunta"
-#
+
+#: src/TrackPropDlg.cpp:441 src/TrackPropDlg.cpp:455 src/TrackPropDlg.cpp:817
+msgid "Local @ PC"
+msgstr "Lokal @ PC"
+
+#: src/TrackPropDlg.cpp:441 src/TrackPropDlg.cpp:461
+msgid "LMT @ Location"
+msgstr "LMT @ Lokasyon"
+
+#: src/TrackPropDlg.cpp:444 src/TrackPropDlg.cpp:808
 msgid "Time shown as"
 msgstr "Oras na ipinakita bilang"
-#
-msgid "Timestamp"
-msgstr "Timestamp"
-#
-msgid "Title"
-msgstr ""
-#
-msgid "To"
-msgstr "Sa"
-#
-msgid "To WP"
-msgstr ""
-#
-msgid "To Waypoint"
-msgstr "Sa waypoint"
-#
-msgid ""
-"To proceed with chart folder migration, choose the chart source folder, and "
-"follow the instructions given."
-msgstr ""
-#
+
+#: src/TrackPropDlg.cpp:515 src/TrackPropDlg.cpp:750
+msgid "1 pixel"
+msgstr "1 piksel"
+
+#: src/TrackPropDlg.cpp:515 src/TrackPropDlg.cpp:750
+msgid "2 pixels"
+msgstr "2 piksel"
+
+#: src/TrackPropDlg.cpp:516 src/TrackPropDlg.cpp:751
+msgid "3 pixels"
+msgstr "3 piksel"
+
+#: src/TrackPropDlg.cpp:516 src/TrackPropDlg.cpp:751
+msgid "4 pixels"
+msgstr "4 piksel"
+
+#: src/TrackPropDlg.cpp:516 src/TrackPropDlg.cpp:751
+msgid "5 pixels"
+msgstr "5 piksel"
+
+#: src/TrackPropDlg.cpp:517 src/TrackPropDlg.cpp:752
+msgid "6 pixels"
+msgstr "6 piksel"
+
+#: src/TrackPropDlg.cpp:517 src/TrackPropDlg.cpp:752
+msgid "7 pixels"
+msgstr "7 piksel"
+
+#: src/TrackPropDlg.cpp:517 src/TrackPropDlg.cpp:752
+msgid "8 pixels"
+msgstr "8 piksel"
+
+#: src/TrackPropDlg.cpp:518 src/TrackPropDlg.cpp:753
+msgid "9 pixels"
+msgstr "9 piksel"
+
+#: src/TrackPropDlg.cpp:518 src/TrackPropDlg.cpp:753
+msgid "10 pixels"
+msgstr "10 piksel"
+
+#: src/TrackPropDlg.cpp:590 src/TrackPropDlg.cpp:976
 msgid "To route"
 msgstr "Sa ruta"
-#
-msgid "To waypoint"
+
+#: src/TrackPropDlg.cpp:707
+msgid "Display parameters"
+msgstr "Ipakita ang mga parametro"
+
+#: src/TrackPropDlg.cpp:762
+msgid "Statistics"
+msgstr "Mga istatistiko"
+
+#: src/TrackPropDlg.cpp:802
+msgid "Recorded points"
+msgstr "Naitalang mga punto"
+
+#: src/TrackPropDlg.cpp:822
+msgid "LMT @ Track Start"
+msgstr "LMT @ Simula ng track"
+
+#: src/TrackPropDlg.cpp:971
+msgid "Extend track"
 msgstr ""
-#
-msgid "Today"
-msgstr "Ngayong araw"
-#
-msgid "Toggle Full Screen"
-msgstr "I-toggle ang boung iskrin"
-#
-msgid "Toggle track"
-msgstr "I-Toggle ang dadaanan"
-#
-msgid "Togolese Republic"
-msgstr "Togolese Republic"
-#
-msgid "Tomorrow"
-msgstr "Kinabukasan"
-#
-msgid "Tonga"
-msgstr "Tonga"
-#
-msgid "ToolTips"
-msgstr "Tips ng kasangkapan"
-#
-msgid "Toolbar and Window Style"
-msgstr "Toolbar and Window Style"
-#
-msgid "Total Distance"
+
+#: src/TrackPropDlg.cpp:981
+msgid "Export"
+msgstr "Iluwas"
+
+#: src/TrackPropDlg.cpp:1172
+msgid "%D Days, %H:%M"
+msgstr "%D Mga araw, %H:%M"
+
+#: src/TrackPropDlg.cpp:1346
+msgid "(m/d/y h:m)"
+msgstr "(m/d/y h:m)"
+
+#: src/TrackPropDlg.cpp:1450
+msgid "track"
+msgstr "track"
+
+#: src/TrackPropDlg.cpp:1876
+msgid "--"
 msgstr ""
 
 #: src/TTYWindow.cpp:68
@@ -8027,239 +7694,96 @@ msgstr ""
 #: libs/wxcurl/src/dialog.cpp:137
 msgid "Not available"
 msgstr ""
-#
-msgid "Track Mode"
-msgstr "Track Mode"
-#
-msgid "Track Name"
-msgstr "Pangalan ng track"
-#
-#, fuzzy
-msgid "Track Print"
-msgstr "Pagsubaybay"
-#
-msgid "Track properties"
-msgstr "I-Track ang mga Ari-arian"
-#
-msgid "Tracking"
-msgstr "Pagsubaybay"
-#
-msgid "Tracking Precision"
-msgstr "Ang pagsubaysabay sa katiyakan"
-#
-msgid "Tracks"
-msgstr "Ang mga sumubaybay"
-#
-msgid "Transmit sentences"
-msgstr "Nagpadala ng mga pangungusap"
-#
-msgid "Transverse Mercator"
-msgstr "Nakahalang na Mambabatas"
-#
-msgid "Trinidad and Tobago"
-msgstr "Trinidad and Tobago"
-#
-msgid "Trk"
-msgstr "Trk"
-#
-msgid "Tug"
-msgstr "Tugutin"
-#
-msgid "Tug freighter, coupled"
-msgstr "Tagahatak na kargador, kaisa"
-#
-msgid "Tug, assisting a vessel or linked combination"
-msgstr "Humila, pag - asisti sa isang sisidlan o ugnayang kombinasyon"
-#
-msgid "Tug, freighter"
-msgstr "Tugutin, kargador"
-#
-msgid "Tug, freighter/tanker, coupled"
-msgstr "Tugutin, kargador/tangke, kaisa"
-#
-msgid "Tug, one or more tows"
-msgstr "Paghila, isa o higit pang paghila"
-#
-msgid "Tug, single"
-msgstr "Paghila, iisa"
-#
-msgid "Tug, tanker"
-msgstr "Tugutin, tangke"
-#
-msgid "Tunisia"
-msgstr "Tunisia"
-#
-msgid "Turkey"
-msgstr "Turkey"
-#
-msgid "Turkmenistan"
-msgstr "Turkmenistan"
-#
-msgid "Turks and Caicos Islands"
-msgstr "Turks and Caicos Islands"
-#
-msgid "Turn Rate"
-msgstr "Iliko ang singil"
-#
-msgid "Tuvalu"
-msgstr "Tuvalu"
-#
-msgid "Type"
-msgstr "Uri"
-#
-msgid "UDP"
-msgstr "UDP"
-#
-msgid "URL"
-msgstr "URL"
-#
+
+#: libs/wxcurl/src/dialog.cpp:168
 msgid "URL:"
 msgstr ""
-#
-msgid "UTC"
-msgstr "UTC"
-#
-msgid "Uganda"
-msgstr "Uganda"
-#
-msgid "Ukraine"
-msgstr "Ukraine"
-#
-#, fuzzy
-msgid "Ultra advanced"
-msgstr "Naisulong"
-#
-msgid "Un-Installation complete"
+
+#: libs/wxcurl/src/dialog.cpp:187
+msgid "Speed:"
 msgstr ""
-#
-msgid "Unable to copy catalog file"
+
+#: libs/wxcurl/src/dialog.cpp:196
+msgid "Elapsed time:"
 msgstr ""
-#
-msgid "Unable to copy catalog file to cache"
+
+#: libs/wxcurl/src/dialog.cpp:198
+msgid "Estimated total time:"
 msgstr ""
-#
-msgid "Unavailable: "
+
+#: libs/wxcurl/src/dialog.cpp:200
+msgid "Estimated remaining time:"
 msgstr ""
-#
-msgid "Undefined"
-msgstr "Hindi matukoy"
-#
-msgid "Undefined (default)"
-msgstr "Hindi natukoy (default)"
-#
-msgid "Underway Sailing"
+
+#: libs/wxcurl/src/dialog.cpp:243 libs/wxcurl/src/dialog.cpp:399
+msgid "Abort"
 msgstr ""
-#
-msgid "Underway using Engine"
+
+#: libs/wxcurl/src/dialog.cpp:245
+msgid "Settings"
 msgstr ""
-#
-msgid "Undo"
-msgstr "Ibalik sa dati"
-#
-msgid "Undock Target List"
+
+#: libs/wxcurl/src/dialog.cpp:252
+msgid "Start"
+msgstr "Simulan"
+
+#: libs/wxcurl/src/dialog.cpp:413
+msgid "0 (transfer paused)"
 msgstr ""
-#
-msgid "Uninstall"
+
+#: libs/wxcurl/src/dialog.cpp:461
+msgid "Connection settings"
 msgstr ""
-#
-msgid "Unit carrier maritime"
-msgstr "Tagahatid ng unit ng maritime"
-#
-msgid "United Arab Emirates"
-msgstr "United Arab Emirates"
-#
-msgid "United States Virgin Islands"
-msgstr "United States Virgin Islands"
-#
-msgid "United States of America"
-msgstr "United States of America"
-#
-msgid "Units"
-msgstr "Mga yunit"
-#
-msgid "Unk"
-msgstr "Unk"
-#
-msgid "Unknown"
-msgstr "Walang Alam"
-#
-msgid "Unknown device :"
+
+#: libs/wxcurl/src/dialog.cpp:461
+msgid "Connection settings used for the transfer:"
 msgstr ""
-#
-msgid "Unknown station!"
+
+#: libs/wxcurl/src/dialog.cpp:516
+msgid "0 (transfer completed)"
 msgstr ""
-#
-msgid "Unnamed Route"
+
+#: libs/wxcurl/src/dialog.cpp:537
+msgid "Downloaded:"
 msgstr ""
-#
-msgid "Unnamed Waypoint"
-msgstr ""
-#
-msgid "Unreadable PlugIn library detected, check the file permissions:\n"
-msgstr ""
-"Hindi mabasang Plugin library ay natukoy, i-tsek ang mga pahintulot ng file:\n"
-#
-msgid "Unspecified"
-msgstr "Hindi matukoy"
-#
-#, fuzzy
-msgid "Update"
-msgstr " Nai-update na:  "
-#
-msgid "Update Control"
-msgstr "Kontrol sa pag-Update"
-#
-msgid "Update Plugin Catalog"
-msgstr ""
-#
-msgid "Update Plugin Catalog: master"
-msgstr ""
-#
-msgid "Update Plugin Catalog:master"
-msgstr ""
-#
-msgid "Update plugin catalog"
-msgstr ""
-#
-msgid "Update to "
-msgstr ""
-#
-msgid "Update to installed Plugin is available"
-msgstr ""
-#
-msgid "Update to managed Plugin is available"
-msgstr ""
-#
-msgid "Upgrade to Version "
-msgstr ""
-#
+
+#: libs/wxcurl/src/dialog.cpp:585
 msgid "Uploaded:"
 msgstr ""
-#
-msgid "Uruguay"
-msgstr "Uruguay"
-#
-msgid "Use Accelerated Graphics (OpenGL)"
-msgstr "Gumamit ng Accelerated Graphics (OpenGL)"
-#
-msgid "Use Accelerated Panning"
-msgstr "Gumamit ng pinabilis na pag-pan"
-#
-msgid "Use Furuno GP3X for uploads"
-msgstr "Gamitin ang Furuno GP3X para sa page upload"
-#
-msgid "Use GRMN for uploads"
-msgstr "Gamitin ang GRMN para sa mga upload"
-#
-msgid "Use GRMN mode for input"
-msgstr "Gumamit ng GRMN mode para sa input"
-#
-msgid "Use Garmin (GRMN) mode for input"
-msgstr "Gamitin ang Garmin (GRMN) mode para sa input"
-#
-msgid "Use Garmin GRMN (Host) mode for uploads"
-msgstr "Gumamit ng Garmin GRMN (Host) mode para sa mga upload"
-#
-msgid "Use Inland ECDIS V2.3"
+
+#: libs/wxcurl/src/panel.cpp:111
+msgid "Username:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:112
+msgid "Password:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:120
+msgid "Port:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:134
+msgid "Proxy settings"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:136
+msgid "Use proxy"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:141
+msgid "Proxy host:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:142
+msgid "Proxy username:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:143
+msgid "Proxy password:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:144
+msgid "Proxy port:"
 msgstr ""
 

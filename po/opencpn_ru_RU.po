@@ -10,9 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && "
-"n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n"
-"%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
+"Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
 "X-Crowdin-Project: opencpn\n"
 "X-Crowdin-Project-ID: 49843\n"
 "X-Crowdin-Language: ru\n"
@@ -4294,40 +4292,8 @@ msgstr "Встроенный GPS-приёмник"
 #: src/ConnectionParams.cpp:820 src/options.cpp:2136
 msgid "Built-in Bluetooth"
 msgstr "Последовательный порт Bluetooth"
-#
-msgid "Built-in Bluetooth SPP"
-msgstr "Последовательный порт Bluetooth"
-#
-msgid "Built-in GPS"
-msgstr "Встроенный GPS-приёмник"
-#
-msgid "Bulgaria"
-msgstr "Болгария"
-#
-msgid "Bulk carrier maritime"
-msgstr "Морской сухогруз"
-#
-msgid "Bunkership"
-msgstr "Бункеровочное судно"
-#
-msgid "Buoy/Light Labels"
-msgstr "Подписи к буям / маякам"
-#
-msgid "Buoys/Lights"
-msgstr "Буи и маяки"
-#
-msgid "Burkina Faso"
-msgstr "Буркина Фасо"
-#
-msgid "Burundi"
-msgstr "Бурунди"
-#
-msgid "C"
-msgstr "С"
-#
-msgid "C&olour:"
-msgstr "&Цвет:"
-#
+
+#: src/DetailSlider.cpp:88
 msgid "CM93 Detail Level"
 msgstr "Детализация CM93"
 
@@ -4442,10 +4408,32 @@ msgstr "OpenCPN — Путевая точка"
 #: src/kml.cpp:638
 msgid "Choose Format for Copy"
 msgstr "Выберите формат для копируемых данных"
-#
-msgid "Choose Toolbar Icons"
-msgstr "Выбор значков на панели инструментов"
-#
+
+#: src/kml.cpp:646
+msgid "KML Standard (Google Earth and others)"
+msgstr "KML стандартный (для программы Google Earth и прочих)"
+
+#: src/kml.cpp:650
+msgid "KML with extended waypoint data (QtVlm)"
+msgstr "KML с расширенными данными о путевых точках (для QtVlm)"
+
+#: src/LinkPropDlg.cpp:47
+msgid "Link"
+msgstr "Гиперссылка"
+
+#: src/LinkPropDlg.cpp:49
+msgid "Link description"
+msgstr "Описание ссылки"
+
+#: src/LinkPropDlg.cpp:58
+msgid "URL"
+msgstr "Адрес URL"
+
+#: src/LinkPropDlg.cpp:67
+msgid "Local file..."
+msgstr "Файл на этом компьютере…"
+
+#: src/LinkPropDlg.cpp:122
 msgid "Choose a file"
 msgstr "Выберите файл"
 
@@ -4828,10 +4816,8 @@ msgstr "Нет"
 msgid "Create a private configuration template based on current settings.\n"
 "This template will be saved, and may be selected for further use at any time.\n"
 "               "
-msgstr ""
-"Создать шаблон конфигурации на основе текущих настроек.\n"
-"Этот шаблон будет сохранен и может быть выбран для дальнейшего использования "
-"в любое время.\n"
+msgstr "Создать шаблон конфигурации на основе текущих настроек.\n"
+"Этот шаблон будет сохранен и может быть выбран для дальнейшего использования в любое время.\n"
 "               "
 
 #: src/options.cpp:1020

@@ -228,161 +228,111 @@ msgstr "OpenCPN Hakkında"
 #: src/ais.cpp:113
 msgid "Underway using Engine"
 msgstr ""
-"\n"
-" - Tekne ortası GPS ayarı tekne genişliği içinde kalmalıdır."
-#
-msgid ""
-"\n"
-" - your minimum ship icon size must be between 1 and 100 mm"
+
+#: src/ais.cpp:114
+msgid "At Anchor"
+msgstr "Demirde"
+
+#: src/ais.cpp:115
+msgid "Not Under Command"
+msgstr "Kumanda Altında Değil"
+
+#: src/ais.cpp:116
+msgid "Restricted Manoeuvrability"
+msgstr "Sınırlı Manevra Yeteneği"
+
+#: src/ais.cpp:117
+msgid "Constrained by draught"
+msgstr "Su çekimi sebebiyle sınırlı"
+
+#: src/ais.cpp:118
+msgid "Moored"
+msgstr "Aborda"
+
+#: src/ais.cpp:119
+msgid "Aground"
+msgstr "Karaya oturmuş"
+
+#: src/ais.cpp:120
+msgid "Engaged in Fishing"
+msgstr "Balık Avlıyor"
+
+#: src/ais.cpp:121
+msgid "Underway Sailing"
 msgstr ""
-"\n"
-" - Teknenizin en küçük simge büyüklüğü 1 ile 100 arasında olmalıdır."
-#
-msgid ""
-"\n"
-" - your ship's beam must be > 0"
+
+#: src/ais.cpp:122 src/ais.cpp:149
+msgid "High Speed Craft"
+msgstr "Yüksek Hızlı Tekne"
+
+#: src/ais.cpp:123
+msgid "Wing In Ground Effect"
+msgstr "Yer Etkili Kanat"
+
+#: src/ais.cpp:124
+msgid "Power-driven vessel towing astern (regional use)"
+msgstr "Kuvvetle yürütülen tekne kıçtan yedekleme (yerel kullanım)"
+
+#: src/ais.cpp:125
+msgid "Power-driven vessel pushing ahead or towing alongside (regional use)"
+msgstr "İterek yada bordada yedekleyen gemi (yerel kullanım)"
+
+#: src/ais.cpp:126
+msgid "Reserved 13"
+msgstr "13 Saklı"
+
+#: src/ais.cpp:127
+msgid "Reserved 14"
+msgstr "14 Saklı"
+
+#: src/ais.cpp:128 src/AIS_Target_Data.cpp:402 src/ConnectionParams.cpp:176
+#: src/ConnectionParams.cpp:462 src/ConnectionParams.cpp:600
+#: src/ConnectionParams.cpp:913 src/ConnectionParams.cpp:941
+msgid "Undefined"
+msgstr "Tanımlanmamış"
+
+#: src/ais.cpp:129
+msgid "AtoN Virtual"
 msgstr ""
-"\n"
-" - Teknenizin eni > 0 olmalıdır."
-#
-msgid ""
-"\n"
-" - your ship's length must be > 0"
+
+#: src/ais.cpp:130
+msgid "AtoN Virtual (On Position)"
 msgstr ""
-"\n"
-" - Teknenizin boyu > 0 olmalıdır."
-#
-msgid ""
-"\n"
-"OpenCPN is distributed in the hope that it will be useful, but WITHOUT ANY "
-"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR "
-"A PARTICULAR PURPOSE.\n"
-"\n"
-"See the GNU General Public License for more details.\n"
-"\n"
-"OpenCPN must only be used in conjunction with approved paper charts and "
-"traditional methods of navigation.\n"
-"\n"
-"DO NOT rely upon OpenCPN for safety of life or property.\n"
-"\n"
-"Please click \"OK\" to agree and proceed, \"Cancel\" to quit.\n"
+
+#: src/ais.cpp:131
+msgid "AtoN Virtual (Off Position)"
 msgstr ""
-"\n"
-"OpenCPN, yararlı olacağı ümidiyle dağıtılır ancak herhangi bir garantisi "
-"olmadan; BELİRLİ BİR AMACA UYGUNLUK VEYA SATILABİLİRLİK HAKKINDA İÇERİK "
-"UYARILARI. \\ n \\ n Daha fazla ayrıntı için GNU Genel Kamu Lisansı'na bakın. "
-"\\ n \\ n OpenCPN yalnızca onaylanmış kağıt çizelgeleri ve geleneksel "
-"navigasyon yöntemleriyle birlikte kullanılmalıdır. \\ n \\ n Can ve mal "
-"güvenliği için OpenCPN'ye güvenmeyin. \\ n \\ n Lütfen kabul etmek ve devam "
-"etmek için \"Tamam\" düğmesini, bırakmak için \"İptal\" düğmesini tıklayın. \n"
-#
-msgid ""
-"\n"
-"The device selected is not accessible; opencpn will likely not be able\n"
-"to use this device as-is. You might want to exit OpenCPN, reboot and\n"
-"retry after creating a file called /etc/udev/rules.d/70-opencpn.rules\n"
-"with the following contents:\n"
-"\n"
-"            KERNEL==\"ttyUSB*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyACM*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyS*\", MODE=\"0666\"\n"
-"\n"
-"For more info, see the file LINUX_DEVICES.md in the distribution docs.\n"
+
+#: src/ais.cpp:132
+msgid "AtoN Real"
 msgstr ""
-"\n"
-"Seçilen cihaz kullanılabilir değil; OpenCPN'in bu\n"
-"cihazı kullanması mümkün görünmüyor.\n"
-"OpenCPN'den çıkabilir, tekrar başlatabilir\\ve /etc/udev/rules.d/70-opencpn."
-"rules klasörüne şu girdileri ekleyerek yeniden oluşturmayı deneyebilirsin:\n"
-"\n"
-"\n"
-"KERNEL==\"ttyUSB*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyACM*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyS*\", MODE=\"0666\"\n"
-"\n"
-"Daha fazla bilgi için dağıtım dokümanları içerisindeki LINUX_DEVICE.md "
-"dosyasına bakın\n"
-#
-msgid "  MOB Position: "
+
+#: src/ais.cpp:133
+msgid "AtoN Real (On Position)"
 msgstr ""
-#
-msgid "  Ownship Position: "
+
+#: src/ais.cpp:134
+msgid "AtoN Real(Off Position)"
 msgstr ""
-#
-msgid "  Position: "
+
+#: src/ais.cpp:141
+msgid "Fishing Vessel"
 msgstr ""
-#
-msgid " (Ctrl-Space)"
-msgstr " (Ctrl-Boşluk)"
-#
-msgid " (Last Known)"
-msgstr "(Son Bilinen)"
-#
-msgid " - "
-msgstr " - "
-#
-msgid " -- [Portable(-p) executing from "
-msgstr " -- [Portable(-p) Uygulanıyor"
-#
-msgid " COG Unavailable"
-msgstr " COG'a Ulaşılamıyor"
-#
-msgid " ChartFile:  "
-msgstr "HaritaDosyası: "
-#
-msgid " Datum:  "
-msgstr " Datum:  "
-#
-msgid " Depth Units:  "
-msgstr " Derinlik Birimleri : "
-#
-msgid " ID:  "
-msgstr " ID: "
-#
-msgid " Name:  "
-msgstr "Ad : "
-#
-msgid " Never track"
-msgstr " Hiç seyirizi alma"
-#
-msgid " Projection:  "
-msgstr " Projeksiyon : "
-#
-msgid " Ship "
-msgstr "Tekne"
-#
-msgid " Soundings:  "
-msgstr " Derinlik Ölçüleri  : "
-#
-msgid " Source Edition:  "
-msgstr "Kaynak Baskı: "
-#
-msgid " Time: "
+
+#: src/ais.cpp:142
+msgid "Towing Vessel"
 msgstr ""
-#
-msgid ""
-" To set the magnetic variation manually,\n"
-" you must disable the WMM plugin."
+
+#: src/ais.cpp:143
+msgid "Towing Vessel, Long"
 msgstr ""
-" Manyetik değişimi manuel olarak ayarlamak için \\ n WMM eklentisini devre "
-"dışı bırakmalısınız."
-#
-msgid " Updated:  "
-msgstr " Güncellendi: "
-#
-msgid " [Modified]"
-msgstr " [Modified]"
-#
-msgid " at "
+
+#: src/ais.cpp:144
+msgid "Dredger"
 msgstr ""
-#
-msgid " for details."
-msgstr " ayrıntılar için."
-#
-msgid " is incompatible with this version of OpenCPN."
-msgstr "OpenCPN'in bu sürümüyle uyumlu değil."
-#
-msgid " on "
+
+#: src/ais.cpp:145
+msgid "Diving Ops Vessel"
 msgstr ""
 
 #: src/ais.cpp:146
@@ -4674,14 +4624,13 @@ msgstr ""
 #: src/multiplexer.cpp:413
 msgid "Route Upload"
 msgstr ""
-#
-msgid "Cannot parse downloaded data"
+
+#: src/multiplexer.cpp:642 src/multiplexer.cpp:1257
+msgid "Connecting to "
 msgstr ""
-#
-msgid "Canvas Layout"
-msgstr "Kanvaz Düzeni"
-#
-msgid "Capo Verde"
+
+#: src/multiplexer.cpp:663 src/multiplexer.cpp:1276
+msgid "Connected to "
 msgstr ""
 
 #: src/navutil.cpp:1754 src/navutil.cpp:3119 src/options.cpp:1050
@@ -6675,8 +6624,7 @@ msgstr "Eklenti % s, bu OpenCPN sürümüyle uyumlu değil, lütfen güncellenmi
 
 #: src/pluginmanager.cpp:2315
 #, c-format
-msgid ""
-"PlugIn %s (%s), version %i.%i was detected.\n"
+msgid "PlugIn %s (%s), version %i.%i was detected.\n"
 " This version is known to be unstable and will not be loaded.\n"
 " Please update this PlugIn using the PlugIn manager master catalog."
 msgstr ""
@@ -6687,8 +6635,7 @@ msgstr "Karalisyeye alınmış eklenti belirlendi..."
 
 #: src/pluginmanager.cpp:2328
 #, c-format
-msgid ""
-"PlugIn %s (%s), version %i.%i was detected.\n"
+msgid "PlugIn %s (%s), version %i.%i was detected.\n"
 " This version is known to be unstable.\n"
 " Please update this PlugIn using the PlugIn manager master catalog."
 msgstr ""
@@ -7329,221 +7276,68 @@ msgstr "Uzantı"
 #: src/RoutePropDlg.cpp:474 src/TrackPropDlg.cpp:579 src/TrackPropDlg.cpp:965
 msgid "Split"
 msgstr "Rotayı Böl"
-#
-msgid "Split Route at Waypoint"
-msgstr ""
-#
-msgid "Split around Leg"
-msgstr ""
-#
-msgid "Sri Lanka"
-msgstr "Sri Lanka"
-#
-msgid "Standard"
-msgstr "Standart"
-#
-msgid "Starboard Hand Mark"
-msgstr "Sancaktan Geç İşareti"
-#
-msgid "Start"
-msgstr "Kalkış"
-#
-msgid "Statistics"
-msgstr "İstatistik değerleri"
-#
-#, fuzzy
-msgid "Status"
-msgstr "Durum Çubuğu"
-#
-msgid "Status Bar"
-msgstr "Durum Çubuğu"
-#
-msgid "Status Bar Option"
-msgstr "Durum çubuğu seçeneği"
-#
-msgid "StatusBar"
-msgstr "Durum Çubuğu"
-#
-msgid "Statute miles"
-msgstr "Kara Mili"
-#
-msgid "Stbd"
-msgstr "Sancak"
-#
-msgid "Stbd Hand"
-msgstr "Sancak Geçişli"
-#
-msgid "Stop Scan"
-msgstr "Taramayı durdur"
-#
-msgid "Stop Tracking"
-msgstr "Rotaizini Durdur."
-#
-msgid "Style"
-msgstr "Tür"
-#
-msgid "Sudan"
-msgstr "Sudan"
-#
+
+#: src/RoutePropDlgImpl.cpp:90
+msgid "MoTwilight"
+msgstr "GünOrtası"
+
+#: src/RoutePropDlgImpl.cpp:92
 msgid "Sunrise"
 msgstr "Gündoğumu"
-#
+
+#: src/RoutePropDlgImpl.cpp:94
+msgid "Daytime"
+msgstr "Gündüz"
+
+#: src/RoutePropDlgImpl.cpp:96
 msgid "Sunset"
 msgstr "Günbatımı"
-#
-msgid "Suppress Alerts for anchored/moored targets"
-msgstr "Demirdeki/Tonozdaki Hedefler İçin Alarm Verme"
-#
-msgid "Suppress anchored/moored targets, speed max (kn)"
+
+#: src/RoutePropDlgImpl.cpp:98
+msgid "EvTwilight"
+msgstr "GeceYarısı"
+
+#: src/RoutePropDlgImpl.cpp:100
+msgid "Nighttime"
+msgstr "Gece"
+
+#: src/RoutePropDlgImpl.cpp:408
+msgid "Arrived"
+msgstr "Ulaştı"
+
+#: src/RoutePropDlgImpl.cpp:813 src/TrackPropDlg.cpp:348
+#: src/TrackPropDlg.cpp:1341
+msgid "Depart From"
+msgstr "Kalkış Limanı"
+
+#: src/RoutePropDlgImpl.cpp:815 src/TrackPropDlg.cpp:386
+#: src/TrackPropDlg.cpp:769 src/TrackPropDlg.cpp:1343
+msgid "Total distance"
+msgstr "Toplam Mesafe"
+
+#: src/RoutePropDlgImpl.cpp:816
+msgid "Speed (Kts)"
+msgstr "Hız (Kts)"
+
+#: src/RoutePropDlgImpl.cpp:818 src/TrackPropDlg.cpp:1346
+msgid "Departure Time"
+msgstr "Hareket saati"
+
+#: src/RoutePropDlgImpl.cpp:820 src/TrackPropDlg.cpp:788
+#: src/TrackPropDlg.cpp:1348
+msgid "Time enroute"
+msgstr "Yoldaki Süre"
+
+#: src/RoutePropDlgImpl.cpp:865
+msgid "Are you sure you want to move Up this waypoint?"
 msgstr ""
-"Demirlenmiş / İskeleye halatla bağlanmış hedefleri bastır, maksimum hız (kn)"
-#
-msgid "Suriname"
-msgstr "Surinam"
-#
-msgid "Sweden"
-msgstr "Sweden"
-#
-msgid "Switch to full screen mode on start."
-msgstr "Başlarken tam ekran moduna geçin."
-#
-msgid "Switzerland"
-msgstr "Switzerland"
-#
-msgid "Symbolized"
-msgstr "Simgeleştirilmiş"
-#
-msgid "Syrian Arab Republic"
-msgstr "Suriye"
-#
-msgid "TCP"
-msgstr "TCP"
-#
-msgid "TCPA"
-msgstr "TCPA"
-#
-msgid "TTG  @SOG"
-msgstr "Seyir Süresi @SOG"
-#
-msgid "TTG  @VMG"
-msgstr "Seyir Süresi @VMG"
-#
-msgid "Taiwan"
-msgstr "Tayvan"
-#
-msgid "Tajikistan"
-msgstr "Tacikistan"
-#
-msgid "Talker ID"
-msgstr "Konuşan Kimliği"
-#
-msgid "Tankbarge"
-msgstr "Tank barcı"
-#
-msgid "Tankbarge, dry cargo as if liquid (e.g. cement)"
-msgstr "Tank barcı, sıvımsı kuru yük (örneğin çimento)"
-#
-msgid "Tankbarge, gas"
-msgstr "Depolu mavna, gaz"
-#
-msgid "Tankbarge, liquid cargo, type C"
-msgstr "Depolu mavna, sıvı yük, tip C"
-#
-msgid "Tankbarge, liquid cargo, type N"
-msgstr "Depolu mavna, sıvı yük, N tipi"
-#
-msgid "Tanker"
-msgstr "Tanker"
-#
-msgid "Tanzania"
-msgstr "Tanzanya"
-#
-msgid "Target Count"
-msgstr "Hedef Sayısı"
-#
-msgid "Target List..."
-msgstr "Hedef Listesi..."
-#
-msgid "Target Query..."
-msgstr "Hedef Sorgusu..."
-#
-msgid "Target info"
-msgstr "Hedef Bilgisi"
-#
-msgid "Temperature"
+
+#: src/RoutePropDlgImpl.cpp:866
+msgid "Are you sure you want to move Down this waypoint?"
 msgstr ""
-#
-msgid "Template Status"
-msgstr "Şablon Durumu"
-#
-msgid "Templates"
-msgstr "Şablonlar"
-#
-msgid "Temporary"
-msgstr "Geçici"
-#
-msgid "Temporary AISMOB Route"
-msgstr "Geçici AISDAD Rotası"
-#
-msgid "Temporary GOTO Route"
-msgstr "Geçici GİDİLECEK rota"
-#
-msgid "Temporary MOB Route"
-msgstr "Geçici Denize Adam Düştü (DAD) Rotası"
-#
-msgid "Tender"
-msgstr "Vasıta"
-#
-msgid "Test AIS Alert Sound"
-msgstr ""
-#
-msgid "Test AIS SART Alert Sound"
-msgstr ""
-#
-msgid "Test Anchor Alarm Sound"
-msgstr ""
-#
-msgid "Test DSC notification Sound"
-msgstr ""
-#
-msgid "Testing"
-msgstr "Deneniyor"
-#
-msgid "Texture Cache"
-msgstr "Doku Önbellek"
-#
-msgid "Texture Compression"
-msgstr "Yapı Sıkıştırma"
-#
-msgid "Texture Compression Caching"
-msgstr "Yapı Sıkıştırma Önbelleğe Alma"
-#
-msgid "Texture Compression with Caching"
-msgstr "Önbellekle Sıkıştırma"
-#
-msgid "Texture Memory Size (MB)"
-msgstr "Yapı Bellek Boyutu (MB)"
-#
-msgid "Texture Settings"
-msgstr "Doku Ayarları"
-#
-msgid "Thailand"
-msgstr "Tayland"
-#
-msgid ""
-"The Man Over Board button could be an important safety feature.\n"
-"Are you sure you want to hide it?"
-msgstr ""
-"Denize Adam Düştü butonu güvenlik için önemli bir araçtır.\n"
-"Gene de gizlemek istiyor musunuz?"
-#
-msgid "The Open Source Chart Plotter/Navigator"
-msgstr ""
-#
-msgid "The OpenCPN Authors"
-msgstr "OpenCPN yazarlar"
-#
-msgid "The ScaMin value for new waypoints is set to"
+
+#: src/RoutePropDlgImpl.cpp:868
+msgid "OpenCPN Move Waypoint"
 msgstr ""
 
 #: src/RoutePropDlgImpl.cpp:902

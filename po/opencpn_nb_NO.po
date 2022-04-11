@@ -4294,40 +4294,8 @@ msgstr "Innebygget GPS"
 #: src/ConnectionParams.cpp:820 src/options.cpp:2136
 msgid "Built-in Bluetooth"
 msgstr "Innebygget blåtann"
-#
-msgid "Built-in Bluetooth SPP"
-msgstr "Innebygget blåtann SSP"
-#
-msgid "Built-in GPS"
-msgstr "Innebygget GPS"
-#
-msgid "Bulgaria"
-msgstr "Bulgaria"
-#
-msgid "Bulk carrier maritime"
-msgstr "Maritimt bulkgods lasteskip"
-#
-msgid "Bunkership"
-msgstr "Bunkerskip"
-#
-msgid "Buoy/Light Labels"
-msgstr "Bøye/lykt navnelapper"
-#
-msgid "Buoys/Lights"
-msgstr "Bøyer/lykter"
-#
-msgid "Burkina Faso"
-msgstr "Burkina Faso"
-#
-msgid "Burundi"
-msgstr "Burundi"
-#
-msgid "C"
-msgstr "C"
-#
-msgid "C&olour:"
-msgstr "F&arge:"
-#
+
+#: src/DetailSlider.cpp:88
 msgid "CM93 Detail Level"
 msgstr "CM93 Detaljnivå"
 
@@ -4442,10 +4410,32 @@ msgstr "OpenCPN veipunkt"
 #: src/kml.cpp:638
 msgid "Choose Format for Copy"
 msgstr "Velg format for kopi"
-#
-msgid "Choose Toolbar Icons"
-msgstr "Velg verktøylinjeikoner"
-#
+
+#: src/kml.cpp:646
+msgid "KML Standard (Google Earth and others)"
+msgstr "KML Standard (Google Earth og andre)"
+
+#: src/kml.cpp:650
+msgid "KML with extended waypoint data (QtVlm)"
+msgstr "KML med utvidet veipunkt data (QtVlm)"
+
+#: src/LinkPropDlg.cpp:47
+msgid "Link"
+msgstr "Lenke"
+
+#: src/LinkPropDlg.cpp:49
+msgid "Link description"
+msgstr "Lenke beskrivelse"
+
+#: src/LinkPropDlg.cpp:58
+msgid "URL"
+msgstr "URL"
+
+#: src/LinkPropDlg.cpp:67
+msgid "Local file..."
+msgstr "Lokal fil..."
+
+#: src/LinkPropDlg.cpp:122
 msgid "Choose a file"
 msgstr "Velg en fil"
 
@@ -4828,10 +4818,8 @@ msgstr "Nei"
 msgid "Create a private configuration template based on current settings.\n"
 "This template will be saved, and may be selected for further use at any time.\n"
 "               "
-msgstr ""
-"Opprett en privat konfigurasjons-mal basert på nåværende innstillinger.\n"
-"Denne malen vil bli lagret, og kan når som helst bli valgt for fremtidig "
-"bruk.\n"
+msgstr "Opprett en privat konfigurasjons-mal basert på nåværende innstillinger.\n"
+"Denne malen vil bli lagret, og kan når som helst bli valgt for fremtidig bruk.\n"
 "               "
 
 #: src/options.cpp:1020

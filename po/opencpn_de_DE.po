@@ -4066,7 +4066,12 @@ msgstr "OpenCPN CM93 Zelle Offset Justierung"
 #: src/cm93.cpp:6462
 msgid "Cell"
 msgstr "Zelle"
-#
+
+#: src/cm93.cpp:6465
+msgid "M_COVR ID"
+msgstr "M_COVR ID"
+
+#: src/cm93.cpp:6469
 msgid "Cell Scale"
 msgstr "Zellen-Maßstab"
 
@@ -4226,10 +4231,8 @@ msgstr "Senden"
 #: src/ConnectionParams.cpp:232
 msgid "In"
 msgstr "In"
-#
-msgid "In/Out"
-msgstr "Eingang/Ausgang"
-#
+
+#: src/ConnectionParams.cpp:238
 msgid "In: None"
 msgstr "Eingang: keiner"
 
@@ -4412,7 +4415,8 @@ msgstr "Wähle Format für Kopie"
 #: src/kml.cpp:646
 msgid "KML Standard (Google Earth and others)"
 msgstr "KML Standard (Google-Earth und andere)"
-#
+
+#: src/kml.cpp:650
 msgid "KML with extended waypoint data (QtVlm)"
 msgstr "KML mit erweiterten Wegpunkt-Daten (QtVlm)"
 

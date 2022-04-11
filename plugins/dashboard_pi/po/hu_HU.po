@@ -53,16 +53,16 @@ msgstr "Valós Kompassz"
 #: src/dashboard_pi.cpp:197
 msgid "STW"
 msgstr ""
-#
-msgid "Air Temp."
-msgstr "Levegő hőmérséklet"
-#
-msgid "App & True Wind Angle"
+
+#: src/dashboard_pi.cpp:199
+msgid "True HDG"
 msgstr ""
-#
-msgid "App. Wind Angle"
+
+#: src/dashboard_pi.cpp:201
+msgid "Mag HDG"
 msgstr ""
-#
+
+#: src/dashboard_pi.cpp:204
 msgid "App. Wind Angle & Speed"
 msgstr "Látszólagos szél irány és sebesség"
 
@@ -113,8 +113,9 @@ msgstr "Valós szél sebesség"
 #: src/dashboard_pi.cpp:234
 msgid "True Wind Dir. & Speed"
 msgstr ""
-#
-msgid "Caption:"
+
+#: src/dashboard_pi.cpp:236 src/dashboard_pi.cpp:238
+msgid "VMG"
 msgstr ""
 
 #: src/dashboard_pi.cpp:240 src/dashboard_pi.cpp:242
@@ -124,10 +125,12 @@ msgstr "Kormánylapát szög"
 #: src/dashboard_pi.cpp:244
 msgid "GNSS in use"
 msgstr ""
-#
-msgid "Choose font"
+
+#: src/dashboard_pi.cpp:246
+msgid "GNSS Status"
 msgstr ""
-#
+
+#: src/dashboard_pi.cpp:248
 msgid "Cursor"
 msgstr "Kurzor"
 
@@ -150,32 +153,33 @@ msgstr "Szél előzmények"
 #: src/dashboard_pi.cpp:258
 msgid "Barometric history"
 msgstr ""
-#
-msgid "Dashboard PlugIn for OpenCPN"
+
+#: src/dashboard_pi.cpp:260
+msgid "Trip Log"
 msgstr ""
-#
-msgid ""
-"Dashboard PlugIn for OpenCPN\n"
-"Provides navigation instrument display from NMEA source."
+
+#: src/dashboard_pi.cpp:262
+msgid "Sum Log"
 msgstr ""
-#
-msgid "Dashboard preferences"
+
+#: src/dashboard_pi.cpp:264
+msgid "From Ownship"
 msgstr ""
-#
-msgid "Data:"
+
+#: src/dashboard_pi.cpp:266
+msgid "Pitch"
 msgstr ""
-#
-msgid "Delete"
+
+#: src/dashboard_pi.cpp:268
+msgid "Heel"
 msgstr ""
-#
-msgid "Depth"
-msgstr "Mélység"
-#
-#, c-format
-msgid "Depth Offset (%s):"
+
+#: src/dashboard_pi.cpp:270
+msgid "Local GNSS Clock"
 msgstr ""
-#
-msgid "Depth units:"
+
+#: src/dashboard_pi.cpp:272
+msgid "Local CPU Clock"
 msgstr ""
 
 #: src/dashboard_pi.cpp:274
@@ -191,11 +195,10 @@ msgstr "Műszerfal"
 #: src/dashboard_pi.cpp:733
 msgid "Dashboard PlugIn for OpenCPN"
 msgstr ""
-#
-msgid "Feet"
-msgstr "láb"
-#
-msgid "Fonts"
+
+#: src/dashboard_pi.cpp:738
+msgid "Dashboard PlugIn for OpenCPN\n"
+"Provides navigation instrument display from NMEA source."
 msgstr ""
 
 #: src/dashboard_pi.cpp:1446 src/dashboard_pi.cpp:2039 src/dashboard_pi.cpp:2829
@@ -289,26 +292,33 @@ msgstr "Földfelszíni sebesség (SOG) csillapítási érték:"
 #: src/dashboard_pi.cpp:2900
 msgid "COG Damping Factor:"
 msgstr ""
-#
-msgid "Orientation:"
+
+#: src/dashboard_pi.cpp:2906
+msgid "Local Time Offset From UTC:"
 msgstr ""
-#
-msgid "Pitch"
+
+#: src/dashboard_pi.cpp:2925
+msgid "Boat speed units:"
 msgstr ""
-#
-msgid "Port"
+
+#: src/dashboard_pi.cpp:2928 src/dashboard_pi.cpp:2969
+msgid "Honor OpenCPN settings"
 msgstr ""
-#
-msgid "Position"
-msgstr "Pozíció"
-#
-msgid "Preferences..."
+
+#: src/dashboard_pi.cpp:2928 src/dashboard_pi.cpp:2978
+msgid "Kts"
+msgstr "csomó"
+
+#: src/dashboard_pi.cpp:2928 src/dashboard_pi.cpp:2978
+msgid "mph"
 msgstr ""
-#
-msgid "Resize..."
+
+#: src/dashboard_pi.cpp:2928 src/dashboard_pi.cpp:2978
+msgid "km/h"
 msgstr ""
-#
-msgid "Rudder Angle"
+
+#: src/dashboard_pi.cpp:2928 src/dashboard_pi.cpp:2978
+msgid "m/s"
 msgstr ""
 
 #: src/dashboard_pi.cpp:2934
@@ -339,25 +349,28 @@ msgstr "Centiméter"
 #, c-format
 msgid "Depth Offset (%s):"
 msgstr ""
-#
-msgid "Speedometer"
+
+#: src/dashboard_pi.cpp:2966
+msgid "Distance units:"
 msgstr ""
-#
-msgid "Speedometer max value:"
+
+#: src/dashboard_pi.cpp:2969
+msgid "Nautical miles"
 msgstr ""
-#
+
+#: src/dashboard_pi.cpp:2969
 msgid "Statute miles"
 msgstr ""
-#
-msgid "Stbd"
+
+#: src/dashboard_pi.cpp:2969
+msgid "Kilometers"
+msgstr "kilóméter"
+
+#: src/dashboard_pi.cpp:2975
+msgid "Wind speed units:"
 msgstr ""
-#
-msgid "Sum Log"
-msgstr ""
-#
-msgid "Sunrise/Sunset"
-msgstr "napkelte / napnyugta"
-#
+
+#: src/dashboard_pi.cpp:2984
 msgid "Temperature units:"
 msgstr ""
 
@@ -440,39 +453,46 @@ msgstr " mágneses"
 #: src/wind_history.cpp:58 src/wind_history.cpp:109
 msgid "--"
 msgstr ""
-#
-msgid "VMG"
+
+#: src/wind_history.cpp:333
+#, c-format
+msgid "--- %s"
 msgstr ""
-#
-msgid "Vertical"
-msgstr ""
-#
-msgid "W"
-msgstr "Ny"
-#
-msgid "WNW"
-msgstr "NYÉNY"
-#
+
+#: src/wind_history.cpp:438
+msgid "NNE"
+msgstr "ÉÉK"
+
+#: src/wind_history.cpp:444
+msgid "ENE"
+msgstr "KÉK"
+
+#: src/wind_history.cpp:450
+msgid "ESE"
+msgstr "KDK"
+
+#: src/wind_history.cpp:456
+msgid "SSE"
+msgstr "DDK"
+
+#: src/wind_history.cpp:462
+msgid "SSW"
+msgstr "DDNY"
+
+#: src/wind_history.cpp:468
 msgid "WSW"
 msgstr "NYDNY"
-#
-msgid "Water Temp."
-msgstr "Víz hőmérséklet"
-#
-msgid "Wind history"
+
+#: src/wind_history.cpp:474
+msgid "WNW"
+msgstr "NYÉNY"
+
+#: src/wind_history.cpp:480
+msgid "NNW"
+msgstr "ÉÉNY"
+
+#: src/wind_history.cpp:585
+#, c-format
+msgid "Max %.1f %s since %02d:%02d  Overall %.1f %s"
 msgstr ""
-#
-msgid "Wind speed units:"
-msgstr ""
-#
-msgid "km/h"
-msgstr ""
-#
-msgid "m/s"
-msgstr ""
-#
-msgid "mph"
-msgstr ""
-#
-msgid "show this dashboard"
-msgstr ""
+

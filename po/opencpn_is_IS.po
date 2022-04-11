@@ -302,118 +302,77 @@ msgstr "Sýndar Siglingarmerki (Á staðsetningu)"
 #: src/ais.cpp:131
 msgid "AtoN Virtual (Off Position)"
 msgstr ""
-#
-#, c-format
-msgid "%02X"
-msgstr "%02X"
-#
-#, c-format
-msgid "%2dH %2dM"
-msgstr "%2dH %2dM"
-#
-#, c-format
-msgid "%2dM %2dS"
-msgstr "%2dM %2dS"
-#
-msgid "%D Days, %H:%M"
-msgstr "%D Dagar, %H:%M"
-#
-msgid "%Dd %H:%M"
-msgstr "%Dd %H:%M"
-#
-msgid "%H:%M"
-msgstr "%H:%M"
-#
-#, c-format
-msgid "%dd "
-msgstr "%dd "
-#
-msgid "&AIS"
-msgstr "&AIS"
-#
-msgid "&Acknowledge"
+
+#: src/ais.cpp:132
+msgid "AtoN Real"
 msgstr ""
-#
-msgid "&Activate"
-msgstr "&Virkt"
-#
-msgid "&Center View"
+
+#: src/ais.cpp:133
+msgid "AtoN Real (On Position)"
 msgstr ""
-#
-msgid "&Copy all as text"
+
+#: src/ais.cpp:134
+msgid "AtoN Real(Off Position)"
 msgstr ""
-#
-msgid "&Copy as text"
-msgstr "&Afrita sem texta"
-#
-msgid "&Delete"
-msgstr "&Eyða"
-#
-msgid "&Delete All"
-msgstr "&Eyða öllu"
-#
-msgid "&Export selected..."
+
+#: src/ais.cpp:141
+msgid "Fishing Vessel"
 msgstr ""
-#
-msgid "&Font family:"
+
+#: src/ais.cpp:142
+msgid "Towing Vessel"
 msgstr ""
-#
-msgid "&Go To"
-msgstr "&Fara til"
-#
-msgid "&Help"
-msgstr "&Hjálp"
-#
-msgid "&Jump To"
-msgstr "&Hoppa til"
-#
-msgid "&Merge Selected Tracks"
+
+#: src/ais.cpp:143
+msgid "Towing Vessel, Long"
 msgstr ""
-#
-msgid "&Navigate"
+
+#: src/ais.cpp:144
+msgid "Dredger"
 msgstr ""
-#
-msgid "&New"
-msgstr "&Ný"
-#
-msgid "&OK"
-msgstr "&Í lagi"
-#
-msgid "&Point size:"
+
+#: src/ais.cpp:145
+msgid "Diving Ops Vessel"
 msgstr ""
-#
-msgid "&Properties"
-msgstr "&Eiginleikar"
-#
-#, fuzzy
-msgid "&Resequence Waypoints"
-msgstr "Viðmiðunarpunktur"
-#
-msgid "&Reverse"
-msgstr "&Afturábak"
-#
-msgid "&Send to GPS"
-msgstr "&Senda til GPS"
-#
-msgid "&Silence Alert"
+
+#: src/ais.cpp:146
+msgid "Military Vessel"
+msgstr "Herskip"
+
+#: src/ais.cpp:147
+msgid "Sailing Vessel"
+msgstr "Seglskip"
+
+#: src/ais.cpp:148
+msgid "Pleasure craft"
+msgstr "Skemmtiferðaskip"
+
+#: src/ais.cpp:150
+msgid "Pilot Vessel"
+msgstr "Lóðs"
+
+#: src/ais.cpp:151
+msgid "Search and Rescue Vessel"
+msgstr "Björgunarskip"
+
+#: src/ais.cpp:152 src/ais.cpp:216
+msgid "Tug"
+msgstr "Dráttarbátur"
+
+#: src/ais.cpp:153
+msgid "Port Tender"
 msgstr ""
-#
-msgid "&Start Track"
+
+#: src/ais.cpp:154
+msgid "Pollution Control Vessel"
 msgstr ""
-#
-msgid "&Style:"
-msgstr "&Stíll:"
-#
-msgid "&Tools"
-msgstr "&Tæki"
-#
-msgid "&Underline"
+
+#: src/ais.cpp:155
+msgid "Law Enforcement Vessel"
 msgstr ""
-#
-msgid "&View"
-msgstr "S&koða"
-#
-msgid "&Weight:"
+
+#: src/ais.cpp:156
+msgid "Medical Transport"
 msgstr ""
 
 #: src/ais.cpp:157
@@ -448,336 +407,289 @@ msgstr "RACON"
 #: src/ais.cpp:164
 msgid "Fixed Structure"
 msgstr ""
-#
-msgid "(Unnamed Layer)"
+
+#: src/ais.cpp:165
+msgid "Spare"
+msgstr "Til vara"
+
+#: src/ais.cpp:166
+msgid "Light"
+msgstr "Ljós"
+
+#: src/ais.cpp:167
+msgid "Light w/Sectors"
 msgstr ""
-#
-msgid "(Unnamed Route)"
+
+#: src/ais.cpp:168
+msgid "Leading Light Front"
 msgstr ""
-#
-msgid "(Unnamed Track)"
+
+#: src/ais.cpp:169
+msgid "Leading Light Rear"
 msgstr ""
-#
-msgid "(Unnamed Waypoint)"
+
+#: src/ais.cpp:170
+msgid "Cardinal N Beacon"
 msgstr ""
-#
-#, fuzzy
-msgid "(c) 2000-2021"
-msgstr "(c) 2000-2019"
-#
-msgid "(m/d/y h:m)"
-msgstr "(m/d/á t:m)"
-#
-msgid "(reserved for future use)"
-msgstr "(frátekið fyrir framtíðarnot)"
-#
-msgid "(unnamed)"
+
+#: src/ais.cpp:171
+msgid "Cardinal E Beacon"
 msgstr ""
-#
-msgid ", Out: None"
+
+#: src/ais.cpp:172
+msgid "Cardinal S Beacon"
 msgstr ""
-#
-msgid ", and all previous versions,"
+
+#: src/ais.cpp:173
+msgid "Cardinal W Beacon"
 msgstr ""
-#
-msgid "-"
+
+#: src/ais.cpp:174
+msgid "Beacon, Port Hand"
+msgstr "Viti, bakborð"
+
+#: src/ais.cpp:175
+msgid "Beacon, Starboard Hand"
+msgstr "Viti, stjórnborð"
+
+#: src/ais.cpp:176
+msgid "Beacon, Preferred Channel Port Hand"
 msgstr ""
-#
-msgid "--"
+
+#: src/ais.cpp:177
+msgid "Beacon, Preferred Channel Starboard Hand"
 msgstr ""
-#
-msgid "...and TCPA is less than (min)"
+
+#: src/ais.cpp:178
+msgid "Beacon, Isolated Danger"
 msgstr ""
-#
-msgid "0"
+
+#: src/ais.cpp:179
+msgid "Beacon, Safe Water"
 msgstr ""
-#
-msgid "0 (transfer completed)"
+
+#: src/ais.cpp:180
+msgid "Beacon, Special Mark"
 msgstr ""
-#
-msgid "0 (transfer paused)"
+
+#: src/ais.cpp:181
+msgid "Cardinal Mark N"
 msgstr ""
-#
-msgid "0.05"
-msgstr "0.05"
-#
-msgid "1"
+
+#: src/ais.cpp:182
+msgid "Cardinal Mark E"
 msgstr ""
-#
-msgid "1 pixel"
-msgstr "1 pixel"
-#
-msgid "1 px"
-msgstr "1 px"
-#
-msgid "1.0 NM along COG"
+
+#: src/ais.cpp:183
+msgid "Cardinal Mark S"
 msgstr ""
-#
-msgid "10 pixels"
-msgstr "10 pixels"
-#
-msgid "10 px"
-msgstr "10 px"
-#
-msgid "115200"
+
+#: src/ais.cpp:184
+msgid "Cardinal Mark W"
 msgstr ""
-#
-msgid "1200"
+
+#: src/ais.cpp:185
+msgid "Port Hand Mark"
 msgstr ""
-#
-msgid "150"
+
+#: src/ais.cpp:186
+msgid "Starboard Hand Mark"
 msgstr ""
-#
-msgid "19200"
+
+#: src/ais.cpp:187
+msgid "Preferred Channel Port Hand"
 msgstr ""
-#
-msgid "2"
+
+#: src/ais.cpp:188
+msgid "Preferred Channel Starboard Hand"
 msgstr ""
-#
-msgid "2 Color"
-msgstr "2 Litir"
-#
-msgid "2 pixels"
-msgstr "2 pixels"
-#
-msgid "230400"
+
+#: src/ais.cpp:189
+msgid "Isolated Danger"
 msgstr ""
-#
-msgid "2400"
+
+#: src/ais.cpp:190 src/ais.cpp:244 src/ais.cpp:255
+msgid "Safe Water"
 msgstr ""
-#
-msgid "2px"
-msgstr "2px"
-#
-msgid "3"
+
+#: src/ais.cpp:191
+msgid "Special Mark"
+msgstr "Sérstakt merki"
+
+#: src/ais.cpp:192
+msgid "Light Vessel/Rig"
 msgstr ""
-#
-msgid "3 pixels"
-msgstr "3 pixels"
-#
-msgid "3 px"
-msgstr "3 px"
-#
-msgid "300"
+
+#: src/ais.cpp:193
+msgid "GpsGate Buddy"
 msgstr ""
-#
-msgid "38400"
+
+#: src/ais.cpp:194
+msgid "Position Report"
 msgstr ""
-#
-msgid "4"
+
+#: src/ais.cpp:195 src/ais.cpp:260
+msgid "Distress"
 msgstr ""
-#
-msgid "4 Color"
-msgstr "4 Litir"
-#
-msgid "4 pixels"
-msgstr "4 pixels"
-#
-msgid "4 px"
-msgstr "4 px"
-#
-msgid "460800"
+
+#: src/ais.cpp:196
+msgid "ARPA radar target"
 msgstr ""
 
 #: src/ais.cpp:197 src/AIS_Target_Data.cpp:919
 msgid "APRS Position Report"
 msgstr ""
-#
-msgid "5"
+
+#: src/ais.cpp:205
+msgid "F/V"
 msgstr ""
-#
-msgid "5 pixels"
-msgstr "5 pixels"
-#
-msgid "5 px"
-msgstr "5 px"
-#
-msgid "57600"
+
+#: src/ais.cpp:206
+msgid "Tow"
+msgstr "Dráttur"
+
+#: src/ais.cpp:207
+msgid "Long Tow"
+msgstr "Langur dráttur"
+
+#: src/ais.cpp:208
+msgid "Dredge"
 msgstr ""
-#
-msgid "6"
+
+#: src/ais.cpp:209
+msgid "D/V"
 msgstr ""
-#
-msgid "6 pixels"
-msgstr "6 pixels"
-#
-msgid "6 px"
-msgstr "6 px"
-#
-msgid "600"
+
+#: src/ais.cpp:210
+msgid "Mil/V"
 msgstr ""
-#
-msgid "7"
+
+#: src/ais.cpp:211
+msgid "S/V"
 msgstr ""
-#
-msgid "7 pixels"
-msgstr "7 pixels"
-#
-msgid "7 px"
-msgstr "7 px"
-#
-msgid "8"
+
+#: src/ais.cpp:212
+msgid "Yat"
 msgstr ""
-#
-msgid "8 pixels"
-msgstr "8 pixels"
-#
-msgid "8 px"
-msgstr "8 px"
-#
-msgid "9"
+
+#: src/ais.cpp:213
+msgid "HSC"
 msgstr ""
-#
-msgid "9 pixels"
-msgstr "9 pixels"
-#
-msgid "9 px"
-msgstr "9 px"
-#
-msgid "921600"
+
+#: src/ais.cpp:214
+msgid "P/V"
 msgstr ""
-#
-msgid "9600"
+
+#: src/ais.cpp:215
+msgid "SAR/V"
 msgstr ""
-#
-msgid "< Back"
-msgstr "< Tilbaka"
-#
-msgid "<font size=-2>(Sector angles are True Bearings from Seaward)</font><br>"
+
+#: src/ais.cpp:217
+msgid "Tender"
 msgstr ""
-#
+
+#: src/ais.cpp:218
+msgid "PC/V"
+msgstr ""
+
+#: src/ais.cpp:219
+msgid "LE/V"
+msgstr ""
+
+#: src/ais.cpp:220
+msgid "Med/V"
+msgstr ""
+
+#: src/ais.cpp:221
+msgid "Pass/V"
+msgstr ""
+
+#: src/ais.cpp:222
+msgid "M/V"
+msgstr ""
+
+#: src/ais.cpp:223
+msgid "M/T"
+msgstr ""
+
+#: src/ais.cpp:224 src/ais.cpp:230
 msgid "?"
-msgstr ""
-#
-msgid "A"
-msgstr ""
-#
-msgid "AIS"
-msgstr "AIS"
-#
-msgid "AIS Alert"
-msgstr "AIS aðvörun"
-#
-msgid "AIS MAN OVERBOARD"
-msgstr "AIS MAÐUR FYRIR BORÐ"
-#
-msgid "AIS MAN OVERBOARD UPDATE"
-msgstr "AIS MAÐUR FYRIR BORÐ UPPFÆRSLA"
-#
-msgid "AIS Target Name"
-msgstr ""
-#
-msgid "AIS Target Query"
-msgstr ""
-#
-msgid "AIS Targets"
-msgstr ""
-#
-msgid "AIS target list"
-msgstr ""
-#
-msgid "AISRollover"
 msgstr ""
 
 #: src/ais.cpp:226 src/AIS_Target_Data.cpp:904
 msgid "AtoN"
 msgstr ""
-#
-msgid "AISTargetQuery"
+
+#: src/ais.cpp:227
+msgid "Ref. Pt"
 msgstr ""
-#
-msgid "APB bearing precision"
+
+#: src/ais.cpp:229
+msgid "Fix.Struct."
 msgstr ""
-#
-msgid "APRS"
-msgstr "APRS"
-#
-msgid "APRS Position Report"
+
+#: src/ais.cpp:231
+msgid "Lt"
 msgstr ""
-#
-msgid "APRS position report"
+
+#: src/ais.cpp:232
+msgid "Lt sect."
 msgstr ""
-#
-msgid "ARPA"
-msgstr "ARPA"
-#
-msgid "ARPA radar target"
+
+#: src/ais.cpp:233
+msgid "Ldg Lt Front"
 msgstr ""
-#
-msgid "Abort"
-msgstr "Hætta við"
-#
-msgid "About"
+
+#: src/ais.cpp:234
+msgid "Ldg Lt Rear"
 msgstr ""
-#
-msgid "About OpenCPN"
-msgstr "Um OpenCPN"
-#
-msgid "Accept"
-msgstr "Samþykkja"
-#
-msgid "Accept only sentences"
+
+#: src/ais.cpp:235 src/ais.cpp:246
+msgid "Card. N"
 msgstr ""
-#
-msgid "Activate"
-msgstr "Virkja"
-#
-msgid "Activate Next Waypoint"
+
+#: src/ais.cpp:236 src/ais.cpp:247
+msgid "Card. E"
 msgstr ""
-#
-msgid "Active"
-msgstr "Virkt"
-#
-msgid "Active Catalog"
+
+#: src/ais.cpp:237 src/ais.cpp:248
+msgid "Card. S"
 msgstr ""
-#
-msgid "Active Datasets"
+
+#: src/ais.cpp:238 src/ais.cpp:249
+msgid "Card. W"
 msgstr ""
-#
-#, fuzzy
-msgid "Active catalog"
-msgstr "Virkja"
-#
-msgid "Active catalog updated."
+
+#: src/ais.cpp:239
+msgid "Port"
 msgstr ""
-#
-msgid "Active setting:"
+
+#: src/ais.cpp:240
+msgid "Stbd"
 msgstr ""
-#
-msgid "Add"
-msgstr "Bæta við"
-#
-msgid "Add Connection"
-msgstr "Bæta við tengingu"
-#
-msgid "Add Dataset..."
+
+#: src/ais.cpp:241 src/ais.cpp:242 src/ais.cpp:252 src/ais.cpp:253
+msgid "Pref. Chnl"
 msgstr ""
-#
-msgid "Add Directory..."
-msgstr "Bæta við möppu..."
-#
-msgid "Add MMSI Properties"
+
+#: src/ais.cpp:243 src/ais.cpp:254
+msgid "Isol. Dngr"
 msgstr ""
-#
-msgid "Add New"
+
+#: src/ais.cpp:245 src/ais.cpp:256
+msgid "Special"
 msgstr ""
-#
-msgid "Add a directory containing chart files"
+
+#: src/ais.cpp:250
+msgid "Port Hand"
 msgstr ""
-#
-msgid "Add new"
-msgstr "Bæta við nýju"
-#
-msgid "Add.."
+
+#: src/ais.cpp:251
+msgid "Stbd Hand"
 msgstr ""
-#
-msgid "Address"
-msgstr "Heimilisfang"
-#
-msgid "Adelie Land"
-msgstr "Adélie-land"
-#
-msgid "Advance route waypoint on arrival only"
+
+#: src/ais.cpp:257
+msgid "LtV/Rig"
 msgstr ""
 
 #: src/ais.cpp:258 src/AIS_Target_Data.cpp:908
@@ -799,638 +711,657 @@ msgstr "APRS"
 #: src/ais.cpp:270
 msgid "Caution Area: Marine mammals habitat (implies whales NOT observed)"
 msgstr ""
-#
-msgid "Afghanistan"
-msgstr "Afganistan"
-#
-msgid "Aground"
+
+#: src/ais.cpp:272
+msgid "Caution Area: Marine mammals in area - reduce speed"
 msgstr ""
-#
-msgid "Aid to Navigation"
+
+#: src/ais.cpp:273
+msgid "Caution Area: Marine mammals in area - stay clear"
 msgstr ""
-#
-msgid "Alaska"
-msgstr "Alaska"
-#
-msgid "Albania"
-msgstr "Albanía"
-#
-msgid "Algeria"
-msgstr "Alsír"
-#
-msgid "All"
-msgstr "Allt"
-#
-msgid "All Active Charts"
+
+#: src/ais.cpp:274
+msgid "Caution Area: Marine mammals in area - report sightings"
 msgstr ""
-#
-msgid "All Available Charts"
+
+#: src/ais.cpp:275
+msgid "Caution Area: Protected habitat - reduce speed"
 msgstr ""
-#
-msgid "All Charts"
-msgstr "Öll kort"
-#
-msgid "Allow attenuation of less critical targets if more than ... targets"
+
+#: src/ais.cpp:276
+msgid "Caution Area: Protected habitat - stay clear"
 msgstr ""
-#
-msgid "Altitude"
-msgstr "Hæð"
-#
-msgid "Always"
-msgstr "Alltaf"
-#
-msgid "Always track"
+
+#: src/ais.cpp:277
+msgid "Caution Area: Protected habitat - no fishing or anchoring"
 msgstr ""
-#
-msgid "American Samoa"
+
+#: src/ais.cpp:278
+msgid "Caution Area: Derelicts (drifting objects)"
 msgstr ""
-#
-msgid "Amount of logging: error, warning, message, info, debug or trace"
+
+#: src/ais.cpp:279
+msgid "Caution Area: Traffic congestion"
 msgstr ""
-#
-msgid ""
-"An MMSI Id is generally a number of nine digits.\n"
-"Please check your entries and cancel if necessary."
+
+#: src/ais.cpp:280
+msgid "Caution Area: Marine event"
 msgstr ""
-#
-msgid ""
-"An NMEA sentence is generally 3 characters long (like RMC, GGA etc.)\n"
-"           It can also have a two letter prefix identifying the source, or "
-"TALKER, of the message.\n"
-"           The whole sentences then looks like GPGGA or AITXT.\n"
-"           You may filter out all the sentences with certain TALKER prefix "
-"(like GP, AI etc.).\n"
-"           The filter also accepts Regular Expressions (REGEX) with 6 or more "
-"characters. \n"
-"\n"
+
+#: src/ais.cpp:281
+msgid "Caution Area: Divers down"
 msgstr ""
-#
-msgid "Anchor Alarm"
+
+#: src/ais.cpp:282
+msgid "Caution Area: Swim area"
 msgstr ""
-#
-msgid "Anchorage Area: Anchorage closed"
+
+#: src/ais.cpp:283
+msgid "Caution Area: Dredge operations"
 msgstr ""
-#
+
+#: src/ais.cpp:284
+msgid "Caution Area: Survey operations"
+msgstr ""
+
+#: src/ais.cpp:285
+msgid "Caution Area: Underwater operation"
+msgstr ""
+
+#: src/ais.cpp:286
+msgid "Caution Area: Seaplane operations"
+msgstr ""
+
+#: src/ais.cpp:287
+msgid "Caution Area: Fishery - nets in water"
+msgstr ""
+
+#: src/ais.cpp:288
+msgid "Caution Area: Cluster of fishing vessels"
+msgstr ""
+
+#: src/ais.cpp:289
+msgid "Caution Area: Fairway closed"
+msgstr ""
+
+#: src/ais.cpp:290
+msgid "Caution Area: Harbour closed"
+msgstr ""
+
+#: src/ais.cpp:291
+msgid "Caution Area: Risk (define in Associated text field)"
+msgstr ""
+
+#: src/ais.cpp:292
+msgid "Caution Area: Underwater vehicle operation"
+msgstr ""
+
+#: src/ais.cpp:293 src/ais.cpp:304 src/ais.cpp:312 src/ais.cpp:319
+#: src/ais.cpp:320 src/ais.cpp:321 src/ais.cpp:322 src/ais.cpp:323
+#: src/ais.cpp:324 src/ais.cpp:325 src/ais.cpp:326 src/ais.cpp:327
+#: src/ais.cpp:328 src/ais.cpp:332 src/ais.cpp:333 src/ais.cpp:334
+#: src/ais.cpp:335 src/ais.cpp:336 src/ais.cpp:350 src/ais.cpp:351
+#: src/ais.cpp:352 src/ais.cpp:361 src/ais.cpp:362 src/ais.cpp:384
+#: src/ais.cpp:385 src/ais.cpp:386 src/ais.cpp:388 src/ais.cpp:391
+#: src/ais.cpp:392 src/ais.cpp:393 src/ais.cpp:394 src/ais.cpp:395
+#: src/ais.cpp:399 src/ais.cpp:400
+msgid "(reserved for future use)"
+msgstr "(frátekið fyrir framtíðarnot)"
+
+#: src/ais.cpp:294
+msgid "Environmental Caution Area: Storm front (line squall)"
+msgstr ""
+
+#: src/ais.cpp:295
+msgid "Environmental Caution Area: Hazardous sea ice"
+msgstr ""
+
+#: src/ais.cpp:296
+msgid "Environmental Caution Area: Storm warning (storm cell or line of storms)"
+msgstr ""
+
+#: src/ais.cpp:298
+msgid "Environmental Caution Area: High wind"
+msgstr ""
+
+#: src/ais.cpp:299
+msgid "Environmental Caution Area: High waves"
+msgstr ""
+
+#: src/ais.cpp:300
+msgid "Environmental Caution Area: Restricted visibility (fog, rain, etc.)"
+msgstr ""
+
+#: src/ais.cpp:302
+msgid "Environmental Caution Area: Strong currents"
+msgstr ""
+
+#: src/ais.cpp:303
+msgid "Environmental Caution Area: Heavy icing"
+msgstr ""
+
+#: src/ais.cpp:305
+msgid "Restricted Area: Fishing prohibited"
+msgstr ""
+
+#: src/ais.cpp:306
+msgid "Restricted Area: No anchoring."
+msgstr ""
+
+#: src/ais.cpp:307
+msgid "Restricted Area: Entry approval required prior to transit"
+msgstr ""
+
+#: src/ais.cpp:308
+msgid "Restricted Area: Entry prohibited"
+msgstr ""
+
+#: src/ais.cpp:309
+msgid "Restricted Area: Active military OPAREA"
+msgstr ""
+
+#: src/ais.cpp:310
+msgid "Restricted Area: Firing - danger area."
+msgstr ""
+
+#: src/ais.cpp:311
+msgid "Restricted Area: Drifting Mines"
+msgstr ""
+
+#: src/ais.cpp:313
 msgid "Anchorage Area: Anchorage open"
 msgstr ""
-#
+
+#: src/ais.cpp:314
+msgid "Anchorage Area: Anchorage closed"
+msgstr ""
+
+#: src/ais.cpp:315
 msgid "Anchorage Area: Anchoring prohibited"
 msgstr ""
-#
+
+#: src/ais.cpp:316
 msgid "Anchorage Area: Deep draft anchorage"
 msgstr ""
-#
+
+#: src/ais.cpp:317
 msgid "Anchorage Area: Shallow draft anchorage"
 msgstr ""
-#
+
+#: src/ais.cpp:318
 msgid "Anchorage Area: Vessel transfer operations"
 msgstr ""
-#
-msgid "Anchorage created "
-msgstr ""
-#
-msgid "Anchoring Info"
-msgstr ""
-#
-msgid "Andorra"
-msgstr "Andorra"
-#
-msgid "Angola"
-msgstr "Angóla"
-#
-msgid "Anguilla"
-msgstr "Angvilla"
-#
-msgid "Answering 'No' will create a new waypoint at the same location."
-msgstr ""
-#
-msgid "Answering 'No' will create all new waypoints for this route."
-msgstr ""
-#
-msgid "Antigua and Barbuda"
-msgstr ""
-#
-msgid "Antilles"
-msgstr ""
-#
-msgid "Append Waypoint"
-msgstr ""
-#
-msgid "Append last part of this route to the new route?"
-msgstr ""
-#
-msgid "Append this route to the new route?"
-msgstr ""
-#
-msgid "Apply"
-msgstr "Virkja"
-#
-msgid "Apply Selected Config"
-msgstr ""
-#
-msgid "Apply this template to return to a known safe configuration"
-msgstr ""
-#
-msgid "Are you sure you want to delete <ALL> routes?"
-msgstr ""
-#
-msgid "Are you sure you want to delete <ALL> tracks?"
-msgstr ""
-#
-msgid "Are you sure you want to delete <ALL> waypoints?"
-msgstr ""
-#
-msgid "Are you sure you want to delete the selected object(s)"
-msgstr ""
-#
-msgid "Are you sure you want to delete this layer and <ALL> of its contents?"
-msgstr ""
-#
-msgid "Are you sure you want to delete this route?"
-msgstr ""
-#
-msgid "Are you sure you want to delete this track?"
-msgstr ""
-#
-msgid "Are you sure you want to move Down this waypoint?"
-msgstr ""
-#
-msgid "Are you sure you want to move Up this waypoint?"
-msgstr ""
-#
-msgid "Are you sure you want to remove this waypoint?"
-msgstr ""
-#
-msgid "Argentine Republic"
-msgstr "Argentína"
-#
-msgid "Armenia"
-msgstr "Armenía"
-#
-msgid "Arrival Radius"
-msgstr ""
-#
-msgid "Arrival radius"
-msgstr ""
-#
-msgid "Arrived"
-msgstr "Mættur"
-#
-msgid "Aruba"
-msgstr "Arúba"
-#
-msgid "Ascension Island"
-msgstr ""
-#
-msgid "Assumed 1 Mile Point"
-msgstr ""
-#
-msgid "Assumed magnetic variation"
-msgstr ""
-#
-msgid "At Anchor"
-msgstr ""
-#
-msgid "AtoN"
-msgstr ""
-#
-msgid "AtoN Real"
-msgstr ""
-#
-msgid "AtoN Real (On Position)"
-msgstr ""
-#
-msgid "AtoN Real(Off Position)"
-msgstr ""
-#
-msgid "AtoN Virtual"
-msgstr ""
-#
-msgid "AtoN Virtual (Off Position)"
-msgstr ""
-#
-msgid "AtoN Virtual (On Position)"
-msgstr ""
-#
-msgid "Attenuate less critical AIS targets"
-msgstr ""
-#
-msgid "Audio Play command:"
-msgstr ""
-#
-msgid "Audio file name:"
-msgstr ""
-#
-msgid "Australia"
-msgstr "Ástralía"
-#
-msgid "Austria"
-msgstr "Austurríki"
-#
-msgid "Authors"
-msgstr ""
-#
-msgid "Auto"
-msgstr "Sjálfvirkt"
-#
-msgid "Auto Follow"
-msgstr ""
-#
-msgid "AutoSort"
-msgstr ""
-#
-msgid "Automatic Daily Tracks at"
-msgstr ""
-#
-msgid "Automatic Daily Tracks at midnight"
-msgstr ""
-#
-msgid "Automatic server discovery"
-msgstr ""
-#
-msgid "Avg. speed"
-msgstr "Meðalhraði"
-#
-msgid "Azerbaijani Republic"
-msgstr "Aserbaídsjan"
-#
-msgid "Azores"
-msgstr "Asóreyjar"
-#
-msgid "B"
-msgstr ""
-#
-msgid "BT"
-msgstr ""
-#
-msgid "BT Scan"
-msgstr ""
-#
-msgid "BT Sources"
-msgstr ""
-#
-msgid "Bahamas"
-msgstr "Bahamaeyjar"
-#
-msgid "Bahrain"
-msgstr "Barein"
-#
-msgid "Bangladesh"
-msgstr "Bangladess"
-#
-msgid "Barbados"
-msgstr "Barbados"
-#
-msgid "Barge, tanker, chemical"
-msgstr ""
-#
-msgid "Base"
-msgstr ""
-#
-msgid "Base Station"
-msgstr ""
-#
-msgid "Basic"
-msgstr ""
-#
-msgid "Baudrate"
-msgstr ""
-#
-msgid "Beacon, Isolated Danger"
-msgstr ""
-#
-msgid "Beacon, Port Hand"
-msgstr "Viti, bakborð"
-#
-msgid "Beacon, Preferred Channel Port Hand"
-msgstr ""
-#
-msgid "Beacon, Preferred Channel Starboard Hand"
-msgstr ""
-#
-msgid "Beacon, Safe Water"
-msgstr ""
-#
-msgid "Beacon, Special Mark"
-msgstr ""
-#
-msgid "Beacon, Starboard Hand"
-msgstr "Viti, stjórnborð"
-#
-msgid "Bearing"
-msgstr ""
-#
-msgid "Bearings"
-msgstr ""
-#
-msgid "Belarus"
-msgstr "Hvíta Rússland"
-#
-msgid "Belgium"
-msgstr "Belgía"
-#
-msgid "Belize"
-msgstr "Belís"
-#
-msgid "Benin"
-msgstr ""
-#
-msgid "Bermuda"
-msgstr "Bermúdaeyjar"
-#
-msgid "Bhutan"
-msgstr "Bútan"
-#
-msgid "Black"
-msgstr "Svart"
-#
-msgid "Blacklisted plugin detected..."
-msgstr ""
-#
-msgid "Blue"
-msgstr "Blátt"
-#
-msgid "Bluetooth Data Sources"
-msgstr ""
-#
-msgid "Bolivia"
-msgstr "Bólivía"
-#
-msgid "Bosnia and Herzegovina"
-msgstr "Bosnía og Hersegóvína"
-#
-msgid "Botswana"
-msgstr ""
-#
-msgid "Boundaries"
-msgstr ""
-#
-msgid "Brazil"
-msgstr "Brasilía"
-#
-msgid "Brg"
-msgstr ""
-#
-msgid "British Virgin Islands"
-msgstr "Bresku Meyjaeyjar"
-#
-msgid "Brunei Darussalam"
-msgstr "Brúnei Darussalam"
-#
-msgid "Buddy"
-msgstr ""
-#
-msgid "Built-in Bluetooth"
-msgstr "Innbyggt Bluetooth"
-#
-msgid "Built-in Bluetooth SPP"
-msgstr ""
-#
-msgid "Built-in GPS"
-msgstr "Innbyggt GPS"
-#
-msgid "Bulgaria"
-msgstr "Búlgaría"
-#
-msgid "Bulk carrier maritime"
-msgstr ""
-#
-msgid "Bunkership"
-msgstr ""
-#
-msgid "Buoy/Light Labels"
-msgstr "Bauja/ljósmerki"
-#
-msgid "Buoys/Lights"
-msgstr "Baujur/ljós"
-#
-msgid "Burkina Faso"
-msgstr ""
-#
-msgid "Burundi"
-msgstr ""
-#
-msgid "C"
-msgstr ""
-#
-msgid "C&olour:"
-msgstr ""
-#
-msgid "CM93 Detail Level"
+
+#: src/ais.cpp:329
+msgid "Security Alert - Level 1"
+msgstr ""
+
+#: src/ais.cpp:330
+msgid "Security Alert - Level 2"
+msgstr ""
+
+#: src/ais.cpp:331
+msgid "Security Alert - Level 3"
+msgstr ""
+
+#: src/ais.cpp:337
+msgid "Distress Area: Vessel disabled and adrift"
+msgstr ""
+
+#: src/ais.cpp:338
+msgid "Distress Area: Vessel sinking"
+msgstr ""
+
+#: src/ais.cpp:339
+msgid "Distress Area: Vessel abandoning ship"
+msgstr ""
+
+#: src/ais.cpp:340
+msgid "Distress Area: Vessel requests medical assistance"
+msgstr ""
+
+#: src/ais.cpp:341
+msgid "Distress Area: Vessel flooding"
+msgstr ""
+
+#: src/ais.cpp:342
+msgid "Distress Area: Vessel fire/explosion"
+msgstr ""
+
+#: src/ais.cpp:343
+msgid "Distress Area: Vessel grounding"
+msgstr ""
+
+#: src/ais.cpp:344
+msgid "Distress Area: Vessel collision"
+msgstr ""
+
+#: src/ais.cpp:345
+msgid "Distress Area: Vessel listing/capsizing"
+msgstr ""
+
+#: src/ais.cpp:346
+msgid "Distress Area: Vessel under assault"
+msgstr ""
+
+#: src/ais.cpp:347
+msgid "Distress Area: Person overboard"
+msgstr ""
+
+#: src/ais.cpp:348
+msgid "Distress Area: SAR area"
+msgstr ""
+
+#: src/ais.cpp:349
+msgid "Distress Area: Pollution response area"
+msgstr ""
+
+#: src/ais.cpp:353
+msgid "Instruction: Contact VTS at this point/juncture"
+msgstr ""
+
+#: src/ais.cpp:354
+msgid "Instruction: Contact Port Administration at this point/juncture"
+msgstr ""
+
+#: src/ais.cpp:356
+msgid "Instruction: Do not proceed beyond this point/juncture"
+msgstr ""
+
+#: src/ais.cpp:357
+msgid "Instruction: Await instructions prior to proceeding beyond this point/juncture"
+msgstr ""
+
+#: src/ais.cpp:359
+msgid "Proceed to this location - await instructions"
+msgstr ""
+
+#: src/ais.cpp:360
+msgid "Clearance granted - proceed to berth"
+msgstr ""
+
+#: src/ais.cpp:363
+msgid "Information: Pilot boarding position"
+msgstr ""
+
+#: src/ais.cpp:364
+msgid "Information: Icebreaker waiting area"
+msgstr ""
+
+#: src/ais.cpp:365
+msgid "Information: Places of refuge"
+msgstr ""
+
+#: src/ais.cpp:366
+msgid "Information: Position of icebreakers"
+msgstr ""
+
+#: src/ais.cpp:367
+msgid "Information: Location of response units"
+msgstr ""
+
+#: src/ais.cpp:368
+msgid "VTS active target"
+msgstr ""
+
+#: src/ais.cpp:369
+msgid "Rogue or suspicious vessel"
+msgstr ""
+
+#: src/ais.cpp:370
+msgid "Vessel requesting non-distress assistance"
+msgstr ""
+
+#: src/ais.cpp:371
+msgid "Chart Feature: Sunken vessel"
+msgstr ""
+
+#: src/ais.cpp:372
+msgid "Chart Feature: Submerged object"
+msgstr ""
+
+#: src/ais.cpp:373
+msgid "Chart Feature: Semi-submerged object"
+msgstr ""
+
+#: src/ais.cpp:374
+msgid "Chart Feature: Shoal area"
+msgstr ""
+
+#: src/ais.cpp:375
+msgid "Chart Feature: Shoal area due north"
+msgstr ""
+
+#: src/ais.cpp:376
+msgid "Chart Feature: Shoal area due east"
+msgstr ""
+
+#: src/ais.cpp:377
+msgid "Chart Feature: Shoal area due south"
+msgstr ""
+
+#: src/ais.cpp:378
+msgid "Chart Feature: Shoal area due west"
+msgstr ""
+
+#: src/ais.cpp:379
+msgid "Chart Feature: Channel obstruction"
+msgstr ""
+
+#: src/ais.cpp:380
+msgid "Chart Feature: Reduced vertical clearance"
+msgstr ""
+
+#: src/ais.cpp:381
+msgid "Chart Feature: Bridge closed"
+msgstr ""
+
+#: src/ais.cpp:382
+msgid "Chart Feature: Bridge partially open"
+msgstr ""
+
+#: src/ais.cpp:383
+msgid "Chart Feature: Bridge fully open"
+msgstr ""
+
+#: src/ais.cpp:387
+msgid "Report from ship: Icing info"
+msgstr ""
+
+#: src/ais.cpp:389
+msgid "Report from ship: Miscellaneous information - define in Associated text field"
+msgstr ""
+
+#: src/ais.cpp:396
+msgid "Route: Recommended route"
+msgstr ""
+
+#: src/ais.cpp:397
+msgid "Route: Alternative route"
+msgstr ""
+
+#: src/ais.cpp:398
+msgid "Route: Recommended route through ice"
+msgstr ""
+
+#: src/ais.cpp:401
+msgid "Other - Define in associated text field"
+msgstr ""
+
+#: src/ais.cpp:402
+msgid "Cancellation - cancel area as identified by Message Linkage ID"
+msgstr ""
+
+#: src/ais.cpp:404
+msgid "Undefined (default)"
 msgstr ""
 
 #: src/ais.cpp:1768 src/ais.cpp:1769
 msgid "AIS Target Name"
 msgstr ""
-#
-msgid "CM93 Offset Dialog..."
+
+#: src/AIS_Decoder.cpp:269
+msgid "Vessel, type unknown"
 msgstr ""
-#
-msgid "COG Predictor Length (min)"
+
+#: src/AIS_Decoder.cpp:270
+msgid "Freightbarge"
 msgstr ""
-#
-msgid "CPA"
-msgstr "CPA"
-#
-msgid "CPA Calculation"
-msgstr "CPA útreikningur"
-#
-msgid "CPA TCPA"
-msgstr "CPA TCPA"
-#
-msgid "CPA/TCPA Alerts"
-msgstr "CPA/TCPA aðvaranir"
-#
-msgid "Cache"
+
+#: src/AIS_Decoder.cpp:271
+msgid "Tankbarge"
 msgstr ""
-#
-msgid "Calculate SOG and COG from position changes"
+
+#: src/AIS_Decoder.cpp:272
+msgid "Tankbarge, dry cargo as if liquid (e.g. cement)"
 msgstr ""
-#
-msgid "Calculate values"
+
+#: src/AIS_Decoder.cpp:273
+msgid "Service vessel, police patrol, port service"
 msgstr ""
-#
-msgid "Call"
-msgstr "Hringja"
-#
-msgid "Cambodia"
-msgstr "Kambódía"
-#
-msgid "Cameroon"
+
+#: src/AIS_Decoder.cpp:274 src/AIS_Decoder.cpp:328
+msgid "Pushboat, single"
 msgstr ""
-#
-msgid "Canada"
-msgstr "Kanada"
-#
-msgid "Cancel"
-msgstr "Hætta við"
-#
-msgid "Cancellation - cancel area as identified by Message Linkage ID"
+
+#: src/AIS_Decoder.cpp:275
+msgid "Object, not otherwise specified"
 msgstr ""
-#
-msgid "Cannot download data from url"
+
+#: src/AIS_Decoder.cpp:276
+msgid "Object, towed, not otherwise specified"
 msgstr ""
-#
-msgid "Cannot parse downloaded data"
+
+#: src/AIS_Decoder.cpp:277
+msgid "Bunkership"
 msgstr ""
-#
-msgid "Canvas Layout"
+
+#: src/AIS_Decoder.cpp:278
+msgid "Motor freighter"
 msgstr ""
-#
-msgid "Capo Verde"
+
+#: src/AIS_Decoder.cpp:279
+msgid "Motor tanker"
 msgstr ""
-#
-msgid "Card. E"
+
+#: src/AIS_Decoder.cpp:280
+msgid "Motor tanker, liquid cargo, type N"
 msgstr ""
-#
-msgid "Card. N"
+
+#: src/AIS_Decoder.cpp:281
+msgid "Motor tanker, liquid cargo, type C"
 msgstr ""
-#
-msgid "Card. S"
+
+#: src/AIS_Decoder.cpp:282
+msgid "Motor tanker, dry cargo as if liquid (e.g. cement)"
 msgstr ""
-#
-msgid "Card. W"
+
+#: src/AIS_Decoder.cpp:283
+msgid "Container vessel"
 msgstr ""
-#
-msgid "Cardinal E Beacon"
+
+#: src/AIS_Decoder.cpp:284
+msgid "Gas tanker"
 msgstr ""
-#
-msgid "Cardinal Mark E"
+
+#: src/AIS_Decoder.cpp:285
+msgid "Motor freighter, tug"
 msgstr ""
-#
-msgid "Cardinal Mark N"
+
+#: src/AIS_Decoder.cpp:286
+msgid "Motor tanker, tug"
 msgstr ""
-#
-msgid "Cardinal Mark S"
+
+#: src/AIS_Decoder.cpp:287
+msgid "Motor freighter with one or more ships alongside"
 msgstr ""
-#
-msgid "Cardinal Mark W"
+
+#: src/AIS_Decoder.cpp:288
+msgid "Motor freighter with tanker"
 msgstr ""
-#
-msgid "Cardinal N Beacon"
+
+#: src/AIS_Decoder.cpp:289
+msgid "Motor freighter pushing one or more freighters"
 msgstr ""
-#
-msgid "Cardinal S Beacon"
+
+#: src/AIS_Decoder.cpp:290
+msgid "Motor freighter pushing at least one tank-ship"
 msgstr ""
-#
-msgid "Cardinal W Beacon"
+
+#: src/AIS_Decoder.cpp:291
+msgid "Tug, freighter"
 msgstr ""
-#
-msgid "Cargo Ship"
-msgstr "Flutningaskip"
-#
-msgid "Catalog Manager"
+
+#: src/AIS_Decoder.cpp:292
+msgid "Tug, tanker"
 msgstr ""
-#
-msgid "Catalog URL status: "
+
+#: src/AIS_Decoder.cpp:293
+msgid "Tug freighter, coupled"
 msgstr ""
-#
-msgid "Catalog channel: "
+
+#: src/AIS_Decoder.cpp:294
+msgid "Tug, freighter/tanker, coupled"
 msgstr ""
-#
-msgid "Catalog update problem"
+
+#: src/AIS_Decoder.cpp:295
+msgid "Tankbarge, liquid cargo, type N"
 msgstr ""
-#
-msgid "Catalog update successful"
+
+#: src/AIS_Decoder.cpp:296
+msgid "Tankbarge, liquid cargo, type C"
 msgstr ""
-#
-msgid "Catalog updated"
+
+#: src/AIS_Decoder.cpp:297
+msgid "Freightbarge with containers"
 msgstr ""
-#
-msgid "Caution Area: Cluster of fishing vessels"
+
+#: src/AIS_Decoder.cpp:298
+msgid "Tankbarge, gas"
 msgstr ""
-#
-msgid "Caution Area: Derelicts (drifting objects)"
+
+#: src/AIS_Decoder.cpp:299
+msgid "Pushtow, one cargo barge"
 msgstr ""
-#
-msgid "Caution Area: Divers down"
+
+#: src/AIS_Decoder.cpp:300
+msgid "Pushtow, two cargo barges"
 msgstr ""
-#
-msgid "Caution Area: Dredge operations"
+
+#: src/AIS_Decoder.cpp:301
+msgid "Pushtow, three cargo barges"
 msgstr ""
-#
-msgid "Caution Area: Fairway closed"
+
+#: src/AIS_Decoder.cpp:302
+msgid "Pushtow, four cargo barges"
 msgstr ""
-#
-msgid "Caution Area: Fishery - nets in water"
+
+#: src/AIS_Decoder.cpp:303
+msgid "Pushtow, five cargo barges"
 msgstr ""
-#
-msgid "Caution Area: Harbour closed"
+
+#: src/AIS_Decoder.cpp:304
+msgid "Pushtow, six cargo barges"
 msgstr ""
-#
-msgid "Caution Area: Marine event"
+
+#: src/AIS_Decoder.cpp:305
+msgid "Pushtow, seven cargo barges"
 msgstr ""
-#
-msgid "Caution Area: Marine mammals habitat (implies whales NOT observed)"
+
+#: src/AIS_Decoder.cpp:306
+msgid "Pushtow, eight cargo barges"
 msgstr ""
-#
-msgid "Caution Area: Marine mammals in area - reduce speed"
+
+#: src/AIS_Decoder.cpp:307
+msgid "Pushtow, nine or more barges"
 msgstr ""
-#
-msgid "Caution Area: Marine mammals in area - report sightings"
+
+#: src/AIS_Decoder.cpp:308
+msgid "Pushtow, one tank/gas barge"
 msgstr ""
-#
-msgid "Caution Area: Marine mammals in area - stay clear"
+
+#: src/AIS_Decoder.cpp:310
+msgid "Pushtow, two barges at least one tanker or gas barge"
 msgstr ""
-#
-msgid "Caution Area: Protected habitat - no fishing or anchoring"
+
+#: src/AIS_Decoder.cpp:312
+msgid "Pushtow, three barges at least one tanker or gas barge"
 msgstr ""
-#
-msgid "Caution Area: Protected habitat - reduce speed"
+
+#: src/AIS_Decoder.cpp:314
+msgid "Pushtow, four barges at least one tanker or gas barge"
 msgstr ""
-#
-msgid "Caution Area: Protected habitat - stay clear"
+
+#: src/AIS_Decoder.cpp:316
+msgid "Pushtow, five barges at least one tanker or gas barge"
 msgstr ""
-#
-msgid "Caution Area: Risk (define in Associated text field)"
+
+#: src/AIS_Decoder.cpp:318
+msgid "Pushtow, six barges at least one tanker or gas barge"
 msgstr ""
-#
-msgid "Caution Area: Seaplane operations"
+
+#: src/AIS_Decoder.cpp:320
+msgid "Pushtow, seven barges at least one tanker or gas barge"
 msgstr ""
-#
-msgid "Caution Area: Survey operations"
+
+#: src/AIS_Decoder.cpp:322
+msgid "Pushtow, eight barges at least one tanker or gas barge"
 msgstr ""
-#
-msgid "Caution Area: Swim area"
+
+#: src/AIS_Decoder.cpp:324
+msgid "Pushtow, nine or more barges at least one tanker or gas barge"
 msgstr ""
-#
-msgid "Caution Area: Traffic congestion"
+
+#: src/AIS_Decoder.cpp:325
+msgid "Tug, single"
 msgstr ""
-#
-msgid "Caution Area: Underwater operation"
+
+#: src/AIS_Decoder.cpp:326
+msgid "Tug, one or more tows"
 msgstr ""
-#
-msgid "Caution Area: Underwater vehicle operation"
+
+#: src/AIS_Decoder.cpp:327
+msgid "Tug, assisting a vessel or linked combination"
 msgstr ""
-#
-msgid "Cayman Islands"
-msgstr "Caymaneyjar"
-#
-msgid "Cell"
+
+#: src/AIS_Decoder.cpp:329
+msgid "Passenger ship, ferry, cruise ship, red cross ship"
+msgstr "Farþegaskip, ferja, skemmtiferðaskip, rauðakross skip"
+
+#: src/AIS_Decoder.cpp:330
+msgid "Ferry"
+msgstr "Ferja"
+
+#: src/AIS_Decoder.cpp:331
+msgid "Red cross ship"
+msgstr "Rauðakross skip"
+
+#: src/AIS_Decoder.cpp:332
+msgid "Cruise ship"
+msgstr "Skemmtiferðaskip"
+
+#: src/AIS_Decoder.cpp:333
+msgid "Passenger ship without accommodation"
 msgstr ""
-#
-msgid "Cell Scale"
+
+#: src/AIS_Decoder.cpp:334
+msgid "Vessel, work maintenance craft, floating derrick, cable-ship, buoy-ship, dredge"
 msgstr ""
-#
-msgid "Celsius"
+
+#: src/AIS_Decoder.cpp:336
+msgid "Fishing boat"
+msgstr "Fiskibátur"
+
+#: src/AIS_Decoder.cpp:337
+msgid "Barge, tanker, chemical"
 msgstr ""
-#
-msgid "Center view"
+
+#: src/AIS_Decoder.cpp:338
+msgid "General cargo Vessel maritime"
 msgstr ""
-#
-msgid "Central African Republic"
+
+#: src/AIS_Decoder.cpp:339
+msgid "Unit carrier maritime"
 msgstr ""
-#
-msgid "Chad"
-msgstr "Tjad"
-#
-msgid "Change Color Scheme"
+
+#: src/AIS_Decoder.cpp:340
+msgid "Bulk carrier maritime"
 msgstr ""
-#
-msgid "Chart Detail"
+
+#: src/AIS_Decoder.cpp:342
+msgid "Liquified gas tanker"
 msgstr ""
-#
-msgid "Chart Display"
+
+#: src/AIS_Decoder.cpp:343
+msgid "Pleasure craft, longer than 20 metres"
+msgstr "Skemmtiferðaskip, lengra en 20 metrar"
+
+#: src/AIS_Decoder.cpp:344
+msgid "Fast ship"
+msgstr "Hraðskreitt skip"
+
+#: src/AIS_Decoder.cpp:345
+msgid "Hydrofoil"
 msgstr ""
 
 #: src/AIS_Decoder.cpp:1260
@@ -1461,8 +1392,9 @@ msgstr "MMSI"
 #: src/AISTargetListDialog.cpp:578
 msgid "Class"
 msgstr ""
-#
-msgid "Chart Feature: Shoal area due east"
+
+#: src/AIS_Target_Data.cpp:339
+msgid "IMO"
 msgstr ""
 
 #: src/AIS_Target_Data.cpp:357
@@ -1488,8 +1420,9 @@ msgstr "Prufar"
 #: src/AIS_Target_Data.cpp:417
 msgid "Safety Broadcast Message"
 msgstr ""
-#
-msgid "Chart Feature: Shoal area due south"
+
+#: src/AIS_Target_Data.cpp:493
+msgid " (Last Known)"
 msgstr ""
 
 #: src/AIS_Target_Data.cpp:501 src/GoToPositionDialog.cpp:112
@@ -1501,11 +1434,18 @@ msgstr "Staðsetning"
 #: src/AIS_Target_Data.cpp:502
 msgid "Report Age"
 msgstr ""
-#
-msgid "Chart Feature: Submerged object"
+
+#: src/AIS_Target_Data.cpp:524
+msgid "Report as of"
 msgstr ""
-#
-msgid "Chart Feature: Sunken vessel"
+
+#: src/AIS_Target_Data.cpp:529 src/RoutePropDlgImpl.cpp:814
+#: src/TrackPropDlg.cpp:362 src/TrackPropDlg.cpp:1342
+msgid "Destination"
+msgstr "Áfangastaður"
+
+#: src/AIS_Target_Data.cpp:530
+msgid "ETA (UTC)"
 msgstr ""
 
 #: src/AIS_Target_Data.cpp:592 src/AIS_Target_Data.cpp:598
@@ -2604,8 +2544,9 @@ msgstr ""
 #: src/AISTargetListDialog.cpp:350 src/canvasMenu.cpp:626 src/chart1.cpp:5616
 msgid "AIS target list"
 msgstr ""
-#
-msgid "Downloading"
+
+#: src/AISTargetListDialog.cpp:542
+msgid "Trk"
 msgstr ""
 
 #: src/AISTargetListDialog.cpp:551 src/MarkInfo.cpp:382
@@ -2628,38 +2569,45 @@ msgstr "Tegund"
 #: src/AISTargetListDialog.cpp:596
 msgid "Nav Status"
 msgstr ""
-#
-msgid "Draw AIS realtime prediction, target speed min (kn)"
+
+#: src/AISTargetListDialog.cpp:605
+msgid "Brg"
 msgstr ""
-#
-msgid "Dredge"
+
+#: src/AISTargetListDialog.cpp:623
+msgid "CoG"
 msgstr ""
-#
-msgid "Dredger"
+
+#: src/AISTargetListDialog.cpp:632
+msgid "SoG"
 msgstr ""
-#
-msgid "Drop"
-msgstr "Henda"
-#
-msgid "Drop MOB Marker"
+
+#: src/AISTargetListDialog.cpp:648
+msgid "TCPA"
 msgstr ""
-#
-msgid "Drop Mark"
+
+#: src/AISTargetListDialog.cpp:690
+msgid "Target info"
 msgstr ""
-#
-msgid "Drop Mark at Boat"
+
+#: src/AISTargetListDialog.cpp:707
+msgid "Create WPT"
 msgstr ""
-#
-msgid "Drop Mark at Cursor"
+
+#: src/AISTargetListDialog.cpp:716
+msgid "Hide All Tracks"
 msgstr ""
-#
-msgid "Drop sentences"
+
+#: src/AISTargetListDialog.cpp:724
+msgid "Show All Tracks"
 msgstr ""
-#
-msgid "ENC Completed."
+
+#: src/AISTargetListDialog.cpp:732
+msgid "Toggle track"
 msgstr ""
-#
-msgid "ENC Sounding factor"
+
+#: src/AISTargetListDialog.cpp:740
+msgid "Copy MMSI"
 msgstr ""
 
 #: src/AISTargetListDialog.cpp:748
@@ -2861,123 +2809,138 @@ msgstr "Endurtaka"
 #: src/canvasMenu.cpp:331
 msgid "End Route"
 msgstr ""
-#
-msgid "Engaged in Fishing"
+
+#: src/canvasMenu.cpp:337
+msgid "Measure Off"
 msgstr ""
-#
-msgid "Enroute"
+
+#: src/canvasMenu.cpp:340
+msgid "Measure"
+msgstr "Mæla"
+
+#: src/canvasMenu.cpp:402
+msgid "Max Detail Here"
 msgstr ""
-#
-msgid "Enter Group Name"
+
+#: src/canvasMenu.cpp:404 src/canvasMenu.cpp:427
+msgid "Scale In"
 msgstr ""
-#
-msgid "Enter the NMEA sentence"
+
+#: src/canvasMenu.cpp:406 src/canvasMenu.cpp:429
+msgid "Scale Out"
 msgstr ""
-#
-msgid ""
-"Enter the NMEA sentence (2, 3 or 5 characters)\n"
-"  or a valid REGEX expression (6 characters or longer)"
+
+#: src/canvasMenu.cpp:437
+msgid "Drop Mark"
 msgstr ""
-#
-msgid "Environmental Caution Area: Hazardous sea ice"
+
+#: src/canvasMenu.cpp:439
+msgid "New Route..."
 msgstr ""
-#
-msgid "Environmental Caution Area: Heavy icing"
+
+#: src/canvasMenu.cpp:442
+msgid "Move Boat Here"
 msgstr ""
-#
-msgid "Environmental Caution Area: High waves"
+
+#: src/canvasMenu.cpp:447
+msgid "Navigate To Here"
 msgstr ""
 
 #: src/canvasMenu.cpp:456 src/chart1.cpp:5520
 msgid "Course Up Mode"
 msgstr ""
-#
-msgid "Environmental Caution Area: Restricted visibility (fog, rain, etc.)"
+
+#: src/canvasMenu.cpp:458
+msgid "Heading Up Mode"
 msgstr ""
 
 #: src/canvasMenu.cpp:460 src/canvasMenu.cpp:467 src/chart1.cpp:5229
 #: src/chart1.cpp:5519 src/chart1.cpp:7765
 msgid "North Up Mode"
 msgstr ""
-#
-msgid "Environmental Caution Area: Storm warning (storm cell or line of storms)"
+
+#: src/canvasMenu.cpp:465
+msgid "Chart Up Mode"
 msgstr ""
 
 #: src/canvasMenu.cpp:476 src/canvasMenu.cpp:483 src/chart1.cpp:5601
 msgid "Toggle Full Screen"
 msgstr ""
-#
-msgid "Equatorial Guinea"
+
+#: src/canvasMenu.cpp:489 src/canvasMenu.cpp:653 src/canvasMenu.cpp:671
+msgid "Zero XTE"
+msgstr "Núllstilla XTE"
+
+#: src/canvasMenu.cpp:496
+msgid "Paste Waypoint"
 msgstr ""
-#
-msgid "Eritrea"
-msgstr "Erítrea"
-#
-msgid "Error"
+
+#: src/canvasMenu.cpp:500 src/canvasMenu.cpp:508
+msgid "Paste Route"
 msgstr ""
-#
-msgid "Error extracting import plugin tarball."
+
+#: src/canvasMenu.cpp:504 src/canvasMenu.cpp:509
+msgid "Paste Track"
 msgstr ""
-#
-msgid "Error on Route Upload.  Garmin GPS not connected"
+
+#: src/canvasMenu.cpp:519
+msgid "CM93 Offset Dialog..."
 msgstr ""
 
 #: src/canvasMenu.cpp:544 src/options.cpp:5251 src/options.cpp:5313
 msgid "Chart Groups"
 msgstr ""
-#
-msgid "Error on Waypoint Upload.  Garmin GPS not connected"
+
+#: src/canvasMenu.cpp:551
+msgid "temporary"
+msgstr "tímabundið"
+
+#: src/canvasMenu.cpp:554
+msgid "All Active Charts"
 msgstr ""
-#
-msgid "Error on Waypoint Upload.  Please check logfiles..."
+
+#: src/canvasMenu.cpp:585 src/CanvasOptions.cpp:214
+msgid "AIS"
+msgstr "AIS"
+
+#: src/canvasMenu.cpp:586
+msgid "Target Query..."
 msgstr ""
-#
-msgid "Error processing import plugin metadata."
+
+#: src/canvasMenu.cpp:590
+msgid "Hide Target CPA"
 msgstr ""
-#
-msgid "Error, import plugin tarball does not contain required metadata."
+
+#: src/canvasMenu.cpp:592
+msgid "Show Target CPA"
 msgstr ""
-#
-msgid "Estimated remaining time:"
+
+#: src/canvasMenu.cpp:594
+msgid "Target List..."
 msgstr ""
-#
-msgid "Estimated time : "
-msgstr "Áætlaður tími: "
-#
-msgid "Estimated total time:"
+
+#: src/canvasMenu.cpp:598
+msgid "Hide Target Track"
 msgstr ""
-#
-msgid "Estonia"
-msgstr "Eystland"
-#
-msgid "Eswatini"
-msgstr "Svasíland"
-#
-msgid "Ethiopia"
-msgstr "Eþíópía"
-#
-msgid "EvTwilight"
+
+#: src/canvasMenu.cpp:601
+msgid "Show Target Track"
 msgstr ""
-#
-msgid "Exit OpenCPN"
-msgstr "Loka OpenCPN"
-#
-msgid "Export"
-msgstr "Flytja út"
-#
-msgid "Export All Visible..."
+
+#: src/canvasMenu.cpp:604
+msgid "Copy Target MMSI"
 msgstr ""
-#
-msgid "Export GPX file"
-msgstr "Senda út sem GPX skrá"
-#
-msgid "Extend"
+
+#: src/canvasMenu.cpp:611 src/canvasMenu.cpp:619
+msgid "Object Query..."
 msgstr ""
-#
-msgid "Extend track"
+
+#: src/canvasMenu.cpp:633
+msgid "Unnamed Route"
 msgstr ""
-#
-msgid "Extended"
+
+#: src/canvasMenu.cpp:641
+msgid "Layer Route"
 msgstr ""
 
 #: src/canvasMenu.cpp:643 src/canvasMenu.cpp:661 src/canvasMenu.cpp:731
@@ -3004,14 +2967,17 @@ msgstr "Virkja"
 #: src/concanv.cpp:140 src/concanv.cpp:155 src/concanv.cpp:194
 msgid "Route"
 msgstr ""
-#
-msgid "Extra Object Info"
+
+#: src/canvasMenu.cpp:676
+msgid "Insert Waypoint"
 msgstr ""
-#
-msgid "F"
+
+#: src/canvasMenu.cpp:677 src/undo.cpp:88
+msgid "Append Waypoint"
 msgstr ""
-#
-msgid "F/V"
+
+#: src/canvasMenu.cpp:682
+msgid "Split around Leg"
 msgstr ""
 
 #: src/canvasMenu.cpp:684 src/canvasMenu.cpp:736 src/canvasMenu.cpp:787
@@ -3033,118 +2999,73 @@ msgstr "Afturábak..."
 #: src/canvasMenu.cpp:690
 msgid "Hide Waypoint Names"
 msgstr ""
-#
-msgid "Fail: "
+
+#: src/canvasMenu.cpp:693
+msgid "Show Waypoint Names"
 msgstr ""
-#
-msgid "Failed to initialize the user interface. "
+
+#: src/canvasMenu.cpp:696
+msgid "Resequence Waypoints..."
 msgstr ""
-#
-msgid "Falkland Islands"
-msgstr "Falklandeyjar"
-#
-msgid "Faroe Islands"
-msgstr "Færeyjar"
-#
-msgid "Fast ship"
-msgstr "Hraðskreitt skip"
-#
-msgid "Fathoms"
-msgstr ""
-#
-msgid "Feet"
-msgstr "Fet"
-#
-msgid "Ferry"
-msgstr "Ferja"
-#
-msgid "Fiji"
-msgstr "Fídjieyjar"
-#
-msgid "Filter"
-msgstr "Sía"
-#
-msgid "Filter NMEA COG/SOG"
-msgstr ""
-#
-msgid "Filter NMEA Course and Speed data"
-msgstr ""
-#
-msgid "Filter period (sec)"
-msgstr ""
-#
-msgid "Filters"
-msgstr "Síur"
-#
-#, fuzzy
-msgid "Finishing migration"
-msgstr "Fiskibátur"
-#
-msgid "Finland"
-msgstr "Finnland"
-#
-msgid "First part of route to be inserted into dragged route?"
-msgstr ""
-#
-msgid "Fishing Vessel"
-msgstr ""
-#
-msgid "Fishing boat"
-msgstr "Fiskibátur"
-#
-msgid "Fix.Struct."
-msgstr ""
-#
-msgid "Fixed Structure"
+
+#: src/canvasMenu.cpp:710 src/canvasMenu.cpp:804
+msgid "Send to new GPS"
+msgstr "Senda á nýjann GPS"
+
+#: src/canvasMenu.cpp:729
+msgid "Layer Track"
 msgstr ""
 
 #: src/canvasMenu.cpp:733 src/chcanv.cpp:3968
 msgid "Track"
 msgstr ""
-#
-msgid "Fonts"
-msgstr "Letur"
-#
-msgid "For this leg the Great Circle route is "
+
+#: src/canvasMenu.cpp:746 src/canvasMenu.cpp:816
+msgid "Unnamed Waypoint"
 msgstr ""
-#
-msgid "Force Full Database Rebuild"
+
+#: src/canvasMenu.cpp:754 src/canvasMenu.cpp:824
+msgid "Layer Waypoint"
 msgstr ""
-#
-msgid "Format uploads for Furuno GP3X"
+
+#: src/canvasMenu.cpp:761 src/canvasMenu.cpp:828
+msgid "Waypoint"
+msgstr "Vegpunktur"
+
+#: src/canvasMenu.cpp:779
+msgid "Remove from Route"
 msgstr ""
-#
-msgid "France"
-msgstr "Frakkland"
-#
-msgid "France - Guiana"
+
+#: src/canvasMenu.cpp:784
+msgid "Split Route at Waypoint"
 msgstr ""
-#
-msgid "Freightbarge"
+
+#: src/canvasMenu.cpp:833
+msgid "Navigate To This"
 msgstr ""
-#
-msgid "Freightbarge with containers"
+
+#: src/canvasMenu.cpp:855
+msgid "Clear Anchor Watch"
 msgstr ""
-#
-msgid "French Polynesia"
-msgstr "Franska Pólýnesía"
-#
-msgid "From"
-msgstr "Frá"
-#
-msgid "From <-> To"
-msgstr "Frá <-> Til"
-#
-msgid "From Ship To"
+
+#: src/canvasMenu.cpp:866
+msgid "Set Anchor Watch"
 msgstr ""
-#
-msgid "Full Route"
+
+#: src/canvasMenu.cpp:907
+msgid "Main Menu"
+msgstr "Aðalvalmynd"
+
+#: src/canvasMenu.cpp:920
+msgid "Show Tide Information"
 msgstr ""
-#
-msgid "Full route to be appended to dragged route?"
+
+#: src/canvasMenu.cpp:926
+msgid "Show Current Information"
 msgstr ""
-#
-msgid "Full route to be inserted into dragged route?"
+
+#: src/canvasMenu.cpp:1097
+msgid "Temporary GOTO Route"
 msgstr ""
 
 #: src/canvasMenu.cpp:1098 src/canvasMenu.cpp:1165
@@ -3842,53 +3763,45 @@ msgstr " Nafn:  "
 #: src/chcanv.cpp:5379 src/chcanv.cpp:5417 src/routemanagerdialog.cpp:696
 msgid "Scale"
 msgstr ""
-#
-msgid "KML with extended waypoint data (QtVlm)"
+
+#: src/chartdbs.cpp:1384
+msgid " ID:  "
 msgstr ""
-#
-msgid "Kazakhstan"
-msgstr "Kasakstan"
-#
-msgid "Kelvin"
+
+#: src/chartdbs.cpp:1392
+msgid " Depth Units:  "
 msgstr ""
-#
-msgid "Kenya"
+
+#: src/chartdbs.cpp:1400
+msgid " Soundings:  "
 msgstr ""
-#
-msgid "Kerguelen Islands"
+
+#: src/chartdbs.cpp:1408
+msgid " Datum:  "
 msgstr ""
-#
-msgid "Kilometers"
+
+#: src/chartdbs.cpp:1416
+msgid " Projection:  "
 msgstr ""
-#
-msgid "Kiribati"
-msgstr "Kíribatí"
-#
-msgid "Knots"
-msgstr "Hnútar"
-#
-msgid "Korea"
-msgstr "Kórea"
-#
-msgid "Kuwait"
-msgstr "Kúveit"
-#
-msgid "Kyrgyz Republic"
-msgstr "Kirgisistan"
-#
-msgid "LE/V"
+
+#: src/chartdbs.cpp:1420
+msgid "Mercator"
 msgstr ""
-#
-msgid "LMT"
+
+#: src/chartdbs.cpp:1422
+msgid "Transverse Mercator"
 msgstr ""
-#
-msgid "LMT @ Location"
+
+#: src/chartdbs.cpp:1424
+msgid "Polyconic"
 msgstr ""
-#
-msgid "LMT @ Track Start"
+
+#: src/chartdbs.cpp:1426
+msgid "Web Mercator (EPSG:3857)"
 msgstr ""
-#
-msgid "LMT@Location"
+
+#: src/chartdbs.cpp:1434
+msgid " Source Edition:  "
 msgstr ""
 
 #: src/chartdbs.cpp:1442
@@ -4133,47 +4046,37 @@ msgstr ""
 #: src/chcanv.cpp:13564
 msgid "Hide This Chart"
 msgstr ""
-#
-msgid "LtV/Rig"
+
+#: src/cm93.cpp:6433
+msgid "OpenCPN CM93 Cell Offset Adjustments"
 msgstr ""
-#
-msgid "Luxembourg"
-msgstr "Lúxemborg"
-#
-msgid "M/T"
+
+#: src/cm93.cpp:6462
+msgid "Cell"
 msgstr ""
-#
-msgid "M/V"
-msgstr ""
-#
-msgid "MAN OVERBOARD"
-msgstr "MAÐUR FYRIR BORÐ"
-#
-msgid "MBTile requires OpenGL to be enabled"
-msgstr ""
-#
-msgid "MMSI"
-msgstr "MMSI"
-#
-msgid "MMSI Extended Properties"
-msgstr ""
-#
-msgid "MMSI Properties"
-msgstr "MMSI eiginleikar"
-#
-msgid "MOB"
-msgstr ""
-#
+
+#: src/cm93.cpp:6465
 msgid "M_COVR ID"
 msgstr ""
-#
-msgid "Macao"
-msgstr "Makaó"
-#
-msgid "Macedonia"
-msgstr "Makedónía"
-#
-msgid "Madagascar"
+
+#: src/cm93.cpp:6469
+msgid "Cell Scale"
+msgstr ""
+
+#: src/cm93.cpp:6473
+msgid "wgsox"
+msgstr ""
+
+#: src/cm93.cpp:6477
+msgid "wgsoy"
+msgstr ""
+
+#: src/cm93.cpp:6481 src/cm93.cpp:6495
+msgid "User X Offset"
+msgstr ""
+
+#: src/cm93.cpp:6485 src/cm93.cpp:6509
+msgid "User Y Offset"
 msgstr ""
 
 #: src/cm93.cpp:6495 src/cm93.cpp:6509 src/options.cpp:4919 src/options.cpp:4929
@@ -4256,20 +4159,17 @@ msgstr "Raðtengi"
 #: src/ConnectionParams.cpp:947 src/options.cpp:2121 src/options.cpp:2773
 msgid "Network"
 msgstr ""
-#
-msgid "Mark targets as lost after (min)"
+
+#: src/ConnectionParams.cpp:143
+msgid "GPS"
+msgstr "GPS"
+
+#: src/ConnectionParams.cpp:145
+msgid "BT"
 msgstr ""
-#
-msgid "Marks"
-msgstr "Merki"
-#
-msgid "Marshall Islands"
-msgstr "Marshalleyjar"
-#
-msgid "Martinique"
-msgstr "Martíník"
-#
-msgid "Mauritania"
+
+#: src/ConnectionParams.cpp:157
+msgid "Internal"
 msgstr ""
 
 #: src/ConnectionParams.cpp:168 src/options.cpp:2203 src/options.cpp:2855
@@ -4287,26 +4187,49 @@ msgstr "GPSD"
 #: src/ConnectionParams.cpp:174 src/options.cpp:2220 src/options.cpp:2872
 msgid "Signal K"
 msgstr ""
-#
-msgid "Max Detail Here"
+
+#: src/ConnectionParams.cpp:197
+msgid "Input"
+msgstr "Inntak"
+
+#: src/ConnectionParams.cpp:199
+msgid "Output"
 msgstr ""
-#
-msgid "Measure"
-msgstr "Mæla"
-#
-msgid "Measure Distance"
+
+#: src/ConnectionParams.cpp:201
+msgid "In/Out"
 msgstr ""
-#
-msgid "Measure Off"
+
+#: src/ConnectionParams.cpp:208
+msgid "Reject"
+msgstr "Hafna"
+
+#: src/ConnectionParams.cpp:210
+msgid "Accept"
+msgstr "Samþykkja"
+
+#: src/ConnectionParams.cpp:213
+msgid "Drop"
+msgstr "Henda"
+
+#: src/ConnectionParams.cpp:215 src/SendToGpsDlg.cpp:197
+msgid "Send"
+msgstr "Senda"
+
+#: src/ConnectionParams.cpp:232
+msgid "In"
 msgstr ""
-#
-msgid "Med/V"
+
+#: src/ConnectionParams.cpp:238
+msgid "In: None"
 msgstr ""
-#
-msgid "Medical Transport"
+
+#: src/ConnectionParams.cpp:242
+msgid "Out"
 msgstr ""
-#
-msgid "Medium"
+
+#: src/ConnectionParams.cpp:248
+msgid ", Out: None"
 msgstr ""
 
 #: src/ConnectionParams.cpp:367 src/options.cpp:3284
@@ -4337,23 +4260,20 @@ msgstr ""
 #: src/options.cpp:2296 src/options.cpp:2958 src/options.cpp:3285
 msgid "Priority"
 msgstr ""
-#
-msgid "Merge waypoints?"
+
+#: src/ConnectionParams.cpp:507 src/ConnectionParams.cpp:645
+#: src/ConnectionParams.cpp:764 src/ConnectionParams.cpp:882
+#: src/ConnectionParams.cpp:924 src/ConnectionParams.cpp:954
+#: src/ConnectionParams.cpp:956 src/ConnectionParams.cpp:960
+msgid "Comment: "
 msgstr ""
-#
-msgid "Message accepted"
+
+#: src/ConnectionParams.cpp:546
+msgid "Network Address"
 msgstr ""
-#
-msgid "Meters"
-msgstr "Metrar"
-#
-msgid "Mexico"
-msgstr "Mexíkó"
-#
-msgid "Micronesia"
-msgstr "Míkrónesía"
-#
-msgid "Migrate Charts.."
+
+#: src/ConnectionParams.cpp:552
+msgid "Network Port"
 msgstr ""
 
 #: src/ConnectionParams.cpp:702 src/options.cpp:2127 src/options.cpp:2779
@@ -4367,15 +4287,13 @@ msgstr "Innbyggt Bluetooth"
 #: src/DetailSlider.cpp:88
 msgid "CM93 Detail Level"
 msgstr ""
-#
-#, fuzzy
-msgid "Migrate destination"
-msgstr "Áfangastaður"
-#
-msgid "Migrated chart folders are now accessible to OpenCPN."
+
+#: src/DetailSlider.cpp:92
+msgid "Rasterchart Zoom/Scale Weighting"
 msgstr ""
-#
-msgid "Migration started..."
+
+#: src/DetailSlider.cpp:96
+msgid "Vectorchart Zoom/Scale Weighting"
 msgstr ""
 
 #: src/download_mgr.cpp:212 src/update_mgr.cpp:209
@@ -4469,50 +4387,49 @@ msgstr "Lengdargráða"
 #: src/kml.cpp:474
 msgid "OpenCPN Route"
 msgstr ""
-#
-msgid "Minimum Screen Size (mm)"
+
+#: src/kml.cpp:518
+msgid "OpenCPN Track"
 msgstr ""
-#
-msgid "Miscellaneous"
+
+#: src/kml.cpp:567
+msgid "OpenCPN Waypoint"
 msgstr ""
-#
-msgid "MoTwilight"
+
+#: src/kml.cpp:638
+msgid "Choose Format for Copy"
 msgstr ""
-#
-msgid "Moldova"
-msgstr "Moldavía"
-#
-msgid "Monaco"
-msgstr "Monakó"
-#
-msgid "Mongolia"
-msgstr "Mongólía"
-#
-msgid "Montenegro"
-msgstr "Svartfjallaland"
-#
-msgid "Montserrat"
-msgstr "Montserrat"
-#
-msgid "Moored"
+
+#: src/kml.cpp:646
+msgid "KML Standard (Google Earth and others)"
 msgstr ""
-#
-msgid "More"
+
+#: src/kml.cpp:650
+msgid "KML with extended waypoint data (QtVlm)"
 msgstr ""
-#
-msgid "Morocco"
-msgstr "Marokkó"
-#
-msgid "Motor freighter"
+
+#: src/LinkPropDlg.cpp:47
+msgid "Link"
 msgstr ""
-#
-msgid "Motor freighter pushing at least one tank-ship"
+
+#: src/LinkPropDlg.cpp:49
+msgid "Link description"
 msgstr ""
-#
-msgid "Motor freighter pushing one or more freighters"
+
+#: src/LinkPropDlg.cpp:58
+msgid "URL"
+msgstr "Vefslóð"
+
+#: src/LinkPropDlg.cpp:67
+msgid "Local file..."
 msgstr ""
-#
-msgid "Motor freighter with one or more ships alongside"
+
+#: src/LinkPropDlg.cpp:122
+msgid "Choose a file"
+msgstr "Veldu skrá"
+
+#: src/LinkPropDlg.cpp:133
+msgid "Link not complete, can't be saved."
 msgstr ""
 
 #: src/MarkInfo.cpp:349 src/RoutePropDlg.cpp:352 src/TrackPropDlg.cpp:634
@@ -4701,11 +4618,13 @@ msgstr ""
 #: src/multiplexer.cpp:413
 msgid "Route Upload"
 msgstr ""
-#
-msgid "Motor freighter, tug"
+
+#: src/multiplexer.cpp:642 src/multiplexer.cpp:1257
+msgid "Connecting to "
 msgstr ""
-#
-msgid "Motor tanker"
+
+#: src/multiplexer.cpp:663 src/multiplexer.cpp:1276
+msgid "Connected to "
 msgstr ""
 
 #: src/navutil.cpp:1754 src/navutil.cpp:3119 src/options.cpp:1050
@@ -4870,19 +4789,16 @@ msgstr "%2dM %2dS"
 #: src/RoutePropDlgImpl.cpp:361
 msgid "N/A"
 msgstr ""
-#
-msgid "Niger"
-msgstr "Níger"
-#
-msgid "Nigeria"
-msgstr "Nígería"
-#
-msgid "Nighttime"
+
+#: src/NMEALogWindow.cpp:59
+msgid "NMEA Debug Window"
 msgstr ""
-#
-msgid "Niue"
-msgstr "Niue"
-#
+
+#: src/OCPNListCtrl.cpp:86
+msgid "Yes"
+msgstr "Já"
+
+#: src/OCPNListCtrl.cpp:88
 msgid "No"
 msgstr "Nei"
 
@@ -6595,18 +6511,26 @@ msgstr ""
 #: src/options.cpp:11759
 msgid "Miscellaneous"
 msgstr ""
-#
-msgid "Shows the font preview."
+
+#: src/Osenc.cpp:1173
+msgid "S57 Cell Update failed.\n"
+"ENC features may be incomplete or inaccurate.\n\n"
+"Check the logfile for details."
 msgstr ""
 
 #: src/Osenc.cpp:1175 src/Osenc.cpp:1183 src/s57chart.cpp:3755
 msgid "OpenCPN Create SENC Warning"
 msgstr ""
-#
-msgid "Signal K"
+
+#: src/Osenc.cpp:1180
+msgid "S57 Cell Update failed.\n"
+"No updates could be applied.\n"
+"ENC features may be incomplete or inaccurate.\n\n"
+"Check the logfile for details."
 msgstr ""
-#
-msgid "Signal K server available."
+
+#: src/Osenc.cpp:1664
+msgid "OpenCPN S57 SENC File Create..."
 msgstr ""
 
 #: src/PluginHandler.cpp:1154
@@ -7160,8 +7084,9 @@ msgstr ""
 #: src/routeprintout.cpp:355 src/trackprintout.cpp:288
 msgid "Elements to print..."
 msgstr ""
-#
-msgid "Toolbar and Window Style"
+
+#: src/routeprintout.cpp:371
+msgid "Show Waypoint name."
 msgstr ""
 
 #: src/routeprintout.cpp:381 src/trackprintout.cpp:302
@@ -7175,23 +7100,33 @@ msgstr ""
 #: src/routeprintout.cpp:404 src/trackprintout.cpp:324
 msgid "Show Distance from each Waypoint to the next one."
 msgstr ""
-#
-msgid "Total distance"
+
+#: src/routeprintout.cpp:414
+msgid "Show Waypoint description."
 msgstr ""
-#
-msgid "Tow"
-msgstr "Dráttur"
-#
-msgid "Towing Vessel"
+
+#: src/routeprintout.cpp:468
+msgid "Route Print"
 msgstr ""
-#
-msgid "Towing Vessel, Long"
+
+#: src/RoutePropDlg.cpp:60 src/TrackPropDlg.cpp:687
+msgid "From"
+msgstr "Frá"
+
+#: src/RoutePropDlg.cpp:69 src/TrackPropDlg.cpp:696
+msgid "To"
+msgstr "Til"
+
+#: src/RoutePropDlg.cpp:107
+msgid "Plan speed"
 msgstr ""
-#
-msgid "Track"
+
+#: src/RoutePropDlg.cpp:124
+msgid "Enroute"
 msgstr ""
-#
-msgid "Track Colour"
+
+#: src/RoutePropDlg.cpp:140
+msgid "Departure"
 msgstr ""
 
 #: src/RoutePropDlg.cpp:173 src/trackprintout.cpp:96 src/trackprintout.cpp:329
@@ -7205,30 +7140,81 @@ msgstr "Local@PC"
 #: src/RoutePropDlg.cpp:179
 msgid "LMT@Location"
 msgstr ""
-#
-msgid "Track Name"
+
+#: src/RoutePropDlg.cpp:201 src/TrackPropDlg.cpp:477 src/TrackPropDlg.cpp:721
+msgid "Default color"
+msgstr "Sjálfgefinn litur"
+
+#: src/RoutePropDlg.cpp:238 src/TrackPropDlg.cpp:511 src/TrackPropDlg.cpp:745
+msgid "Width"
+msgstr "Beidd"
+
+#: src/RoutePropDlg.cpp:244
+msgid "1 px"
+msgstr "1 px"
+
+#: src/RoutePropDlg.cpp:244
+msgid "2px"
+msgstr "2px"
+
+#: src/RoutePropDlg.cpp:244
+msgid "3 px"
+msgstr "3 px"
+
+#: src/RoutePropDlg.cpp:244
+msgid "4 px"
+msgstr "4 px"
+
+#: src/RoutePropDlg.cpp:244
+msgid "5 px"
+msgstr "5 px"
+
+#: src/RoutePropDlg.cpp:245
+msgid "6 px"
+msgstr "6 px"
+
+#: src/RoutePropDlg.cpp:245
+msgid "7 px"
+msgstr "7 px"
+
+#: src/RoutePropDlg.cpp:245
+msgid "8 px"
+msgstr "8 px"
+
+#: src/RoutePropDlg.cpp:245
+msgid "9 px"
+msgstr "9 px"
+
+#: src/RoutePropDlg.cpp:245
+msgid "10 px"
+msgstr "10 px"
+
+#: src/RoutePropDlg.cpp:258
+msgid "To waypoint"
 msgstr ""
-#
-#, fuzzy
-msgid "Track Print"
-msgstr "Prenta"
-#
-msgid "Track properties"
+
+#: src/RoutePropDlg.cpp:268
+msgid "To WP"
 msgstr ""
-#
-msgid "Tracking"
+
+#: src/RoutePropDlg.cpp:304
+msgid "Total Distance"
 msgstr ""
-#
-msgid "Tracking Precision"
+
+#: src/RoutePropDlg.cpp:317
+msgid "ETE"
 msgstr ""
-#
-msgid "Tracks"
+
+#: src/RoutePropDlg.cpp:321
+msgid "ETA"
 msgstr ""
-#
-msgid "Transmit sentences"
+
+#: src/RoutePropDlg.cpp:329
+msgid "Next tide event"
 msgstr ""
-#
-msgid "Transverse Mercator"
+
+#: src/RoutePropDlg.cpp:341
+msgid "ETD"
 msgstr ""
 
 #: src/RoutePropDlg.cpp:382 src/TrackPropDlg.cpp:883
@@ -7251,119 +7237,112 @@ msgstr ""
 #: src/RoutePropDlg.cpp:474 src/TrackPropDlg.cpp:579 src/TrackPropDlg.cpp:965
 msgid "Split"
 msgstr ""
-#
-msgid "Tug, single"
+
+#: src/RoutePropDlgImpl.cpp:90
+msgid "MoTwilight"
 msgstr ""
-#
-msgid "Tug, tanker"
+
+#: src/RoutePropDlgImpl.cpp:92
+msgid "Sunrise"
+msgstr "Sólarupprás"
+
+#: src/RoutePropDlgImpl.cpp:94
+msgid "Daytime"
 msgstr ""
-#
-msgid "Tunisia"
-msgstr "Túnis"
-#
-msgid "Turkey"
-msgstr "Tyrkland"
-#
-msgid "Turkmenistan"
-msgstr "Túrkmenistan"
-#
-msgid "Turks and Caicos Islands"
-msgstr "Turks- og Caicoseyjar"
-#
-msgid "Turn Rate"
+
+#: src/RoutePropDlgImpl.cpp:96
+msgid "Sunset"
+msgstr "Sólsetur"
+
+#: src/RoutePropDlgImpl.cpp:98
+msgid "EvTwilight"
 msgstr ""
-#
-msgid "Tuvalu"
+
+#: src/RoutePropDlgImpl.cpp:100
+msgid "Nighttime"
 msgstr ""
-#
-msgid "Type"
-msgstr "Tegund"
-#
-msgid "UDP"
-msgstr "UDP"
-#
-msgid "URL"
-msgstr "Vefslóð"
-#
-msgid "URL:"
-msgstr "Vefslóð:"
-#
-msgid "UTC"
+
+#: src/RoutePropDlgImpl.cpp:408
+msgid "Arrived"
+msgstr "Mættur"
+
+#: src/RoutePropDlgImpl.cpp:813 src/TrackPropDlg.cpp:348
+#: src/TrackPropDlg.cpp:1341
+msgid "Depart From"
 msgstr ""
-#
-msgid "Uganda"
-msgstr "Úganda"
-#
-msgid "Ukraine"
-msgstr "Úkraína"
-#
-msgid "Ultra advanced"
+
+#: src/RoutePropDlgImpl.cpp:815 src/TrackPropDlg.cpp:386
+#: src/TrackPropDlg.cpp:769 src/TrackPropDlg.cpp:1343
+msgid "Total distance"
 msgstr ""
-#
-msgid "Un-Installation complete"
+
+#: src/RoutePropDlgImpl.cpp:816
+msgid "Speed (Kts)"
 msgstr ""
-#
-msgid "Unable to copy catalog file"
+
+#: src/RoutePropDlgImpl.cpp:818 src/TrackPropDlg.cpp:1346
+msgid "Departure Time"
 msgstr ""
-#
-msgid "Unable to copy catalog file to cache"
+
+#: src/RoutePropDlgImpl.cpp:820 src/TrackPropDlg.cpp:788
+#: src/TrackPropDlg.cpp:1348
+msgid "Time enroute"
 msgstr ""
-#
-msgid "Unavailable: "
+
+#: src/RoutePropDlgImpl.cpp:865
+msgid "Are you sure you want to move Up this waypoint?"
 msgstr ""
-#
-msgid "Undefined"
+
+#: src/RoutePropDlgImpl.cpp:866
+msgid "Are you sure you want to move Down this waypoint?"
 msgstr ""
-#
-msgid "Undefined (default)"
+
+#: src/RoutePropDlgImpl.cpp:868
+msgid "OpenCPN Move Waypoint"
 msgstr ""
-#
-msgid "Underway Sailing"
+
+#: src/RoutePropDlgImpl.cpp:902
+msgid "Are you sure you want to remove this waypoint?"
 msgstr ""
-#
-msgid "Underway using Engine"
+
+#: src/RoutePropDlgImpl.cpp:903
+msgid "OpenCPN Remove Waypoint"
 msgstr ""
-#
-msgid "Undo"
-msgstr "Afturkalla"
-#
-msgid "Undock Target List"
+
+#: src/RoutePropDlgImpl.cpp:938
+msgid "Move Up"
 msgstr ""
-#
-msgid "Uninstall"
+
+#: src/RoutePropDlgImpl.cpp:940
+msgid "Move Down"
 msgstr ""
-#
-msgid "Unit carrier maritime"
+
+#: src/RoutePropDlgImpl.cpp:978 src/TrackPropDlg.cpp:1396
+msgid "&Copy all as text"
 msgstr ""
-#
-msgid "United Arab Emirates"
-msgstr "Sameinuðu Arabísku Furstadæmin"
-#
-msgid "United States Virgin Islands"
-msgstr "Bandarísku Jómfrúaeyjar"
-#
-msgid "United States of America"
-msgstr "Bandaríkin"
-#
-msgid "Units"
-msgstr "Einingar"
-#
-msgid "Unk"
+
+#: src/RoutePropDlgImpl.cpp:1100 src/TrackPropDlg.cpp:1287
+msgid "_plus"
+msgstr "_plús"
+
+#: src/RoutePropDlgImpl.cpp:1175
+msgid "Invalid date/time!"
 msgstr ""
-#
-msgid "Unknown"
-msgstr "Ekki vitað"
-#
-msgid "Unknown device :"
-msgstr "Óþekkt tæki:"
-#
+
+#: src/RoutePropDlgImpl.cpp:1179
 msgid "Unknown station!"
 msgstr ""
-#
-msgid "Unnamed Route"
+
+#: src/RoutePropDlgImpl.cpp:1194
+msgid "Unavailable: "
 msgstr ""
-#
-msgid "Unnamed Waypoint"
+
+#: src/RoutePropDlgImpl.cpp:1203
+msgid "Local"
+msgstr ""
+
+#: src/RoutePropDlgImpl.cpp:1360 src/TrackPropDlg.cpp:1631
+msgid "Links are opened for editing."
 msgstr ""
 
 #: src/s57chart.cpp:3753
@@ -7413,38 +7392,53 @@ msgstr ""
 #: src/SendToGpsDlg.cpp:90
 msgid "GPS/Plotter Port"
 msgstr ""
-#
-msgid "Update to managed Plugin is available"
+
+#: src/SendToGpsDlg.cpp:177
+msgid "Prepare GPS for Route/Waypoint upload and press Send..."
 msgstr ""
-#
-msgid "Upgrade to Version "
+
+#: src/SendToGpsDlg.cpp:181
+msgid "Progress..."
 msgstr ""
-#
-msgid "Uploaded:"
+
+#: src/tcmgr.cpp:691
+msgid "It seems you have no tide/current harmonic data installed."
 msgstr ""
-#
-msgid "Uruguay"
-msgstr "Úrúgvæ"
-#
-msgid "Use Accelerated Graphics (OpenGL)"
+
+#: src/TCWin.cpp:90
+msgid "Tide"
 msgstr ""
-#
-msgid "Use Accelerated Panning"
+
+#: src/TCWin.cpp:95
+msgid "Current"
 msgstr ""
-#
-msgid "Use Furuno GP3X for uploads"
+
+#: src/TCWin.cpp:133
+msgid "Prev"
+msgstr "Fyrra"
+
+#: src/TCWin.cpp:149
+msgid "Next"
+msgstr "Næsta"
+
+#: src/TCWin.cpp:152
+msgid "LMT@Station"
 msgstr ""
-#
-msgid "Use GRMN for uploads"
+
+#: src/TCWin.cpp:243
+msgid "Reference Station :"
 msgstr ""
-#
-msgid "Use GRMN mode for input"
+
+#: src/TCWin.cpp:257
+msgid "Data Source :"
 msgstr ""
-#
-msgid "Use Garmin (GRMN) mode for input"
+
+#: src/TCWin.cpp:648
+msgid "HW"
 msgstr ""
-#
-msgid "Use Garmin GRMN (Host) mode for uploads"
+
+#: src/TCWin.cpp:648
+msgid "LW"
 msgstr ""
 
 #: src/TCWin.cpp:849
@@ -7515,50 +7509,105 @@ msgstr "Meðalhraði"
 #: src/TrackPropDlg.cpp:413
 msgid "Time Enroute"
 msgstr ""
-#
-msgid "User Standard"
+
+#: src/TrackPropDlg.cpp:441 src/TrackPropDlg.cpp:455 src/TrackPropDlg.cpp:817
+msgid "Local @ PC"
 msgstr ""
-#
-msgid "User Standard Objects"
+
+#: src/TrackPropDlg.cpp:441 src/TrackPropDlg.cpp:461
+msgid "LMT @ Location"
 msgstr ""
-#
-msgid "User X Offset"
+
+#: src/TrackPropDlg.cpp:444 src/TrackPropDlg.cpp:808
+msgid "Time shown as"
 msgstr ""
-#
-msgid "User Y Offset"
+
+#: src/TrackPropDlg.cpp:515 src/TrackPropDlg.cpp:750
+msgid "1 pixel"
+msgstr "1 pixel"
+
+#: src/TrackPropDlg.cpp:515 src/TrackPropDlg.cpp:750
+msgid "2 pixels"
+msgstr "2 pixels"
+
+#: src/TrackPropDlg.cpp:516 src/TrackPropDlg.cpp:751
+msgid "3 pixels"
+msgstr "3 pixels"
+
+#: src/TrackPropDlg.cpp:516 src/TrackPropDlg.cpp:751
+msgid "4 pixels"
+msgstr "4 pixels"
+
+#: src/TrackPropDlg.cpp:516 src/TrackPropDlg.cpp:751
+msgid "5 pixels"
+msgstr "5 pixels"
+
+#: src/TrackPropDlg.cpp:517 src/TrackPropDlg.cpp:752
+msgid "6 pixels"
+msgstr "6 pixels"
+
+#: src/TrackPropDlg.cpp:517 src/TrackPropDlg.cpp:752
+msgid "7 pixels"
+msgstr "7 pixels"
+
+#: src/TrackPropDlg.cpp:517 src/TrackPropDlg.cpp:752
+msgid "8 pixels"
+msgstr "8 pixels"
+
+#: src/TrackPropDlg.cpp:518 src/TrackPropDlg.cpp:753
+msgid "9 pixels"
+msgstr "9 pixels"
+
+#: src/TrackPropDlg.cpp:518 src/TrackPropDlg.cpp:753
+msgid "10 pixels"
+msgstr "10 pixels"
+
+#: src/TrackPropDlg.cpp:590 src/TrackPropDlg.cpp:976
+msgid "To route"
 msgstr ""
-#
-msgid "User set magnetic variation"
+
+#: src/TrackPropDlg.cpp:707
+msgid "Display parameters"
 msgstr ""
-#
-msgid "Username:"
-msgstr "Notendanafn:"
-#
-msgid "Uzbekistan"
-msgstr "Úsbekistan"
-#
-msgid "VDM->VDO"
+
+#: src/TrackPropDlg.cpp:762
+msgid "Statistics"
 msgstr ""
-#
-msgid "VTS active target"
+
+#: src/TrackPropDlg.cpp:802
+msgid "Recorded points"
 msgstr ""
-#
-msgid "Vanuatu"
+
+#: src/TrackPropDlg.cpp:822
+msgid "LMT @ Track Start"
 msgstr ""
-#
-msgid "Vatican City State"
-msgstr "Vatíkanið"
-#
-msgid "Vector"
+
+#: src/TrackPropDlg.cpp:971
+msgid "Extend track"
 msgstr ""
-#
-msgid "Vector Chart Display"
+
+#: src/TrackPropDlg.cpp:981
+msgid "Export"
+msgstr "Flytja út"
+
+#: src/TrackPropDlg.cpp:1172
+msgid "%D Days, %H:%M"
+msgstr "%D Dagar, %H:%M"
+
+#: src/TrackPropDlg.cpp:1346
+msgid "(m/d/y h:m)"
+msgstr "(m/d/á t:m)"
+
+#: src/TrackPropDlg.cpp:1450
+msgid "track"
 msgstr ""
-#
-msgid "Vector Charts"
+
+#: src/TrackPropDlg.cpp:1876
+msgid "--"
 msgstr ""
-#
-msgid "Vectorchart Zoom/Scale Weighting"
+
+#: src/TTYWindow.cpp:68
+msgid "Legend"
 msgstr ""
 
 #: src/TTYWindow.cpp:79 src/TTYWindow.cpp:168 libs/wxcurl/src/dialog.cpp:250
@@ -7569,34 +7618,37 @@ msgstr "Pása"
 #: src/TTYWindow.cpp:83
 msgid "Copy NMEA Debug window to clipboard."
 msgstr ""
-#
-msgid "Vessel, type unknown"
+
+#: src/TTYWindow.cpp:124
+msgid "Message accepted"
 msgstr ""
-#
-msgid ""
-"Vessel, work maintenance craft, floating derrick, cable-ship, buoy-ship, "
-"dredge"
+
+#: src/TTYWindow.cpp:132
+msgid "Input message filtered, output message filtered and dropped"
 msgstr ""
-#
-msgid "Viet Nam"
-msgstr "Víetnam"
-#
-msgid "WMM Plugin calculated magnetic variation"
+
+#: src/TTYWindow.cpp:140
+msgid "Input Message filtered and dropped"
 msgstr ""
-#
-msgid "Waiting for permission grant...."
+
+#: src/TTYWindow.cpp:147
+msgid "Output Message"
 msgstr ""
-#
-msgid "Waiting for raster chart compression thread exit."
+
+#: src/TTYWindow.cpp:154
+msgid "Information Message or Message with errors"
 msgstr ""
-#
-msgid "Wallis and Futuna Islands"
+
+#: src/TTYWindow.cpp:163 libs/wxcurl/src/dialog.cpp:410
+msgid "Resume"
+msgstr "Halda áfram"
+
+#: src/undo.cpp:82
+msgid "Delete Waypoint"
 msgstr ""
-#
-msgid "Want to help?"
-msgstr "Viltu hjálpa?"
-#
-msgid "Warn if CPA less than (NMi)"
+
+#: src/undo.cpp:85
+msgid "Move Waypoint"
 msgstr ""
 
 #: src/update_mgr.cpp:409
@@ -7606,74 +7658,96 @@ msgstr ""
 #: libs/wxcurl/src/dialog.cpp:137
 msgid "Not available"
 msgstr ""
-#
-msgid "Waypoint Name"
+
+#: libs/wxcurl/src/dialog.cpp:168
+msgid "URL:"
+msgstr "Vefslóð:"
+
+#: libs/wxcurl/src/dialog.cpp:187
+msgid "Speed:"
+msgstr "Hraði:"
+
+#: libs/wxcurl/src/dialog.cpp:196
+msgid "Elapsed time:"
 msgstr ""
-#
-msgid "Waypoint Properties"
+
+#: libs/wxcurl/src/dialog.cpp:198
+msgid "Estimated total time:"
 msgstr ""
-#
-msgid "Waypoint Range Ring Colours"
+
+#: libs/wxcurl/src/dialog.cpp:200
+msgid "Estimated remaining time:"
 msgstr ""
-#
-msgid "Waypoint default icon"
+
+#: libs/wxcurl/src/dialog.cpp:243 libs/wxcurl/src/dialog.cpp:399
+msgid "Abort"
+msgstr "Hætta við"
+
+#: libs/wxcurl/src/dialog.cpp:245
+msgid "Settings"
+msgstr "Stillingar"
+
+#: libs/wxcurl/src/dialog.cpp:252
+msgid "Start"
 msgstr ""
-#
-msgid "Waypoint range rings"
+
+#: libs/wxcurl/src/dialog.cpp:413
+msgid "0 (transfer paused)"
 msgstr ""
-#
-msgid "Waypoint(s) Transmitted."
+
+#: libs/wxcurl/src/dialog.cpp:461
+msgid "Connection settings"
 msgstr ""
-#
-msgid "Waypoints"
-msgstr "Vegpunktar"
-#
-msgid ""
-"Waypoints can be renamed to reflect the new order, the names will be '001', "
-"'002' etc.\n"
-"\n"
-"Do you want to rename the waypoints?"
+
+#: libs/wxcurl/src/dialog.cpp:461
+msgid "Connection settings used for the transfer:"
 msgstr ""
-#
-msgid ""
-"Waypoints will be renamed to reflect the natural order, the names will be "
-"'001', '002' etc.\n"
-"\n"
-"Do you want to rename the waypoints?"
+
+#: libs/wxcurl/src/dialog.cpp:516
+msgid "0 (transfer completed)"
 msgstr ""
-#
-msgid "Web Mercator (EPSG:3857)"
+
+#: libs/wxcurl/src/dialog.cpp:537
+msgid "Downloaded:"
 msgstr ""
-#
-msgid "Website"
+
+#: libs/wxcurl/src/dialog.cpp:585
+msgid "Uploaded:"
 msgstr ""
-#
-msgid "Welcome to OpenCPN"
-msgstr "Velkomin til OpenCPN"
-#
-msgid "Whether the font is underlined."
+
+#: libs/wxcurl/src/panel.cpp:111
+msgid "Username:"
+msgstr "Notendanafn:"
+
+#: libs/wxcurl/src/panel.cpp:112
+msgid "Password:"
+msgstr "Lykilorð:"
+
+#: libs/wxcurl/src/panel.cpp:120
+msgid "Port:"
 msgstr ""
-#
-msgid "White"
-msgstr "Hvítt"
-#
-msgid "Width"
-msgstr "Beidd"
-#
-msgid "Width Over All (m)"
+
+#: libs/wxcurl/src/panel.cpp:134
+msgid "Proxy settings"
 msgstr ""
-#
-msgid "Wing In Ground Effect"
+
+#: libs/wxcurl/src/panel.cpp:136
+msgid "Use proxy"
 msgstr ""
-#
-msgid ""
-"With a lower value, the same zoom level shows a less detailed chart.\n"
-"With a higher value, the same zoom level shows a more detailed chart."
+
+#: libs/wxcurl/src/panel.cpp:141
+msgid "Proxy host:"
 msgstr ""
-#
-msgid "Would you like include the Great Circle routing points for this leg?"
+
+#: libs/wxcurl/src/panel.cpp:142
+msgid "Proxy username:"
+msgstr "Proxy notendanafn:"
+
+#: libs/wxcurl/src/panel.cpp:143
+msgid "Proxy password:"
 msgstr ""
-#
-msgid "Would you like to visit the opencpn.org website for more information?"
+
+#: libs/wxcurl/src/panel.cpp:144
+msgid "Proxy port:"
 msgstr ""
 

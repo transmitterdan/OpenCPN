@@ -73,13 +73,16 @@ msgstr "Tils. & sann vindvinkel"
 #: src/dashboard_pi.cpp:208 src/dashboard_pi.cpp:210
 msgid "App. Wind Speed"
 msgstr "Tils. Vindhastighet"
-#
-msgid "Appearance"
-msgstr "Utseende"
-#
-msgid "Barometric history"
-msgstr "Barometer histogram"
-#
+
+#: src/dashboard_pi.cpp:212
+msgid "True Wind Angle & Speed"
+msgstr "Sann Vindvinkel & fart"
+
+#: src/dashboard_pi.cpp:214 src/dashboard_pi.cpp:216
+msgid "Depth"
+msgstr "Dybde"
+
+#: src/dashboard_pi.cpp:218 src/dashboard_pi.cpp:220
 msgid "Barometric pressure"
 msgstr "Lufttrykk"
 
@@ -188,39 +191,22 @@ msgstr "Lokal sol opp/ned"
 #: src/dashboard_pi.cpp:3141
 msgid "Dashboard"
 msgstr "Instrumentpanel"
-#
+
+#: src/dashboard_pi.cpp:733
 msgid "Dashboard PlugIn for OpenCPN"
 msgstr "Instrumentutvidelse for OpenCPN"
-#
-msgid ""
-"Dashboard PlugIn for OpenCPN\n"
+
+#: src/dashboard_pi.cpp:738
+msgid "Dashboard PlugIn for OpenCPN\n"
 "Provides navigation instrument display from NMEA source."
-msgstr ""
-"Instrument utvidelse for OpenCPN\n"
+msgstr "Instrument utvidelse for OpenCPN\n"
 "Tilfører navigasjons instrument visning fra NMEA kilder."
-#
-msgid "Dashboard preferences"
-msgstr "Dashbord alternativer"
-#
-msgid "Data:"
-msgstr "Data:"
-#
-msgid "Delete"
-msgstr "Slett"
-#
-msgid "Depth"
-msgstr "Dybde"
-#
-#, c-format
-msgid "Depth Offset (%s):"
-msgstr "Dybde forskyvning (%s):"
-#
-msgid "Depth units:"
-msgstr "Dybde enheter:"
-#
-msgid "Distance units:"
-msgstr "Distanseenheter:"
-#
+
+#: src/dashboard_pi.cpp:1446 src/dashboard_pi.cpp:2039 src/dashboard_pi.cpp:2829
+msgid "Up"
+msgstr "Opp"
+
+#: src/dashboard_pi.cpp:1449 src/dashboard_pi.cpp:2041 src/dashboard_pi.cpp:2834
 msgid "Down"
 msgstr "Ned"
 
@@ -255,68 +241,121 @@ msgstr "Vertikal"
 #: src/dashboard_pi.cpp:2761 src/dashboard_pi.cpp:3717
 msgid "Horizontal"
 msgstr "Horisontal"
-#
-msgid "Inches"
-msgstr "Tommer"
-#
+
+#: src/dashboard_pi.cpp:2785 src/dashboard_pi.cpp:2802 src/dashboard_pi.cpp:3305
 msgid "Instruments"
 msgstr "Instrumenter"
-#
-msgid "Kelvin"
-msgstr ""
-#
-msgid "Kilometers"
-msgstr "Kilometer"
-#
-msgid "Kts"
-msgstr "Knop"
-#
+
+#: src/dashboard_pi.cpp:2810
+msgid "Add"
+msgstr "Legg til"
+
+#: src/dashboard_pi.cpp:2823
+msgid "Delete"
+msgstr "Slett"
+
+#: src/dashboard_pi.cpp:2844
+msgid "Appearance"
+msgstr "Utseende"
+
+#: src/dashboard_pi.cpp:2846
+msgid "Fonts"
+msgstr "Skrift"
+
+#: src/dashboard_pi.cpp:2853
+msgid "Title:"
+msgstr "Tittel:"
+
+#: src/dashboard_pi.cpp:2860
+msgid "Data:"
+msgstr "Data:"
+
+#: src/dashboard_pi.cpp:2867
 msgid "Label:"
 msgstr "Etikett:"
-#
-msgid "Local CPU Clock"
-msgstr "Lokal CPU klokke"
-#
-msgid "Local GNSS Clock"
-msgstr ""
-#
-msgid "Local Sunrise/Sunset"
-msgstr "Lokal sol opp/ned"
-#
+
+#: src/dashboard_pi.cpp:2874
+msgid "Small:"
+msgstr "Liten:"
+
+#: src/dashboard_pi.cpp:2882
+msgid "Units, Ranges, Formats"
+msgstr "Enheter, Avstander, Formater"
+
+#: src/dashboard_pi.cpp:2888
+msgid "Speedometer max value:"
+msgstr "Speedometer maks verdi:"
+
+#: src/dashboard_pi.cpp:2894
+msgid "Speed Over Ground Damping Factor:"
+msgstr "Fart over grunn dempefaktor:"
+
+#: src/dashboard_pi.cpp:2900
+msgid "COG Damping Factor:"
+msgstr "COG dempefaktor:"
+
+#: src/dashboard_pi.cpp:2906
 msgid "Local Time Offset From UTC:"
 msgstr "Lokal tidsforskyvning fra UTC:"
-#
-msgid "Mag COG"
-msgstr "Mag COG"
-#
-msgid "Mag HDG"
-msgstr "Mag. HDG"
-#
-#, c-format
-msgid "Max %.1f %s since %02d:%02d  Overall %.1f %s"
-msgstr "Maks %.1f %s siden %02d:%02d Sammenlagt %.1f %s"
-#
+
+#: src/dashboard_pi.cpp:2925
+msgid "Boat speed units:"
+msgstr "Båtens fartenheter:"
+
+#: src/dashboard_pi.cpp:2928 src/dashboard_pi.cpp:2969
+msgid "Honor OpenCPN settings"
+msgstr "OpenCPN ære innstillinger"
+
+#: src/dashboard_pi.cpp:2928 src/dashboard_pi.cpp:2978
+msgid "Kts"
+msgstr "Knop"
+
+#: src/dashboard_pi.cpp:2928 src/dashboard_pi.cpp:2978
+msgid "mph"
+msgstr "mph"
+
+#: src/dashboard_pi.cpp:2928 src/dashboard_pi.cpp:2978
+msgid "km/h"
+msgstr "km/t"
+
+#: src/dashboard_pi.cpp:2928 src/dashboard_pi.cpp:2978
+msgid "m/s"
+msgstr "m/s"
+
+#: src/dashboard_pi.cpp:2934
+msgid "Depth units:"
+msgstr "Dybde enheter:"
+
+#: src/dashboard_pi.cpp:2937 src/dashboard_pi.cpp:2969
 msgid "Meters"
 msgstr "Meter"
-#
-msgid "Moon phase"
-msgstr "Månefase"
-#
-msgid "N"
-msgstr "N"
-#
-msgid "NE"
-msgstr "NØ"
-#
-msgid "NNE"
-msgstr "NNØ"
-#
-msgid "NNW"
-msgstr "NNV"
-#
-msgid "NW"
-msgstr "NW"
-#
+
+#: src/dashboard_pi.cpp:2937
+msgid "Feet"
+msgstr "Fot"
+
+#: src/dashboard_pi.cpp:2937
+msgid "Fathoms"
+msgstr "Favner"
+
+#: src/dashboard_pi.cpp:2937
+msgid "Inches"
+msgstr "Tommer"
+
+#: src/dashboard_pi.cpp:2937
+msgid "Centimeters"
+msgstr "Centimeter"
+
+#: src/dashboard_pi.cpp:2942
+#, c-format
+msgid "Depth Offset (%s):"
+msgstr "Dybde forskyvning (%s):"
+
+#: src/dashboard_pi.cpp:2966
+msgid "Distance units:"
+msgstr "Distanseenheter:"
+
+#: src/dashboard_pi.cpp:2969
 msgid "Nautical miles"
 msgstr "Nautiske mil"
 
@@ -363,7 +402,8 @@ msgstr "Velg instrument:"
 #: src/dashboard_pi.cpp:3699 src/dashboard_pi.cpp:3724
 msgid "Preferences..."
 msgstr "Alternativer..."
-#
+
+#: src/dashboard_pi.cpp:3703
 msgid "Resize..."
 msgstr "Endre størrelse..."
 
@@ -390,128 +430,70 @@ msgstr "SØ"
 #: src/dial.cpp:529 src/gps.cpp:233 src/wind.cpp:66 src/wind_history.cpp:459
 msgid "S"
 msgstr "S"
-#
-msgid "SE"
-msgstr "SØ"
-#
-msgid "SOG"
-msgstr "SOG"
-#
-msgid "SSE"
-msgstr "SSØ"
-#
-msgid "SSW"
-msgstr "SSV"
-#
-msgid "STW"
-msgstr "STW"
-#
+
+#: src/dial.cpp:529 src/wind.cpp:66 src/wind_history.cpp:465
 msgid "SW"
 msgstr "SV"
-#
-msgid "Select instrument to add:"
-msgstr "Velg instrument:"
-#
-msgid "Small:"
-msgstr "Liten:"
-#
-msgid "Speed Over Ground Damping Factor:"
-msgstr "Fart over grunn dempefaktor:"
-#
-msgid "Speedometer"
-msgstr "Logg"
-#
-msgid "Speedometer max value:"
-msgstr "Speedometer maks verdi:"
-#
-msgid "Statute miles"
-msgstr "Statute mil"
-#
-msgid "Stbd"
-msgstr ""
-#
-msgid "Sum Log"
-msgstr "Sumlogg"
-#
-msgid "Sunrise/Sunset"
-msgstr "Sol opp/ned"
-#
-msgid "Temperature units:"
-msgstr ""
-#
-msgid "Title:"
-msgstr "Tittel:"
-#
-msgid "Trip Log"
-msgstr "Turlogg"
-#
-msgid "True Compass"
-msgstr "Sann kompass"
-#
-msgid "True HDG"
-msgstr "Sann HDG"
-#
-msgid "True Wind Angle"
-msgstr "Sann Vindvinkel"
-#
-msgid "True Wind Angle & Speed"
-msgstr "Sann Vindvinkel & fart"
-#
-msgid "True Wind Dir. & Speed"
-msgstr "Sann Vindretning & fart"
-#
-msgid "True Wind Direction"
-msgstr "Sann Vindretning"
-#
-msgid "True Wind Speed"
-msgstr "Sann Vindhastighet"
-#
-msgid "Undock"
-msgstr "Løsne"
-#
-msgid "Units, Ranges, Formats"
-msgstr "Enheter, Avstander, Formater"
-#
-msgid "Up"
-msgstr "Opp"
-#
-msgid ""
-"Use SignalK true wind data over ground.\n"
-"(Instead of through water)"
-msgstr ""
-#
-msgid "VMG"
-msgstr "VMG"
-#
-msgid "Vertical"
-msgstr "Vertikal"
-#
+
+#: src/dial.cpp:529 src/gps.cpp:237 src/wind.cpp:66 src/wind_history.cpp:471
 msgid "W"
 msgstr "V"
-#
-msgid "WNW"
-msgstr "VNV"
-#
+
+#: src/dial.cpp:529 src/wind.cpp:66 src/wind_history.cpp:477
+msgid "NW"
+msgstr "NW"
+
+#: src/instrument.cpp:247
+msgid " true"
+msgstr " sann"
+
+#: src/instrument.cpp:249
+msgid " mag"
+msgstr " mag"
+
+#: src/wind_history.cpp:58 src/wind_history.cpp:109
+msgid "--"
+msgstr ""
+
+#: src/wind_history.cpp:333
+#, c-format
+msgid "--- %s"
+msgstr ""
+
+#: src/wind_history.cpp:438
+msgid "NNE"
+msgstr "NNØ"
+
+#: src/wind_history.cpp:444
+msgid "ENE"
+msgstr "ØNØ"
+
+#: src/wind_history.cpp:450
+msgid "ESE"
+msgstr "ØSØ"
+
+#: src/wind_history.cpp:456
+msgid "SSE"
+msgstr "SSØ"
+
+#: src/wind_history.cpp:462
+msgid "SSW"
+msgstr "SSV"
+
+#: src/wind_history.cpp:468
 msgid "WSW"
 msgstr "VSV"
-#
-msgid "Water Temp."
-msgstr "Vanntemp."
-#
-msgid "Wind history"
-msgstr "Vind histogram"
-#
-msgid "Wind speed units:"
-msgstr "Fartsenheter for vind:"
-#
-msgid "km/h"
-msgstr "km/t"
-#
-msgid "m/s"
-msgstr "m/s"
-#
-msgid "mph"
-msgstr "mph"
-#
-msgid "show this dashboard"
-msgstr "vis dette instrumentpanel"
+
+#: src/wind_history.cpp:474
+msgid "WNW"
+msgstr "VNV"
+
+#: src/wind_history.cpp:480
+msgid "NNW"
+msgstr "NNV"
+
+#: src/wind_history.cpp:585
+#, c-format
+msgid "Max %.1f %s since %02d:%02d  Overall %.1f %s"
+msgstr "Maks %.1f %s siden %02d:%02d Sammenlagt %.1f %s"
+

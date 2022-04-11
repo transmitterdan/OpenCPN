@@ -168,19 +168,37 @@ msgstr "Autoři OpenCPN"
 msgid "OpenCPN is a Free Software project, built by sailors.\n"
 "It is freely available to download and distribute without charge."
 msgstr ""
-"\n"
-" - tvůj GPS offset od středu lodě musí být v šířce lodě"
-#
-msgid ""
-"\n"
-" - your minimum ship icon size must be between 1 and 100 mm"
+
+#: src/AboutFrame.cpp:103
+msgid "Want to help?"
 msgstr ""
-"\n"
-" - minimální velikost ikony lodě musí být mezi 1 a 100 mm"
-#
-msgid ""
-"\n"
-" - your ship's beam must be > 0"
+
+#: src/AboutFrame.cpp:109
+msgid "Donate"
+msgstr "Přispět"
+
+#: src/AboutFrame.cpp:118
+msgid "or"
+msgstr "nebo"
+
+#: src/AboutFrame.cpp:124
+msgid "get involved!"
+msgstr "zapojte se!"
+
+#: src/AboutFrame.cpp:139
+msgid "Logfile:"
+msgstr "Soubor protokolu"
+
+#: src/AboutFrame.cpp:161
+msgid "Config file:"
+msgstr "Konfigurační soubor:"
+
+#: src/AboutFrame.cpp:174
+msgid "Copy to clipboard"
+msgstr "Kopírovat do schránky"
+
+#: src/AboutFrame.cpp:182
+msgid "Plugin API: "
 msgstr ""
 
 #: src/AboutFrame.cpp:226
@@ -210,136 +228,111 @@ msgstr "Informace OpenCPN"
 #: src/ais.cpp:113
 msgid "Underway using Engine"
 msgstr ""
-"\n"
-" - délka lodě musí být > 0"
-#
-msgid ""
-"\n"
-"OpenCPN is distributed in the hope that it will be useful, but WITHOUT ANY "
-"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR "
-"A PARTICULAR PURPOSE.\n"
-"\n"
-"See the GNU General Public License for more details.\n"
-"\n"
-"OpenCPN must only be used in conjunction with approved paper charts and "
-"traditional methods of navigation.\n"
-"\n"
-"DO NOT rely upon OpenCPN for safety of life or property.\n"
-"\n"
-"Please click \"OK\" to agree and proceed, \"Cancel\" to quit.\n"
+
+#: src/ais.cpp:114
+msgid "At Anchor"
+msgstr "Na kotvě"
+
+#: src/ais.cpp:115
+msgid "Not Under Command"
+msgstr "Neovladatelné"
+
+#: src/ais.cpp:116
+msgid "Restricted Manoeuvrability"
+msgstr "Omezená manévrovatelnost"
+
+#: src/ais.cpp:117
+msgid "Constrained by draught"
+msgstr "Omezené ponorem"
+
+#: src/ais.cpp:118
+msgid "Moored"
+msgstr "Na kotvě"
+
+#: src/ais.cpp:119
+msgid "Aground"
+msgstr "Nasedlé"
+
+#: src/ais.cpp:120
+msgid "Engaged in Fishing"
+msgstr "Provádějící rybolov"
+
+#: src/ais.cpp:121
+msgid "Underway Sailing"
 msgstr ""
-"\n"
-"OpenCPN je distribuováno s vírou, že bude užitečné, ale BEZ JAKÉKOLI ZÁRUKY; "
-"i bez předpokládané záruky PRODEJNOSTI NEBO VHODNOSTI PRO NĚJAKÝ ÚČEL.\n"
-"\n"
-"Podívejte se na GNU General Public License pro další detaily.\n"
-"\n"
-"OpenCPN musí být použito pouze spolu se schválenými papírovými mapami a "
-"tradičními metodami navigace.\n"
-"\n"
-"NESPOLÉHEJTE na OpenCPN pro bezpečnost života a nebo majetku.\n"
-"\n"
-"Prosím klikni na \"OK\" pro souhlas a pokračování, \"Zrušit\" pro konec.\n"
-#
-msgid ""
-"\n"
-"The device selected is not accessible; opencpn will likely not be able\n"
-"to use this device as-is. You might want to exit OpenCPN, reboot and\n"
-"retry after creating a file called /etc/udev/rules.d/70-opencpn.rules\n"
-"with the following contents:\n"
-"\n"
-"            KERNEL==\"ttyUSB*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyACM*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyS*\", MODE=\"0666\"\n"
-"\n"
-"For more info, see the file LINUX_DEVICES.md in the distribution docs.\n"
+
+#: src/ais.cpp:122 src/ais.cpp:149
+msgid "High Speed Craft"
+msgstr "Vysokorychlostní plavidlo"
+
+#: src/ais.cpp:123
+msgid "Wing In Ground Effect"
+msgstr "Letoun s přízemním efektem"
+
+#: src/ais.cpp:124
+msgid "Power-driven vessel towing astern (regional use)"
+msgstr "Motorová loď táhnoucí za zádí (regionální využití)"
+
+#: src/ais.cpp:125
+msgid "Power-driven vessel pushing ahead or towing alongside (regional use)"
+msgstr "Motorová loď tlačící dopředu nebo táhnoucí po boku (regionální využití)"
+
+#: src/ais.cpp:126
+msgid "Reserved 13"
+msgstr "Rezervováno 13"
+
+#: src/ais.cpp:127
+msgid "Reserved 14"
+msgstr "Rezervováno 14"
+
+#: src/ais.cpp:128 src/AIS_Target_Data.cpp:402 src/ConnectionParams.cpp:176
+#: src/ConnectionParams.cpp:462 src/ConnectionParams.cpp:600
+#: src/ConnectionParams.cpp:913 src/ConnectionParams.cpp:941
+msgid "Undefined"
+msgstr "Nedefinovaný"
+
+#: src/ais.cpp:129
+msgid "AtoN Virtual"
 msgstr ""
-#
-msgid "  MOB Position: "
+
+#: src/ais.cpp:130
+msgid "AtoN Virtual (On Position)"
 msgstr ""
-#
-msgid "  Ownship Position: "
+
+#: src/ais.cpp:131
+msgid "AtoN Virtual (Off Position)"
 msgstr ""
-#
-msgid "  Position: "
+
+#: src/ais.cpp:132
+msgid "AtoN Real"
 msgstr ""
-#
-msgid " (Ctrl-Space)"
-msgstr " (Ctrl-Mezerník)"
-#
-msgid " (Last Known)"
-msgstr " (Poslední známý)"
-#
-msgid " - "
+
+#: src/ais.cpp:133
+msgid "AtoN Real (On Position)"
 msgstr ""
-#
-msgid " -- [Portable(-p) executing from "
-msgstr " -- [Portable (-p) spuštění z "
-#
-msgid " COG Unavailable"
-msgstr "COG Není k dispozici"
-#
-msgid " ChartFile:  "
-msgstr " SouborMapy:"
-#
-msgid " Datum:  "
-msgstr " Datum:"
-#
-msgid " Depth Units:  "
-msgstr "Jednotky hloubky:"
-#
-msgid " ID:  "
-msgstr " ID:"
-#
-msgid " Name:  "
-msgstr " Jméno:"
-#
-msgid " Never track"
-msgstr " Nesledovat nikdy"
-#
-msgid " Projection:  "
-msgstr " Projekce:"
-#
-msgid " Ship "
-msgstr " Loď"
-#
-msgid " Soundings:  "
-msgstr " Hloubky:"
-#
-msgid " Source Edition:  "
-msgstr " Zdrojové vydání:"
-#
-msgid " Time: "
+
+#: src/ais.cpp:134
+msgid "AtoN Real(Off Position)"
 msgstr ""
-#
-msgid ""
-" To set the magnetic variation manually,\n"
-" you must disable the WMM plugin."
+
+#: src/ais.cpp:141
+msgid "Fishing Vessel"
 msgstr ""
-"Ruční nastaveni magnetické variace\n"
-"Musíš vypnout WMM plugin"
-#
-msgid " Updated:  "
-msgstr " Aktualizováno:"
-#
-msgid " [Modified]"
+
+#: src/ais.cpp:142
+msgid "Towing Vessel"
 msgstr ""
-#
-msgid " at "
+
+#: src/ais.cpp:143
+msgid "Towing Vessel, Long"
 msgstr ""
-#
-msgid " for details."
-msgstr " pro podrobnosti."
-#
-msgid " is incompatible with this version of OpenCPN."
-msgstr " není kompatibilní s touto verzí OpenCPN."
-#
-msgid " on "
+
+#: src/ais.cpp:144
+msgid "Dredger"
 msgstr ""
-#
-msgid ""
-" shorter than rhumbline.\n"
-"\n"
+
+#: src/ais.cpp:145
+msgid "Diving Ops Vessel"
 msgstr ""
 
 #: src/ais.cpp:146
@@ -550,197 +543,77 @@ msgstr "Report pozice DSC"
 #: src/ais.cpp:205
 msgid "F/V"
 msgstr ""
-#
-msgid " successfully installed from cache"
+
+#: src/ais.cpp:206
+msgid "Tow"
+msgstr "Vlek"
+
+#: src/ais.cpp:207
+msgid "Long Tow"
+msgstr "Dlouhý vlek"
+
+#: src/ais.cpp:208
+msgid "Dredge"
+msgstr "Bagr"
+
+#: src/ais.cpp:209
+msgid "D/V"
 msgstr ""
-#
-msgid " to "
-msgstr " do "
-#
-msgid "\" is empty, switching to \"All Active Charts\" group."
-msgstr "\" je prázdná, přepínám na skupinu \"Všechny aktivní mapy\"."
-#
-msgid "\" is empty."
-msgstr "\" je prázdné."
-#
-msgid "\"Ship Name\" MMSI (Call Sign)"
-msgstr "\"Jméno lodi\" MMSI (Volací znak)"
-#
-#, c-format
-msgid "%02X"
-msgstr "%02X"
-#
-#, c-format
-msgid "%2dH %2dM"
+
+#: src/ais.cpp:210
+msgid "Mil/V"
 msgstr ""
-#
-#, c-format
-msgid "%2dM %2dS"
+
+#: src/ais.cpp:211
+msgid "S/V"
 msgstr ""
-#
-msgid "%D Days, %H:%M"
-msgstr "%D dny, % H:%M"
-#
-msgid "%Dd %H:%M"
-msgstr "%Dd %H:%M"
-#
-msgid "%H:%M"
-msgstr "%H:%M"
-#
-#, c-format
-msgid "%dd "
+
+#: src/ais.cpp:212
+msgid "Yat"
+msgstr "Loď"
+
+#: src/ais.cpp:213
+msgid "HSC"
 msgstr ""
-#
-msgid "&AIS"
-msgstr "&AIS"
-#
-msgid "&Acknowledge"
-msgstr "&Potvrdit"
-#
-msgid "&Activate"
-msgstr "&Aktivovat"
-#
-msgid "&Center View"
-msgstr "Vy&centrovat pohled"
-#
-msgid "&Copy all as text"
-msgstr "Kopírovat vše jako text"
-#
-msgid "&Copy as text"
-msgstr "Kopírovat jako text"
-#
-msgid "&Delete"
-msgstr "&Smazat"
-#
-msgid "&Delete All"
-msgstr "S&mazat vše"
-#
-msgid "&Export selected..."
-msgstr "&Export trasy...."
-#
-msgid "&Font family:"
-msgstr "Rodina &fontů:"
-#
-msgid "&Go To"
-msgstr "Navi&govat na"
-#
-msgid "&Help"
-msgstr "&Pomoc"
-#
-msgid "&Jump To"
-msgstr "&Skok na"
-#
-msgid "&Merge Selected Tracks"
-msgstr "Spojit &vybrané trasy"
-#
-msgid "&Navigate"
-msgstr "&Navigovat"
-#
-msgid "&New"
-msgstr "&Nový"
-#
-msgid "&OK"
-msgstr "&OK"
-#
-msgid "&Point size:"
-msgstr "Velik&ost bodů:"
-#
-msgid "&Properties"
-msgstr "Vlas&tnosti"
-#
-#, fuzzy
-msgid "&Resequence Waypoints"
-msgstr "Přejmenovat trasové body"
-#
-msgid "&Reverse"
-msgstr "&Otočit"
-#
-msgid "&Send to GPS"
-msgstr "Ode&slat do GPS"
-#
-msgid "&Silence Alert"
-msgstr "&Umlčet"
-#
-msgid "&Start Track"
-msgstr "Zahájit &stopu"
-#
-msgid "&Style:"
-msgstr "&Styl:"
-#
-msgid "&Tools"
-msgstr "&Nástroje"
-#
-msgid "&Underline"
-msgstr "Podtrhno&ut"
-#
-msgid "&View"
-msgstr "&Zobrazení"
-#
-msgid "&Weight:"
-msgstr "&Váha:"
-#
-msgid "&Window"
+
+#: src/ais.cpp:214
+msgid "P/V"
 msgstr ""
-#
-msgid "(Unnamed Layer)"
-msgstr "(Nepojmenovaná vrstva)"
-#
-msgid "(Unnamed Route)"
-msgstr "(Nepojmenovaná trasa)"
-#
-msgid "(Unnamed Track)"
-msgstr "(Nepojmenovaná stopa)"
-#
-msgid "(Unnamed Waypoint)"
-msgstr "(Nepojmenovaný trasový bod)"
-#
-#, fuzzy
-msgid "(c) 2000-2021"
-msgstr "(c) 2000-2019"
-#
-msgid "(m/d/y h:m)"
-msgstr "(m/d/r h:m)"
-#
-msgid "(reserved for future use)"
-msgstr "(rezervováno pro budoucí použití)"
-#
-msgid "(unnamed)"
-msgstr "(Nepojmenovaná)"
-#
-msgid ", Out: None"
-msgstr ", Výstup: Nic"
-#
-msgid ", and all previous versions,"
-msgstr "a všechny předchozí verze,"
-#
-msgid "-"
+
+#: src/ais.cpp:215
+msgid "SAR/V"
 msgstr ""
-#
-msgid "--"
+
+#: src/ais.cpp:217
+msgid "Tender"
+msgstr "Člun"
+
+#: src/ais.cpp:218
+msgid "PC/V"
 msgstr ""
-#
-msgid "...and TCPA is less than (min)"
-msgstr "...a TCPA je méně než (minut)"
-#
-msgid "0"
+
+#: src/ais.cpp:219
+msgid "LE/V"
 msgstr ""
-#
-msgid "0 (transfer completed)"
+
+#: src/ais.cpp:220
+msgid "Med/V"
 msgstr ""
-#
-msgid "0 (transfer paused)"
+
+#: src/ais.cpp:221
+msgid "Pass/V"
 msgstr ""
-#
-msgid "0.05"
+
+#: src/ais.cpp:222
+msgid "M/V"
 msgstr ""
-#
-msgid "1"
+
+#: src/ais.cpp:223
+msgid "M/T"
 msgstr ""
-#
-msgid "1 pixel"
-msgstr "1 pixel"
-#
-msgid "1 px"
+
+#: src/ais.cpp:224 src/ais.cpp:230
+msgid "?"
 msgstr ""
 
 #: src/ais.cpp:226 src/AIS_Target_Data.cpp:904
@@ -1002,19 +875,20 @@ msgstr "Oblast kotvení: Kotviště otevřeno"
 #: src/ais.cpp:314
 msgid "Anchorage Area: Anchorage closed"
 msgstr "Oblast kotvení: Kotviště uzavřeno"
-#
-msgid "Anchorage Area: Anchorage open"
-msgstr "Oblast kotvení: Kotviště otevřeno"
-#
+
+#: src/ais.cpp:315
 msgid "Anchorage Area: Anchoring prohibited"
 msgstr "Oblast kotviště: Kotvení zakázáno"
-#
+
+#: src/ais.cpp:316
 msgid "Anchorage Area: Deep draft anchorage"
 msgstr "Oblast kotviště: Kotviště pro hluboký ponor"
-#
+
+#: src/ais.cpp:317
 msgid "Anchorage Area: Shallow draft anchorage"
 msgstr "Oblast kotviště: Kotviště pro mělký ponor"
-#
+
+#: src/ais.cpp:318
 msgid "Anchorage Area: Vessel transfer operations"
 msgstr "Oblast kotviště: Operace přemísťování lodí"
 
@@ -2977,8 +2851,9 @@ msgstr "Navigovat sem"
 #: src/canvasMenu.cpp:456 src/chart1.cpp:5520
 msgid "Course Up Mode"
 msgstr "Mód kurs nahoru"
-#
-msgid "Create Config"
+
+#: src/canvasMenu.cpp:458
+msgid "Heading Up Mode"
 msgstr ""
 
 #: src/canvasMenu.cpp:460 src/canvasMenu.cpp:467 src/chart1.cpp:5229
@@ -3126,24 +3001,13 @@ msgstr "Otočit..."
 #: src/canvasMenu.cpp:690
 msgid "Hide Waypoint Names"
 msgstr ""
-#
-msgid "Create Route"
-msgstr "Vytvořit trasu"
-#
-msgid "Create Temporary layer"
+
+#: src/canvasMenu.cpp:693
+msgid "Show Waypoint Names"
 msgstr ""
-#
-msgid "Create WPT"
-msgstr "Vytvořit trasový bod"
-#
-msgid "Create Waypoint"
-msgstr "Vytvořit trasový bod"
-#
-msgid ""
-"Create a private configuration template based on current settings.\n"
-"This template will be saved, and may be selected for further use at any "
-"time.\n"
-"               "
+
+#: src/canvasMenu.cpp:696
+msgid "Resequence Waypoints..."
 msgstr ""
 
 #: src/canvasMenu.cpp:710 src/canvasMenu.cpp:804
@@ -3177,151 +3041,21 @@ msgstr "Odstranit z trasy"
 #: src/canvasMenu.cpp:784
 msgid "Split Route at Waypoint"
 msgstr ""
-#
-msgid "Croatia"
-msgstr "Chorvatsko"
-#
-msgid "Crozet Archipelago"
-msgstr "Souostroví Crozet"
-#
-msgid "Cruise ship"
-msgstr "Výletní loď"
-#
-msgid "Cuba"
-msgstr "Kuba"
-#
-msgid "Current"
-msgstr "Proud"
-#
-msgid "Current active plugin catalog"
-msgstr ""
-#
-msgid "CurrentValue"
-msgstr "Proud"
-#
-msgid "Custom URL"
-msgstr ""
-#
-msgid "Custom catalog URL: "
-msgstr ""
-#
-msgid "Cyan"
-msgstr "Azurová"
-#
-msgid "Cyprus"
-msgstr "Kypr"
-#
-msgid "Czech Republic"
-msgstr "Česká republika"
-#
-msgid "D/V"
-msgstr ""
-#
-msgid "DSC"
-msgstr "DSC"
-#
-msgid "DSC Alert"
-msgstr ""
-#
-msgid "DSC Distress"
-msgstr "Nouze"
-#
-msgid "DSC Position Report"
-msgstr "Report pozice      "
-#
-msgid "Dark Blue"
-msgstr "Tmavě modrá"
-#
-msgid "Dark Cyan"
-msgstr "Tmavě azurová"
-#
-msgid "Dark Gray"
-msgstr "Tmavě šedá"
-#
-msgid "Dark Green"
-msgstr "Tmavě zelená"
-#
-msgid "Dark Magenta"
-msgstr "Tmavě fialová"
-#
-msgid "Dark Red"
-msgstr "Tmavě červená"
-#
-msgid "Dark Yellow"
-msgstr "Tmavě žlutá"
-#
-msgid "Data Connections"
-msgstr "Datová spojení"
-#
-msgid "Data Port"
-msgstr "Datový Port"
-#
-msgid "Data Source :"
-msgstr "Zdroj dat :"
-#
-msgid "DataPort"
-msgstr "Datový port"
-#
-msgid "Date ending: "
-msgstr ""
-#
-msgid "Date starting: "
-msgstr ""
-#
-msgid "Daytime"
-msgstr "Den"
-#
-msgid "De-Cluttered Text"
-msgstr "Uspořádat text"
-#
-msgid "De-skew Raster Charts"
-msgstr "Srovnat šikmé rastrové mapy"
-#
-msgid "Deactivate"
-msgstr "Deaktivovat"
-#
-msgid "Decimal Degrees"
-msgstr "Desetinné stupně"
-#
-msgid "Deep Depth"
-msgstr "Velká hloubka"
-#
-msgid "Default"
-msgstr "Výchozí"
-#
-msgid "Default Boat Speed "
-msgstr "Výchozí rychlost lodi "
-#
-#, fuzzy
-msgid "Default catalog"
-msgstr "Standardní barva"
-#
-msgid "Default color"
-msgstr "Standardní barva"
-#
-#, fuzzy
-msgid "Default setting"
-msgstr "Výchozí nastavení"
-#
-msgid "Default tracking"
-msgstr "Výchozí nastavení"
-#
-msgid "Degrees, Decimal Minutes"
-msgstr "Stupně, desetinné minuty"
-#
-msgid "Degrees, Minutes, Seconds"
-msgstr "Stupně, minuty, sekundy"
-#
-msgid "Delete"
-msgstr "Smazat"
-#
-msgid "Delete All"
-msgstr "Smazat vše"
-#
-msgid "Delete Group"
-msgstr "Smazat skupinu"
-#
-msgid "Delete Selected Config..."
+
+#: src/canvasMenu.cpp:833
+msgid "Navigate To This"
+msgstr "Navigovat sem"
+
+#: src/canvasMenu.cpp:855
+msgid "Clear Anchor Watch"
+msgstr "Smazat kotevní alarm"
+
+#: src/canvasMenu.cpp:866
+msgid "Set Anchor Watch"
+msgstr "Nastavit kotevní alarm"
+
+#: src/canvasMenu.cpp:907
+msgid "Main Menu"
 msgstr ""
 
 #: src/canvasMenu.cpp:920
@@ -4332,17 +4066,17 @@ msgstr "Buňka"
 #: src/cm93.cpp:6465
 msgid "M_COVR ID"
 msgstr ""
-#
-msgid "Heading Up Mode"
+
+#: src/cm93.cpp:6469
+msgid "Cell Scale"
+msgstr "Měřítko buňky"
+
+#: src/cm93.cpp:6473
+msgid "wgsox"
 msgstr ""
-#
-msgid "Help"
-msgstr "Nápověda"
-#
-msgid "Here"
-msgstr "Tady"
-#
-msgid "Hide"
+
+#: src/cm93.cpp:6477
+msgid "wgsoy"
 msgstr ""
 
 #: src/cm93.cpp:6481 src/cm93.cpp:6495
@@ -4461,16 +4195,40 @@ msgstr "GPSD"
 #: src/ConnectionParams.cpp:174 src/options.cpp:2220 src/options.cpp:2872
 msgid "Signal K"
 msgstr ""
-#
-msgid "Important Text Only"
-msgstr "Pouze důležitý text"
-#
-msgid "In"
+
+#: src/ConnectionParams.cpp:197
+msgid "Input"
 msgstr "Vstup"
-#
+
+#: src/ConnectionParams.cpp:199
+msgid "Output"
+msgstr "Výstup"
+
+#: src/ConnectionParams.cpp:201
 msgid "In/Out"
 msgstr "Vstup/Výstup"
-#
+
+#: src/ConnectionParams.cpp:208
+msgid "Reject"
+msgstr "Odmítnout"
+
+#: src/ConnectionParams.cpp:210
+msgid "Accept"
+msgstr "Přijmout"
+
+#: src/ConnectionParams.cpp:213
+msgid "Drop"
+msgstr "Zahodit"
+
+#: src/ConnectionParams.cpp:215 src/SendToGpsDlg.cpp:197
+msgid "Send"
+msgstr "Odeslat"
+
+#: src/ConnectionParams.cpp:232
+msgid "In"
+msgstr "Vstup"
+
+#: src/ConnectionParams.cpp:238
 msgid "In: None"
 msgstr "Vstup: Nic"
 
@@ -4541,44 +4299,9 @@ msgstr "Úroveň detailu CM93"
 #: src/DetailSlider.cpp:92
 msgid "Rasterchart Zoom/Scale Weighting"
 msgstr ""
-#
-msgid "Incompatible plugin detected"
-msgstr "Nalezen nekompatibilní doplněk"
-#
-msgid "India"
-msgstr "Indie"
-#
-msgid "Indonesia"
-msgstr "Indonésie"
-#
-msgid "Information Message or Message with errors"
-msgstr "Informační zpráva nebo zpráva s chybami"
-#
-msgid "Information: Icebreaker waiting area"
-msgstr "Informace: Oblast vyčkávání ledoborce"
-#
-msgid "Information: Location of response units"
-msgstr "Informace: Umístění odpovídacích jednotek"
-#
-msgid "Information: Pilot boarding position"
-msgstr "Informace: Pozice nalodění pilota"
-#
-msgid "Information: Places of refuge"
-msgstr "Informace: Místa úniku"
-#
-msgid "Information: Position of icebreakers"
-msgstr "Informace: Pozice ledoborců"
-#
-msgid "Inland Blue Flag"
-msgstr "Pozemní modrá vlajka"
-#
-msgid "Input"
-msgstr "Vstup"
-#
-msgid "Input Message filtered and dropped"
-msgstr "Vstupní zpráva filtrována a zahozena"
-#
-msgid "Input device :"
+
+#: src/DetailSlider.cpp:96
+msgid "Vectorchart Zoom/Scale Weighting"
 msgstr ""
 
 #: src/download_mgr.cpp:212 src/update_mgr.cpp:209
@@ -4903,11 +4626,13 @@ msgstr ""
 #: src/multiplexer.cpp:413
 msgid "Route Upload"
 msgstr ""
-#
-msgid "Insert this route in the new route?"
+
+#: src/multiplexer.cpp:642 src/multiplexer.cpp:1257
+msgid "Connecting to "
 msgstr ""
-#
-msgid "Install"
+
+#: src/multiplexer.cpp:663 src/multiplexer.cpp:1276
+msgid "Connected to "
 msgstr ""
 
 #: src/navutil.cpp:1754 src/navutil.cpp:3119 src/options.cpp:1050
@@ -6812,8 +6537,7 @@ msgstr "Různé"
 msgid "S57 Cell Update failed.\n"
 "ENC features may be incomplete or inaccurate.\n\n"
 "Check the logfile for details."
-msgstr ""
-"Řetěz aktualizací S57 buňky je neúplný. \n"
+msgstr "Řetěz aktualizací S57 buňky je neúplný. \n"
 "ENC mapa může být neúplná nebo nepřesná. \n"
 "Pro podrobnosti zkontroluj soubor logu."
 
@@ -6824,14 +6548,11 @@ msgstr "OpenCPN varování vytvoření SENC"
 #: src/Osenc.cpp:1180
 msgid "S57 Cell Update failed.\n"
 "No updates could be applied.\n"
-"ENC features may be incomplete or inaccurate.\n"
-"\n"
+"ENC features may be incomplete or inaccurate.\n\n"
 "Check the logfile for details."
-msgstr ""
-"Aktualizace S57 buňky se nezdařila.\n"
+msgstr "Aktualizace S57 buňky se nezdařila.\n"
 "Nepodařilo se aplikovat žádné aktualizace.\n"
-"ENC prvky monou být nekompletní nebo nepřesné.\n"
-"\n"
+"ENC prvky monou být nekompletní nebo nepřesné.\n\n"
 "Zkontroluj log pro bližší informace."
 
 #: src/Osenc.cpp:1664
@@ -7433,237 +7154,97 @@ msgstr "Plánovaná rychlost"
 #: src/RoutePropDlg.cpp:124
 msgid "Enroute"
 msgstr ""
-#
-msgid "Split"
-msgstr "Rozdělit trasu"
-#
-msgid "Split Route at Waypoint"
+
+#: src/RoutePropDlg.cpp:140
+msgid "Departure"
 msgstr ""
 
 #: src/RoutePropDlg.cpp:173 src/trackprintout.cpp:96 src/trackprintout.cpp:329
 msgid "Time"
 msgstr ""
-#
-msgid "Sri Lanka"
-msgstr "Srí Lanka"
-#
-msgid "Standard"
-msgstr "Standardní"
-#
-msgid "Starboard Hand Mark"
-msgstr "Pravoboční značka"
-#
-msgid "Start"
-msgstr "Start"
-#
-msgid "Statistics"
-msgstr "Statistika"
-#
-#, fuzzy
-msgid "Status"
-msgstr "Stavová řádka"
-#
-msgid "Status Bar"
+
+#: src/RoutePropDlg.cpp:178
+msgid "Local@PC"
 msgstr ""
-#
-msgid "Status Bar Option"
-msgstr "Nastavení stavového řádku"
-#
-msgid "StatusBar"
-msgstr "Stavová řádka"
-#
-msgid "Statute miles"
-msgstr "Statutární míle"
-#
-msgid "Stbd"
-msgstr "Pravo"
-#
-msgid "Stbd Hand"
-msgstr "Pravobok"
-#
-msgid "Stop Scan"
-msgstr "Zastavit prohledávání"
-#
-msgid "Stop Tracking"
-msgstr "Zastavit záznam"
-#
-msgid "Style"
-msgstr "Styl:"
-#
-msgid "Sudan"
-msgstr "Súdán"
-#
-msgid "Sunrise"
-msgstr "Východ slunce"
-#
-msgid "Sunset"
-msgstr "Západ slunce"
-#
-msgid "Suppress Alerts for anchored/moored targets"
+
+#: src/RoutePropDlg.cpp:179
+msgid "LMT@Location"
 msgstr ""
-#
-msgid "Suppress anchored/moored targets, speed max (kn)"
-msgstr "Potlačit zakotvené cíle, rychlost max (kn)"
-#
-msgid "Suriname"
-msgstr "Surinam"
-#
-msgid "Sweden"
-msgstr "Švédsko"
-#
-msgid "Switch to full screen mode on start."
-msgstr "Přepnout při spuštění do režimu celé obrazovky."
-#
-msgid "Switzerland"
-msgstr "Švýcarsko"
-#
-msgid "Symbolized"
-msgstr "Symbolizovaný"
-#
-msgid "Syrian Arab Republic"
-msgstr "Syrská arabská republika"
-#
-msgid "TCP"
-msgstr "TCP"
-#
-msgid "TCPA"
-msgstr "TCPA"
-#
-msgid "TTG  @SOG"
+
+#: src/RoutePropDlg.cpp:201 src/TrackPropDlg.cpp:477 src/TrackPropDlg.cpp:721
+msgid "Default color"
+msgstr "Standardní barva"
+
+#: src/RoutePropDlg.cpp:238 src/TrackPropDlg.cpp:511 src/TrackPropDlg.cpp:745
+msgid "Width"
+msgstr "Šířka:"
+
+#: src/RoutePropDlg.cpp:244
+msgid "1 px"
 msgstr ""
-#
-msgid "TTG  @VMG"
+
+#: src/RoutePropDlg.cpp:244
+msgid "2px"
 msgstr ""
-#
-msgid "Taiwan"
-msgstr "Tchaj-wan"
-#
-msgid "Tajikistan"
-msgstr "Tádžikistán"
-#
-msgid "Talker ID"
-msgstr "ID zdroje dat"
-#
-msgid "Tankbarge"
-msgstr "Tanková vana"
-#
-msgid "Tankbarge, dry cargo as if liquid (e.g. cement)"
-msgstr "Tanková vana, pevný náklad jako kapalina (např. cement)"
-#
-msgid "Tankbarge, gas"
-msgstr "Nákladní vana, plyn"
-#
-msgid "Tankbarge, liquid cargo, type C"
-msgstr "Tanková vana, tekutý náklad, typ C"
-#
-msgid "Tankbarge, liquid cargo, type N"
-msgstr "Tanková vana, tekutý náklad, typ N"
-#
-msgid "Tanker"
-msgstr "Tanker"
-#
-msgid "Tanzania"
-msgstr "Tanzanie"
-#
-msgid "Target Count"
-msgstr "Počet cílů"
-#
-msgid "Target List..."
-msgstr "Seznam cílů..."
-#
-msgid "Target Query..."
-msgstr "Dotaz na cíl..."
-#
-msgid "Target info"
-msgstr "Info o cíli"
-#
-msgid "Temperature"
+
+#: src/RoutePropDlg.cpp:244
+msgid "3 px"
 msgstr ""
-#
-msgid "Template Status"
+
+#: src/RoutePropDlg.cpp:244
+msgid "4 px"
 msgstr ""
-#
-msgid "Templates"
+
+#: src/RoutePropDlg.cpp:244
+msgid "5 px"
 msgstr ""
-#
-msgid "Temporary"
+
+#: src/RoutePropDlg.cpp:245
+msgid "6 px"
 msgstr ""
-#
-msgid "Temporary AISMOB Route"
-msgstr "Dočasná trasa AISMOB"
-#
-msgid "Temporary GOTO Route"
-msgstr "Dočasná trasa"
-#
-msgid "Temporary MOB Route"
-msgstr "Dočasná trasa k MOB"
-#
-msgid "Tender"
-msgstr "Člun"
-#
-msgid "Test AIS Alert Sound"
+
+#: src/RoutePropDlg.cpp:245
+msgid "7 px"
 msgstr ""
-#
-msgid "Test AIS SART Alert Sound"
+
+#: src/RoutePropDlg.cpp:245
+msgid "8 px"
 msgstr ""
-#
-msgid "Test Anchor Alarm Sound"
+
+#: src/RoutePropDlg.cpp:245
+msgid "9 px"
 msgstr ""
-#
-msgid "Test DSC notification Sound"
+
+#: src/RoutePropDlg.cpp:245
+msgid "10 px"
 msgstr ""
-#
-msgid "Testing"
-msgstr "Testování"
-#
-msgid "Texture Cache"
-msgstr "Uložené textury"
-#
-msgid "Texture Compression"
-msgstr "Komprese textur"
-#
-msgid "Texture Compression Caching"
-msgstr "Komprese textur, ukládání do mezipaměti"
-#
-msgid "Texture Compression with Caching"
-msgstr "Komprese textur s ukládáním do mezipaměti"
-#
-msgid "Texture Memory Size (MB)"
-msgstr "Velikost paměti pro textury (MB)"
-#
-msgid "Texture Settings"
-msgstr "Nastavení textur"
-#
-msgid "Thailand"
-msgstr "Thajsko"
-#
-msgid ""
-"The Man Over Board button could be an important safety feature.\n"
-"Are you sure you want to hide it?"
+
+#: src/RoutePropDlg.cpp:258
+msgid "To waypoint"
 msgstr ""
-"Tlačítko Man Over Board může bít důležitá bezpečnostní pomůcka.\n"
-"Určitě ho chceš skrýt?"
-#
-msgid "The Open Source Chart Plotter/Navigator"
+
+#: src/RoutePropDlg.cpp:268
+msgid "To WP"
 msgstr ""
-#
-msgid "The OpenCPN Authors"
-msgstr "Autoři OpenCPN"
-#
-msgid "The ScaMin value for new waypoints is set to"
+
+#: src/RoutePropDlg.cpp:304
+msgid "Total Distance"
 msgstr ""
-#
-#, c-format
-msgid ""
-"The amount of data used by the track\n"
-" was reduced by %d%%."
-msgstr ""
-"Množství dat použitých stopou\n"
-" bylo sníženo o %d%%."
-#
-msgid ""
-"The currently running Track was not merged.\n"
-"You can merge it later when it is completed."
+
+#: src/RoutePropDlg.cpp:317
+msgid "ETE"
+msgstr "ETE"
+
+#: src/RoutePropDlg.cpp:321
+msgid "ETA"
+msgstr "ETA"
+
+#: src/RoutePropDlg.cpp:329
+msgid "Next tide event"
+msgstr "Příští přílivová událost"
+
+#: src/RoutePropDlg.cpp:341
+msgid "ETD"
 msgstr ""
 
 #: src/RoutePropDlg.cpp:382 src/TrackPropDlg.cpp:883
@@ -7714,110 +7295,80 @@ msgstr "Noc"
 #: src/RoutePropDlgImpl.cpp:408
 msgid "Arrived"
 msgstr ""
-#
-msgid "The file will also be deleted from OpenCPN's layer directory."
+
+#: src/RoutePropDlgImpl.cpp:813 src/TrackPropDlg.cpp:348
+#: src/TrackPropDlg.cpp:1341
+msgid "Depart From"
+msgstr "Odplutí z"
+
+#: src/RoutePropDlgImpl.cpp:815 src/TrackPropDlg.cpp:386
+#: src/TrackPropDlg.cpp:769 src/TrackPropDlg.cpp:1343
+msgid "Total distance"
+msgstr "Celková vzdálenost"
+
+#: src/RoutePropDlgImpl.cpp:816
+msgid "Speed (Kts)"
+msgstr "Rychlost (Kts)"
+
+#: src/RoutePropDlgImpl.cpp:818 src/TrackPropDlg.cpp:1346
+msgid "Departure Time"
+msgstr "Čas vyplutí"
+
+#: src/RoutePropDlgImpl.cpp:820 src/TrackPropDlg.cpp:788
+#: src/TrackPropDlg.cpp:1348
+msgid "Time enroute"
+msgstr "Čas na cestě"
+
+#: src/RoutePropDlgImpl.cpp:865
+msgid "Are you sure you want to move Up this waypoint?"
 msgstr ""
-#
-msgid "The font colour."
-msgstr "Barva fontu."
-#
-msgid "The font family."
-msgstr "Rodina fontů."
-#
-msgid "The font point size."
-msgstr "Velikost fontu v bodech."
-#
-msgid "The font style."
-msgstr "Styl fontu"
-#
-msgid "The font weight."
-msgstr "Váha fontu."
-#
-msgid ""
-"The last opencpn run seems to have failed. Do you want to run\n"
-"in safe mode without plugins and other possibly problematic\n"
-"features?\n"
+
+#: src/RoutePropDlgImpl.cpp:866
+msgid "Are you sure you want to move Down this waypoint?"
 msgstr ""
-#
-msgid "The necessary configuration files were not found. "
-msgstr "Potřebné konfigurační soubory nebyly nalezeny."
-#
-#, c-format
-msgid ""
-"The plugin %s is not compatible with this version of OpenCPN, please get an "
-"updated version."
+
+#: src/RoutePropDlgImpl.cpp:868
+msgid "OpenCPN Move Waypoint"
 msgstr ""
-"Plugin %s není kompatibilní s touto verzí OpenCPN, prosím stáhni "
-"aktualizovanou verzi."
-#
-msgid ""
-"The plugin is not compatible with this version of OpenCPN, and will be "
-"uninstalled."
+
+#: src/RoutePropDlgImpl.cpp:902
+msgid "Are you sure you want to remove this waypoint?"
+msgstr "Určitě chceš smazat tento trasový bod?"
+
+#: src/RoutePropDlgImpl.cpp:903
+msgid "OpenCPN Remove Waypoint"
+msgstr "OpenCPN odstranit trasový bod"
+
+#: src/RoutePropDlgImpl.cpp:938
+msgid "Move Up"
 msgstr ""
-#
-msgid ""
-"The recently captured track of this target has been recorded.\n"
-"Do you want to continue recording until the end of the current OpenCPN "
-"session?"
+
+#: src/RoutePropDlgImpl.cpp:940
+msgid "Move Down"
 msgstr ""
-"Nedávno zaznamenaná stopa tohoto cíle byla uložena.\n"
-"Chceš pokračovat v ukládání do ukončení OpenCPN?"
-#
-msgid "The settings for own ship real size are not correct:"
-msgstr "Nastavené skutečné velikosti vlastní lodi není korektní:"
-#
-msgid ""
-"The waypoint you want to delete is used in a route, do you really want to "
-"delete it?"
+
+#: src/RoutePropDlgImpl.cpp:978 src/TrackPropDlg.cpp:1396
+msgid "&Copy all as text"
+msgstr "Kopírovat vše jako text"
+
+#: src/RoutePropDlgImpl.cpp:1100 src/TrackPropDlg.cpp:1287
+msgid "_plus"
 msgstr ""
-"Trasový bod, který chceš smazat je použit v trase, chceš ho skutečně "
-"odstranit?"
-#
-msgid "There"
-msgstr "Tam"
-#
-msgid ""
-"There are existing waypoints at the same location as some of the ones you are "
-"pasting. Would you like to just merge the pasted data into them?\n"
-"\n"
+
+#: src/RoutePropDlgImpl.cpp:1175
+msgid "Invalid date/time!"
 msgstr ""
-"Na místě, kam vkládáš trasové body již nějaké existují. Chceš k nim pouze "
-"připojit data, která vkládáš?\n"
-"\n"
-#
-msgid ""
-"There are some waypoints used in routes or anchor alarms.\n"
-" Do you want to delete them as well?\n"
-" This will change the routes and disable the anchor alarms.\n"
-" Answering No keeps the waypoints used in routes or alarms."
+
+#: src/RoutePropDlgImpl.cpp:1179
+msgid "Unknown station!"
 msgstr ""
-"Některé body zíjmu jsou použity v trasách nebo pro kotevní alarmy. Chceš je "
-"také odstranit? To změní trasy a deaktivuje kotevní alarmy. Odpověď Ne "
-"zachoví body, které jsou použity v trasách nebo alarmech."
-#
-msgid ""
-"There is an existing waypoint at the same location as the one you are "
-"pasting. Would you like to merge the pasted data with it?\n"
-"\n"
+
+#: src/RoutePropDlgImpl.cpp:1194
+msgid "Unavailable: "
 msgstr ""
-"Na místě, kam vkládáš již existuje trasový bod. Chceš k němu připojit "
-"vkládaná data?\n"
-"\n"
-#
-msgid ""
-"There was a problem printing.\n"
-"Perhaps your current printer is not set correctly?"
-msgstr ""
-"Problém s tiskem.\n"
-"Možná není tvá tiskárna správně nastavena?"
-#
-msgid "Therefore the new waypoint will not be visible at this zoom level."
-msgstr ""
-#
-msgid ""
-"These settings might destabilize OpenCPN and are by default disabled. To "
-"despite the dangers enable them manually add a CatalogExpert=1 line in the "
-"[PlugIns] section in the configuration file."
+
+#: src/RoutePropDlgImpl.cpp:1203
+msgid "Local"
 msgstr ""
 
 #: src/RoutePropDlgImpl.cpp:1360 src/TrackPropDlg.cpp:1631
@@ -7991,64 +7542,101 @@ msgstr "Průměrná rychlost (Kts)"
 #: src/TrackPropDlg.cpp:413
 msgid "Time Enroute"
 msgstr "Čas na cestě"
-#
-msgid "Time enroute"
-msgstr "Čas na cestě"
-#
+
+#: src/TrackPropDlg.cpp:441 src/TrackPropDlg.cpp:455 src/TrackPropDlg.cpp:817
+msgid "Local @ PC"
+msgstr "Lokální na PC"
+
+#: src/TrackPropDlg.cpp:441 src/TrackPropDlg.cpp:461
+msgid "LMT @ Location"
+msgstr "LMT na místě"
+
+#: src/TrackPropDlg.cpp:444 src/TrackPropDlg.cpp:808
 msgid "Time shown as"
 msgstr "Časy zobrazeny jako"
-#
-msgid "Timestamp"
-msgstr "Časová značka"
-#
-msgid "Title"
-msgstr ""
-#
-msgid "To"
-msgstr "Do"
-#
-msgid "To WP"
-msgstr ""
-#
-msgid "To Waypoint"
-msgstr "K trasovému bodu"
-#
-msgid ""
-"To proceed with chart folder migration, choose the chart source folder, and "
-"follow the instructions given."
-msgstr ""
-#
+
+#: src/TrackPropDlg.cpp:515 src/TrackPropDlg.cpp:750
+msgid "1 pixel"
+msgstr "1 pixel"
+
+#: src/TrackPropDlg.cpp:515 src/TrackPropDlg.cpp:750
+msgid "2 pixels"
+msgstr "2 pixely"
+
+#: src/TrackPropDlg.cpp:516 src/TrackPropDlg.cpp:751
+msgid "3 pixels"
+msgstr "3 pixely"
+
+#: src/TrackPropDlg.cpp:516 src/TrackPropDlg.cpp:751
+msgid "4 pixels"
+msgstr "4 pixely"
+
+#: src/TrackPropDlg.cpp:516 src/TrackPropDlg.cpp:751
+msgid "5 pixels"
+msgstr "5 pixelů"
+
+#: src/TrackPropDlg.cpp:517 src/TrackPropDlg.cpp:752
+msgid "6 pixels"
+msgstr "6 pixelů"
+
+#: src/TrackPropDlg.cpp:517 src/TrackPropDlg.cpp:752
+msgid "7 pixels"
+msgstr "7 pixelů"
+
+#: src/TrackPropDlg.cpp:517 src/TrackPropDlg.cpp:752
+msgid "8 pixels"
+msgstr "8 pixelů"
+
+#: src/TrackPropDlg.cpp:518 src/TrackPropDlg.cpp:753
+msgid "9 pixels"
+msgstr "9 pixelů"
+
+#: src/TrackPropDlg.cpp:518 src/TrackPropDlg.cpp:753
+msgid "10 pixels"
+msgstr "10 pixelů"
+
+#: src/TrackPropDlg.cpp:590 src/TrackPropDlg.cpp:976
 msgid "To route"
 msgstr "Čas na cestě"
-#
-msgid "To waypoint"
+
+#: src/TrackPropDlg.cpp:707
+msgid "Display parameters"
+msgstr "Kategorie zobrazení"
+
+#: src/TrackPropDlg.cpp:762
+msgid "Statistics"
+msgstr "Statistika"
+
+#: src/TrackPropDlg.cpp:802
+msgid "Recorded points"
+msgstr "Sloučit trasové body?"
+
+#: src/TrackPropDlg.cpp:822
+msgid "LMT @ Track Start"
+msgstr "LMT @ Start"
+
+#: src/TrackPropDlg.cpp:971
+msgid "Extend track"
 msgstr ""
-#
-msgid "Today"
-msgstr "Dnes"
-#
-msgid "Toggle Full Screen"
-msgstr "Přepnout na celou obrazovku"
-#
-msgid "Toggle track"
-msgstr "Přepni záznam stopy"
-#
-msgid "Togolese Republic"
-msgstr "Republika Togo"
-#
-msgid "Tomorrow"
-msgstr "Zítra"
-#
-msgid "Tonga"
-msgstr "Tonga"
-#
-msgid "ToolTips"
-msgstr "ToolTipy"
-#
-msgid "Toolbar and Window Style"
-msgstr "Nástrojová lišta a styl okna"
-#
-msgid "Total Distance"
+
+#: src/TrackPropDlg.cpp:981
+msgid "Export"
+msgstr "&Export tras. bodu...."
+
+#: src/TrackPropDlg.cpp:1172
+msgid "%D Days, %H:%M"
+msgstr "%D dny, % H:%M"
+
+#: src/TrackPropDlg.cpp:1346
+msgid "(m/d/y h:m)"
+msgstr "(m/d/r h:m)"
+
+#: src/TrackPropDlg.cpp:1450
+msgid "track"
+msgstr "Stopa"
+
+#: src/TrackPropDlg.cpp:1876
+msgid "--"
 msgstr ""
 
 #: src/TTYWindow.cpp:68
@@ -8103,247 +7691,96 @@ msgstr ""
 #: libs/wxcurl/src/dialog.cpp:137
 msgid "Not available"
 msgstr ""
-#
-msgid "Towing Vessel, Long"
-msgstr ""
-#
-msgid "Track"
-msgstr "Stopa"
-#
-msgid "Track Colour"
-msgstr ""
-#
-msgid "Track Mode"
-msgstr "Režim stop"
-#
-msgid "Track Name"
-msgstr "Jméno trasy"
-#
-#, fuzzy
-msgid "Track Print"
-msgstr "Sledování"
-#
-msgid "Track properties"
-msgstr "Vlastnosti trasy"
-#
-msgid "Tracking"
-msgstr "Sledování"
-#
-msgid "Tracking Precision"
-msgstr "Přesnost záznamu stopy"
-#
-msgid "Tracks"
-msgstr "Stopy"
-#
-msgid "Transmit sentences"
-msgstr "Přenést věty"
-#
-msgid "Transverse Mercator"
-msgstr "Transverse Mercator"
-#
-msgid "Trinidad and Tobago"
-msgstr "Trinidad a Tobago"
-#
-msgid "Trk"
-msgstr "Stopa"
-#
-msgid "Tug"
-msgstr "Remorkér"
-#
-msgid "Tug freighter, coupled"
-msgstr "Remorkér, nákladní, zdvojený"
-#
-msgid "Tug, assisting a vessel or linked combination"
-msgstr "Remorkér, asistující plavidlu nebo propojené kombinaci"
-#
-msgid "Tug, freighter"
-msgstr "Remorkér, nákladní"
-#
-msgid "Tug, freighter/tanker, coupled"
-msgstr "Remorkér, nákladní/tanker, zdvojený"
-#
-msgid "Tug, one or more tows"
-msgstr "Remorkér, jeden nebo více vleků"
-#
-msgid "Tug, single"
-msgstr "Remorkér, jediný"
-#
-msgid "Tug, tanker"
-msgstr "Remorkér, tanker"
-#
-msgid "Tunisia"
-msgstr "Tunisko"
-#
-msgid "Turkey"
-msgstr "Turecko"
-#
-msgid "Turkmenistan"
-msgstr "Turkmenistán"
-#
-msgid "Turks and Caicos Islands"
-msgstr "Turks a Caicos"
-#
-msgid "Turn Rate"
-msgstr "Rychlost obratu"
-#
-msgid "Tuvalu"
-msgstr "Tuvalu"
-#
-msgid "Type"
-msgstr "Typ"
-#
-msgid "UDP"
-msgstr "UDP"
-#
-msgid "URL"
-msgstr "URL"
-#
+
+#: libs/wxcurl/src/dialog.cpp:168
 msgid "URL:"
 msgstr ""
-#
-msgid "UTC"
-msgstr "UTC"
-#
-msgid "Uganda"
-msgstr "Uganda"
-#
-msgid "Ukraine"
-msgstr "Ukrajina"
-#
-#, fuzzy
-msgid "Ultra advanced"
-msgstr "Pokočilé"
-#
-msgid "Un-Installation complete"
+
+#: libs/wxcurl/src/dialog.cpp:187
+msgid "Speed:"
 msgstr ""
-#
-msgid "Unable to copy catalog file"
+
+#: libs/wxcurl/src/dialog.cpp:196
+msgid "Elapsed time:"
 msgstr ""
-#
-msgid "Unable to copy catalog file to cache"
+
+#: libs/wxcurl/src/dialog.cpp:198
+msgid "Estimated total time:"
 msgstr ""
-#
-msgid "Unavailable: "
+
+#: libs/wxcurl/src/dialog.cpp:200
+msgid "Estimated remaining time:"
 msgstr ""
-#
-msgid "Undefined"
-msgstr "Nedefinovaný"
-#
-msgid "Undefined (default)"
-msgstr "Nedefinovaný (výchozí)"
-#
-msgid "Underway Sailing"
+
+#: libs/wxcurl/src/dialog.cpp:243 libs/wxcurl/src/dialog.cpp:399
+msgid "Abort"
 msgstr ""
-#
-msgid "Underway using Engine"
+
+#: libs/wxcurl/src/dialog.cpp:245
+msgid "Settings"
 msgstr ""
-#
-msgid "Undo"
-msgstr "Vrátit zpět"
-#
-msgid "Undock Target List"
+
+#: libs/wxcurl/src/dialog.cpp:252
+msgid "Start"
+msgstr "Start"
+
+#: libs/wxcurl/src/dialog.cpp:413
+msgid "0 (transfer paused)"
 msgstr ""
-#
-msgid "Uninstall"
+
+#: libs/wxcurl/src/dialog.cpp:461
+msgid "Connection settings"
 msgstr ""
-#
-msgid "Unit carrier maritime"
-msgstr "Námořní nosič jednotek"
-#
-msgid "United Arab Emirates"
-msgstr "Spojené arabské emiráty"
-#
-msgid "United States Virgin Islands"
-msgstr "Spojené státy americké Panenské ostrovy"
-#
-msgid "United States of America"
-msgstr "Spojené státy americké"
-#
-msgid "Units"
-msgstr "Jednotky"
-#
-msgid "Unk"
-msgstr "Neznámý"
-#
-msgid "Unknown"
-msgstr "Neznámý"
-#
-msgid "Unknown device :"
+
+#: libs/wxcurl/src/dialog.cpp:461
+msgid "Connection settings used for the transfer:"
 msgstr ""
-#
-msgid "Unknown station!"
+
+#: libs/wxcurl/src/dialog.cpp:516
+msgid "0 (transfer completed)"
 msgstr ""
-#
-msgid "Unnamed Route"
-msgstr "Nepojmenovaná trasa"
-#
-msgid "Unnamed Waypoint"
-msgstr "Nepojmenovaný trasový bod"
-#
-msgid "Unreadable PlugIn library detected, check the file permissions:\n"
-msgstr "Nečitelný soubor doplňku, zkontroluj oprávnění souboru:\n"
-#
-msgid "Unspecified"
-msgstr "Nedefinovaný"
-#
-#, fuzzy
-msgid "Update"
-msgstr " Aktualizováno:"
-#
-msgid "Update Control"
-msgstr "Aktualizovat ovládací prvek"
-#
-msgid "Update Plugin Catalog"
+
+#: libs/wxcurl/src/dialog.cpp:537
+msgid "Downloaded:"
 msgstr ""
-#
-msgid "Update Plugin Catalog: master"
-msgstr ""
-#
-msgid "Update Plugin Catalog:master"
-msgstr ""
-#
-msgid "Update plugin catalog"
-msgstr ""
-#
-msgid "Update to "
-msgstr ""
-#
-msgid "Update to installed Plugin is available"
-msgstr ""
-#
-msgid "Update to managed Plugin is available"
-msgstr ""
-#
-msgid "Upgrade to Version "
-msgstr ""
-#
+
+#: libs/wxcurl/src/dialog.cpp:585
 msgid "Uploaded:"
 msgstr ""
-#
-msgid "Uruguay"
-msgstr "Uruguay"
-#
-msgid "Use Accelerated Graphics (OpenGL)"
-msgstr "Použít akcelerovanou grafiku (OpenGL)"
-#
-msgid "Use Accelerated Panning"
-msgstr "Použít akcelerovanou grafiku (OpenGL)"
-#
-msgid "Use Furuno GP3X for uploads"
-msgstr "Použít Furuno GP3X pro odesílání"
-#
-msgid "Use GRMN for uploads"
-msgstr "Pro odesílání použít GRMN"
-#
-msgid "Use GRMN mode for input"
-msgstr "Použít režim GRMN pro vstup"
-#
-msgid "Use Garmin (GRMN) mode for input"
-msgstr "Použít Garmin GRMN mód pro vstup"
-#
-msgid "Use Garmin GRMN (Host) mode for uploads"
-msgstr "Použít Garmin GRMN (Host) mód uploady"
-#
-msgid "Use Inland ECDIS V2.3"
+
+#: libs/wxcurl/src/panel.cpp:111
+msgid "Username:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:112
+msgid "Password:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:120
+msgid "Port:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:134
+msgid "Proxy settings"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:136
+msgid "Use proxy"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:141
+msgid "Proxy host:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:142
+msgid "Proxy username:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:143
+msgid "Proxy password:"
+msgstr ""
+
+#: libs/wxcurl/src/panel.cpp:144
+msgid "Proxy port:"
 msgstr ""
 

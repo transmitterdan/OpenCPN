@@ -4076,14 +4076,9 @@ msgstr "셀 축척"
 #: src/cm93.cpp:6473
 msgid "wgsox"
 msgstr ""
-#
-msgid "Link description"
-msgstr "링크 설명"
-#
-msgid "Link not complete, can't be saved."
-msgstr "링크 불완전으로 저장할 수 없음."
-#
-msgid "Links"
+
+#: src/cm93.cpp:6477
+msgid "wgsoy"
 msgstr ""
 
 #: src/cm93.cpp:6481 src/cm93.cpp:6495

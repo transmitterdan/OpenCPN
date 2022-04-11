@@ -4295,40 +4295,8 @@ msgstr "Ενσωματωμένο GPS"
 #: src/ConnectionParams.cpp:820 src/options.cpp:2136
 msgid "Built-in Bluetooth"
 msgstr "Ενσωματωμένο Bluetooth"
-#
-msgid "Built-in Bluetooth SPP"
-msgstr "Ενσωματωμένο Bluetooth SPP"
-#
-msgid "Built-in GPS"
-msgstr "Ενσωματωμένο GPS"
-#
-msgid "Bulgaria"
-msgstr "Βουλγαρία"
-#
-msgid "Bulk carrier maritime"
-msgstr "Πλοίο χύδην φορτίου"
-#
-msgid "Bunkership"
-msgstr "Πετρελαιοφόρο ανεφοδιασμού"
-#
-msgid "Buoy/Light Labels"
-msgstr "Ετικέτες σημαντήρα/φάρου"
-#
-msgid "Buoys/Lights"
-msgstr "Σημαντήρες/Φάροι"
-#
-msgid "Burkina Faso"
-msgstr "Μπουρκίνα Φάσο"
-#
-msgid "Burundi"
-msgstr "Μπουρούντι"
-#
-msgid "C"
-msgstr "C"
-#
-msgid "C&olour:"
-msgstr "&Χρώμα: "
-#
+
+#: src/DetailSlider.cpp:88
 msgid "CM93 Detail Level"
 msgstr "Επίπεδο λεπτομέρειας στον χάρτη CM93"
 
@@ -4443,10 +4411,32 @@ msgstr "Σημείο πορείας"
 #: src/kml.cpp:638
 msgid "Choose Format for Copy"
 msgstr "Επίλεξε φορμά για την αντιγραφή"
-#
-msgid "Choose Toolbar Icons"
-msgstr "Επιλέξτε εικονίδια στη γραμμή εργαλείων"
-#
+
+#: src/kml.cpp:646
+msgid "KML Standard (Google Earth and others)"
+msgstr "Στάνταρτ KML (Google Earth κ.α.)"
+
+#: src/kml.cpp:650
+msgid "KML with extended waypoint data (QtVlm)"
+msgstr "KML με επεκτάσεις για τα δεδομένα (QtVlm)"
+
+#: src/LinkPropDlg.cpp:47
+msgid "Link"
+msgstr "Σύνδεσμος"
+
+#: src/LinkPropDlg.cpp:49
+msgid "Link description"
+msgstr "Περιγραφή συνδέσμου"
+
+#: src/LinkPropDlg.cpp:58
+msgid "URL"
+msgstr "url"
+
+#: src/LinkPropDlg.cpp:67
+msgid "Local file..."
+msgstr "Τοπικό αρχείο..."
+
+#: src/LinkPropDlg.cpp:122
 msgid "Choose a file"
 msgstr "Διαλέξτε αρχείο"
 
@@ -4829,8 +4819,7 @@ msgstr "Όχι"
 msgid "Create a private configuration template based on current settings.\n"
 "This template will be saved, and may be selected for further use at any time.\n"
 "               "
-msgstr ""
-"Δημιουργήστε τo δικής σας πρότυπο επιλογών βάσει των τρεχουσών ρυθμίσεων.\n"
+msgstr "Δημιουργήστε τo δικής σας πρότυπο επιλογών βάσει των τρεχουσών ρυθμίσεων.\n"
 "Το πρότυπο θα αποθηκευθεί για περαιτέρω χρήση ανά πάσα στιγμή.\n"
 "               "
 

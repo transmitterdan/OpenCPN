@@ -229,168 +229,111 @@ msgstr "Información OpenCPN"
 #: src/ais.cpp:113
 msgid "Underway using Engine"
 msgstr ""
-"\n"
-" - O axuste do GPS dende o medio debe estar dentro da manga do barco"
-#
-msgid ""
-"\n"
-" - your minimum ship icon size must be between 1 and 100 mm"
+
+#: src/ais.cpp:114
+msgid "At Anchor"
+msgstr "Fondeado"
+
+#: src/ais.cpp:115
+msgid "Not Under Command"
+msgstr "Sen goberno (NUC)"
+
+#: src/ais.cpp:116
+msgid "Restricted Manoeuvrability"
+msgstr "Manobra restrinxida"
+
+#: src/ais.cpp:117
+msgid "Constrained by draught"
+msgstr "Restrinxido polo calado"
+
+#: src/ais.cpp:118
+msgid "Moored"
+msgstr "Atracado"
+
+#: src/ais.cpp:119
+msgid "Aground"
+msgstr "Varado"
+
+#: src/ais.cpp:120
+msgid "Engaged in Fishing"
+msgstr "Dedicado á pesca"
+
+#: src/ais.cpp:121
+msgid "Underway Sailing"
 msgstr ""
-"\n"
-" - o tamaño mínimo da icona do barco debe estar entre 1 e 100 mm"
-#
-msgid ""
-"\n"
-" - your ship's beam must be > 0"
+
+#: src/ais.cpp:122 src/ais.cpp:149
+msgid "High Speed Craft"
+msgstr "Embarcación de alta velocidade"
+
+#: src/ais.cpp:123
+msgid "Wing In Ground Effect"
+msgstr "Avión en efecto terra"
+
+#: src/ais.cpp:124
+msgid "Power-driven vessel towing astern (regional use)"
+msgstr "Buque a motor remolcando por popa (uso rexional)"
+
+#: src/ais.cpp:125
+msgid "Power-driven vessel pushing ahead or towing alongside (regional use)"
+msgstr "Buque a motor empuxando ou remolcando abarloado (uso rexional)"
+
+#: src/ais.cpp:126
+msgid "Reserved 13"
+msgstr "Reservado 13"
+
+#: src/ais.cpp:127
+msgid "Reserved 14"
+msgstr "Reservado 14"
+
+#: src/ais.cpp:128 src/AIS_Target_Data.cpp:402 src/ConnectionParams.cpp:176
+#: src/ConnectionParams.cpp:462 src/ConnectionParams.cpp:600
+#: src/ConnectionParams.cpp:913 src/ConnectionParams.cpp:941
+msgid "Undefined"
+msgstr "Indeterminado"
+
+#: src/ais.cpp:129
+msgid "AtoN Virtual"
 msgstr ""
-"\n"
-" - A manga do seu barco debe ser > 0"
-#
-msgid ""
-"\n"
-" - your ship's length must be > 0"
+
+#: src/ais.cpp:130
+msgid "AtoN Virtual (On Position)"
 msgstr ""
-"\n"
-" - A eslora do seu barco debe ser > 0"
-#
-msgid ""
-"\n"
-"OpenCPN is distributed in the hope that it will be useful, but WITHOUT ANY "
-"WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR "
-"A PARTICULAR PURPOSE.\n"
-"\n"
-"See the GNU General Public License for more details.\n"
-"\n"
-"OpenCPN must only be used in conjunction with approved paper charts and "
-"traditional methods of navigation.\n"
-"\n"
-"DO NOT rely upon OpenCPN for safety of life or property.\n"
-"\n"
-"Please click \"OK\" to agree and proceed, \"Cancel\" to quit.\n"
+
+#: src/ais.cpp:131
+msgid "AtoN Virtual (Off Position)"
 msgstr ""
-"\n"
-"OpenCPN distribúese coa idea de ser útil, pero\n"
-"SEN NINGUNHA GARANTÍA; incluso sen a garantía\n"
-"implícita de COMERCIABILIDADE ou IDONEIDADE PARA\n"
-"UN PROPÓSITO PARTICULAR.\n"
-"Vexa a GNU General Public License para máis detalles.\n"
-"\n"
-"OpenCPN débese empregar só xunto con cartas\n"
-"aprobadas e métodos tradicionais de navegación.\n"
-"\n"
-"NON dependa de OpenCPN en canto á seguridade de vidas ou propiedades.\n"
-"\n"
-"Pulse \"Aceptar\" para aceptar e proceder, \"Cancelar\" para saír.\n"
-#
-msgid ""
-"\n"
-"The device selected is not accessible; opencpn will likely not be able\n"
-"to use this device as-is. You might want to exit OpenCPN, reboot and\n"
-"retry after creating a file called /etc/udev/rules.d/70-opencpn.rules\n"
-"with the following contents:\n"
-"\n"
-"            KERNEL==\"ttyUSB*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyACM*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyS*\", MODE=\"0666\"\n"
-"\n"
-"For more info, see the file LINUX_DEVICES.md in the distribution docs.\n"
+
+#: src/ais.cpp:132
+msgid "AtoN Real"
 msgstr ""
-"\n"
-"O dispositivo seleccionado non é accesible; probablemente opencpn non sexa "
-"capaz \n"
-"de usar este dispositivo tal cal. Pode que necesites saír de OpenCPN, "
-"reiniciar e \n"
-"reintentalo despois de crear un arquivo chamado /etc/udev/rules.d/70-opencpn."
-"rules\n"
-"co seguinte contido:\n"
-"\n"
-"            KERNEL==\"ttyUSB*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyACM*\", MODE=\"0666\"\n"
-"            KERNEL==\"ttyS*\", MODE=\"0666\"\n"
-"\n"
-"Para máis información, vexa o arquivo LINUX_DEVICES.md nos documentos da "
-"distribución.\n"
-#
-msgid "  MOB Position: "
+
+#: src/ais.cpp:133
+msgid "AtoN Real (On Position)"
 msgstr ""
-#
-msgid "  Ownship Position: "
+
+#: src/ais.cpp:134
+msgid "AtoN Real(Off Position)"
 msgstr ""
-#
-msgid "  Position: "
+
+#: src/ais.cpp:141
+msgid "Fishing Vessel"
 msgstr ""
-#
-msgid " (Ctrl-Space)"
-msgstr " (Ctrl-Espacio)"
-#
-msgid " (Last Known)"
-msgstr " (Último coñecido)"
-#
-msgid " - "
-msgstr " - "
-#
-msgid " -- [Portable(-p) executing from "
-msgstr " -- [Portable(-p) executando desde"
-#
-msgid " COG Unavailable"
-msgstr " COG Non dispoñible"
-#
-msgid " ChartFile:  "
-msgstr " Ficheiro da Carta:  "
-#
-msgid " Datum:  "
-msgstr " Datum:  "
-#
-msgid " Depth Units:  "
-msgstr " Unidades de profundidade:  "
-#
-msgid " ID:  "
-msgstr " ID:  "
-#
-msgid " Name:  "
-msgstr " Nome:  "
-#
-msgid " Never track"
-msgstr " Nunca seguir"
-#
-msgid " Projection:  "
-msgstr " Proxección:  "
-#
-msgid " Ship "
-msgstr " Barco "
-#
-msgid " Soundings:  "
-msgstr " Sondas:  "
-#
-msgid " Source Edition:  "
-msgstr " Source Edition:  "
-#
-msgid " Time: "
+
+#: src/ais.cpp:142
+msgid "Towing Vessel"
 msgstr ""
-#
-msgid ""
-" To set the magnetic variation manually,\n"
-" you must disable the WMM plugin."
+
+#: src/ais.cpp:143
+msgid "Towing Vessel, Long"
 msgstr ""
-" Para axustala declinación magnética manualmente, \n"
-" debe desactivalo plugin WMM."
-#
-msgid " Updated:  "
-msgstr " Actualizado:  "
-#
-msgid " [Modified]"
-msgstr " [Modified]"
-#
-msgid " at "
+
+#: src/ais.cpp:144
+msgid "Dredger"
 msgstr ""
-#
-msgid " for details."
-msgstr " para detalles."
-#
-msgid " is incompatible with this version of OpenCPN."
-msgstr " é incompatible con esta versión de OpenCPN."
-#
-msgid " on "
+
+#: src/ais.cpp:145
+msgid "Diving Ops Vessel"
 msgstr ""
 
 #: src/ais.cpp:146
@@ -4258,13 +4201,28 @@ msgstr "GPSD"
 #: src/ConnectionParams.cpp:174 src/options.cpp:2220 src/options.cpp:2872
 msgid "Signal K"
 msgstr ""
-#
-msgid "Dredge"
-msgstr "Draga"
-#
-msgid "Dredger"
-msgstr ""
-#
+
+#: src/ConnectionParams.cpp:197
+msgid "Input"
+msgstr "Entrada"
+
+#: src/ConnectionParams.cpp:199
+msgid "Output"
+msgstr "Saída"
+
+#: src/ConnectionParams.cpp:201
+msgid "In/Out"
+msgstr "Entrada/Saída"
+
+#: src/ConnectionParams.cpp:208
+msgid "Reject"
+msgstr "Rexeitar"
+
+#: src/ConnectionParams.cpp:210
+msgid "Accept"
+msgstr "Aceptar"
+
+#: src/ConnectionParams.cpp:213
 msgid "Drop"
 msgstr "Largar"
 
@@ -4675,40 +4633,13 @@ msgstr ""
 #: src/multiplexer.cpp:413
 msgid "Route Upload"
 msgstr ""
-#
-msgid "End Route"
-msgstr "Finalizar Ruta"
-#
-msgid "Engaged in Fishing"
-msgstr "Dedicado á pesca"
-#
-msgid "Enroute"
-msgstr "Enrutando"
-#
-msgid "Enter Group Name"
-msgstr "Introduza un nome do grupo"
-#
-msgid "Enter the NMEA sentence"
-msgstr "Introducir a sentencia NMEA"
-#
-msgid ""
-"Enter the NMEA sentence (2, 3 or 5 characters)\n"
-"  or a valid REGEX expression (6 characters or longer)"
+
+#: src/multiplexer.cpp:642 src/multiplexer.cpp:1257
+msgid "Connecting to "
 msgstr ""
-#
-msgid "Environmental Caution Area: Hazardous sea ice"
-msgstr "Área de Precaución Medioambiental: Xeo mariño perigoso"
-#
-msgid "Environmental Caution Area: Heavy icing"
-msgstr "Área de Precaución Medioambiental: Xeada intensa"
-#
-msgid "Environmental Caution Area: High waves"
-msgstr "Área de Precaución Medioambiental: Forte ondada"
-#
-msgid "Environmental Caution Area: High wind"
-msgstr "Área de Precaución Medioambiental: Vento forte"
-#
-msgid "Environmental Caution Area: Restricted visibility (fog, rain, etc.)"
+
+#: src/multiplexer.cpp:663 src/multiplexer.cpp:1276
+msgid "Connected to "
 msgstr ""
 
 #: src/navutil.cpp:1754 src/navutil.cpp:3119 src/options.cpp:1050
@@ -6630,10 +6561,8 @@ msgstr "Miscelánea"
 msgid "S57 Cell Update failed.\n"
 "ENC features may be incomplete or inaccurate.\n\n"
 "Check the logfile for details."
-msgstr ""
-"Fallou a actualización das celas S57.\n"
-"As características Enc poden estar incompletas ou ser imprecisas.\n"
-"\n"
+msgstr "Fallou a actualización das celas S57.\n"
+"As características Enc poden estar incompletas ou ser imprecisas.\n\n"
 "Comprobe o ficheiro de rexistro para máis detalles."
 
 #: src/Osenc.cpp:1175 src/Osenc.cpp:1183 src/s57chart.cpp:3755
@@ -6643,14 +6572,11 @@ msgstr "OpenCPN crea un aviso SENC"
 #: src/Osenc.cpp:1180
 msgid "S57 Cell Update failed.\n"
 "No updates could be applied.\n"
-"ENC features may be incomplete or inaccurate.\n"
-"\n"
+"ENC features may be incomplete or inaccurate.\n\n"
 "Check the logfile for details."
-msgstr ""
-"Fallou a actualización das celas S57.\n"
+msgstr "Fallou a actualización das celas S57.\n"
 "Non se puideron aplicalas actualizacións\n"
-"As características Enc poden estar incompletas ou ser imprecisas.\n"
-"\n"
+"As características Enc poden estar incompletas ou ser imprecisas.\n\n"
 "Comprobe o ficheiro de rexistro para máis detalles."
 
 #: src/Osenc.cpp:1664
@@ -7158,8 +7084,7 @@ msgid "There are some waypoints used in routes or anchor alarms.\n"
 " Do you want to delete them as well?\n"
 " This will change the routes and disable the anchor alarms.\n"
 " Answering No keeps the waypoints used in routes or alarms."
-msgstr ""
-"Algúns waypoints úsanse para rutas ou alarmas de fondeo..\n"
+msgstr "Algúns waypoints úsanse para rutas ou alarmas de fondeo..\n"
 " Quere borralos tamén?\n"
 " Isto cambiará as rutas e desactivará as alarmas de fondeo.\n"
 " Se responde Non manterá os waypoints usados nas rutas e alarmas."
@@ -7329,45 +7254,8 @@ msgstr "Ó Waypoint"
 #: src/RoutePropDlg.cpp:268
 msgid "To WP"
 msgstr ""
-#
-msgid "To Waypoint"
-msgstr "Ó Waypoint"
-#
-msgid ""
-"To proceed with chart folder migration, choose the chart source folder, and "
-"follow the instructions given."
-msgstr ""
-#
-msgid "To route"
-msgstr "Á ruta"
-#
-msgid "To waypoint"
-msgstr "Ó Waypoint"
-#
-msgid "Today"
-msgstr "Hoxe"
-#
-msgid "Toggle Full Screen"
-msgstr "Cambiar a pantalla completa"
-#
-msgid "Toggle track"
-msgstr "Alternar derrota"
-#
-msgid "Togolese Republic"
-msgstr "Togo"
-#
-msgid "Tomorrow"
-msgstr "Mañá"
-#
-msgid "Tonga"
-msgstr "Tonga"
-#
-msgid "ToolTips"
-msgstr "Info ferramenta"
-#
-msgid "Toolbar and Window Style"
-msgstr "Estilo da barra de ferramentas e xanela"
-#
+
+#: src/RoutePropDlg.cpp:304
 msgid "Total Distance"
 msgstr "Distancia Total"
 
@@ -7887,49 +7775,24 @@ msgstr "Descargado:"
 #: libs/wxcurl/src/dialog.cpp:585
 msgid "Uploaded:"
 msgstr "Subido:"
-#
-msgid "Uruguay"
-msgstr "Uruguai"
-#
-msgid "Use Accelerated Graphics (OpenGL)"
-msgstr "Usar aceleración gráfica (OpenGL)"
-#
-msgid "Use Accelerated Panning"
-msgstr "Usar panorámica acelerada"
-#
-msgid "Use Furuno GP3X for uploads"
-msgstr "Utilizar Furuno GP3X para subidas"
-#
-msgid "Use GRMN for uploads"
-msgstr "Utilizar GRMN para subidas"
-#
-msgid "Use GRMN mode for input"
-msgstr "Usar o modo GRMN para a entrada"
-#
-msgid "Use Garmin (GRMN) mode for input"
-msgstr "Empregar modo Garmin GRMN (Servidor) para entrada"
-#
-msgid "Use Garmin GRMN (Host) mode for uploads"
-msgstr "Empregar modo Garmin GRMN (Servidor) para cargas"
-#
-msgid "Use Inland ECDIS V2.3"
-msgstr "Usar Inland ECDIS V2.3"
-#
-msgid "Use WPL position messages. Action when received:"
-msgstr ""
-#
-msgid "Use as active catalog"
-msgstr ""
-#
-msgid "Use default location"
-msgstr ""
-#
-msgid "Use magnetic bearings in output sentence ECAPB"
-msgstr "Usar demoras magnéticas en sentencias de saída ECAPB"
-#
-msgid "Use nearby waypoint?"
-msgstr "Empregar o waypoint máis próximo?"
-#
+
+#: libs/wxcurl/src/panel.cpp:111
+msgid "Username:"
+msgstr "Nome de usuario:"
+
+#: libs/wxcurl/src/panel.cpp:112
+msgid "Password:"
+msgstr "Contrasinal:"
+
+#: libs/wxcurl/src/panel.cpp:120
+msgid "Port:"
+msgstr "Porto:"
+
+#: libs/wxcurl/src/panel.cpp:134
+msgid "Proxy settings"
+msgstr "Configuración do proxy"
+
+#: libs/wxcurl/src/panel.cpp:136
 msgid "Use proxy"
 msgstr "Usar proxy"
 

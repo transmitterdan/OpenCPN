@@ -10,9 +10,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n"
-"%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n"
-"%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 "X-Crowdin-Project: opencpn\n"
 "X-Crowdin-Project-ID: 49843\n"
 "X-Crowdin-Language: pl\n"
@@ -325,12 +323,9 @@ msgstr "Statek rybacki"
 #: src/ais.cpp:142
 msgid "Towing Vessel"
 msgstr ""
-"\n"
-" - odsunięcie GPS od dziobu nie może być większe niż długość statku"
-#
-msgid ""
-"\n"
-" - your GPS offset from midship must be within your ship's beam"
+
+#: src/ais.cpp:143
+msgid "Towing Vessel, Long"
 msgstr ""
 
 #: src/ais.cpp:144
@@ -3385,16 +3380,11 @@ msgid "\n"
 "OpenCPN must only be used in conjunction with approved paper charts and traditional methods of navigation.\n\n"
 "DO NOT rely upon OpenCPN for safety of life or property.\n\n"
 "Please click \"OK\" to agree and proceed, \"Cancel\" to quit.\n"
-msgstr ""
-"\n"
-"OpenCPN rozprowadzamy wierząc, że okaże się przydatny, ale BEZ JAKIEJKOLWIEK "
-"GWARANCJI, nawet domniemanej ZDATNOŚCI DO SPRZEDAŻY albo JAKIEGOKOLWIEK "
-"SZCZEGÓLNEGO ZASTOSOWANIA.\n"
-"Sprawdź szczegóły w treści licencji ogólnej GNU.\n"
-"\n"
+msgstr "\n"
+"OpenCPN rozprowadzamy wierząc, że okaże się przydatny, ale BEZ JAKIEJKOLWIEK GWARANCJI, nawet domniemanej ZDATNOŚCI DO SPRZEDAŻY albo JAKIEGOKOLWIEK SZCZEGÓLNEGO ZASTOSOWANIA.\n"
+"Sprawdź szczegóły w treści licencji ogólnej GNU.\n\n"
 "Użytkownik OpenCPN musi zaopatrzyć się w oficjalne mapy\n"
-"papierowe i stosować tradycyjne techniki nawigacji.\n"
-"\n"
+"papierowe i stosować tradycyjne techniki nawigacji.\n\n"
 "NIE WOLNO polegać na OpenCPN tam, gdzie w grę wchodzi\n"
 "BEZPIECZEŃSTWO LUDZI I MIENIA.\n"
 "Jeśli klikniesz \"OK\" to wyrazisz zgodę i idziemy dalej,\n"
@@ -4078,7 +4068,12 @@ msgstr "Korekta położenia komórki CM93 w OpenCPN"
 #: src/cm93.cpp:6462
 msgid "Cell"
 msgstr "Komórka"
-#
+
+#: src/cm93.cpp:6465
+msgid "M_COVR ID"
+msgstr "M_COVR ID"
+
+#: src/cm93.cpp:6469
 msgid "Cell Scale"
 msgstr "Skala komórki"
 
@@ -4418,10 +4413,32 @@ msgstr "Punkt drogi OpenCPN"
 #: src/kml.cpp:638
 msgid "Choose Format for Copy"
 msgstr "Wybierz format"
-#
-msgid "Choose Toolbar Icons"
-msgstr "Wybierz ikony paska narzędzi"
-#
+
+#: src/kml.cpp:646
+msgid "KML Standard (Google Earth and others)"
+msgstr "Standard KML (Google Earth i inne)"
+
+#: src/kml.cpp:650
+msgid "KML with extended waypoint data (QtVlm)"
+msgstr "KML z dodatkowymi danymi o punktach drogi (QtVlm)"
+
+#: src/LinkPropDlg.cpp:47
+msgid "Link"
+msgstr "Link"
+
+#: src/LinkPropDlg.cpp:49
+msgid "Link description"
+msgstr "Opis linku"
+
+#: src/LinkPropDlg.cpp:58
+msgid "URL"
+msgstr "URL"
+
+#: src/LinkPropDlg.cpp:67
+msgid "Local file..."
+msgstr "Plik lokalny..."
+
+#: src/LinkPropDlg.cpp:122
 msgid "Choose a file"
 msgstr "Wybierz plik"
 
@@ -4804,8 +4821,7 @@ msgstr "Nie"
 msgid "Create a private configuration template based on current settings.\n"
 "This template will be saved, and may be selected for further use at any time.\n"
 "               "
-msgstr ""
-"Utwórz prywatny szablon konfiguracji na podstawie bieżących ustawień.\n"
+msgstr "Utwórz prywatny szablon konfiguracji na podstawie bieżących ustawień.\n"
 " Ten szablon zostanie zapisany i może zostać użyty w dowolnym momencie.\n"
 "               "
 
@@ -6628,196 +6644,9 @@ msgstr "Wtyczka %s nie jest zgodna z tą wersją OpenCPN, proszę pobrać zaktua
 
 #: src/pluginmanager.cpp:2315
 #, c-format
-msgid ""
-"The plugin %s is not compatible with this version of OpenCPN, please get an "
-"updated version."
-msgstr ""
-"Wtyczka %s nie jest zgodna z tą wersją OpenCPN, proszę pobrać zaktualizowaną "
-"wersję."
-#
-msgid ""
-"The plugin is not compatible with this version of OpenCPN, and will be "
-"uninstalled."
-msgstr ""
-"Wtyczka jest niekompatybilna z tą wersją OpenCPN i zostanie odinstalowana."
-#
-msgid ""
-"The recently captured track of this target has been recorded.\n"
-"Do you want to continue recording until the end of the current OpenCPN "
-"session?"
-msgstr ""
-"Niedawno przechwycona ścieżka tego obiektu została zapisana. \n"
-"Czy chcesz kontynuować nagrywanie do końca bieżącej sesji OpenCPN?"
-#
-msgid "The settings for own ship real size are not correct:"
-msgstr "Ustawiona wielkość twojego statku jest niepoprawna:"
-#
-msgid ""
-"The waypoint you want to delete is used in a route, do you really want to "
-"delete it?"
-msgstr ""
-"Punkt drogi, który chcesz usunąć jest częścią drogi, Czy na pewno go usunąć?"
-#
-msgid "There"
-msgstr "Tam"
-#
-msgid ""
-"There are existing waypoints at the same location as some of the ones you are "
-"pasting. Would you like to just merge the pasted data into them?\n"
-"\n"
-msgstr ""
-"Istnieją już punkty drogi w tym miejscu. Czy chcesz połączyć te punkty z "
-"niektórymi z wklejanych punktów drogi?\n"
-"\n"
-#
-msgid ""
-"There are some waypoints used in routes or anchor alarms.\n"
-" Do you want to delete them as well?\n"
-" This will change the routes and disable the anchor alarms.\n"
-" Answering No keeps the waypoints used in routes or alarms."
-msgstr ""
-"Niektóre punkty drogi używane są w drogach lub alarmach kotwicznych. \n"
-" Czy na pewno chcesz je usunąć? \n"
-" To zmieni przebieg dróg i usunie alarmy kotwiczne. \n"
-" Jeśli odpowiesz \"nie\" punkty drogi użyte w drogach lub alarmach zostaną "
-"zachowane."
-#
-msgid ""
-"There is an existing waypoint at the same location as the one you are "
-"pasting. Would you like to merge the pasted data with it?\n"
-"\n"
-msgstr ""
-"Istnieje już punkt drogi w tym miejscu. Czy chcesz połączyć ten punkt z "
-"wklejanym punktem drogi?\n"
-"\n"
-#
-msgid ""
-"There was a problem printing.\n"
-"Perhaps your current printer is not set correctly?"
-msgstr ""
-"Był problem z wydrukiem.\n"
-"Może wybrana drukarka nie jest właściwie ustawiona?"
-#
-msgid "Therefore the new waypoint will not be visible at this zoom level."
-msgstr "Dlatego nowe punkty drogi nie będą widoczne przy obecnej skali."
-#
-msgid ""
-"These settings might destabilize OpenCPN and are by default disabled. To "
-"despite the dangers enable them manually add a CatalogExpert=1 line in the "
-"[PlugIns] section in the configuration file."
-msgstr ""
-"Te ustawienia mogą zdestabilizować OpenCPN i są domyślnie wyłączone. Aby mimo "
-"zagrożeń włączyć je - ręcznie dodaj linię CatalogExpert=1 w sekcji [PlugIns] "
-"w pliku konfiguracyjnym."
-#
-msgid "This Leg"
-msgstr "Ten odcinek"
-#
-msgid "This MMSI is my Follower - No CPA Alert"
-msgstr "Ten MMSI podąża za/przede mną - nie alarmuj o CPA"
-#
-msgid "This entire folder will be migrated.\n"
-msgstr ""
-#
-msgid "This waypoint is part of a layer and can't be edited"
-msgstr "Ten punkt drogi jest częścią warstwy i nie może być edytowany"
-#
-msgid "Tide"
-msgstr "Pływ"
-#
-msgid "Tide Station"
-msgstr "Stacje pływowe"
-#
-msgid "Tide Station not found"
-msgstr "Nie znaleziono stacji pływowych"
-#
-msgid "TideCurrentGraphRollover"
-msgstr "Info o prądach i pływach"
-#
-msgid "Tides && Currents"
-msgstr "Pływy i prądy"
-#
-msgid "Tides and Currents"
-msgstr "Pływy i prądy"
-#
-msgid "Time"
-msgstr "Czas"
-#
-msgid "Time Enroute"
-msgstr "Czas w drodze"
-#
-msgid "Time enroute"
-msgstr "Czas w drodze"
-#
-msgid "Time shown as"
-msgstr "Czas pokazany jako"
-#
-msgid "Timestamp"
-msgstr "ETE/Znacznik czasu"
-#
-msgid "Title"
-msgstr "Tytuł"
-#
-msgid "To"
-msgstr "Do"
-#
-msgid "To WP"
-msgstr ""
-#
-msgid "To Waypoint"
-msgstr "Do punktu drogi"
-#
-msgid ""
-"To proceed with chart folder migration, choose the chart source folder, and "
-"follow the instructions given."
-msgstr ""
-#
-msgid "To route"
-msgstr "Stwórz drogę"
-#
-msgid "To waypoint"
-msgstr "Do punktu drogi"
-#
-msgid "Today"
-msgstr "Dziś"
-#
-msgid "Toggle Full Screen"
-msgstr "Włącz/wyłącz pełny ekran"
-#
-msgid "Toggle track"
-msgstr "Włącz/wyłącz ślad"
-#
-msgid "Togolese Republic"
-msgstr "Togo"
-#
-msgid "Tomorrow"
-msgstr "Jutro"
-#
-msgid "Tonga"
-msgstr "Tonga"
-#
-msgid "ToolTips"
-msgstr "Etykiety narzędzi"
-#
-msgid "Toolbar and Window Style"
-msgstr "Styl pasków narzędzi i okien"
-#
-msgid "Total Distance"
-msgstr "Całkowita odległość"
-#
-msgid "Total Length: "
-msgstr "Długość: "
-#
-msgid "Total Track: "
-msgstr "Ślad ogółem: "
-#
-msgid "Total distance"
-msgstr "Całkowita odległość"
-#
-msgid "Tow"
-msgstr "Hol"
-#
-msgid "Towing Vessel"
+msgid "PlugIn %s (%s), version %i.%i was detected.\n"
+" This version is known to be unstable and will not be loaded.\n"
+" Please update this PlugIn using the PlugIn manager master catalog."
 msgstr ""
 
 #: src/pluginmanager.cpp:2320 src/pluginmanager.cpp:2333
