@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-08-25 22:20-0400\n"
+"POT-Creation-Date: 2022-04-10 19:09-0500\n"
 "PO-Revision-Date: 2020-08-28 14:51\n"
 "Last-Translator: \n"
 "Language-Team: Czech\n"
@@ -16,38 +16,156 @@ msgstr ""
 "X-Crowdin-Language: cs\n"
 "X-Crowdin-File: /plugins/wmm_pi/po/wmm_pi.pot\n"
 "X-Crowdin-File-ID: 128\n"
-
-#: src/wmm_pi.cpp:92
-msgid "\n"
-"World Magnetic Model Plotting allows users to cross reference the magnetic variation values printed on many raster charts.\n\n"
+#
+msgid ""
+"\n"
+"World Magnetic Model Plotting allows users to cross reference the magnetic "
+"variation values printed on many raster charts.\n"
+"\n"
 "Variation is the angle between true and magnetic north.\n"
 "Inclination or dip, is the vertical angle of the magnetic field.\n"
 "\t(+- 90 at the magnetic poles)\n"
 "Field Strength is the magnetic field in nano tesla from\n"
-"\t20000 to 66000\n\n"
-"The plotted lines are similar to a topographic map.  The space between them can be adjusted; more space takes less time to calculate.\n\n"
-"The Step size and Pole accuracy sliders allow a trade off for speed vs computation time.\n\n"
-"The World Magnetic Model Plugin was written by Pavel Kalian and extended by Sean D'Epagnier to support plotting."
+"\t20000 to 66000\n"
+"\n"
+"The plotted lines are similar to a topographic map.  The space between them "
+"can be adjusted; more space takes less time to calculate.\n"
+"\n"
+"The Step size and Pole accuracy sliders allow a trade off for speed vs "
+"computation time.\n"
+"\n"
+"The World Magnetic Model Plugin was written by Pavel Kalian and extended by "
+"Sean D'Epagnier to support plotting."
 msgstr ""
-
-#: src/wmm_pi.cpp:108
-msgid "WMM Plugin"
-msgstr "Doplněk WMM"
-
-#: src/wmm_pi.cpp:167
-msgid "WMM_Live_Overlay"
+#
+msgid "(DIP) - Geomagnetic Inclination "
+msgstr "(DIP) - Geomagnetická inklinace"
+#
+msgid "About"
+msgstr "O doplňku"
+#
+msgid "Boat"
+msgstr "Loď"
+#
+msgid "Building Magnetic Map"
+msgstr "Vytváření magnetické mapy"
+#
+msgid "Cancel"
+msgstr "Zrušit"
+#
+msgid "Cursor"
+msgstr "Kurzor"
+#
+msgid "Degrees"
+msgstr "Stupně"
+#
+msgid "East Component"
+msgstr "Východní komponenta"
+#
+msgid "Enable plot"
+msgstr "Povolit vykreslování"
+#
+msgid "Error, see log."
+msgstr "Chyba, viz. log."
+#
+msgid "Extended"
+msgstr "Rozšířené"
+#
+msgid "F "
 msgstr ""
-
-#: src/wmm_pi.cpp:225 src/wmm_pi.cpp:313 src/WmmUIDialog.h:87
+#
+msgid "Field Strength"
+msgstr "Intenzita pole"
+#
+msgid "H "
+msgstr ""
+#
+msgid "Horizontal Intensity"
+msgstr "Horizontální intenzita"
+#
+msgid "Incl"
+msgstr "Inkl"
+#
+msgid "Inclination"
+msgstr "Inklinace"
+#
+msgid "Magnetic Plot Settings"
+msgstr "Magnetická variace"
+#
+msgid "Magnetic Variation"
+msgstr "Magnetická variace"
+#
+msgid "Nano Tesla"
+msgstr "Nano Tesla"
+#
+msgid "North Component"
+msgstr "Severní komponenta"
+#
+msgid "Plot"
+msgstr "Vykreslit"
+#
+msgid "Pole Accuracy"
+msgstr "Přesnost pólů"
+#
+msgid "Save"
+msgstr "Uložit"
+#
+msgid "Settings..."
+msgstr "Nastavení..."
+#
+msgid "Show Plot Options"
+msgstr "Zobrazit možnosti vykreslení"
+#
+msgid "Show also data at cursor position"
+msgstr "Ukaž i data pro pozici kurzoru"
+#
+msgid "Show data in toolbar icon"
+msgstr "Zobrazuj data v ikoně"
+#
+msgid "Show toolbar icon"
+msgstr "Zobrazit ikonu v panelu nástrojů"
+#
+msgid "Step Size"
+msgstr "Velikost kroku"
+#
+msgid "Total Intensity"
+msgstr "Celková intenzita"
+#
+msgid "Vari"
+msgstr "Vari"
+#
+msgid "Variation"
+msgstr "Variace"
+#
+msgid "Variation only"
+msgstr "Jen variace"
+#
+msgid "Vertical Component"
+msgstr "Vertikální komponenta"
+#
+msgid "View"
+msgstr "Zobrazit"
+#
 msgid "WMM"
 msgstr "WMM"
-
-#: src/wmm_pi.cpp:319
+#
+msgid "WMM Plugin"
+msgstr "Doplněk WMM"
+#
+msgid "WMM Preferences"
+msgstr "Nastavení WMM"
+#
+msgid "WMM_Live_Overlay"
+msgstr ""
+#
+msgid "Window transparency"
+msgstr "Průhlednost okna"
+#
 msgid "World Magnetic Model PlugIn for OpenCPN"
 msgstr "Doplněk World Magnetic Model pro OpenCPN"
-
-#: src/wmm_pi.cpp:324
-msgid "World Magnetic Model PlugIn for OpenCPN\n"
+#
+msgid ""
+"World Magnetic Model PlugIn for OpenCPN\n"
 "Implements the NOAA World Magnetic Model\n"
 "More information:\n"
 "https://www.ngdc.noaa.gov/geomag/WMM/DoDWMM.shtml\n"
@@ -56,168 +174,12 @@ msgid "World Magnetic Model PlugIn for OpenCPN\n"
 "in time, get a new WMM.COF from NOAA and place it to the\n"
 "location you can find in the OpenCPN logfile."
 msgstr ""
-
-#: src/wmm_pi.cpp:535 src/wmm_pi.cpp:675
-msgid "Error, see log."
-msgstr "Chyba, viz. log."
-
-#: src/wmm_pi.cpp:958 src/WmmUIDialog.h:115
-msgid "WMM Preferences"
-msgstr "Nastavení WMM"
-
-#: src/wmm_pi.h:80 src/WmmUIDialog.h:155
-msgid "Magnetic Plot Settings"
-msgstr "Magnetická variace"
-
-#: src/WmmUIDialog.cpp:30
-msgid "Boat"
-msgstr "Loď"
-
-#: src/WmmUIDialog.cpp:37 src/WmmUIDialog.cpp:133
-msgid "F "
-msgstr ""
-
-#: src/WmmUIDialog.cpp:39 src/WmmUIDialog.cpp:135
-msgid "Total Intensity"
-msgstr "Celková intenzita"
-
-#: src/WmmUIDialog.cpp:47 src/WmmUIDialog.cpp:143
-msgid "H "
-msgstr ""
-
-#: src/WmmUIDialog.cpp:49 src/WmmUIDialog.cpp:145
-msgid "Horizontal Intensity"
-msgstr "Horizontální intenzita"
-
-#: src/WmmUIDialog.cpp:57 src/WmmUIDialog.cpp:153
+#
 msgid "X "
 msgstr ""
-
-#: src/WmmUIDialog.cpp:59 src/WmmUIDialog.cpp:155
-msgid "North Component"
-msgstr "Severní komponenta"
-
-#: src/WmmUIDialog.cpp:67 src/WmmUIDialog.cpp:163
+#
 msgid "Y "
 msgstr ""
-
-#: src/WmmUIDialog.cpp:69 src/WmmUIDialog.cpp:165
-msgid "East Component"
-msgstr "Východní komponenta"
-
-#: src/WmmUIDialog.cpp:77 src/WmmUIDialog.cpp:173
+#
 msgid "Z "
 msgstr ""
-
-#: src/WmmUIDialog.cpp:79 src/WmmUIDialog.cpp:175
-msgid "Vertical Component"
-msgstr "Vertikální komponenta"
-
-#: src/WmmUIDialog.cpp:87 src/WmmUIDialog.cpp:183
-msgid "Incl"
-msgstr "Inkl"
-
-#: src/WmmUIDialog.cpp:89 src/WmmUIDialog.cpp:185
-msgid "(DIP) - Geomagnetic Inclination "
-msgstr "(DIP) - Geomagnetická inklinace"
-
-#: src/WmmUIDialog.cpp:107 src/WmmUIDialog.cpp:203
-msgid "Vari"
-msgstr "Vari"
-
-#: src/WmmUIDialog.cpp:109 src/WmmUIDialog.cpp:205
-msgid "Magnetic Variation"
-msgstr "Magnetická variace"
-
-#: src/WmmUIDialog.cpp:126
-msgid "Cursor"
-msgstr "Kurzor"
-
-#: src/WmmUIDialog.cpp:226
-msgid "Plot"
-msgstr "Vykreslit"
-
-#: src/WmmUIDialog.cpp:235
-msgid "Enable plot"
-msgstr "Povolit vykreslování"
-
-#: src/WmmUIDialog.cpp:239
-msgid "Settings..."
-msgstr "Nastavení..."
-
-#: src/WmmUIDialog.cpp:286
-msgid "Extended"
-msgstr "Rozšířené"
-
-#: src/WmmUIDialog.cpp:286
-msgid "Variation only"
-msgstr "Jen variace"
-
-#: src/WmmUIDialog.cpp:288
-msgid "View"
-msgstr "Zobrazit"
-
-#: src/WmmUIDialog.cpp:292
-msgid "Show Plot Options"
-msgstr "Zobrazit možnosti vykreslení"
-
-#: src/WmmUIDialog.cpp:295
-msgid "Show also data at cursor position"
-msgstr "Ukaž i data pro pozici kurzoru"
-
-#: src/WmmUIDialog.cpp:298
-msgid "Show toolbar icon"
-msgstr "Zobrazit ikonu v panelu nástrojů"
-
-#: src/WmmUIDialog.cpp:301
-msgid "Show data in toolbar icon"
-msgstr "Zobrazuj data v ikoně"
-
-#: src/WmmUIDialog.cpp:305
-msgid "Window transparency"
-msgstr "Průhlednost okna"
-
-#: src/WmmUIDialog.cpp:316 src/WmmUIDialog.cpp:399
-msgid "Cancel"
-msgstr "Zrušit"
-
-#: src/WmmUIDialog.cpp:341 src/MagneticPlotMap.cpp:359
-msgid "Variation"
-msgstr "Variace"
-
-#: src/WmmUIDialog.cpp:348 src/WmmUIDialog.cpp:358
-msgid "Degrees"
-msgstr "Stupně"
-
-#: src/WmmUIDialog.cpp:352 src/MagneticPlotMap.cpp:360
-msgid "Inclination"
-msgstr "Inklinace"
-
-#: src/WmmUIDialog.cpp:362 src/MagneticPlotMap.cpp:360
-msgid "Field Strength"
-msgstr "Intenzita pole"
-
-#: src/WmmUIDialog.cpp:368
-msgid "Nano Tesla"
-msgstr "Nano Tesla"
-
-#: src/WmmUIDialog.cpp:378
-msgid "Step Size"
-msgstr "Velikost kroku"
-
-#: src/WmmUIDialog.cpp:389
-msgid "Pole Accuracy"
-msgstr "Přesnost pólů"
-
-#: src/WmmUIDialog.cpp:393
-msgid "About"
-msgstr "O doplňku"
-
-#: src/WmmUIDialog.cpp:396
-msgid "Save"
-msgstr "Uložit"
-
-#: src/MagneticPlotMap.cpp:358
-msgid "Building Magnetic Map"
-msgstr "Vytváření magnetické mapy"
-

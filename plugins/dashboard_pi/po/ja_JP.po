@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-09-21 20:19-0400\n"
+"POT-Creation-Date: 2022-04-10 19:09-0500\n"
 "PO-Revision-Date: 2021-09-26 23:57\n"
 "Last-Translator: \n"
 "Language-Team: Japanese\n"
@@ -16,484 +16,366 @@ msgstr ""
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /plugins/dashboard_pi/po/dashboard_pi.pot\n"
 "X-Crowdin-File-ID: 111\n"
-
-#: src/clock.cpp:169 src/dial.cpp:529 src/gps.cpp:225 src/wind.cpp:66
-#: src/wind_history.cpp:435
-msgid "N"
-msgstr "N"
-
-#: src/dashboard_pi.cpp:183
-msgid "Position"
-msgstr "位置"
-
-#: src/dashboard_pi.cpp:185
-msgid "SOG"
-msgstr "SOG"
-
-#: src/dashboard_pi.cpp:187
-msgid "Speedometer"
-msgstr "スピード メーター"
-
-#: src/dashboard_pi.cpp:189
-msgid "COG"
-msgstr "COG"
-
-#: src/dashboard_pi.cpp:191
-msgid "Mag COG"
-msgstr "Mag COG"
-
-#: src/dashboard_pi.cpp:193
-msgid "GNSS Compass"
-msgstr ""
-
-#: src/dashboard_pi.cpp:195
-msgid "True Compass"
-msgstr "True Compass"
-
-#: src/dashboard_pi.cpp:197
-msgid "STW"
-msgstr "STW"
-
-#: src/dashboard_pi.cpp:199
-msgid "True HDG"
-msgstr "真 HDG"
-
-#: src/dashboard_pi.cpp:201
-msgid "Mag HDG"
-msgstr "磁気 HDG"
-
-#: src/dashboard_pi.cpp:204
-msgid "App. Wind Angle & Speed"
-msgstr "見かけの風の角度と速度"
-
-#: src/dashboard_pi.cpp:206
-msgid "App & True Wind Angle"
-msgstr "見かけと真の風の角度"
-
-#: src/dashboard_pi.cpp:208 src/dashboard_pi.cpp:210
-msgid "App. Wind Speed"
-msgstr "見かけの風速"
-
-#: src/dashboard_pi.cpp:212
-msgid "True Wind Angle & Speed"
-msgstr "真の風の角度と速度"
-
-#: src/dashboard_pi.cpp:214 src/dashboard_pi.cpp:216
-msgid "Depth"
-msgstr "深渡"
-
-#: src/dashboard_pi.cpp:218 src/dashboard_pi.cpp:220
-msgid "Barometric pressure"
-msgstr "気圧"
-
-#: src/dashboard_pi.cpp:222
-msgid "Water Temp."
-msgstr "水温"
-
-#: src/dashboard_pi.cpp:224
-msgid "Air Temp."
-msgstr "気温"
-
-#: src/dashboard_pi.cpp:226
-msgid "App. Wind Angle"
-msgstr "見かけの風の角度"
-
-#: src/dashboard_pi.cpp:228
-msgid "True Wind Angle"
-msgstr "真の風の角度"
-
-#: src/dashboard_pi.cpp:230
-msgid "True Wind Direction"
-msgstr "真の風向"
-
-#: src/dashboard_pi.cpp:232
-msgid "True Wind Speed"
-msgstr "真の風速"
-
-#: src/dashboard_pi.cpp:234
-msgid "True Wind Dir. & Speed"
-msgstr "真の風向と風速"
-
-#: src/dashboard_pi.cpp:236 src/dashboard_pi.cpp:238
-msgid "VMG"
-msgstr "VMG"
-
-#: src/dashboard_pi.cpp:240 src/dashboard_pi.cpp:242
-msgid "Rudder Angle"
-msgstr "舵角"
-
-#: src/dashboard_pi.cpp:244
-msgid "GNSS in use"
-msgstr ""
-
-#: src/dashboard_pi.cpp:246
-msgid "GNSS Status"
-msgstr ""
-
-#: src/dashboard_pi.cpp:248
-msgid "Cursor"
-msgstr "カーソル"
-
-#: src/dashboard_pi.cpp:250
-msgid "GNSS Clock"
-msgstr ""
-
-#: src/dashboard_pi.cpp:252
-msgid "Sunrise/Sunset"
-msgstr "日の出/日の入り"
-
-#: src/dashboard_pi.cpp:254
-msgid "Moon phase"
-msgstr "月齢"
-
-#: src/dashboard_pi.cpp:256
-msgid "Wind history"
-msgstr "風の記録"
-
-#: src/dashboard_pi.cpp:258
-msgid "Barometric history"
-msgstr "気圧の記録"
-
-#: src/dashboard_pi.cpp:260
-msgid "Trip Log"
-msgstr "トリップ ログ"
-
-#: src/dashboard_pi.cpp:262
-msgid "Sum Log"
-msgstr "合計ログ"
-
-#: src/dashboard_pi.cpp:264
-msgid "From Ownship"
-msgstr "自船 から"
-
-#: src/dashboard_pi.cpp:266
-msgid "Pitch"
-msgstr "ピッチ"
-
-#: src/dashboard_pi.cpp:268
-msgid "Heel"
-msgstr "ヒール"
-
-#: src/dashboard_pi.cpp:270
-msgid "Local GNSS Clock"
-msgstr ""
-
-#: src/dashboard_pi.cpp:272
-msgid "Local CPU Clock"
-msgstr "ローカルなCPUの時計"
-
-#: src/dashboard_pi.cpp:274
-msgid "Local Sunrise/Sunset"
-msgstr "地元の日の出/日の入り"
-
-#: src/dashboard_pi.cpp:491 src/dashboard_pi.cpp:728 src/dashboard_pi.cpp:2429
-#: src/dashboard_pi.cpp:2442 src/dashboard_pi.cpp:2660 src/dashboard_pi.cpp:2730
-#: src/dashboard_pi.cpp:3141
-msgid "Dashboard"
-msgstr "ダッシュボード"
-
-#: src/dashboard_pi.cpp:733
-msgid "Dashboard PlugIn for OpenCPN"
-msgstr "OpenCPN 用ダッシュ ボードプラグイン"
-
-#: src/dashboard_pi.cpp:738
-msgid "Dashboard PlugIn for OpenCPN\n"
-"Provides navigation instrument display from NMEA source."
-msgstr "OpenCPN 用ダッシュ ボードプラグイン\n"
-"装置の表示はNMEAソースから表示します。"
-
-#: src/dashboard_pi.cpp:1446 src/dashboard_pi.cpp:2039 src/dashboard_pi.cpp:2829
-msgid "Up"
-msgstr "上へ"
-
-#: src/dashboard_pi.cpp:1449 src/dashboard_pi.cpp:2041 src/dashboard_pi.cpp:2834
-msgid "Down"
-msgstr "下へ"
-
-#: src/dashboard_pi.cpp:1461 src/dashboard_pi.cpp:2029
-msgid "Stbd"
-msgstr ""
-
-#: src/dashboard_pi.cpp:1464 src/dashboard_pi.cpp:2031
-msgid "Port"
-msgstr ""
-
-#: src/dashboard_pi.cpp:2627
-msgid "Dashboard preferences"
-msgstr "ダッシュ ボード設定"
-
-#: src/dashboard_pi.cpp:2737
-msgid "show this dashboard"
-msgstr "このダッシュ ボードを表示"
-
-#: src/dashboard_pi.cpp:2743
-msgid "Caption:"
-msgstr "タイトル:"
-
-#: src/dashboard_pi.cpp:2756
-msgid "Orientation:"
-msgstr "配置方向"
-
-#: src/dashboard_pi.cpp:2760 src/dashboard_pi.cpp:3715
-msgid "Vertical"
-msgstr "縦"
-
-#: src/dashboard_pi.cpp:2761 src/dashboard_pi.cpp:3717
-msgid "Horizontal"
-msgstr "横"
-
-#: src/dashboard_pi.cpp:2785 src/dashboard_pi.cpp:2802 src/dashboard_pi.cpp:3305
-msgid "Instruments"
-msgstr "計器"
-
-#: src/dashboard_pi.cpp:2810
-msgid "Add"
-msgstr "追加"
-
-#: src/dashboard_pi.cpp:2823
-msgid "Delete"
-msgstr "削除"
-
-#: src/dashboard_pi.cpp:2844
-msgid "Appearance"
-msgstr "表示関連"
-
-#: src/dashboard_pi.cpp:2846
-msgid "Fonts"
-msgstr "フォント"
-
-#: src/dashboard_pi.cpp:2853
-msgid "Title:"
-msgstr "タイトル:"
-
-#: src/dashboard_pi.cpp:2860
-msgid "Data:"
-msgstr "データ:"
-
-#: src/dashboard_pi.cpp:2867
-msgid "Label:"
-msgstr "ラベル："
-
-#: src/dashboard_pi.cpp:2874
-msgid "Small:"
-msgstr "Small:"
-
-#: src/dashboard_pi.cpp:2882
-msgid "Units, Ranges, Formats"
-msgstr "ユニット、範囲、フォーマット"
-
-#: src/dashboard_pi.cpp:2888
-msgid "Speedometer max value:"
-msgstr "スピード メーターの最大値:"
-
-#: src/dashboard_pi.cpp:2894
-msgid "Speed Over Ground Damping Factor:"
-msgstr "Speed Over Ground Damping Factor:"
-
-#: src/dashboard_pi.cpp:2900
-msgid "COG Damping Factor:"
-msgstr "COG Damping Factor:"
-
-#: src/dashboard_pi.cpp:2906
-msgid "Local Time Offset From UTC:"
-msgstr "UTCとの時差"
-
-#: src/dashboard_pi.cpp:2925
-msgid "Boat speed units:"
-msgstr "船の速度の単位:"
-
-#: src/dashboard_pi.cpp:2928 src/dashboard_pi.cpp:2969
-msgid "Honor OpenCPN settings"
-msgstr "Honor OpenCPN settings"
-
-#: src/dashboard_pi.cpp:2928 src/dashboard_pi.cpp:2978
-msgid "Kts"
-msgstr "Kts"
-
-#: src/dashboard_pi.cpp:2928 src/dashboard_pi.cpp:2978
-msgid "mph"
-msgstr "mph"
-
-#: src/dashboard_pi.cpp:2928 src/dashboard_pi.cpp:2978
-msgid "km/h"
-msgstr "km/h"
-
-#: src/dashboard_pi.cpp:2928 src/dashboard_pi.cpp:2978
-msgid "m/s"
-msgstr "m/s"
-
-#: src/dashboard_pi.cpp:2934
-msgid "Depth units:"
-msgstr "深さの単位:"
-
-#: src/dashboard_pi.cpp:2937 src/dashboard_pi.cpp:2969
-msgid "Meters"
-msgstr "メートル"
-
-#: src/dashboard_pi.cpp:2937
-msgid "Feet"
-msgstr "フィート"
-
-#: src/dashboard_pi.cpp:2937
-msgid "Fathoms"
-msgstr "尋"
-
-#: src/dashboard_pi.cpp:2937
-msgid "Inches"
-msgstr "インチ"
-
-#: src/dashboard_pi.cpp:2937
-msgid "Centimeters"
-msgstr "センチメートル"
-
-#: src/dashboard_pi.cpp:2942
-#, c-format
-msgid "Depth Offset (%s):"
-msgstr "水深のオフセット(%s):"
-
-#: src/dashboard_pi.cpp:2966
-msgid "Distance units:"
-msgstr "距離の単位:"
-
-#: src/dashboard_pi.cpp:2969
-msgid "Nautical miles"
-msgstr "海里"
-
-#: src/dashboard_pi.cpp:2969
-msgid "Statute miles"
-msgstr "法定マイル"
-
-#: src/dashboard_pi.cpp:2969
-msgid "Kilometers"
-msgstr "キロメートル"
-
-#: src/dashboard_pi.cpp:2975
-msgid "Wind speed units:"
-msgstr "風速単位:"
-
-#: src/dashboard_pi.cpp:2984
-msgid "Temperature units:"
-msgstr ""
-
-#: src/dashboard_pi.cpp:2987
-msgid "Celsius"
-msgstr ""
-
-#: src/dashboard_pi.cpp:2987
-msgid "Fahrenheit"
-msgstr ""
-
-#: src/dashboard_pi.cpp:2987
-msgid "Kelvin"
-msgstr ""
-
-#: src/dashboard_pi.cpp:2994
-msgid "Use SignalK true wind data over ground. (Instead of through water)"
-msgstr ""
-
-#: src/dashboard_pi.cpp:3269
-msgid "Add instrument"
-msgstr "機器を追加します。"
-
-#: src/dashboard_pi.cpp:3275
-msgid "Select instrument to add:"
-msgstr "追加する計器を選択します。"
-
-#: src/dashboard_pi.cpp:3699 src/dashboard_pi.cpp:3724
-msgid "Preferences..."
-msgstr "設定"
-
-#: src/dashboard_pi.cpp:3703
-msgid "Resize..."
-msgstr ""
-
-#: src/dashboard_pi.cpp:3713
-msgid "Undock"
-msgstr ""
-
-#: src/dashboard_pi.cpp:4192
-msgid "Choose font"
-msgstr ""
-
-#: src/dial.cpp:529 src/wind.cpp:66 src/wind_history.cpp:441
-msgid "NE"
-msgstr "NE"
-
-#: src/dial.cpp:529 src/gps.cpp:229 src/wind.cpp:66 src/wind_history.cpp:447
-msgid "E"
-msgstr "E"
-
-#: src/dial.cpp:529 src/wind.cpp:66 src/wind_history.cpp:453
-msgid "SE"
-msgstr "SE"
-
-#: src/dial.cpp:529 src/gps.cpp:233 src/wind.cpp:66 src/wind_history.cpp:459
-msgid "S"
-msgstr "S"
-
-#: src/dial.cpp:529 src/wind.cpp:66 src/wind_history.cpp:465
-msgid "SW"
-msgstr "SW"
-
-#: src/dial.cpp:529 src/gps.cpp:237 src/wind.cpp:66 src/wind_history.cpp:471
-msgid "W"
-msgstr "W"
-
-#: src/dial.cpp:529 src/wind.cpp:66 src/wind_history.cpp:477
-msgid "NW"
-msgstr "NW"
-
-#: src/instrument.cpp:247
-msgid " true"
-msgstr " 真"
-
-#: src/instrument.cpp:249
+#
 msgid " mag"
 msgstr " 磁気"
-
-#: src/wind_history.cpp:58 src/wind_history.cpp:109
+#
+msgid " true"
+msgstr " 真"
+#
 msgid "--"
 msgstr ""
-
-#: src/wind_history.cpp:333
+#
 #, c-format
 msgid "--- %s"
 msgstr ""
-
-#: src/wind_history.cpp:438
-msgid "NNE"
-msgstr "NNE"
-
-#: src/wind_history.cpp:444
+#
+msgid "Add"
+msgstr "追加"
+#
+msgid "Add instrument"
+msgstr "機器を追加します。"
+#
+msgid "Air Temp."
+msgstr "気温"
+#
+msgid "App & True Wind Angle"
+msgstr "見かけと真の風の角度"
+#
+msgid "App. Wind Angle"
+msgstr "見かけの風の角度"
+#
+msgid "App. Wind Angle & Speed"
+msgstr "見かけの風の角度と速度"
+#
+msgid "App. Wind Speed"
+msgstr "見かけの風速"
+#
+msgid "Appearance"
+msgstr "表示関連"
+#
+msgid "Barometric history"
+msgstr "気圧の記録"
+#
+msgid "Barometric pressure"
+msgstr "気圧"
+#
+msgid "Boat speed units:"
+msgstr "船の速度の単位:"
+#
+msgid "COG"
+msgstr "COG"
+#
+msgid "COG Damping Factor:"
+msgstr "COG Damping Factor:"
+#
+msgid "Caption:"
+msgstr "タイトル:"
+#
+msgid "Celsius"
+msgstr ""
+#
+msgid "Centimeters"
+msgstr "センチメートル"
+#
+msgid "Choose font"
+msgstr ""
+#
+msgid "Cursor"
+msgstr "カーソル"
+#
+msgid "Dashboard"
+msgstr "ダッシュボード"
+#
+msgid "Dashboard PlugIn for OpenCPN"
+msgstr "OpenCPN 用ダッシュ ボードプラグイン"
+#
+msgid ""
+"Dashboard PlugIn for OpenCPN\n"
+"Provides navigation instrument display from NMEA source."
+msgstr ""
+"OpenCPN 用ダッシュ ボードプラグイン\n"
+"装置の表示はNMEAソースから表示します。"
+#
+msgid "Dashboard preferences"
+msgstr "ダッシュ ボード設定"
+#
+msgid "Data:"
+msgstr "データ:"
+#
+msgid "Delete"
+msgstr "削除"
+#
+msgid "Depth"
+msgstr "深渡"
+#
+#, c-format
+msgid "Depth Offset (%s):"
+msgstr "水深のオフセット(%s):"
+#
+msgid "Depth units:"
+msgstr "深さの単位:"
+#
+msgid "Distance units:"
+msgstr "距離の単位:"
+#
+msgid "Down"
+msgstr "下へ"
+#
+msgid "E"
+msgstr "E"
+#
 msgid "ENE"
 msgstr "ENE"
-
-#: src/wind_history.cpp:450
+#
 msgid "ESE"
 msgstr "ESE"
-
-#: src/wind_history.cpp:456
-msgid "SSE"
-msgstr "SSE"
-
-#: src/wind_history.cpp:462
-msgid "SSW"
-msgstr "SSW"
-
-#: src/wind_history.cpp:468
-msgid "WSW"
-msgstr "WSW"
-
-#: src/wind_history.cpp:474
-msgid "WNW"
-msgstr "WNW"
-
-#: src/wind_history.cpp:480
-msgid "NNW"
-msgstr "NNW"
-
-#: src/wind_history.cpp:585
+#
+msgid "Fahrenheit"
+msgstr ""
+#
+msgid "Fathoms"
+msgstr "尋"
+#
+msgid "Feet"
+msgstr "フィート"
+#
+msgid "Fonts"
+msgstr "フォント"
+#
+msgid "From Ownship"
+msgstr "自船 から"
+#
+msgid "GNSS Clock"
+msgstr ""
+#
+msgid "GNSS Compass"
+msgstr ""
+#
+msgid "GNSS Status"
+msgstr ""
+#
+msgid "GNSS in use"
+msgstr ""
+#
+msgid "Heel"
+msgstr "ヒール"
+#
+msgid "Honor OpenCPN settings"
+msgstr "Honor OpenCPN settings"
+#
+msgid "Horizontal"
+msgstr "横"
+#
+msgid "Inches"
+msgstr "インチ"
+#
+msgid "Instruments"
+msgstr "計器"
+#
+msgid "Kelvin"
+msgstr ""
+#
+msgid "Kilometers"
+msgstr "キロメートル"
+#
+msgid "Kts"
+msgstr "Kts"
+#
+msgid "Label:"
+msgstr "ラベル："
+#
+msgid "Local CPU Clock"
+msgstr "ローカルなCPUの時計"
+#
+msgid "Local GNSS Clock"
+msgstr ""
+#
+msgid "Local Sunrise/Sunset"
+msgstr "地元の日の出/日の入り"
+#
+msgid "Local Time Offset From UTC:"
+msgstr "UTCとの時差"
+#
+msgid "Mag COG"
+msgstr "Mag COG"
+#
+msgid "Mag HDG"
+msgstr "磁気 HDG"
+#
 #, c-format
 msgid "Max %.1f %s since %02d:%02d  Overall %.1f %s"
 msgstr "Max %.1f %s since %02d:%02d Overall %.1f %s"
-
+#
+msgid "Meters"
+msgstr "メートル"
+#
+msgid "Moon phase"
+msgstr "月齢"
+#
+msgid "N"
+msgstr "N"
+#
+msgid "NE"
+msgstr "NE"
+#
+msgid "NNE"
+msgstr "NNE"
+#
+msgid "NNW"
+msgstr "NNW"
+#
+msgid "NW"
+msgstr "NW"
+#
+msgid "Nautical miles"
+msgstr "海里"
+#
+msgid "Orientation:"
+msgstr "配置方向"
+#
+msgid "Pitch"
+msgstr "ピッチ"
+#
+msgid "Port"
+msgstr ""
+#
+msgid "Position"
+msgstr "位置"
+#
+msgid "Preferences..."
+msgstr "設定"
+#
+msgid "Resize..."
+msgstr ""
+#
+msgid "Rudder Angle"
+msgstr "舵角"
+#
+msgid "S"
+msgstr "S"
+#
+msgid "SE"
+msgstr "SE"
+#
+msgid "SOG"
+msgstr "SOG"
+#
+msgid "SSE"
+msgstr "SSE"
+#
+msgid "SSW"
+msgstr "SSW"
+#
+msgid "STW"
+msgstr "STW"
+#
+msgid "SW"
+msgstr "SW"
+#
+msgid "Select instrument to add:"
+msgstr "追加する計器を選択します。"
+#
+msgid "Small:"
+msgstr "Small:"
+#
+msgid "Speed Over Ground Damping Factor:"
+msgstr "Speed Over Ground Damping Factor:"
+#
+msgid "Speedometer"
+msgstr "スピード メーター"
+#
+msgid "Speedometer max value:"
+msgstr "スピード メーターの最大値:"
+#
+msgid "Statute miles"
+msgstr "法定マイル"
+#
+msgid "Stbd"
+msgstr ""
+#
+msgid "Sum Log"
+msgstr "合計ログ"
+#
+msgid "Sunrise/Sunset"
+msgstr "日の出/日の入り"
+#
+msgid "Temperature units:"
+msgstr ""
+#
+msgid "Title:"
+msgstr "タイトル:"
+#
+msgid "Trip Log"
+msgstr "トリップ ログ"
+#
+msgid "True Compass"
+msgstr "True Compass"
+#
+msgid "True HDG"
+msgstr "真 HDG"
+#
+msgid "True Wind Angle"
+msgstr "真の風の角度"
+#
+msgid "True Wind Angle & Speed"
+msgstr "真の風の角度と速度"
+#
+msgid "True Wind Dir. & Speed"
+msgstr "真の風向と風速"
+#
+msgid "True Wind Direction"
+msgstr "真の風向"
+#
+msgid "True Wind Speed"
+msgstr "真の風速"
+#
+msgid "Undock"
+msgstr ""
+#
+msgid "Units, Ranges, Formats"
+msgstr "ユニット、範囲、フォーマット"
+#
+msgid "Up"
+msgstr "上へ"
+#
+msgid ""
+"Use SignalK true wind data over ground.\n"
+"(Instead of through water)"
+msgstr ""
+#
+msgid "VMG"
+msgstr "VMG"
+#
+msgid "Vertical"
+msgstr "縦"
+#
+msgid "W"
+msgstr "W"
+#
+msgid "WNW"
+msgstr "WNW"
+#
+msgid "WSW"
+msgstr "WSW"
+#
+msgid "Water Temp."
+msgstr "水温"
+#
+msgid "Wind history"
+msgstr "風の記録"
+#
+msgid "Wind speed units:"
+msgstr "風速単位:"
+#
+msgid "km/h"
+msgstr "km/h"
+#
+msgid "m/s"
+msgstr "m/s"
+#
+msgid "mph"
+msgstr "mph"
+#
+msgid "show this dashboard"
+msgstr "このダッシュ ボードを表示"
