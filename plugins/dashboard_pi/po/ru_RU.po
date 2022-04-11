@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: opencpn\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-04-10 19:09-0500\n"
-"PO-Revision-Date: 2021-11-07 15:31\n"
+"POT-Creation-Date: 2021-09-21 20:19-0400\n"
+"PO-Revision-Date: 2022-04-10 02:30\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -61,28 +61,52 @@ msgstr "История давления"
 #
 msgid "Barometric pressure"
 msgstr "Атмосферное давление"
-#
-msgid "Boat speed units:"
-msgstr "Единицы скорости судна:"
-#
-msgid "COG"
-msgstr "Ист. Курс (COG)"
-#
-msgid "COG Damping Factor:"
-msgstr "Коэффициент затухания COG:"
-#
-msgid "Caption:"
-msgstr "Название:"
-#
-msgid "Celsius"
-msgstr "Цельсий"
-#
-msgid "Centimeters"
-msgstr "см"
-#
-msgid "Choose font"
-msgstr "Выбор шрифта"
-#
+
+#: src/dashboard_pi.cpp:222
+msgid "Water Temp."
+msgstr "Температура воды"
+
+#: src/dashboard_pi.cpp:224
+msgid "Air Temp."
+msgstr "Температура воздуха"
+
+#: src/dashboard_pi.cpp:226
+msgid "App. Wind Angle"
+msgstr "Вымп. угол ветра"
+
+#: src/dashboard_pi.cpp:228
+msgid "True Wind Angle"
+msgstr "Ист. угол ветра"
+
+#: src/dashboard_pi.cpp:230
+msgid "True Wind Direction"
+msgstr "Ист. направл. ветра"
+
+#: src/dashboard_pi.cpp:232
+msgid "True Wind Speed"
+msgstr "Ист. скорость ветра"
+
+#: src/dashboard_pi.cpp:234
+msgid "True Wind Dir. & Speed"
+msgstr "Ист. направл. и скор. ветра"
+
+#: src/dashboard_pi.cpp:236 src/dashboard_pi.cpp:238
+msgid "VMG"
+msgstr "Эффект. скорость (VMG)"
+
+#: src/dashboard_pi.cpp:240 src/dashboard_pi.cpp:242
+msgid "Rudder Angle"
+msgstr "Угол перекладки руля"
+
+#: src/dashboard_pi.cpp:244
+msgid "GNSS in use"
+msgstr "Видимых спутников"
+
+#: src/dashboard_pi.cpp:246
+msgid "GNSS Status"
+msgstr "Состояние ГНСС"
+
+#: src/dashboard_pi.cpp:248
 msgid "Cursor"
 msgstr "Координаты курсора"
 #
