@@ -361,6 +361,7 @@ void AddSourceDlg::OnNbPage(wxNotebookEvent& event) {
   } else {
     ChartSource* cs = nullptr;
     wxTreeItemId item = m_treeCtrlPredefSrcs->GetSelection();
+    ChartSource* cs = nullptr;
     if (item.IsOk())
       cs = (ChartSource *)(m_treeCtrlPredefSrcs->GetItemData(item));
     if(!cs)
