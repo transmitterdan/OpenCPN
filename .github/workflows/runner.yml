@@ -38,7 +38,7 @@ jobs:
         Get-ChildItem -Path "${{github.workspace}}\buildwin\wxWidgets" -Recurse -Force
         Copy-Item "${{env.wxWidgets_LIB_DIR}}\*.dll" -Destination "${{github.workspace}}\buildwin\wxWidgets"
         Copy-Item "${{env.wxWidgets_LIB_DIR}}\*.pdb" -Destination "${{github.workspace}}\buildwin\wxWidgets"
-        Copy-Item "${{env.wxWidgets_ROOT_DIR}}\locale\*.pot" -Destination "${{github.workspace}}\buildwin\wxWidgets\locale" -Force -Recurse
+        Copy-Item "${{env.wxWidgets_ROOT_DIR}}\locale\*.mo" -Destination "${{github.workspace}}\buildwin\wxWidgets\locale" -Force -Recurse
         Get-ChildItem -Path "${{github.workspace}}\buildwin\wxWidgets" -Recurse -Force
 
     - name: CMake Configure
