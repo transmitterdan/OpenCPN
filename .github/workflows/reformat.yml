@@ -48,9 +48,11 @@ jobs:
       if: success()
       shell: powershell
       working-directory: ${{github.workspace}}/build
-      run: cmake --build . --config ${{env.BUILD_TYPE}} --target Package
+      run: |
+        dir env:
+        cmake --build . --config ${{env.BUILD_TYPE}} --target Package
 
     - uses: actions/upload-artifact@v2.2.4
       with:
-        name:  OpenCPN_5.5.0
+        name:  OpenCPN_5.6.1
         path: ${{github.workspace}}/build/*.exe
