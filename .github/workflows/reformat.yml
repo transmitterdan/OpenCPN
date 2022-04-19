@@ -29,9 +29,9 @@ jobs:
     - name: Get Dependencies
       shell: powershell
       run: |
-        Invoke-WebRequest https://download.opencpn.org/s/E2p4nLDzeqx4SdX/download -OutFile wxWidgets-3.1.2.7z
+        Invoke-WebRequest https://download.opencpn.org/s/E2p4nLDzeqx4SdX/download -TimeoutSec 600 -OutFile wxWidgets-3.1.2.7z
         7z x -y wxWidgets-3.1.2.7z -o${{env.WXWIN}}
-        Invoke-WebRequest https://download.opencpn.org/s/oibxM3kzfzKcSc3/download -OutFile OpenCPN_buildwin-4.99a.7z
+        Invoke-WebRequest https://download.opencpn.org/s/oibxM3kzfzKcSc3/download -TimeoutSec 600 -OutFile OpenCPN_buildwin-4.99a.7z
         7z x -y OpenCPN_buildwin-4.99a.7z -o${{github.workspace}}\buildwin
 
     - name: CMake Configure
