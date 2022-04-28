@@ -761,7 +761,7 @@ if (GTK3_FOUND)
     }
   ]=])
   set (TRY_COMPILE
-    "echo '${_VERSPROG}' > wx-32.c; cc $(wx-config --cflags) wx-32.c; ./a.out")
+    "echo '${_VERSPROG}' > wx-32.c; cc $(${wxWidgets_CONFIG_EXECUTABLE} --cflags) wx-32.c; ./a.out")
   execute_process(
     COMMAND "/bin/sh" "-c" "${TRY_COMPILE}"
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
@@ -875,6 +875,7 @@ set(
   include/options.h
   include/piano.h
   include/plugin_cache.h
+  include/plugin_blacklist.h
   include/PluginHandler.h
   include/pluginmanager.h
   include/PluginPaths.h
@@ -1010,6 +1011,7 @@ set(
   src/pluginmanager.cpp
   src/PluginPaths.cpp
   src/PositionParser.cpp
+  src/plugin_blacklist.cpp
   src/plugin_cache.cpp
   src/printtable.cpp
   src/pugixml.cpp
