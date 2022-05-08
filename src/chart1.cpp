@@ -241,7 +241,7 @@ double g_ChartNotRenderScaleFactor;
 int g_nDepthUnitDisplay;
 
 RouteList *pRouteList;
-TrackList *pTrackList;
+std::vector<Track*> g_TrackList;
 LayerList *pLayerList;
 bool g_bIsNewLayer;
 int g_LayerIdx;
@@ -1948,8 +1948,6 @@ bool MyApp::OnInit() {
   pLayerList = new LayerList;
   //  Routes
   pRouteList = new RouteList;
-  // Tracks
-  pTrackList = new TrackList;
 
   //      (Optionally) Capture the user and file(effective) ids
   //  Some build environments may need root privileges for hardware
@@ -2695,12 +2693,10 @@ int MyApp::OnExit() {
   delete phost_name;
   delete pInit_Chart_Dir;
 
-  if (pTrackList) {
-    pTrackList->DeleteContents(true);
-    pTrackList->Clear();
-    delete pTrackList;
-    pTrackList = NULL;
+  for (Track* track : g_TrackList) {
+    delete track;
   }
+  g_TrackList.clear();
 
   delete g_pRouteMan;
   delete pWayPointMan;
@@ -3181,7 +3177,6 @@ void MyFrame::SetAndApplyColorScheme(ColorScheme cs) {
 
   if (ChartData) ChartData->ApplyColorSchemeToCachedCharts(cs);
 
-  SetChartThumbnail(-1);
 
   if (g_options) {
     g_options->SetColorScheme(cs);
@@ -5064,7 +5059,7 @@ void MyFrame::TrackOn(void) {
   g_bTrackActive = true;
   g_pActiveTrack = new ActiveTrack();
 
-  pTrackList->Append(g_pActiveTrack);
+  g_TrackList.push_back(g_pActiveTrack);
   if (pConfig) pConfig->AddNewTrack(g_pActiveTrack);
 
   g_pActiveTrack->Start();
@@ -6456,13 +6451,13 @@ bool MyFrame::CheckGroup(int igroup) {
   if (!pGroup->m_element_array.size())  //  truly empty group is OK
     return true;
 
-  for (auto &elem : pGroup->m_element_array) {
+  for (const auto &elem : pGroup->m_element_array) {
     for (unsigned int ic = 0;
          ic < (unsigned int)ChartData->GetChartTableEntries(); ic++) {
       ChartTableEntry *pcte = ChartData->GetpChartTableEntry(ic);
       wxString chart_full_path(pcte->GetpFullPath(), wxConvUTF8);
 
-      if (chart_full_path.StartsWith(elem->m_element_name)) return true;
+      if (chart_full_path.StartsWith(elem.m_element_name)) return true;
     }
   }
 
@@ -6481,7 +6476,7 @@ bool MyFrame::ScrubGroupArray() {
     ChartGroup *pGroup = g_pGroupArray->Item(igroup);
 
     for (unsigned int j = 0; j < pGroup->m_element_array.size(); j++) {
-      wxString element_root = pGroup->m_element_array[j]->m_element_name;
+      const wxString &element_root = pGroup->m_element_array[j].m_element_name;
 
       for (unsigned int ic = 0;
            ic < (unsigned int)ChartData->GetChartTableEntries(); ic++) {
@@ -7872,118 +7867,6 @@ void MyFrame::SetChartUpdatePeriod() {
   m_ChartUpdatePeriod = g_ChartUpdatePeriod;
 }
 
-void MyFrame::SetChartThumbnail(int index) {
-  // TODO
-#if 0
-    if( bDBUpdateInProgress ) return;
-
-    if( NULL == pCurrentStack ) return;
-    assert(ChartData != 0);
-
-    if( NULL == pthumbwin ) return;
-
-    if( NULL == cc1 ) return;
-
-    bool bneedmove = false;
-
-    if( index == -1 ) {
-        wxRect thumb_rect_in_parent = pthumbwin->GetRect();
-
-        pthumbwin->pThumbChart = NULL;
-        pthumbwin->Show( false );
-        cc1->RefreshRect( thumb_rect_in_parent, FALSE );
-    }
-
-<<<<<<< HEAD
-    //    Search the no-show array
-    bool b_is_in_noshow = false;
-    for( unsigned int i = 0; i < g_quilt_noshow_index_array.size(); i++ ) {
-        if( g_quilt_noshow_index_array[i] == selected_dbIndex ) // chart is in the noshow list
-=======
-    else
-        if( index < pCurrentStack->nEntry ) {
-            if( ( ChartData->GetCSChartType( pCurrentStack, index ) == CHART_TYPE_KAP )
-                    || ( ChartData->GetCSChartType( pCurrentStack, index ) == CHART_TYPE_GEO )
-                    || ( ChartData->GetCSChartType( pCurrentStack, index ) == CHART_TYPE_PLUGIN ) ) {
-                ChartBase *new_pThumbChart = ChartData->OpenChartFromStack( pCurrentStack, index );
-                if( new_pThumbChart )         // chart opened ok
->>>>>>> multicanvas
-                {
-
-                    ThumbData *pTD = new_pThumbChart->GetThumbData( 150, 150, gLat, gLon );
-                    if( pTD ) {
-                        pthumbwin->pThumbChart = new_pThumbChart;
-
-                        pthumbwin->Resize();
-                        pthumbwin->Show( true );
-                        pthumbwin->Refresh( FALSE );
-                        pthumbwin->Move( wxPoint( 4, 4 ) );
-                        bneedmove = true;
-                    }
-
-                    else {
-                        wxLogMessage(
-                                _T("    chart1.cpp:SetChartThumbnail...Could not create thumbnail") );
-                        pthumbwin->pThumbChart = NULL;
-                        pthumbwin->Show( false );
-                        cc1->Refresh( FALSE );
-                    }
-
-                } else                            // some problem opening chart
-                {
-                    wxString fp = ChartData->GetFullPath( pCurrentStack, index );
-                    fp.Prepend( _T("    chart1.cpp:SetChartThumbnail...Could not open chart ") );
-                    wxLogMessage( fp );
-                    pthumbwin->pThumbChart = NULL;
-                    pthumbwin->Show( false );
-                    cc1->Refresh( FALSE );
-                }
-
-            } else {
-                ChartBase *new_pThumbChart = ChartData->OpenChartFromStack( pCurrentStack, index,
-                        THUMB_ONLY );
-
-                pthumbwin->pThumbChart = new_pThumbChart;
-
-                if( new_pThumbChart ) {
-                    ThumbData *pTD = new_pThumbChart->GetThumbData( 200, 200, gLat, gLon );
-                    if( pTD ) {
-                        pthumbwin->Resize();
-                        pthumbwin->Show( true );
-                        pthumbwin->Refresh( true );
-                        pthumbwin->Move( wxPoint( 4, 4 ) );
-                        bneedmove = true;
-                    } else
-                        pthumbwin->Show( false );
-
-                    cc1->Refresh( FALSE );
-                }
-            }
-
-            if(bneedmove && pthumbwin){         // Adjust position to avoid bad overlap
-                wxPoint pos = wxPoint(4,4);
-
-                wxPoint tLocn = ClientToScreen(pos);
-                wxRect tRect = wxRect(tLocn.x, tLocn.y, pthumbwin->GetSize().x, pthumbwin->GetSize().y);
-
-                // Simplistic overlap avoidance works best when toolbar is horizontal near the top of screen.
-                // Other difficult cases simply center the thumbwin on the canvas....
-                if( g_MainToolbar && !g_MainToolbar->isSubmergedToGrabber()){
-                    if( g_MainToolbar->GetScreenRect().Intersects( tRect ) ) {
-                        wxPoint tbpos = cc1->ScreenToClient(g_MainToolbar->GetPosition());
-                        pos = wxPoint(4, g_MainToolbar->GetSize().y + tbpos.y + 4);
-                        tLocn = ClientToScreen(pos);
-                    }
-                }
-
-                pthumbwin->Move( pos );
-
-            }
-
-        }
-#endif
-}
-
 void MyFrame::UpdateControlBar(ChartCanvas *cc) {
   if (!cc) return;
   cc->UpdateCanvasControlBar();
@@ -8329,13 +8212,12 @@ void MyFrame::OnEvtPlugInMessage(OCPN_MsgEvent &event) {
 
     wxJSONValue v;
     v[_T("Track_ID")] = trk_id;
-    for (TrackList::iterator it = pTrackList->begin(); it != pTrackList->end();
-         it++) {
+    for (Track* ptrack : g_TrackList) {
       wxString name = wxEmptyString;
-      if ((*it)->m_GUID == trk_id) {
-        name = (*it)->GetName();
+      if (ptrack->m_GUID == trk_id) {
+        name = ptrack->GetName();
         if (name.IsEmpty()) {
-          TrackPoint *rp = (*it)->GetPoint(0);
+          TrackPoint *rp = ptrack->GetPoint(0);
           if (rp && rp->GetCreateTime().IsValid())
             name = rp->GetCreateTime().FormatISODate() + _T(" ") +
                    rp->GetCreateTime().FormatISOTime();
@@ -8347,9 +8229,9 @@ void MyFrame::OnEvtPlugInMessage(OCPN_MsgEvent &event) {
          * It's up to the plugin to collect the data. */
         int i = 1;
         v[_T("error")] = false;
-        v[_T("TotalNodes")] = (*it)->GetnPoints();
-        for (int j = 0; j < (*it)->GetnPoints(); j++) {
-          TrackPoint *tp = (*it)->GetPoint(j);
+        v[_T("TotalNodes")] = ptrack->GetnPoints();
+        for (int j = 0; j < ptrack->GetnPoints(); j++) {
+          TrackPoint *tp = ptrack->GetPoint(j);
           v[_T("lat")] = tp->m_lat;
           v[_T("lon")] = tp->m_lon;
           v[_T("NodeNr")] = i;
@@ -8450,11 +8332,10 @@ void MyFrame::OnEvtPlugInMessage(OCPN_MsgEvent &event) {
           i++;
         }
       } else {  // track
-        for (TrackList::iterator it = pTrackList->begin();
-             it != pTrackList->end(); it++) {
-          wxString name = (*it)->GetName();
+        for (Track *ptrack : g_TrackList) {
+          wxString name = ptrack->GetName();
           if (name.IsEmpty()) {
-            TrackPoint *tp = (*it)->GetPoint(0);
+            TrackPoint *tp = ptrack->GetPoint(0);
             if (tp && tp->GetCreateTime().IsValid())
               name = tp->GetCreateTime().FormatISODate() + _T(" ") +
                      tp->GetCreateTime().FormatISOTime();
@@ -8463,8 +8344,8 @@ void MyFrame::OnEvtPlugInMessage(OCPN_MsgEvent &event) {
           }
           v[i][_T("error")] = false;
           v[i][_T("name")] = name;
-          v[i][_T("GUID")] = (*it)->m_GUID;
-          v[i][_T("active")] = g_pActiveTrack == (*it);
+          v[i][_T("GUID")] = ptrack->m_GUID;
+          v[i][_T("active")] = g_pActiveTrack == ptrack;
           i++;
         }
       }

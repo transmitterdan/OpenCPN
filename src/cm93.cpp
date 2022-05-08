@@ -39,6 +39,7 @@
 #include <wx/regex.h>
 
 #include <algorithm>
+#include <unordered_map>
 
 #include "gdal/ogr_api.h"
 #include "s57chart.h"
@@ -257,8 +258,6 @@ OCPNRegion M_COVR_Desc::GetRegion(const ViewPort &vp, wxPoint *pwp) {
 // relating to cm93 cell MCOVR objects of a particular scale
 //----------------------------------------------------------------------------
 
-WX_DECLARE_HASH_MAP(int, int, wxIntegerHash, wxIntegerEqual, cm93cell_hash);
-
 char sig_version[] = "COVR1002";
 
 class covr_set {
@@ -281,12 +280,12 @@ public:
 
   wxString m_cachefile;
 
-  Array_Of_M_COVR_Desc
-      m_covr_array_outlines;  // array, for chart outline rendering
+  // array, for chart outline rendering
+  Array_Of_M_COVR_Desc m_covr_array_outlines;
 
-  cm93cell_hash m_cell_hash;  // This is a hash, indexed by cell index, elements
-                              // contain the number of M_COVRs
-                              // found on this particular cell
+  // This is a hash, indexed by cell index, elements
+  // contain the number of M_COVRs found on this particular cell
+  std::unordered_map<int, int> m_cell_hash;
 };
 
 covr_set::covr_set(cm93chart *parent) { m_pParent = parent; }
@@ -2076,8 +2075,8 @@ void cm93chart::SetVPParms(const ViewPort &vpt) {
       AssembleLineGeometry();
 
       //  Set up the chart context
-      m_this_chart_context->m_pvc_hash = (void *)&Get_vc_hash();
-      m_this_chart_context->m_pve_hash = (void *)&Get_ve_hash();
+      m_this_chart_context->m_pvc_hash = &Get_vc_hash();
+      m_this_chart_context->m_pve_hash = &Get_ve_hash();
 
       m_this_chart_context->pFloatingATONArray = pFloatingATONArray;
       m_this_chart_context->pRigidATONArray = pRigidATONArray;
@@ -2171,7 +2170,7 @@ std::vector<int> cm93chart::GetVPCellArray(const ViewPort &vpt) {
 void cm93chart::ProcessVectorEdges(void) {
   //    Create the vector(edge) map for this cell, appending to the existing
   //    member hash map
-  VE_Hash &vehash = Get_ve_hash();
+  auto &vehash = Get_ve_hash();
 
   m_current_cell_vearray_offset =
       vehash.size();  // keys start at the current size
@@ -6080,11 +6079,11 @@ ListOfObjRazRules *cm93compchart::GetObjRuleListAtLatLon(float lat, float lon,
   }
 }
 
-VE_Hash &cm93compchart::Get_ve_hash(void) {
+std::unordered_map<unsigned, VE_Element *> &cm93compchart::Get_ve_hash(void) {
   return m_pcm93chart_current->Get_ve_hash();
 }
 
-VC_Hash &cm93compchart::Get_vc_hash(void) {
+std::unordered_map<unsigned, VC_Element *> &cm93compchart::Get_vc_hash(void) {
   return m_pcm93chart_current->Get_vc_hash();
 }
 

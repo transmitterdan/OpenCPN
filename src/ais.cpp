@@ -105,9 +105,6 @@ static const long long lNaN = 0xfff8000000000000;
 #define NAN (*(double *)&lNaN)
 #endif
 
-#include <wx/listimpl.cpp>
-WX_DEFINE_LIST(AISTargetTrackList);
-
 wxString ais_get_status(int index) {
   static const wxString ais_status[] = {
       _("Underway using Engine"),
@@ -464,13 +461,10 @@ void AISDrawAreaNotices(ocpnDC &dc, ViewPort &vp, ChartCanvas *cp) {
   ;
   wxBrush *brush;
 
-  AIS_Target_Hash *current_targets = g_pAIS->GetAreaNoticeSourcesList();
-
   float vp_scale = vp.view_scale_ppm;
 
-  for (AIS_Target_Hash::iterator target = current_targets->begin();
-       target != current_targets->end(); ++target) {
-    AIS_Target_Data *target_data = target->second;
+  for (const auto &target : g_pAIS->GetAreaNoticeSourcesList()) {
+    AIS_Target_Data *target_data = target.second;
     if (!target_data->area_notices.empty()) {
       if (!b_pens_set) {
         pen_save = dc.GetPen();
@@ -494,10 +488,8 @@ void AISDrawAreaNotices(ocpnDC &dc, ViewPort &vp, ChartCanvas *cp) {
         b_pens_set = true;
       }
 
-      for (AIS_Area_Notice_Hash::iterator ani =
-               target_data->area_notices.begin();
-           ani != target_data->area_notices.end(); ++ani) {
-        Ais8_001_22 &area_notice = ani->second;
+      for (auto &ani : target_data->area_notices) {
+        Ais8_001_22 &area_notice = ani.second;
 
         if (area_notice.expiry_time > now) {
           std::vector<wxPoint> points;
@@ -936,12 +928,11 @@ static void AISDrawTarget(AIS_Target_Data *td, ocpnDC &dc, ViewPort &vp,
   else
       //  If AIS tracks are shown, is the first point of the track on-screen?
       if (1 /*g_bAISShowTracks*/ && td->b_show_track) {
-    wxAISTargetTrackListNode *node = td->m_ptrack->GetFirst();
-    if (node) {
-      AISTargetTrackPoint *ptrack_point = node->GetData();
-      if (vp.GetBBox().Contains(ptrack_point->m_lat, ptrack_point->m_lon))
-        drawit++;
-    }
+        if (td->m_ptrack.size() > 0) {
+          const AISTargetTrackPoint &ptrack_point = td->m_ptrack.front();
+          if (vp.GetBBox().Contains(ptrack_point.m_lat, ptrack_point.m_lon))
+            drawit++;
+        }
   }
 
   //    Calculate AIS target Position Predictor, using global static variable
@@ -1798,19 +1789,19 @@ static void AISDrawTarget(AIS_Target_Data *td, ocpnDC &dc, ViewPort &vp,
     }
   }
 
-  int TrackLength = td->m_ptrack->GetCount();
+  int TrackLength = td->m_ptrack.size();
   if (((!b_noshow && td->b_show_track) || b_forceshow) && (TrackLength > 1)) {
     //  create vector of x-y points
     int TrackPointCount;
     wxPoint *TrackPoints = 0;
     TrackPoints = new wxPoint[TrackLength];
-    wxAISTargetTrackListNode *node = td->m_ptrack->GetFirst();
-    for (TrackPointCount = 0; node && (TrackPointCount < TrackLength);
-         TrackPointCount++) {
-      AISTargetTrackPoint *ptrack_point = node->GetData();
-      GetCanvasPointPix(vp, cp, ptrack_point->m_lat, ptrack_point->m_lon,
+    auto it = td->m_ptrack.begin();
+    for (TrackPointCount = 0;
+         it != td->m_ptrack.end() && (TrackPointCount < TrackLength);
+         TrackPointCount++, ++it) {
+      const AISTargetTrackPoint &ptrack_point = *it;
+      GetCanvasPointPix(vp, cp, ptrack_point.m_lat, ptrack_point.m_lon,
                         &TrackPoints[TrackPointCount]);
-      node = node->GetNext();
     }
 
     wxColour c = GetGlobalColor(_T ( "CHMGD" ));
@@ -1858,8 +1849,8 @@ void AISDraw(ocpnDC &dc, ViewPort &vp, ChartCanvas *cp) {
 
   AISSetMetrics();
 
-  AIS_Target_Hash::iterator it;
-  AIS_Target_Hash *current_targets = g_pAIS->GetTargetList();
+  const auto &current_targets = g_pAIS->GetTargetList();
+
   //      Iterate over the AIS Target Hashmap but only for the main chartcanvas.
   //      For secundairy canvasses we use the same value for the AIS importance
   bool go = false;
@@ -1871,10 +1862,9 @@ void AISDraw(ocpnDC &dc, ViewPort &vp, ChartCanvas *cp) {
   }
 
   if (go) {
-    for (it = (*current_targets).begin(); it != (*current_targets).end();
-         ++it) {
+    for (const auto &it : current_targets) {
       // calculate the importancefactor for each target
-      AIS_Target_Data *td = it->second;
+      AIS_Target_Data *td = it.second;
       double So, Cpa, Rang, Siz = 0.0;
       So = g_ScaledNumWeightSOG / 12 *
            td->SOG;  // 0 - 12 knts gives 0 - g_ScaledNumWeightSOG weight
@@ -1909,9 +1899,8 @@ void AISDraw(ocpnDC &dc, ViewPort &vp, ChartCanvas *cp) {
   int LowestInd = 0;
   if (cp != NULL) {
     if (cp->GetAttenAIS()) {
-      for (it = (*current_targets).begin(); it != (*current_targets).end();
-           ++it) {
-        AIS_Target_Data *td = it->second;
+      for (const auto &it : current_targets) {
+        AIS_Target_Data *td = it.second;
         if (vp.GetBBox().Contains(td->Lat, td->Lon)) {
           if (td->importance > AISImportanceSwitchPoint) {
             Array[LowestInd] = td->importance;
@@ -1933,16 +1922,16 @@ void AISDraw(ocpnDC &dc, ViewPort &vp, ChartCanvas *cp) {
 
   //    Draw all targets in three pass loop, sorted on SOG, GPSGate & DSC on top
   //    This way, fast targets are not obscured by slow/stationary targets
-  for (it = (*current_targets).begin(); it != (*current_targets).end(); ++it) {
-    AIS_Target_Data *td = it->second;
+  for (const auto &it : current_targets) {
+    AIS_Target_Data *td = it.second;
     if ((td->SOG < g_ShowMoored_Kts) &&
         !((td->Class == AIS_GPSG_BUDDY) || (td->Class == AIS_DSC))) {
       AISDrawTarget(td, dc, vp, cp);
     }
   }
 
-  for (it = (*current_targets).begin(); it != (*current_targets).end(); ++it) {
-    AIS_Target_Data *td = it->second;
+  for (const auto &it : current_targets) {
+    AIS_Target_Data *td = it.second;
     if ((td->SOG >= g_ShowMoored_Kts) &&
         !((td->Class == AIS_GPSG_BUDDY) || (td->Class == AIS_DSC))) {
       AISDrawTarget(td, dc, vp, cp);  // yes this is a doubling of code;(
@@ -1950,8 +1939,8 @@ void AISDraw(ocpnDC &dc, ViewPort &vp, ChartCanvas *cp) {
     }
   }
 
-  for (it = (*current_targets).begin(); it != (*current_targets).end(); ++it) {
-    AIS_Target_Data *td = it->second;
+  for (const auto &it : current_targets) {
+    AIS_Target_Data *td = it.second;
     if ((td->Class == AIS_GPSG_BUDDY) || (td->Class == AIS_DSC))
       AISDrawTarget(td, dc, vp, cp);
   }
@@ -1963,11 +1952,8 @@ bool AnyAISTargetsOnscreen(ChartCanvas *cc, ViewPort &vp) {
   if (!cc->GetShowAIS()) return false;  //
 
   //      Iterate over the AIS Target Hashmap
-  AIS_Target_Hash::iterator it;
-  AIS_Target_Hash *current_targets = g_pAIS->GetTargetList();
-
-  for (it = (*current_targets).begin(); it != (*current_targets).end(); ++it) {
-    AIS_Target_Data *td = it->second;
+  for (const auto &it : g_pAIS->GetTargetList()) {
+    AIS_Target_Data *td = it.second;
     if (vp.GetBBox().Contains(td->Lat, td->Lon)) return true;  // yep
   }
 

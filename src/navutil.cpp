@@ -102,7 +102,7 @@ extern double g_ChartNotRenderScaleFactor;
 extern int g_restore_stackindex;
 extern int g_restore_dbindex;
 extern RouteList *pRouteList;
-extern TrackList *pTrackList;
+extern std::vector<Track*> g_TrackList;
 extern LayerList *pLayerList;
 extern int g_LayerIdx;
 extern MyConfig *pConfig;
@@ -1940,10 +1940,10 @@ void MyConfig::CreateConfigGroups(ChartGroupArray *pGroupArray) {
       sg.Printf(_T("Group%d/Item%d"), i + 1, j);
       sg.Prepend(_T ( "/Groups/" ));
       SetPath(sg);
-      Write(_T ( "IncludeItem" ), pGroup->m_element_array[j]->m_element_name);
+      Write(_T ( "IncludeItem" ), pGroup->m_element_array[j].m_element_name);
 
       wxString t;
-      wxArrayString u = pGroup->m_element_array[j]->m_missing_name_array;
+      wxArrayString u = pGroup->m_element_array[j].m_missing_name_array;
       if (u.GetCount()) {
         for (unsigned int k = 0; k < u.GetCount(); k++) {
           t += u[k];
@@ -1985,19 +1985,19 @@ void MyConfig::LoadConfigGroups(ChartGroupArray *pGroupArray) {
 
       wxString v;
       Read(_T ( "IncludeItem" ), &v);
-      ChartGroupElement *pelement = new ChartGroupElement{v};
-      pGroup->m_element_array.emplace_back(pelement);
 
+      ChartGroupElement pelement{v};
       wxString u;
       if (Read(_T ( "ExcludeItems" ), &u)) {
         if (!u.IsEmpty()) {
           wxStringTokenizer tk(u, _T(";"));
           while (tk.HasMoreTokens()) {
             wxString token = tk.GetNextToken();
-            pelement->m_missing_name_array.Add(token);
+            pelement.m_missing_name_array.Add(token);
           }
         }
       }
+      pGroup->m_element_array.push_back(std::move(pelement));
     }
     pGroupArray->Add(pGroup);
   }
@@ -2873,7 +2873,7 @@ bool ExportGPXRoutes(wxWindow *parent, RouteList *pRoutes,
   return false;
 }
 
-bool ExportGPXTracks(wxWindow *parent, TrackList *pTracks,
+bool ExportGPXTracks(wxWindow *parent, std::vector<Track*> *pTracks,
                      const wxString suggestedName) {
   wxFileName fn = exportFileName(parent, suggestedName);
   if (fn.IsOk()) {
@@ -2978,10 +2978,7 @@ void ExportGPX(wxWindow *parent, bool bviz_only, bool blayer) {
       node1 = node1->GetNext();
     }
 
-    wxTrackListNode *node2 = pTrackList->GetFirst();
-    while (node2) {
-      Track *pTrack = node2->GetData();
-
+    for (Track* pTrack : g_TrackList) {
       bool b_add = true;
 
       if (bviz_only && !pTrack->IsVisible()) b_add = false;
@@ -2989,7 +2986,6 @@ void ExportGPX(wxWindow *parent, bool bviz_only, bool blayer) {
       if (pTrack->m_bIsInLayer && !blayer) b_add = false;
 
       if (b_add) pgpx->AddGPXTrack(pTrack);
-      node2 = node2->GetNext();
     }
 
     // Android 5+ requires special handling to support native app file writes to
@@ -3293,14 +3289,8 @@ Route *RouteExists(Route *pTentRoute) {
 }
 
 Track *TrackExists(const wxString &guid) {
-  wxTrackListNode *track_node = pTrackList->GetFirst();
-
-  while (track_node) {
-    Track *ptrack = track_node->GetData();
-
+  for (Track* ptrack : g_TrackList) {
     if (guid == ptrack->m_GUID) return ptrack;
-
-    track_node = track_node->GetNext();
   }
   return NULL;
 }

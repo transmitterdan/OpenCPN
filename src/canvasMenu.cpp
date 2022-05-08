@@ -343,18 +343,13 @@ void CanvasMenuHandler::CanvasPopupMenu(int x, int y, int seltype) {
 
   bool ais_areanotice = false;
   if (g_pAIS && parent->GetShowAIS() && g_bShowAreaNotices) {
-    AIS_Target_Hash *an_sources = g_pAIS->GetAreaNoticeSourcesList();
-
     float vp_scale = parent->GetVPScale();
 
-    for (AIS_Target_Hash::iterator target = an_sources->begin();
-         target != an_sources->end(); ++target) {
-      AIS_Target_Data *target_data = target->second;
+    for (const auto &target : g_pAIS->GetAreaNoticeSourcesList()) {
+      AIS_Target_Data *target_data = target.second;
       if (!target_data->area_notices.empty()) {
-        for (AIS_Area_Notice_Hash::iterator ani =
-                 target_data->area_notices.begin();
-             ani != target_data->area_notices.end(); ++ani) {
-          Ais8_001_22 &area_notice = ani->second;
+        for (auto &ani : target_data->area_notices) {
+          Ais8_001_22 &area_notice = ani.second;
           wxBoundingBox bbox;
 
           for (Ais8_001_22_SubAreaList::iterator sa =

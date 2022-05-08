@@ -49,7 +49,7 @@ extern wxString g_default_wp_icon;
 extern Select *pSelect;
 extern MyConfig *pConfig;
 extern RouteManagerDialog *pRouteManagerDialog;
-extern TrackList *pTrackList;
+extern std::vector<Track*> g_TrackList;
 extern OCPNPlatform *g_Platform;
 extern MyFrame *gFrame;
 
@@ -152,20 +152,17 @@ void AISTargetQueryDialog::OnIdTrkCreateClick(wxCommandEvent &event) {
                                     td->GetFullName().c_str(), td->MMSI,
                                     wxDateTime::Now().FormatISODate().c_str(),
                                     wxDateTime::Now().FormatISOTime().c_str()));
-        wxAISTargetTrackListNode *node = td->m_ptrack->GetFirst();
-        while (node) {
-          AISTargetTrackPoint *ptrack_point = node->GetData();
-          vector2D point(ptrack_point->m_lon, ptrack_point->m_lat);
-          tp1 = t->AddNewPoint(point, wxDateTime(ptrack_point->m_time).ToUTC());
+        for (const AISTargetTrackPoint &ptrack_point : td->m_ptrack) {
+          vector2D point(ptrack_point.m_lon, ptrack_point.m_lat);
+          tp1 = t->AddNewPoint(point, wxDateTime(ptrack_point.m_time).ToUTC());
           if (tp) {
             pSelect->AddSelectableTrackSegment(tp->m_lat, tp->m_lon, tp1->m_lat,
                                                tp1->m_lon, tp, tp1, t);
           }
           tp = tp1;
-          node = node->GetNext();
         }
 
-        pTrackList->Append(t);
+        g_TrackList.push_back(t);
         pConfig->AddNewTrack(t);
         //                t->RebuildGUIDList(); // ensure the GUID list is
         //                intact and good

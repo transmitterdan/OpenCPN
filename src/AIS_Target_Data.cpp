@@ -23,6 +23,7 @@
  */
 
 #include "AIS_Target_Data.h"
+#include <unordered_map>
 
 extern bool bGPSValid;
 extern bool g_bAISRolloverShowClass;
@@ -33,12 +34,7 @@ extern bool g_bShowTrue;
 extern MyFrame *gFrame;
 extern bool g_bAISShowTracks;
 
-//    Define and declare a hasmap for ERI Ship type strings, keyed by their UN
-//    Codes.
-WX_DECLARE_HASH_MAP(int, wxString, wxIntegerHash, wxIntegerEqual,
-                    ERIShipTypeHash);
-
-static ERIShipTypeHash s_ERI_hash;
+static std::unordered_map<int, wxString> s_ERI_hash;
 
 void make_hash_ERI(int key, const wxString &description) {
   s_ERI_hash[key] = description;
@@ -149,9 +145,6 @@ AIS_Target_Data::AIS_Target_Data() {
   b_PersistTrack = false;
   b_in_ack_timeout = false;
 
-  m_ptrack = new AISTargetTrackList;
-  m_ptrack->DeleteContents(true);
-
   b_active = false;
   blue_paddle = 0;
   bCPA_Valid = false;
@@ -237,15 +230,7 @@ void AIS_Target_Data::CloneFrom(AIS_Target_Data *q) {
   b_OwnShip = q->b_OwnShip;
   b_in_ack_timeout = q->b_in_ack_timeout;
 
-  m_ptrack = new AISTargetTrackList;
-  m_ptrack->DeleteContents(true);
-
-  wxAISTargetTrackListNode *node = q->m_ptrack->GetFirst();
-  while (node) {
-    AISTargetTrackPoint *ptrack_point = node->GetData();
-    m_ptrack->Append(ptrack_point);
-    node = node->GetNext();
-  }
+  m_ptrack = q->m_ptrack;
 
   b_active = q->b_active;
   blue_paddle = q->blue_paddle;
@@ -256,10 +241,7 @@ void AIS_Target_Data::CloneFrom(AIS_Target_Data *q) {
   altitude = q->altitude;
 }
 
-AIS_Target_Data::~AIS_Target_Data() {
-  m_ptrack->Clear();
-  delete m_ptrack;
-}
+AIS_Target_Data::~AIS_Target_Data() { m_ptrack.clear(); }
 
 wxString AIS_Target_Data::GetFullName(void) {
   wxString retName;
@@ -396,7 +378,7 @@ wxString AIS_Target_Data::BuildQueryResult(void) {
     AISTypeStr = wxGetTranslation(Get_vessel_type_string());
 
     if (b_isEuroInland && UN_shiptype) {
-      ERIShipTypeHash::iterator it = s_ERI_hash.find(UN_shiptype);
+      auto it = s_ERI_hash.find(UN_shiptype);
       wxString type;
       if (it == s_ERI_hash.end())
         type = _("Undefined");
