@@ -1,4 +1,4 @@
-﻿/***************************************************************************
+/***************************************************************************
  *
  * Project:  OpenCPN
  * Purpose:  Route Manager
@@ -1048,8 +1048,11 @@ void Routeman::DeleteAllRoutes(void) {
 void Routeman::DeleteAllTracks(void) {
   ::wxBeginBusyCursor();
 
-  //    Iterate on the RouteList
-  for (Track *ptrack : g_TrackList) {
+  // Iterate on the RouteList, we delete from g_TrackList in DeleteTrack,
+  // bigger refactoring is viable, but for now, we simply make a copy
+  // that goes out of scope soon.
+  std::vector<Track*> to_del = g_TrackList;
+  for (Track *ptrack : to_del) {
     if (ptrack->m_bIsInLayer) continue;
 
     g_pAIS->DeletePersistentTrack(ptrack);
@@ -1085,39 +1088,15 @@ void Routeman::DeleteTrack(Track *pTrack) {
       pTrackPropDialog->Hide();
     }
 
+    if (pTrack == g_pActiveTrack) {
+      pTrack = m_pparent_app->TrackOff();
+    }
     //    Remove the track from associated lists
     pSelect->DeleteAllSelectableTrackSegments(pTrack);
     auto it = std::find(g_TrackList.begin(), g_TrackList.end(), pTrack);
     if (it != g_TrackList.end()) {
       g_TrackList.erase(it);
     }
-
-#if 0
-        // walk the track, deleting points used by this track
-        int ic = 0;
-        wxTrackPointListNode *pnode = ( pTrack->pTrackPointList )->GetFirst();
-        while( pnode )
-        {
-            if(pprog)
-            {
-                wxString msg;
-                msg.Printf(_T("%d/%d"), ic, count);
-                if(ic % 100 == 0)
-                   pprog->Update( ic, msg );
-                ic++;
-            }
-
-            TrackPoint *prp = pnode->GetData();
-            delete prp;
-
-            pnode = pnode->GetNext();
-        }
-#endif
-    if (pTrack == g_pActiveTrack) {
-      g_pActiveTrack = NULL;
-      m_pparent_app->TrackOff();
-    }
-
     delete pTrack;
 
     ::wxEndBusyCursor();
