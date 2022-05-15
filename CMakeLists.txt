@@ -1617,10 +1617,9 @@ target_link_libraries(
     ocpn::tinyxml
 )
 
-IF(NOT QT_ANDROID)
-   target_link_libraries(S57ENC PUBLIC ocpn::wxcurl
-)
-ENDIF(NOT QT_ANDROID)
+if (OCPN_USE_CURL)
+  target_link_libraries(S57ENC PUBLIC ocpn::wxcurl)
+endif ()
 
 add_subdirectory(libs/iso8211)
 target_link_libraries(S57ENC PUBLIC ocpn::iso8211)
