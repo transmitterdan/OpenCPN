@@ -31,6 +31,7 @@ jobs:
       run: |
         # Invoke-WebRequest https://download.opencpn.org/s/E2p4nLDzeqx4SdX/download -TimeoutSec 600 -OutFile wxWidgets-3.1.2.7z
         # 7z x -y wxWidgets-3.1.2.7z -o${{env.WXWIN}}
+        $ProgressPreference = 'SilentlyContinue'
         Invoke-WebRequest https://download.opencpn.org/s/oibxM3kzfzKcSc3/download -TimeoutSec 600 -OutFile OpenCPN_buildwin-4.99a.7z
         7z x -y OpenCPN_buildwin-4.99a.7z -o${{github.workspace}}\buildwin
         Get-ChildItem -Path "${{github.workspace}}\buildwin\wxWidgets" -Recurse -Force
