@@ -792,7 +792,7 @@ message(STATUS "*** Will install to ${CMAKE_INSTALL_PREFIX}  ***")
 
 set(
   HDRS
-  include/config_var.h
+  include/observable.h
   include/AboutFrame.h
   include/AboutFrameImpl.h
   include/about.h
@@ -924,7 +924,7 @@ set(
 
 set(
   SRCS
-  src/config_var.cpp
+  src/observable.cpp
   src/about.cpp
   src/AboutFrame.cpp
   src/AboutFrameImpl.cpp
