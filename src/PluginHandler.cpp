@@ -42,7 +42,11 @@
 
 #include <wx/jsonreader.h>
 #include <wx/string.h>
+//#include <wx/jsonreader.h>
+#include <wx/dir.h>
 #include <wx/file.h>
+#include <wx/string.h>
+#include <wx/window.h>
 #include <wx/uri.h>
 
 #include <archive.h>
@@ -61,7 +65,7 @@ typedef __LA_INT64_T la_int64_t;  //  "older" libarchive versions support
 #include "logger.h"
 #include "navutil.h"
 #include "gui_lib.h"
-#include "OCPNPlatform.h"
+#include "BasePlatform.h"
 #include "ocpn_utils.h"
 #include "PluginHandler.h"
 #include "plugin_cache.h"
@@ -78,12 +82,13 @@ static std::string SEP("/");
 #define F_OK 0
 #endif
 
-extern OCPNPlatform* g_Platform;
+extern BasePlatform* g_BasePlatform;
 extern PlugInManager* g_pi_manager;
 extern wxString g_winPluginDir;
 extern MyConfig* pConfig;
-extern OCPNPlatform* g_Platform;
 extern bool g_bportable;
+
+class MyFrame;
 extern MyFrame* gFrame;
 
 extern wxString g_compatOS;
@@ -137,7 +142,7 @@ static ssize_t PlugInIxByName(const std::string name, ArrayOfPlugIns* plugins) {
 }
 
 static std::string pluginsConfigDir() {
-  std::string pluginDataDir = g_Platform->GetPrivateDataDir().ToStdString();
+  std::string pluginDataDir = g_BasePlatform->GetPrivateDataDir().ToStdString();
   pluginDataDir += SEP + "plugins";
   if (!ocpn::exists(pluginDataDir)) {
     mkdir(pluginDataDir);
@@ -242,7 +247,7 @@ public:
   // host abi. Typically a host on a Ubuntu derivative which might be
   // compatible with a plugin built for the derivative's Ubuntu base.
   bool is_similar_plugin_compatible(const Plugin& plugin) const {
-    OCPN_OSDetail* os_detail = g_Platform->GetOSDetail();
+    OCPN_OSDetail* os_detail = g_BasePlatform->GetOSDetail();
     for (auto& name_like : os_detail->osd_names_like) {
       const std::string osd_abi = name_like + "-" + os_detail->osd_arch;
       if (osd_abi == plugin.abi()) {
@@ -259,7 +264,7 @@ public:
   // For example, Ubuntu PPA builds for armhf define PKG_TARGET as ubuntu-armhf
   // But run-time reports as raspbian on "Raspberry Pi OS".
   bool is_plugin_compatible_runtime(const Plugin& plugin) const {
-    OCPN_OSDetail* os_detail = g_Platform->GetOSDetail();
+    OCPN_OSDetail* os_detail = g_BasePlatform->GetOSDetail();
     const std::string host_osd_abi =
         os_detail->osd_ID + "-" + os_detail->osd_arch;
     wxLogDebug("Checking for compatible run-time, host_osd_abi: %s : %s",
@@ -329,6 +334,8 @@ std::string PluginHandler::fileListPath(std::string name) {
   std::transform(name.begin(), name.end(), name.begin(), ::tolower);
   return pluginsConfigDir() + SEP + name + ".files";
 }
+
+PluginHandler::PluginHandler() {}
 
 bool PluginHandler::isCompatible(const PluginMetadata& metadata, const char* os,
                                  const char* os_version) {
@@ -584,13 +591,13 @@ static bool linux_entry_set_install_path(struct archive_entry* entry,
       suffix = suffix.substr(16);
 
       dest =
-          g_Platform->GetPrivateDataDir().ToStdString() + "/plugins/" + suffix;
+          g_BasePlatform->GetPrivateDataDir().ToStdString() + "/plugins/" + suffix;
     }
     if (ocpn::startswith(location, "lib") &&
         ocpn::startswith(suffix, "opencpn/")) {
       suffix = suffix.substr(8);
 
-      dest = g_Platform->GetPrivateDataDir().ToStdString() + "/plugins/lib/" +
+      dest = g_BasePlatform->GetPrivateDataDir().ToStdString() + "/plugins/lib/" +
              suffix;
     }
   }
@@ -701,7 +708,7 @@ static bool entry_set_install_path(struct archive_entry* entry,
   rv = android_entry_set_install_path(entry, installPaths);
 #else
   const auto osSystemId = wxPlatformInfo::Get().GetOperatingSystemId();
-  if (g_Platform->isFlatpacked()) {
+  if (g_BasePlatform->isFlatpacked()) {
     rv = flatpak_entry_set_install_path(entry, installPaths);
   } else if (osSystemId & wxOS_UNIX_LINUX) {
     rv = linux_entry_set_install_path(entry, installPaths);
@@ -842,7 +849,7 @@ bool PluginHandler::isPluginWritable(std::string name) {
 }
 
 static std::string computeMetadataPath(void) {
-  std::string path = g_Platform->GetPrivateDataDir().ToStdString();
+  std::string path = g_BasePlatform->GetPrivateDataDir().ToStdString();
   path += SEP;
   path += "ocpn-plugins.xml";
   if (ocpn::exists(path)) {
@@ -859,7 +866,7 @@ static std::string computeMetadataPath(void) {
 
   // And if that does not work, use the empty metadata file found in the
   // distribution "data" directory
-  path = g_Platform->GetSharedDataDir();
+  path = g_BasePlatform->GetSharedDataDir();
   path += SEP;
   path += "ocpn-plugins.xml";
   if (!ocpn::exists(path)) {
@@ -975,7 +982,7 @@ const std::vector<PluginMetadata> PluginHandler::getAvailable() {
 
   auto catalogHandler = CatalogHandler::getInstance();
 
-  // std::string path = g_Platform->GetPrivateDataDir().ToStdString();
+  // std::string path = g_BasePlatform->GetPrivateDataDir().ToStdString();
   // path += SEP;
   // path += "ocpn-plugins.xml";
   std::string path = getMetadataPath();
@@ -1155,7 +1162,6 @@ bool PluginHandler::installPluginFromCache(PluginMetadata plugin) {
       wxString message = _("Please check system log for more info.");
       OCPNMessageBox(gFrame, message, _("Installation error"),
                      wxICON_ERROR | wxOK | wxCENTRE);
-
       return false;
     }
 
@@ -1164,7 +1170,6 @@ bool PluginHandler::installPluginFromCache(PluginMetadata plugin) {
     message += _(" successfully installed from cache");
     OCPNMessageBox(gFrame, message, _("Installation complete"),
                    wxICON_INFORMATION | wxOK | wxCENTRE);
-
     return true;
   }
 

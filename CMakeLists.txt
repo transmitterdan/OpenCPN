@@ -803,6 +803,7 @@ set(
   include/AIS_Target_Data.h
   include/AISTargetListDialog.h
   include/AISTargetQueryDialog.h
+  include/BasePlatform.h
   include/bbox.h
   include/canvasMenu.h
   include/catalog_handler.h
@@ -935,6 +936,7 @@ set(
   src/AIS_Target_Data.cpp
   src/AISTargetListDialog.cpp
   src/AISTargetQueryDialog.cpp
+  src/BasePlatform.cpp
   src/bbox.cpp
   src/CanvasConfig.cpp
   src/canvasMenu.cpp
@@ -1562,6 +1564,7 @@ target_link_libraries(${PACKAGE_NAME} PRIVATE ocpn::sound)
 add_subdirectory(libs/wxJSON)
 target_link_libraries(${PACKAGE_NAME} PRIVATE ocpn::wxjson)
 
+
 if (TINYXML_FOUND)
   message(STATUS "Building with system tinyxml")
   add_library(TINYXML INTERFACE)
@@ -1626,6 +1629,7 @@ target_link_libraries(S57ENC PUBLIC ocpn::iso8211)
 
 add_subdirectory(libs/gdal)
 target_link_libraries(S57ENC PUBLIC ocpn::gdal)
+
 
 if (OCPN_USE_LZMA AND LIBLZMA_FOUND)
   target_include_directories(S57ENC PRIVATE ${LIBLZMA_INCLUDE_DIR})
@@ -1706,6 +1710,7 @@ if (UNIX AND NOT APPLE)
     message(STATUS "    ELF Include: ${LIBELF_LIBRARY}")
     target_include_directories(${PACKAGE_NAME} PUBLIC "${LIBELF_INCLUDE_DIR}")
     target_link_libraries(${PACKAGE_NAME} PRIVATE "${LIBELF_LIBRARY}")
+
     set(USE_LIBELF ON)   # => config.h
   else ()
     message(
