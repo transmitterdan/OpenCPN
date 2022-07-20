@@ -1,0 +1,66 @@
+name: OpenCPN
+
+on:
+  push:
+    branches: [ runner ]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+  WXWIN: C:\OA\wxWidgets
+  wxWidgets_LIB_DIR: C:\OA\wxWidgets\lib\vc143_dll
+  wxWidgets_ROOT_DIR: C:\OA\wxWidgets
+
+jobs:
+  OpenCPN_runner:
+    runs-on: [self-hosted, Windows, X64]
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup
+      shell: powershell
+      working-directory: ${{github.workspace}}
+      run: |
+        mkdir ${{github.workspace}}/build
+        echo "C:\Program Files\7-Zip" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        echo "C:\Program Files (x86)\Poedit\GettextTools\bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        echo "C:\Program Files (x86)\NSIS" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+    - name: Get Dependencies
+      shell: powershell
+      run: |
+        # Invoke-WebRequest https://download.opencpn.org/s/E2p4nLDzeqx4SdX/download -TimeoutSec 600 -OutFile wxWidgets-3.1.2.7z
+        # 7z x -y wxWidgets-3.1.2.7z -o${{env.WXWIN}}
+        $ProgressPreference = 'SilentlyContinue'
+        Invoke-WebRequest https://download.opencpn.org/s/oibxM3kzfzKcSc3/download -TimeoutSec 600 -OutFile OpenCPN_buildwin-4.99a.7z
+        7z x -y OpenCPN_buildwin-4.99a.7z -o${{github.workspace}}\buildwin
+        Get-ChildItem -Path "${{github.workspace}}\buildwin\wxWidgets" -Recurse -Force
+        Remove-Item "${{github.workspace}}\buildwin\wxWidgets\*.*" -Force -Recurse
+        Get-ChildItem -Path "${{github.workspace}}\buildwin\wxWidgets" -Recurse -Force
+        Copy-Item "${{env.wxWidgets_LIB_DIR}}\*.dll" -Destination "${{github.workspace}}\buildwin\wxWidgets"
+        Copy-Item "${{env.wxWidgets_LIB_DIR}}\*.pdb" -Destination "${{github.workspace}}\buildwin\wxWidgets"
+        Copy-Item "${{env.wxWidgets_ROOT_DIR}}\locale\*.mo" -Destination "${{github.workspace}}\buildwin\wxWidgets\locale" -Force -Recurse
+        Get-ChildItem -Path "${{github.workspace}}\buildwin\wxWidgets" -Recurse -Force
+
+    - name: CMake Configure
+      shell: powershell
+      working-directory: ${{github.workspace}}/build
+      run: cmake -Wno-dev "-AWin32" -G"Visual Studio 17 2022" -T "v143" -DOCPN_CI_BUILD=ON -DCMAKE_SYSTEM_VERSION=8.1 -DCMAKE_CXX_FLAGS="/MP /EHsc /DWIN32" -DCMAKE_C_FLAGS="/MP" -DOCPN_ENABLE_SYSTEM_CMD_SOUND=ON -DCMAKE_EXE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " -DCMAKE_MODULE_LINKER_FLAGS=""/SUBSYSTEM:WINDOWS"  " ..
+
+    - name: Cmake Build
+      shell: powershell
+      working-directory: ${{github.workspace}}/build
+      run: cmake --build . --config ${{env.BUILD_TYPE}}
+
+    - name: Create Package
+      if: success()
+      shell: powershell
+      working-directory: ${{github.workspace}}/build
+      run: |
+        dir env:
+        cmake --build . --config ${{env.BUILD_TYPE}} --target Package
+
+    - uses: actions/upload-artifact@v2.2.4
+      with:
+        name:  OpenCPN_Runner
+        path: ${{github.workspace}}/build/*.exe

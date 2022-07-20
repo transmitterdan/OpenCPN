@@ -34,6 +34,14 @@
 #include <unordered_map>
 #include <set>
 
+#include "wx/wxprec.h"
+
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif
+
+#include <wx/jsonreader.h>
+#include <wx/string.h>
 //#include <wx/jsonreader.h>
 #include <wx/dir.h>
 #include <wx/file.h>
