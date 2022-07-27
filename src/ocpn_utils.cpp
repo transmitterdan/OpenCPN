@@ -31,8 +31,12 @@
 #ifdef __MSVC__
 #include <io.h>
 #include <stdlib.h>
+#include <direct.h>
+#include <iostream>
 #else
 #include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #endif
 
 #include "ocpn_utils.h"
@@ -73,12 +77,14 @@ bool exists(const std::string& name) {
 }
 
 void mkdir(const std::string path) {
-#if defined(_WIN32) && !defined(__MINGW32__)
-  mkdir(path.c_str());
+#ifdef __MSVC__
+  int dirStat = _mkdir(path.c_str());
+  if (dirStat)
+    std::cerr << "Cannot create directory" << path.c_str() << std::endl;
 #elif defined(__MINGW32__)
   ::mkdir(path.c_str());
 #else
-  ::mkdir(path.c_str(), 0755);
+  mkdir(path.c_str(), 0755);
 #endif
 }
 
