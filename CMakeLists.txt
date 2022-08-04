@@ -2890,6 +2890,10 @@ if (NOT QT_ANDROID)
   )
 
   target_compile_definitions(opencpn-cmd PUBLIC CLIAPP)
+  
+if (MSVC)
+  add_compile_options("-DCMAKE_CXX_FLAGS=\"-mwindows\"")
+endif (MSVC)
 
 
   if (TARGET ocpn::wxcurl)
