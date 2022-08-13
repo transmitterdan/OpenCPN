@@ -26,6 +26,12 @@
 
 #include "config.h"
 
+#include "wx/wxprec.h"
+
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif
+
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -33,12 +39,6 @@
 #include <iostream>
 #include <iomanip>
 #include <algorithm>
-
-#include "wx/wxprec.h"
-
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
 
 #include <wx/app.h>
 #include <wx/bitmap.h>
@@ -315,4 +315,4 @@ public:
   }
 };
 
-wxIMPLEMENT_APP_CONSOLE(CliApp);
+wxIMPLEMENT_APP(CliApp);
