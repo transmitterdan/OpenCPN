@@ -26,6 +26,13 @@
 
 #include "config.h"
 
+#include "wx/wxprec.h"
+
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif
+
+
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -36,12 +43,6 @@
 #include <iomanip>
 #include <iostream>
 #include <memory>
-
-#include "wx/wxprec.h"
-
-#ifndef WX_PRECOMP
-#include "wx/wx.h"
-#endif
 
 #include <wx/app.h>
 #include <wx/bitmap.h>

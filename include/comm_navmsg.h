@@ -23,6 +23,13 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
  **************************************************************************/
 
+#include "wx/wxprec.h"
+
+// includes
+#ifndef WX_PRECOMP
+    #include <wx/wx.h>
+#endif
+
 #include <memory>
 #include <sstream>
 #include <vector>
