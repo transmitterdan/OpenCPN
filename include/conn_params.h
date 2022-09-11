@@ -21,18 +21,22 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
  **************************************************************************/
 
+#ifndef _CONNECTIONPARAMS_H__
+#define _CONNECTIONPARAMS_H__
+
 #ifndef __DSPORTTYPE_H__
 #include <dsPortType.h>
 #endif
 
-#ifndef _CONNECTIONPARAMS_H__
-#define _CONNECTIONPARAMS_H__
-
 #include "wx/wxprec.h"
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include "wx/arrstr.h"
+#include "wx/dynarray.h"
+#include "wx/string.h"
 #endif  // precompiled headers
+
+#include "comm_navmsg.h"
 
 class ConnectionParams;
 class ConnectionsDialog;
@@ -113,6 +117,7 @@ public:
   wxString GetPortStr() const { return Port; }
   void SetPortStr(wxString str) { Port = str; }
   std::string GetStrippedDSPort();
+  NavAddr::Bus GetCommProtocol();
 
   bool SentencePassesFilter(const wxString& sentence, FilterDirection direction);
 
