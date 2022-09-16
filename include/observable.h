@@ -31,9 +31,18 @@
 
 #include <wx/event.h>
 
-#ifndef OBSERVABLE_EVT_H  // Could be defined from copy in ocpn_plugin.h
 #include "observable_evt.h"
+
+#ifndef DECL_EXP
+#if defined(_MSC_VER) || defined(__CYGWIN__)
+#define DECL_EXP __declspec(dllexport)
+#elif defined(__GNUC__) || defined(__clang__)
+#define DECL_EXP __attribute__((visibility("default")))
+#else
+#define DECL_EXP
 #endif
+#endif    // DECL_EXP
+
 
 /** Return address as printable string. */
 std::string ptr_key(const void* ptr);
@@ -111,7 +120,7 @@ private:
 /**
  *  Keeps listening over it's lifespan, removes itself on destruction.
  */
-class ObservedVarListener final {
+class DECL_EXP ObservedVarListener final {
 public:
   /** Default constructor, does not listen to anything. */
   ObservedVarListener() : key(""), listener(0), ev_type(wxEVT_NULL) {}
@@ -138,5 +147,12 @@ private:
   wxEvtHandler* listener;
   wxEventType ev_type;
 };
+
+/** Shorthand for accessing ObservedEvt.SharedPtr(). */
+template <typename T>
+std::shared_ptr<const T> UnpackEvtPointer(ObservedEvt ev) {
+  return std::static_pointer_cast<const T>(ev.GetSharedPtr());
+}
+
 
 #endif  // OBSERVABLE_H

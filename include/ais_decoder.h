@@ -83,7 +83,7 @@ public:
 
   ~AisDecoder(void);
 
-  AisError Decode(const wxString &str);
+  AisError DecodeN0183(const wxString &str);
   std::unordered_map<int, AisTargetData *> &GetTargetList(void) {
     return AISTargetList;
   }
@@ -146,10 +146,19 @@ private:
                     wxJSONValue &update);
   void updateItem(AisTargetData *pTargetData, bool bnewtarget,
                   wxJSONValue &item, wxString &sfixtime) const;
-
+  void CommitAISTarget( AisTargetData *pTargetData,
+                        const wxString &str, bool message_valid,
+                        bool new_target);
   void InitCommListeners(void);
   bool HandleN0183_AIS( std::shared_ptr <const Nmea0183Msg> n0183_msg );
   void HandleSignalK(std::shared_ptr<const SignalkMsg> sK_msg);
+
+  bool HandleN2K_129038( std::shared_ptr<const Nmea2000Msg> n2k_msg );
+  bool HandleN2K_129039( std::shared_ptr<const Nmea2000Msg> n2k_msg );
+  bool HandleN2K_129041( std::shared_ptr<const Nmea2000Msg> n2k_msg );
+  bool HandleN2K_129794( std::shared_ptr<const Nmea2000Msg> n2k_msg );
+  bool HandleN2K_129809( std::shared_ptr<const Nmea2000Msg> n2k_msg );
+  bool HandleN2K_129810( std::shared_ptr<const Nmea2000Msg> n2k_msg );
 
   wxString m_signalk_selfid;
   std::unordered_map<int, AisTargetData *> AISTargetList;
@@ -164,6 +173,13 @@ private:
   ObservedVarListener listener_N0183_TTM;
   ObservedVarListener listener_N0183_OSD;
   ObservedVarListener listener_SignalK;
+
+  ObservedVarListener listener_N2K_129038;
+  ObservedVarListener listener_N2K_129039;
+  ObservedVarListener listener_N2K_129041;
+  ObservedVarListener listener_N2K_129794;
+  ObservedVarListener listener_N2K_129809;
+  ObservedVarListener listener_N2K_129810;
 
   bool m_busy;
   wxTimer TimerAIS;

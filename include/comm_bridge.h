@@ -41,6 +41,7 @@ typedef struct{
   int active_priority;
   std::string active_source;
   std::string active_identifier;
+  int active_source_address;
 } PriorityContainer;
 
 typedef struct {
@@ -65,6 +66,7 @@ public:
   bool HandleN2K_129025(std::shared_ptr<const Nmea2000Msg> n2k_msg);
   bool HandleN2K_129026(std::shared_ptr<const Nmea2000Msg> n2k_msg);
   bool HandleN2K_127250(std::shared_ptr<const Nmea2000Msg> n2k_msg);
+  bool HandleN2K_129540(std::shared_ptr<const Nmea2000Msg> n2k_msg);
 
   bool HandleN0183_RMC(std::shared_ptr<const Nmea0183Msg> n0183_msg);
   bool HandleN0183_HDT(std::shared_ptr<const Nmea0183Msg> n0183_msg);
@@ -87,6 +89,7 @@ public:
   bool EvalPriority(std::shared_ptr <const NavMsg> msg,
                             PriorityContainer& active_priority,
                             std::unordered_map<std::string, int>& priority_map);
+  std::string GetPriorityKey(std::shared_ptr <const NavMsg> msg);
 
   Watchdogs m_watchdogs;
   wxTimer m_watchdog_timer;
@@ -96,6 +99,7 @@ public:
   ObservedVarListener listener_N2K_129025;
   ObservedVarListener listener_N2K_129026;
   ObservedVarListener listener_N2K_127250;
+  ObservedVarListener listener_N2K_129540;
 
   ObservedVarListener listener_N0183_RMC;
   ObservedVarListener listener_N0183_HDT;

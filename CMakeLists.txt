@@ -960,6 +960,7 @@ set(MODEL_SRC
   ${CMAKE_SOURCE_DIR}/src/comm_drv_registry.cpp
   ${CMAKE_SOURCE_DIR}/src/comm_drv_file.cpp
   ${CMAKE_SOURCE_DIR}/src/comm_util.cpp
+  ${CMAKE_SOURCE_DIR}/src/comm_plugin_api.cpp
   ${CMAKE_SOURCE_DIR}/src/conn_params.cpp
   ${CMAKE_SOURCE_DIR}/src/cutil.cpp
   ${CMAKE_SOURCE_DIR}/src/downloader.cpp
@@ -1819,7 +1820,7 @@ if (${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.14)
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test
     )
     add_dependencies(run-tests tests)
-  endif (NOT QT_ANDROID)
+  endif ()
 endif ()
 
 # If we build for windows systems, we also include the resource file containing
@@ -2812,12 +2813,12 @@ if (APPLE)
     FILES ${CMAKE_CURRENT_BINARY_DIR}/plugins/wmm_pi/libwmm_pi.dylib
     DESTINATION "bin/OpenCPN.app/Contents/Plugins"
   )
-  install(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/opencpn-cmd
-    DESTINATION "bin/OpenCPN.app/Contents/MacOS"
-    PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
-      WORLD_EXECUTE GROUP_EXECUTE OWNER_EXECUTE
-  )
+#  install(
+#    FILES ${CMAKE_CURRENT_BINARY_DIR}/opencpn-cmd
+#    DESTINATION "bin/OpenCPN.app/Contents/MacOS"
+#    PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
+#      WORLD_EXECUTE GROUP_EXECUTE OWNER_EXECUTE
+#  )
   set(
     LIBS
     "\${CMAKE_INSTALL_PREFIX}/bin/OpenCPN.app/Contents/Plugins/libdashboard_pi.dylib"
@@ -2942,6 +2943,9 @@ if (NOT QT_ANDROID AND NOT APPLE)
   )
 
   target_compile_definitions(opencpn-cmd PUBLIC CLIAPP USE_MOCK_DEFS)
+  if (MSVC)
+    target_link_libraries(opencpn-cmd PRIVATE setupapi.lib psapi.lib)
+  endif ()
 
   if (TARGET ocpn::wxcurl)
     target_link_libraries(opencpn-cmd PRIVATE ocpn::wxcurl)
@@ -2965,4 +2969,4 @@ if (NOT QT_ANDROID AND NOT APPLE)
     target_link_libraries(opencpn-cmd PRIVATE "${LIBELF_LIBRARY}")
   endif ()
   install(TARGETS opencpn-cmd RUNTIME DESTINATION ${PREFIX_BIN})
-endif (NOT QT_ANDROID)
+endif ()

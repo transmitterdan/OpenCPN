@@ -83,6 +83,9 @@ void appendOSDirSlash(wxString* pString);
 extern wxString g_winPluginDir;
 
 extern bool g_bportable;
+extern bool g_btouch;
+extern float g_selection_radius_mm;
+extern float g_selection_radius_touch_mm;
 
 extern wxLog* g_logger;
 
@@ -90,6 +93,10 @@ extern BasePlatform* g_BasePlatform;
 
 #ifdef __ANDROID__
 PlatSpec android_plat_spc;
+#endif
+
+#ifdef _MSC_VER
+extern bool m_bdisableWindowsDisplayEnum;
 #endif
 
 static bool checkIfFlatpacked() {
@@ -694,3 +701,224 @@ wxString BasePlatform::GetPluginDataPath() {
   wxLogMessage("Using plugin data path: %s", m_pluginDataPath.mb_str().data());
   return m_pluginDataPath;
 }
+
+
+#ifdef __ANDROID__
+void BasePlatform::ShowBusySpinner() { androidShowBusyIcon(); }
+#elif defined(CLIAPP)
+void BasePlatform::ShowBusySpinner() { }
+#else
+void BasePlatform::ShowBusySpinner() { ::wxBeginBusyCursor(); }
+#endif
+
+#ifdef __ANDROID__
+void BasePlatform::HideBusySpinner() { androidHideBusyIcon(); }
+#elif defined(CLIAPP)
+void BasePlatform::HideBusySpinner() { }
+#else
+void BasePlatform::HideBusySpinner() { ::wxEndBusyCursor(); }
+#endif
+
+// getDisplaySize
+
+#ifdef CLIAPP
+wxSize BasePlatform::getDisplaySize() { return wxSize(); }
+
+#elif defined(__ANDROID__)
+wxSize BasePlatform::getDisplaySize() { return getAndroidDisplayDimensions(); }
+
+#else
+wxSize BasePlatform::getDisplaySize() {
+  if (m_displaySize.x < 10)
+    m_displaySize = ::wxGetDisplaySize();  // default, for most platforms
+  return m_displaySize;
+}
+#endif
+
+// GetDisplaySizeMM
+
+#ifdef CLIAPP
+double BasePlatform::GetDisplaySizeMM() { return 1.0; }
+
+#else
+double BasePlatform::GetDisplaySizeMM() {
+
+  if (m_displaySizeMMOverride > 0) return m_displaySizeMMOverride;
+
+  if (m_displaySizeMM.x < 1) m_displaySizeMM = wxGetDisplaySizeMM();
+
+  double ret = m_displaySizeMM.GetWidth();
+
+#ifdef __WXMSW__
+  int w, h;
+
+  if (!m_bdisableWindowsDisplayEnum) {
+    if (GetWindowsMonitorSize(&w, &h) && (w > 100)) {  // sanity check
+      m_displaySizeMM == wxSize(w, h);
+      ret = w;
+    } else
+      m_bdisableWindowsDisplayEnum = true;  // disable permanently
+  }
+#endif
+
+#ifdef __WXOSX__
+  ret = GetMacMonitorSize();
+#endif
+
+#ifdef __ANDROID__
+  ret = GetAndroidDisplaySize();
+#endif
+
+  wxLogDebug("Detected display size (horizontal): %d mm", (int)ret);
+  return ret;
+}
+#endif   // CLIAPP
+
+
+#ifdef CLIAPP
+double BasePlatform::GetDisplayDPmm() { return 1.0; }
+
+#elif defined(__ANDROID__)
+double BasePlatform::GetDisplayDPmm() { return getAndroidDPmm(); }
+
+#else
+double BasePlatform::GetDisplayDPmm() {
+  double r = getDisplaySize().x;  // dots
+  return r / GetDisplaySizeMM();
+}
+#endif
+
+
+unsigned int BasePlatform::GetSelectRadiusPix() {
+  return GetDisplayDPmm() *
+         (g_btouch ? g_selection_radius_touch_mm : g_selection_radius_mm);
+}
+
+#ifdef __WXMSW__
+
+#define NAME_SIZE 128
+
+const GUID GUID_CLASS_MONITOR = {0x4d36e96e, 0xe325, 0x11ce, 0xbf, 0xc1, 0x08,
+                                 0x00,       0x2b,   0xe1,   0x03, 0x18};
+
+// Assumes hDevRegKey is valid
+bool GetMonitorSizeFromEDID(const HKEY hDevRegKey, int *WidthMm,
+                            int *HeightMm) {
+  DWORD dwType, AcutalValueNameLength = NAME_SIZE;
+  TCHAR valueName[NAME_SIZE];
+
+  BYTE EDIDdata[1024];
+  DWORD edidsize = sizeof(EDIDdata);
+
+  for (LONG i = 0, retValue = ERROR_SUCCESS; retValue != ERROR_NO_MORE_ITEMS;
+       ++i) {
+    retValue = RegEnumValue(hDevRegKey, i, &valueName[0],
+                            &AcutalValueNameLength, NULL, &dwType,
+                            EDIDdata,    // buffer
+                            &edidsize);  // buffer size
+
+    if (retValue != ERROR_SUCCESS || 0 != _tcscmp(valueName, _T("EDID")))
+      continue;
+
+    *WidthMm = ((EDIDdata[68] & 0xF0) << 4) + EDIDdata[66];
+    *HeightMm = ((EDIDdata[68] & 0x0F) << 8) + EDIDdata[67];
+
+    return true;  // valid EDID found
+  }
+
+  return false;  // EDID not found
+}
+
+bool GetSizeForDevID(wxString &TargetDevID, int *WidthMm, int *HeightMm) {
+  HDEVINFO devInfo =
+      SetupDiGetClassDevsEx(&GUID_CLASS_MONITOR,  // class GUID
+                            NULL,                 // enumerator
+                            NULL,                 // HWND
+                            DIGCF_PRESENT,        // Flags //DIGCF_ALLCLASSES|
+                            NULL,   // device info, create a new one.
+                            NULL,   // machine name, local machine
+                            NULL);  // reserved
+
+  if (NULL == devInfo) return false;
+
+  bool bRes = false;
+
+  for (ULONG i = 0; ERROR_NO_MORE_ITEMS != GetLastError(); ++i) {
+    SP_DEVINFO_DATA devInfoData;
+    memset(&devInfoData, 0, sizeof(devInfoData));
+    devInfoData.cbSize = sizeof(devInfoData);
+
+    if (SetupDiEnumDeviceInfo(devInfo, i, &devInfoData)) {
+      wchar_t Instance[80];
+      SetupDiGetDeviceInstanceId(devInfo, &devInfoData, Instance, MAX_PATH,
+                                 NULL);
+      wxString instance(Instance);
+      if (instance.Upper().Find(TargetDevID.Upper()) == wxNOT_FOUND) continue;
+
+      HKEY hDevRegKey = SetupDiOpenDevRegKey(
+          devInfo, &devInfoData, DICS_FLAG_GLOBAL, 0, DIREG_DEV, KEY_READ);
+
+      if (!hDevRegKey || (hDevRegKey == INVALID_HANDLE_VALUE)) continue;
+
+      bRes = GetMonitorSizeFromEDID(hDevRegKey, WidthMm, HeightMm);
+
+      RegCloseKey(hDevRegKey);
+    }
+  }
+  SetupDiDestroyDeviceInfoList(devInfo);
+  return bRes;
+}
+
+bool BasePlatform::GetWindowsMonitorSize(int *width, int *height) {
+  bool bFoundDevice = true;
+
+  if (m_monitorWidth < 10) {
+    int WidthMm = 0;
+    int HeightMm = 0;
+
+    DISPLAY_DEVICE dd;
+    dd.cb = sizeof(dd);
+    DWORD dev = 0;  // device index
+    int id = 1;     // monitor number, as used by Display Properties > Settings
+
+    wxString DeviceID;
+    bFoundDevice = false;
+    while (EnumDisplayDevices(0, dev, &dd, 0) && !bFoundDevice) {
+      DISPLAY_DEVICE ddMon;
+      ZeroMemory(&ddMon, sizeof(ddMon));
+      ddMon.cb = sizeof(ddMon);
+      DWORD devMon = 0;
+
+      while (EnumDisplayDevices(dd.DeviceName, devMon, &ddMon, 0) &&
+             !bFoundDevice) {
+        if (ddMon.StateFlags & DISPLAY_DEVICE_ACTIVE &&
+            !(ddMon.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER)) {
+          DeviceID = wxString(ddMon.DeviceID, wxConvUTF8);
+          DeviceID = DeviceID.Mid(8);
+          DeviceID = DeviceID.Mid(0, DeviceID.Find('\\'));
+
+          bFoundDevice = GetSizeForDevID(DeviceID, &WidthMm, &HeightMm);
+        }
+        devMon++;
+
+        ZeroMemory(&ddMon, sizeof(ddMon));
+        ddMon.cb = sizeof(ddMon);
+      }
+
+      ZeroMemory(&dd, sizeof(dd));
+      dd.cb = sizeof(dd);
+      dev++;
+    }
+    m_monitorWidth = WidthMm;
+    m_monitorHeight = HeightMm;
+  }
+
+  if (width) *width = m_monitorWidth;
+  if (height) *height = m_monitorHeight;
+
+  return bFoundDevice;
+}
+
+#endif
+
+

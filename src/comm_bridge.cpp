@@ -28,6 +28,7 @@
 #ifndef WX_PRECOMP
 #include "wx/wx.h"
 #endif  // precompiled headers
+#include "wx/tokenzr.h"
 
 #include "comm_bridge.h"
 #include "comm_appmsg_bus.h"
@@ -41,6 +42,7 @@ wxDEFINE_EVENT(EVT_N2K_129029, ObservedEvt);
 wxDEFINE_EVENT(EVT_N2K_129025, ObservedEvt);
 wxDEFINE_EVENT(EVT_N2K_129026, ObservedEvt);
 wxDEFINE_EVENT(EVT_N2K_127250, ObservedEvt);
+wxDEFINE_EVENT(EVT_N2K_129540, ObservedEvt);
 
 wxDEFINE_EVENT(EVT_N0183_RMC, ObservedEvt);
 wxDEFINE_EVENT(EVT_N0183_HDT, ObservedEvt);
@@ -67,6 +69,7 @@ extern int gps_watchdog_timeout_ticks;
 extern int sat_watchdog_timeout_ticks;
 extern wxString g_ownshipMMSI_SK;
 
+bool debug_priority = 1;
 
 void ClearNavData(NavData &d){
   d.gLat = NAN;
@@ -77,6 +80,15 @@ void ClearNavData(NavData &d){
   d.gHdm = NAN;
   d.gVar = NAN;
   d.n_satellites = -1;
+  d.SID = 0;
+}
+
+static inline double GeodesicRadToDeg(double rads) {
+  return rads * 180.0 / M_PI;
+}
+
+static inline double MS2KNOTS(double ms) {
+  return ms * 1.9438444924406;
 }
 
 // CommBridge implementation
@@ -133,10 +145,8 @@ void CommBridge::OnWatchdogTimer(wxTimerEvent& event) {
       logmsg.Printf(_T("   ***GPS Watchdog timeout at Lat:%g   Lon: %g"), gLat,
                     gLon);
       wxLogMessage(logmsg);
-      // FIXME (dave)
-      //  There is no valid fix, we need to invalidate the fix time
-      // m_fixtime = -1;
     }
+
     gSog = NAN;
     gCog = NAN;
     gRmcDate.Empty();
@@ -208,13 +218,6 @@ void CommBridge::MakeHDTFromHDM() {
   }
 }
 
-// FIXME (leamas)  Move to some header, but which?
-template <typename T>
-std::shared_ptr<const T> UnpackEvtPointer(ObservedEvt ev) {
-  return std::static_pointer_cast<const T>(ev.GetSharedPtr());
-}
-
-
 void CommBridge::InitCommListeners() {
   // Initialize the comm listeners
   auto& msgbus = NavMsgBus::GetInstance();
@@ -257,6 +260,14 @@ void CommBridge::InitCommListeners() {
     HandleN2K_127250(UnpackEvtPointer<Nmea2000Msg>(ev));
   });
 
+  // GNSS Satellites in View   PGN 129540
+  //-----------------------------
+  Nmea2000Msg n2k_msg_129540(static_cast<uint64_t>(129540));
+  listener_N2K_129540 =
+      msgbus.GetListener(EVT_N2K_129540, this, n2k_msg_129540);
+  Bind(EVT_N2K_129540, [&](ObservedEvt ev) {
+    HandleN2K_129540(UnpackEvtPointer<Nmea2000Msg>(ev));
+  });
 
 
   // NMEA0183
@@ -348,6 +359,8 @@ void CommBridge::OnDriverStateChange(){
 
   // Reset all "first-come" priority states
   InitializePriorityContainers();
+
+  g_bHDT_Rx = false;
 }
 
 
@@ -364,6 +377,8 @@ bool CommBridge::HandleN2K_129029(std::shared_ptr<const Nmea2000Msg> n2k_msg) {
   *c++ = v.at(5);
 
   NavData temp_data;
+  ClearNavData(temp_data);
+
   if (!m_decoder.DecodePGN129029(v, temp_data))
     return false;
 
@@ -375,13 +390,13 @@ bool CommBridge::HandleN2K_129029(std::shared_ptr<const Nmea2000Msg> n2k_msg) {
     }
   }
 
-  if (!N2kIsNA(temp_data.n_satellites)){
-    if (EvalPriority(n2k_msg, active_priority_satellites, priority_map_satellites)) {
-      g_SatsInView = temp_data.n_satellites;
-      g_bSatValid = true;
-      m_watchdogs.satellite_watchdog = sat_watchdog_timeout_ticks;
-    }
-  }
+   if (temp_data.n_satellites >= 0){
+     if (EvalPriority(n2k_msg, active_priority_satellites, priority_map_satellites)) {
+       g_SatsInView = temp_data.n_satellites;
+       g_bSatValid = true;
+       m_watchdogs.satellite_watchdog = sat_watchdog_timeout_ticks;
+     }
+   }
 
     // Populate a comm_appmsg with current global values
   auto msg = std::make_shared<BasicNavDataMsg>(
@@ -399,6 +414,8 @@ bool CommBridge::HandleN2K_129025(std::shared_ptr<const Nmea2000Msg> n2k_msg) {
   std::vector<unsigned char> v = n2k_msg->payload;
 
   NavData temp_data;
+  ClearNavData(temp_data);
+
   if (!m_decoder.DecodePGN129025(v, temp_data))
     return false;
 
@@ -425,22 +442,29 @@ bool CommBridge::HandleN2K_129025(std::shared_ptr<const Nmea2000Msg> n2k_msg) {
 }
 
 bool CommBridge::HandleN2K_129026(std::shared_ptr<const Nmea2000Msg> n2k_msg) {
-  //std::cout << "HandleN2K_129026\n" ;
 
   std::vector<unsigned char> v = n2k_msg->payload;
 
   NavData temp_data;
+  ClearNavData(temp_data);
+
   if (!m_decoder.DecodePGN129026(v, temp_data))
     return false;
 
   if (!N2kIsNA(temp_data.gSog) && !N2kIsNA(temp_data.gCog)){
-    if (EvalPriority(n2k_msg, active_priority_velocity, priority_map_velocity)) {
-      gSog = temp_data.gSog;
-      gCog = temp_data.gCog;
+
+    // Require COG/SOG to come from the same device as is providing position.
+    //Check the Message Source Address.
+    //If same as Source Address of highest position priority, then accept it.
+
+    unsigned char n_source = n2k_msg->payload.at(7);
+
+    if( n_source == active_priority_position.active_source_address){
+      gSog = MS2KNOTS(temp_data.gSog);
+      gCog = GeodesicRadToDeg(temp_data.gCog);
       m_watchdogs.velocity_watchdog = gps_watchdog_timeout_ticks;
     }
   }
-  //FIXME (dave) How to notify user of errors?
   else{
   }
 
@@ -460,19 +484,21 @@ bool CommBridge::HandleN2K_127250(std::shared_ptr<const Nmea2000Msg> n2k_msg) {
   std::vector<unsigned char> v = n2k_msg->payload;
 
   NavData temp_data;
+  ClearNavData(temp_data);
+
   if (!m_decoder.DecodePGN127250(v, temp_data))
     return false;
 
   if (!N2kIsNA(temp_data.gHdt)){
     if (EvalPriority(n2k_msg, active_priority_heading, priority_map_heading)) {
-      gHdt = temp_data.gHdt;
+      gHdt = GeodesicRadToDeg(temp_data.gHdt);
       m_watchdogs.heading_watchdog = gps_watchdog_timeout_ticks;
     }
   }
 
   if (!N2kIsNA(temp_data.gVar)){
     if (EvalPriority(n2k_msg, active_priority_variation, priority_map_variation)) {
-      gVar = temp_data.gVar;
+      gVar = GeodesicRadToDeg(temp_data.gVar);
       m_watchdogs.variation_watchdog = gps_watchdog_timeout_ticks;
     }
   }
@@ -488,9 +514,28 @@ bool CommBridge::HandleN2K_127250(std::shared_ptr<const Nmea2000Msg> n2k_msg) {
   return true;
 }
 
-bool CommBridge::HandleN0183_RMC(std::shared_ptr<const Nmea0183Msg> n0183_msg) {
-  //printf("HandleN0183_RMC \n");
+bool CommBridge::HandleN2K_129540(std::shared_ptr<const Nmea2000Msg> n2k_msg) {
 
+  std::vector<unsigned char> v = n2k_msg->payload;
+
+  NavData temp_data;
+  ClearNavData(temp_data);
+
+  if (!m_decoder.DecodePGN129540(v, temp_data))
+    return false;
+
+   if (temp_data.n_satellites >= 0){
+    if (EvalPriority(n2k_msg, active_priority_satellites, priority_map_satellites)) {
+      g_SatsInView = temp_data.n_satellites;
+      g_bSatValid = true;
+      m_watchdogs.satellite_watchdog = sat_watchdog_timeout_ticks;
+    }
+  }
+
+  return true;
+}
+
+bool CommBridge::HandleN0183_RMC(std::shared_ptr<const Nmea0183Msg> n0183_msg) {
   std::string str = n0183_msg->payload;
 
   NavData temp_data;
@@ -870,6 +915,12 @@ void CommBridge::InitializePriorityContainers(){
   active_priority_variation.pcclass = "variation";
   active_priority_satellites.pcclass = "satellites";
 
+  active_priority_position.active_source_address = -1;
+  active_priority_velocity.active_source_address = -1;
+  active_priority_heading.active_source_address = -1;
+  active_priority_variation.active_source_address = -1;
+  active_priority_satellites.active_source_address = -1;
+
   priority_map_position.clear();
   priority_map_velocity.clear();
   priority_map_heading.clear();
@@ -877,21 +928,13 @@ void CommBridge::InitializePriorityContainers(){
   priority_map_satellites.clear();
 }
 
-bool CommBridge::EvalPriority(std::shared_ptr <const NavMsg> msg,
-                                      PriorityContainer& active_priority,
-                                      std::unordered_map<std::string, int>& priority_map) {
-
-  printf("\n<%s>\n", active_priority.pcclass.c_str());
-  printf("Active priority: %d\n", active_priority.active_priority);
-
-  // Fetch the established priority for the message
-  int this_priority;
-
+std::string CommBridge::GetPriorityKey(std::shared_ptr <const NavMsg> msg){
   std::string source = msg->source->to_string();
   std::string listener_key = msg->key();
 
 
   std::string this_identifier;
+  std::string this_address("0");
   if(msg->bus == NavAddr::Bus::N0183){
     auto msg_0183 = std::dynamic_pointer_cast<const Nmea0183Msg>(msg);
     if (msg_0183){
@@ -903,9 +946,12 @@ bool CommBridge::EvalPriority(std::shared_ptr <const NavMsg> msg,
     auto msg_n2k = std::dynamic_pointer_cast<const Nmea2000Msg>(msg);
     if (msg_n2k){
       this_identifier = msg_n2k->name.to_string();
+      unsigned char n_source = msg_n2k->payload.at(7);
+      char ss[4];
+      sprintf(ss,"%d",n_source);
+      this_address = std::string(ss);
     }
   }
-
   else if(msg->bus == NavAddr::Bus::Signalk){
     auto msg_sk = std::dynamic_pointer_cast<const SignalkMsg>(msg);
     if (msg_sk){
@@ -913,8 +959,31 @@ bool CommBridge::EvalPriority(std::shared_ptr <const NavMsg> msg,
     }
   }
 
-  std::string this_key = listener_key + this_identifier + source;
-  printf("This Key: %s\n", this_key.c_str());
+
+  return  source + ":" + this_address + ";" + this_identifier;
+
+}
+
+bool CommBridge::EvalPriority(std::shared_ptr <const NavMsg> msg,
+                                      PriorityContainer& active_priority,
+                                      std::unordered_map<std::string, int>& priority_map) {
+
+  std::string this_key = GetPriorityKey(msg);
+  if (debug_priority) printf("This Key: %s\n", this_key.c_str());
+
+  // Pull some identifiers from the unique key
+  wxStringTokenizer tkz(this_key, _T(";"));
+  wxString wxs_this_source = tkz.GetNextToken();
+  std::string source = wxs_this_source.ToStdString();
+  wxString wxs_this_identifier = tkz.GetNextToken();
+  std::string this_identifier = wxs_this_identifier.ToStdString();
+
+  wxStringTokenizer tka(wxs_this_source, _T(":"));
+  tka.GetNextToken();
+  int source_address = atoi(tka.GetNextToken().ToStdString().c_str());
+
+  // Fetch the established priority for the message
+  int this_priority;
 
   auto it = priority_map.find(this_key);
   if (it == priority_map.end()) {
@@ -925,13 +994,14 @@ bool CommBridge::EvalPriority(std::shared_ptr <const NavMsg> msg,
   this_priority = priority_map[this_key];
 
   for (auto it = priority_map.begin(); it != priority_map.end(); it++) {
-        printf("               priority_map:  %s  %d\n", it->first.c_str(), it->second);
+        if (debug_priority) printf("               priority_map:  %s  %d\n", it->first.c_str(), it->second);
   }
 
   //Incoming message priority lower than currently active priority?
   //  If so, drop the message
   if (this_priority > active_priority.active_priority){
-    printf("      Drop low priority: %s %d %d \n", source.c_str(), this_priority, active_priority.active_priority);
+    if (debug_priority)  printf("      Drop low priority: %s %d %d \n", source.c_str(), this_priority,
+                                  active_priority.active_priority);
     return false;
   }
 
@@ -940,7 +1010,9 @@ bool CommBridge::EvalPriority(std::shared_ptr <const NavMsg> msg,
     active_priority.active_priority = this_priority;
     active_priority.active_source = source;
     active_priority.active_identifier = this_identifier;
-    printf("  Restoring high priority: %s %d\n", source.c_str(), this_priority);
+    active_priority.active_source_address = source_address;
+
+    if (debug_priority) printf("  Restoring high priority: %s %d\n", source.c_str(), this_priority);
     return true;
   }
 
@@ -950,8 +1022,8 @@ bool CommBridge::EvalPriority(std::shared_ptr <const NavMsg> msg,
 
   if (active_priority.active_source.size()){
 
-    printf("source: %s\n", source.c_str());
-    printf("active_source: %s\n", active_priority.active_source.c_str());
+    if (debug_priority) printf("source: %s\n", source.c_str());
+    if (debug_priority) printf("active_source: %s\n", active_priority.active_source.c_str());
 
     if (source.compare(active_priority.active_source) != 0){
 
@@ -964,7 +1036,7 @@ bool CommBridge::EvalPriority(std::shared_ptr <const NavMsg> msg,
       }
 
       priority_map[this_key] = lowest_priority + 1;
-      printf("          Lowering priority A: %s :%d\n", source.c_str(), priority_map[this_key]);
+      if (debug_priority) printf("          Lowering priority A: %s :%d\n", source.c_str(), priority_map[this_key]);
       return false;
     }
   }
@@ -978,8 +1050,8 @@ bool CommBridge::EvalPriority(std::shared_ptr <const NavMsg> msg,
     if (msg_0183){
       if (active_priority.active_identifier.size()){
 
-        printf("this_identifier: %s\n", this_identifier.c_str());
-        printf("active_priority.active_identifier: %s\n", active_priority.active_identifier.c_str());
+        if (debug_priority) printf("this_identifier: %s\n", this_identifier.c_str());
+        if (debug_priority) printf("active_priority.active_identifier: %s\n", active_priority.active_identifier.c_str());
 
         if (this_identifier.compare(active_priority.active_identifier) != 0){
           // if necessary, auto adjust the priority of the this message down
@@ -992,7 +1064,7 @@ bool CommBridge::EvalPriority(std::shared_ptr <const NavMsg> msg,
             }
 
             priority_map[this_key] = lowest_priority + 1;
-            printf("          Lowering priority B: %s :%d\n", source.c_str(), priority_map[this_key]);
+            if (debug_priority) printf("          Lowering priority B: %s :%d\n", source.c_str(), priority_map[this_key]);
           }
 
           return false;
@@ -1018,7 +1090,7 @@ bool CommBridge::EvalPriority(std::shared_ptr <const NavMsg> msg,
             }
 
             priority_map[this_key] = lowest_priority + 1;
-            printf("          Lowering priority: %s :%d\n", source.c_str(), priority_map[this_key]);
+            if (debug_priority) printf("          Lowering priority: %s :%d\n", source.c_str(), priority_map[this_key]);
           }
 
           return false;
@@ -1031,7 +1103,8 @@ bool CommBridge::EvalPriority(std::shared_ptr <const NavMsg> msg,
   // Update the records
   active_priority.active_source = source;
   active_priority.active_identifier = this_identifier;
-  printf("  Accepting high priority: %s %d\n", source.c_str(), this_priority);
+  active_priority.active_source_address = source_address;
+  if (debug_priority) printf("  Accepting high priority: %s %d\n", source.c_str(), this_priority);
 
   return true;
 }

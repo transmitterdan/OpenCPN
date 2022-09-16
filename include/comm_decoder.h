@@ -45,6 +45,7 @@ typedef struct{
   double gHdm;
   double gVar;
   int n_satellites;
+  int SID;
 } NavData;
 
 class CommDecoder {
@@ -71,6 +72,7 @@ public:
   bool DecodePGN129026(std::vector<unsigned char> v,  NavData& temp_data);
   bool DecodePGN129029(std::vector<unsigned char> v,  NavData& temp_data);
   bool DecodePGN127250(std::vector<unsigned char> v,  NavData& temp_data);
+  bool DecodePGN129540(std::vector<unsigned char> v,  NavData& temp_data);
 
   // SignalK
   bool DecodeSignalK(std::string s, NavData& temp_data);

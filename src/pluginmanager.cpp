@@ -103,6 +103,7 @@ typedef __LA_INT64_T la_int64_t;  //  "older" libarchive versions support
 #include "georef.h"
 #include "ocpn_pixel.h"
 #include "gshhs.h"
+#include "json_event.h"
 #include "logger.h"
 #include "multiplexer.h"
 #include "mygeom.h"
@@ -139,6 +140,9 @@ typedef __LA_INT64_T la_int64_t;  //  "older" libarchive versions support
 #include "update_mgr.h"
 #include "svg_utils.h"
 #include "ocpn_frame.h"
+#include "comm_drv_registry.h"
+#include "comm_drv_n0183_serial.h"
+#include "comm_drv_n0183_net.h"
 
 #ifdef __OCPN__ANDROID__
 #include <dlfcn.h>
@@ -1075,6 +1079,13 @@ PlugInManager::PlugInManager(MyFrame *parent) {
   m_listPanel = NULL;
   m_blacklist = blacklist_factory();
   m_blacklist_ui = std::unique_ptr<BlacklistUI>(new BlacklistUI());
+
+  wxDEFINE_EVENT(EVT_JSON_TO_ALL_PLUGINS, ObservedEvt);
+  evt_json_to_all_plugins_listener =
+      JsonEvent::getInstance().GetListener(this, EVT_JSON_TO_ALL_PLUGINS);
+  Bind(EVT_JSON_TO_ALL_PLUGINS, [&](ObservedEvt& ev) {
+    auto json = std::static_pointer_cast<const wxJSONValue>(ev.GetSharedPtr());
+    SendJSONMessageToAllPlugins(ev.GetString(), *json); });
   HandlePluginLoaderEvents();
   InitCommListeners();
 
@@ -1116,9 +1127,32 @@ void PlugInManager::HandleN0183( std::shared_ptr <const Nmea0183Msg> n0183_msg )
 
   std::string s = n0183_msg->payload;
   wxString sentence(s.c_str());
+
   if (s[0] == '$') {
-    //printf("Send to all: %s", s.c_str());
-    SendNMEASentenceToAllPlugIns(sentence);
+    const auto& drivers = CommDriverRegistry::getInstance().GetDrivers();
+    auto target_driver = FindDriver(drivers, n0183_msg->source->iface);
+
+    bool bpass_input_filter = true;
+
+    // Get the params for the driver sending this message
+    ConnectionParams params;
+    auto drv_serial =
+        std::dynamic_pointer_cast<CommDriverN0183Serial>(target_driver);
+    if (drv_serial) {
+      params = drv_serial->GetParams();
+    } else {
+      auto drv_net = std::dynamic_pointer_cast<CommDriverN0183Net>(target_driver);
+      if (drv_net) {
+        params = drv_net->GetParams();
+      }
+    }
+
+    // Check to see if the message passes the source's input filter
+    bpass_input_filter = params.SentencePassesFilter(sentence,
+                                        FILTER_INPUT);
+
+    if (bpass_input_filter)
+      SendNMEASentenceToAllPlugIns(sentence);
   }
   else if (s[0] == '!'){
     //printf("AIS to all: %s", s.c_str());

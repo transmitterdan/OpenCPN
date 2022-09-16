@@ -1536,7 +1536,6 @@ extern DECL_EXP wxString GetActiveRouteGUID(void);	// if no active route, return
 
 // API 1.18  listen-notify
 
-
 /* Listening to messages. */
 class ObservedVarListener;
 
@@ -1569,49 +1568,49 @@ private:
 
 #endif  // OBSERVABLE_EVT_H
 
-class ObservedVarListener; 
+class ObservedVarListener;
 
 struct NMEA2000Id {
   const uint64_t id;
   NMEA2000Id(int value) : id(static_cast<uint64_t>(value)) {};
 };
 
-std::unique_ptr<ObservedVarListener> GetListener(NMEA2000Id id,
-                                                 ObservedEvt ev,
-                                                 wxEvtHandler handler);
+extern DECL_EXP std::shared_ptr<ObservedVarListener> GetListener(NMEA2000Id id,
+                                                 wxEventType ev,
+                                                 wxEvtHandler* handler);
 
 struct NMEA0183Id {
   const std::string id;
   NMEA0183Id(const std::string& s) : id(s) {};
 };
 
-std::unique_ptr<ObservedVarListener> GetListener(NMEA0183Id id,
-                                                 ObservedEvt ev,
-                                                 wxEvtHandler handler);
+extern DECL_EXP std::shared_ptr<ObservedVarListener> GetListener(NMEA0183Id id,
+                                                 wxEventType ev,
+                                                 wxEvtHandler* handler);
 
 struct SignalkId {
   const std::string id;
   SignalkId(const std::string& s) : id(s) {};
 };
 
-std::unique_ptr<ObservedVarListener> GetListener(SignalkId id,
-                                                 ObservedEvt ev,
-                                                 wxEvtHandler handler);
+extern DECL_EXP std::shared_ptr<ObservedVarListener> GetListener(SignalkId id,
+                                                 wxEventType ev,
+                                                 wxEvtHandler* handler);
 
 /** Return payload in a recieved n2000 message of type id in ev. */
-std::vector<uint8_t> GetN2000Payload(NMEA2000Id id, ObservedEvt ev);
+extern DECL_EXP std::vector<uint8_t> GetN2000Payload(NMEA2000Id id, ObservedEvt ev);
 
 /** Return payload in a recieved n0183 message of type id in ev. */
-std::string GetN0183Payload(NMEA0183Id id, ObservedEvt ev);
+extern DECL_EXP std::string GetN0183Payload(NMEA0183Id id, ObservedEvt ev);
 
 struct NavDataId  {
   const int type;
   NavDataId() : type(0) {}
 };
 
-std::unique_ptr<ObservedVarListener> GetListener(NavDataId id,
-                                                 ObservedEvt ev,
-                                                 wxEvtHandler handler);
+extern DECL_EXP std::unique_ptr<ObservedVarListener> GetListener(NavDataId id,
+                                                 wxEventType ev,
+                                                 wxEvtHandler* handler);
 /** Available decoded data for plugins. */
 struct  PluginNavdata{
   double lat;
@@ -1624,7 +1623,7 @@ struct  PluginNavdata{
 };
 
 /** Return decoded data available in ev */
-PluginNavdata GetEventNavdata(ObservedEvt ev);
+extern DECL_EXP PluginNavdata GetEventNavdata(ObservedEvt ev);
 
 
 #endif  //_PLUGIN_H_

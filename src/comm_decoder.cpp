@@ -39,13 +39,6 @@ extern int gps_watchdog_timeout_ticks;
 extern wxString gRmcDate, gRmcTime;
 extern bool g_bHDT_Rx, g_bVAR_Rx;
 
-static inline double GeodesicRadToDeg(double rads) {
-  return rads * 180.0 / M_PI;
-}
-
-static inline double MS2KNOTS(double ms) {
-  return ms * 1.9438444924406;
-}
 
 bool CommDecoder::ParsePosition(const LATLONG& Position, double& lat,
                                 double& lon) {
@@ -270,8 +263,9 @@ bool CommDecoder::DecodePGN129026(std::vector<unsigned char> v,  NavData& temp_d
   double COG, SOG;
 
   if (ParseN2kPGN129026(v, SID, ref, COG, SOG)) {
-    temp_data.gCog = GeodesicRadToDeg(COG);
-    temp_data.gSog = MS2KNOTS(SOG);
+    temp_data.gCog = COG;
+    temp_data.gSog = SOG;
+    temp_data.SID = SID;
     return true;
   }
 
@@ -301,7 +295,18 @@ bool CommDecoder::DecodePGN129029(std::vector<unsigned char> v,  NavData& temp_d
                         )) {
     temp_data.gLat = Latitude;
     temp_data.gLon = Longitude;
-    temp_data.n_satellites = nSatellites;
+    temp_data.SID = SID;
+
+    // Some devices produce "0" satelites for PGN 129029, even with a vaild fix
+    //  One supposes that PGN 129540 should be used instead
+    //  Here we decide that if a fix is valid, nSatellites must be > 0 to be
+    //  reported in this PGN 129029
+    if ( (GNSSmethod == N2kGNSSm_GNSSfix) ||
+         (GNSSmethod == N2kGNSSm_DGNSS) ||
+         (GNSSmethod == N2kGNSSm_PreciseGNSS)){
+      if (nSatellites > 0)
+        temp_data.n_satellites = nSatellites;
+    }
 
     return true;
   }
@@ -316,8 +321,9 @@ bool CommDecoder::DecodePGN127250(std::vector<unsigned char> v,  NavData& temp_d
   tN2kHeadingReference ref;
 
   if (ParseN2kPGN127250(v, SID, Heading, Deviation, Variation, ref)){
-    temp_data.gHdt = GeodesicRadToDeg(Heading);
-    temp_data.gVar = GeodesicRadToDeg(Variation);
+    temp_data.gHdt = Heading;
+    temp_data.gVar = Variation;
+    temp_data.SID = SID;
     return true;
   }
 
@@ -332,6 +338,22 @@ bool CommDecoder::DecodePGN129025(std::vector<unsigned char> v,  NavData& temp_d
 
     temp_data.gLat = Latitude;
     temp_data.gLon = Longitude;
+    return true;
+  }
+
+  return false;
+}
+
+bool CommDecoder::DecodePGN129540(std::vector<unsigned char> v,  NavData& temp_data) {
+
+  unsigned char SID;
+  tN2kHeadingReference ref;
+  uint8_t NumberOfSVs;;
+  tN2kRangeResidualMode Mode;
+
+  if (ParseN2kPGN129540(v, SID, Mode, NumberOfSVs)) {
+    temp_data.n_satellites = NumberOfSVs;
+    temp_data.SID = SID;
     return true;
   }
 
