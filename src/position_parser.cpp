@@ -22,10 +22,11 @@
  **************************************************************************/
 
 #include <wx/tokenzr.h>
+#include <wx/string.h>
 #include <wx/regex.h>
 
-#include "PositionParser.h"
-#include "navutil.h"
+#include "position_parser.h"
+#include "navutil_base.h"
 
 PositionParser::PositionParser(const wxString& src) {
   parsedOk = false;

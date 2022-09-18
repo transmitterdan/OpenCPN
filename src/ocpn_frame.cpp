@@ -85,8 +85,7 @@
 #include "plugin_loader.h"
 #include "timers.h"
 #include "comm_drv_factory.h"  //FIXME(dave) this one goes away
-#include "comm_util.h"  //FIXME(leamas) perhaps also this?
-
+#include "comm_util.h"  //FIXME(leamas) perhaps also this?).
 #include "AboutFrameImpl.h"
 #include "about.h"
 #include "color_handler.h"
@@ -120,7 +119,7 @@
 #include "MarkInfo.h"
 #include "MUIBar.h"
 #include "multiplexer.h"
-#include "NavObjectCollection.h"
+#include "nav_object_database.h"
 #include "navutil.h"
 #include "navutil_base.h"
 #include "NMEALogWindow.h"
@@ -134,9 +133,10 @@
 // #include "plugin_handler.h"
 #include "pluginmanager.h"
 // #include "Quilt.h"
-// #include "Route.h"
+// #include "route.h"
 #include "routemanagerdialog.h"
 #include "routeman.h"
+#include "route_point_gui.h"
 // #include "routeprintout.h"
 #include "RoutePropDlgImpl.h"
 #include "s52plib.h"
@@ -144,7 +144,7 @@
 #include "s57chart.h"
 #include "S57QueryDialog.h"
 // #include "safe_mode.h"
-#include "Select.h"
+#include "select.h"
 // #include "SignalKEventHandler.h"
 // #include "SoundFactory.h"
 // #include "styles.h"
@@ -152,9 +152,11 @@
 #include "tcmgr.h"
 // #include "thumbwin.h"
 #include "toolbar.h"
-#include "Track.h"
+#include "routeman_gui.h"
+#include "track.h"
 #include "TrackPropDlg.h"
 // #include "usb_devices.h"
+#include "waypointman_gui.h"
 // #include "comm_drv_registry.h"
 // #include "comm_navmsg_bus.h"
 #include "N2KParser.h"
@@ -176,7 +178,7 @@
 // #endif
 //
 // #ifdef __WXMSW__
-// #include "GarminProtocolHandler.h"  // Used for port probing on Windows
+// #include "garmin_protocol_mgr.h"  // Used for port probing on Windows
 // void RedirectIOToConsole();
 // #endif
 //
@@ -1197,7 +1199,10 @@ MyFrame::MyFrame(wxFrame *frame, const wxString &title, const wxPoint &pos,
   m_ChartUpdatePeriod = 1;  // set the default (1 sec.) period
 
   //    Establish my children
-  g_pMUX = new Multiplexer();
+  struct MuxLogCallbacks log_callbacks;
+  log_callbacks.log_is_active = []() { return NMEALogWindow::Get().Active(); };
+  log_callbacks.log_message = [](const std::string& s) { NMEALogWindow::Get().Add(s); };
+  g_pMUX = new Multiplexer(log_callbacks);
 
   g_pAIS = new AisDecoder();
 
@@ -1492,8 +1497,9 @@ void MyFrame::SetAndApplyColorScheme(ColorScheme cs) {
     }
   }
 
-  if (pWayPointMan) pWayPointMan->SetColorScheme(cs);
-
+  if (pWayPointMan)
+    WayPointmanGui(*pWayPointMan).SetColorScheme(cs,
+                                                 g_Platform->GetDisplayDPmm());
   if (ChartData) ChartData->ApplyColorSchemeToCachedCharts(cs);
 
   if (g_options) {
@@ -1505,7 +1511,7 @@ void MyFrame::SetAndApplyColorScheme(ColorScheme cs) {
   }
 
   if (g_pRouteMan) {
-    g_pRouteMan->SetColorScheme(cs);
+    g_pRouteMan->SetColorScheme(cs, g_Platform->GetDisplayDPmm());
   }
 
   if (g_pMarkInfoDialog) {
@@ -1890,8 +1896,8 @@ bool MyFrame::DropMarker(bool atOwnShip) {
   pWP->m_bIsolatedMark = true;  // This is an isolated mark
   pSelect->AddSelectableRoutePoint(lat, lon, pWP);
   pConfig->AddNewWayPoint(pWP, -1);  // use auto next num
-  if (!pWP->IsVisibleSelectable(GetCanvasUnderMouse()))
-    pWP->ShowScaleWarningMessage(GetCanvasUnderMouse());
+  if (!RoutePointGui(*pWP).IsVisibleSelectable(GetCanvasUnderMouse()))
+    RoutePointGui(*pWP).ShowScaleWarningMessage(GetCanvasUnderMouse());
   if (pRouteManagerDialog && pRouteManagerDialog->IsShown())
     pRouteManagerDialog->UpdateWptListCtrl();
   //     undo->BeforeUndoableAction( Undo_CreateWaypoint, pWP, Undo_HasParent,
@@ -2144,7 +2150,7 @@ void MyFrame::OnCloseWindow(wxCloseEvent &event) {
   pConfig->UpdateNavObj();
 
   //    pConfig->m_pNavObjectChangesSet->Clear();
-  delete pConfig->m_pNavObjectChangesSet;
+  pConfig->m_pNavObjectChangesSet->reset();
 
   // Remove any leftover Routes and Waypoints from config file as they were
   // saved to navobj before
@@ -3433,13 +3439,13 @@ Track *MyFrame::TrackOff(bool do_add_point) {
     g_pActiveTrack->Stop(do_add_point);
 
     if (g_pActiveTrack->GetnPoints() < 2) {
-      g_pRouteMan->DeleteTrack(g_pActiveTrack);
+      RoutemanGui(*g_pRouteMan).DeleteTrack(g_pActiveTrack);
       return_val = NULL;
     } else {
       if (g_bTrackDaily) {
         Track *pExtendTrack = g_pActiveTrack->DoExtendDaily();
         if (pExtendTrack) {
-          g_pRouteMan->DeleteTrack(g_pActiveTrack);
+          RoutemanGui(*g_pRouteMan).DeleteTrack(g_pActiveTrack);
           return_val = pExtendTrack;
         }
       }
@@ -4630,8 +4636,7 @@ bool MyFrame::ProcessOptionsDialog(int rr, ArrayOfCDI *pNewDirArray) {
   //  S52_CHANGED is a byproduct of a change in the chart object render scale
   //  So, applies to RoutePoint icons also
   if (rr & S52_CHANGED) {
-    //  Reload Icons
-    pWayPointMan->ReloadAllIcons();
+    WayPointmanGui(*pWayPointMan).ReloadAllIcons(g_Platform->GetDisplayDPmm());
   }
 
   pConfig->UpdateSettings();
@@ -4663,7 +4668,9 @@ bool MyFrame::ProcessOptionsDialog(int rr, ArrayOfCDI *pNewDirArray) {
     }
 #endif
 
-  g_pRouteMan->SetColorScheme(global_color_scheme);  // reloads pens and brushes
+  // reload pens and brushes
+  g_pRouteMan->SetColorScheme(global_color_scheme,
+                              g_Platform->GetDisplayDPmm());
 
   //    Stuff the Filter tables
   double stuffcog = NAN;
@@ -5094,8 +5101,8 @@ void MyFrame::OnInitTimer(wxTimerEvent &event) {
       // Load the waypoints.. both of these routines are very slow to execute
       // which is why they have been to defered until here
       pWayPointMan = new WayPointman();
-      pWayPointMan->SetColorScheme(global_color_scheme);
-
+      WayPointmanGui(*pWayPointMan).SetColorScheme(global_color_scheme,
+                                                   g_Platform->GetDisplayDPmm());
       // Reload the ownship icon from UserIcons, if present
       for (unsigned int i = 0; i < g_canvasArray.GetCount(); i++) {
         ChartCanvas *cc = g_canvasArray.Item(i);
@@ -5153,7 +5160,7 @@ void MyFrame::OnInitTimer(wxTimerEvent &event) {
       RequestNewMasterToolbar();
       // A Plugin (e.g. Squiddio) may have redefined some routepoint icons...
       // Reload all icons, to be sure.
-      if (pWayPointMan) pWayPointMan->ReloadRoutepointIcons();
+      if (pWayPointMan) WayPointmanGui(*pWayPointMan).ReloadRoutepointIcons();
 
       if (g_MainToolbar) g_MainToolbar->EnableTool(ID_SETTINGS, false);
 
@@ -5463,6 +5470,7 @@ void MyFrame::HandleBasicNavMsg(std::shared_ptr<const BasicNavDataMsg> msg) {
 #endif
 
   //      Maintain the validity flags
+  m_b_new_data = true;
   bool last_bGPSValid = bGPSValid;
   bGPSValid = true;
   if (last_bGPSValid != bGPSValid) UpdateGPSCompassStatusBoxes(true);
@@ -5986,7 +5994,8 @@ void MyFrame::OnFrameTimer1(wxTimerEvent &event) {
   nBlinkerTick++;
 
   // This call sends autopilot output strings to output ports.
-  bool bactiveRouteUpdate = g_pRouteMan->UpdateProgress();
+
+  bool bactiveRouteUpdate = RoutemanGui(*g_pRouteMan).UpdateProgress();
 
   // For each canvas....
   for (unsigned int i = 0; i < g_canvasArray.GetCount(); i++) {
@@ -6016,7 +6025,7 @@ void MyFrame::OnFrameTimer1(wxTimerEvent &event) {
 
       if (!bGPSValid) cc->SetOwnShipState(SHIP_INVALID);
 
-      if (bGPSValid != m_last_bGPSValid) {
+      if ((bGPSValid != m_last_bGPSValid) || m_b_new_data) {
         if (!g_bopengl) cc->UpdateShips();
 
         bnew_view = true;  // force a full Refresh()
@@ -6133,6 +6142,9 @@ void MyFrame::OnFrameTimer1(wxTimerEvent &event) {
   }
 
 #endif
+
+  // Reset pending next AppMsgBus notification
+  m_b_new_data = false;
 
   if (g_unit_test_2)
     FrameTimer1.Start(TIMER_GFRAME_1 * 3, wxTIMER_CONTINUOUS);
@@ -8621,7 +8633,6 @@ void ApplyLocale() {
   }
 
   if (console) console->SetColorScheme(global_color_scheme);
-
   if (g_pais_query_dialog_active) {
     g_pais_query_dialog_active->Destroy();
     g_pais_query_dialog_active = NULL;

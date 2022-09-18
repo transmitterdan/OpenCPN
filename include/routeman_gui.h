@@ -1,9 +1,11 @@
-/******************************************************************************
+/***************************************************************************
  *
  * Project:  OpenCPN
+ * Purpose:  Routeman drawing stuff
+ * Author:   David Register, Alec Leamas
  *
  ***************************************************************************
- *   Copyright (C) 2013 by David S. Register                               *
+ *   Copyright (C) 2022 by David Register, Alec Leamas                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -19,23 +21,26 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
- ***************************************************************************
- */
+ **************************************************************************/
 
-#ifndef __HYPERLINK_H__
-#define __HYPERLINK_H__
+#ifndef _ROUTEMAN_GUI_H
+#define _ROUTEMAN_GUI_H
 
-#include <wx/string.h>
-#include <wx/list.h>
+#include "routeman.h"
 
-class Hyperlink  // toh, 2009.02.14
-{
+class RoutemanGui {
 public:
-  wxString DescrText;
-  wxString Link;
-  wxString LType;
+  RoutemanGui(Routeman& routeman) : m_routeman(routeman) {}
+
+  void DeleteAllTracks();
+  void DeleteTrack(Track *pTrack);
+  bool UpdateProgress(); 
+
+private:
+  void DoAdvance(void);
+
+  Routeman& m_routeman;
 };
 
-WX_DECLARE_LIST(Hyperlink, HyperlinkList);  // establish class as list member
 
-#endif
+#endif   // _ROUTEMAN_GUI_H

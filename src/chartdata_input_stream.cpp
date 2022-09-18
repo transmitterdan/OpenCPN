@@ -29,14 +29,15 @@
 #include "wx/wxprec.h"
 
 #ifndef WX_PRECOMP
-#include "wx/wx.h"
+#include <wx/wx.h>
 #endif  // precompiled headers
 
-#include "wx/filename.h"
-#include "wx/wfstream.h"
+#include <wx/filename.h>
+#include <wx/log.h>
+#include <wx/wfstream.h>
 
 #include "config.h"
-#include "ChartDataInputStream.h"
+#include "chartdata_input_stream.h"
 
 #ifdef OCPN_USE_LZMA
 

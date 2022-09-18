@@ -35,11 +35,11 @@
 #include <memory>
 #include <ostream>
 #include <regex>
+#include <set>
+#include <sstream>
 #include <stdexcept>
 #include <streambuf>
-#include <sstream>
 #include <unordered_map>
-#include <set>
 
 //#include <wx/jsonreader.h>
 #include <wx/dir.h>
@@ -52,23 +52,21 @@
 #include <archive_entry.h>
 typedef __LA_INT64_T la_int64_t;  //  "older" libarchive versions support
 
-//#include <expat.h>
-
 #if defined(__MINGW32__) && defined(Yield)
 #undef Yield  // from win.h, conflicts with mingw headers
 #endif
 
-#include "config.h"
-#include "catalog_parser.h"
+#include "base_platform.h"
 #include "catalog_handler.h"
+#include "catalog_parser.h"
+#include "config.h"
 #include "downloader.h"
+#include "gui_lib.h"
 #include "logger.h"
 #include "navutil.h"
-#include "gui_lib.h"
-#include "base_platform.h"
 #include "ocpn_utils.h"
-#include "plugin_handler.h"
 #include "plugin_cache.h"
+#include "plugin_handler.h"
 #include "plugin_loader.h"
 #include "plugin_paths.h"
 

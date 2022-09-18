@@ -1,9 +1,12 @@
+
 /***************************************************************************
  *
  * Project:  OpenCPN
+ * Purpose:  Route drawing stuff
+ * Author:   David Register, Alec Leamas
  *
  ***************************************************************************
- *   Copyright (C) 2010 by David S. Register                               *
+ *   Copyright (C) 2022 by David Register, Alec Leamas                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -21,30 +24,42 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
  **************************************************************************/
 
-#ifndef __positionparser_h__
-#define __positionparser_h__
+#ifndef _ROUTE_GUI_H
+#define _ROUTE_GUI_H
 
-#include <wx/string.h>
+#include <wx/gdicmn.h>
+#include <wx/dc.h>
 
-class PositionParser {
+#include "bbox.h"
+#include "chcanv.h"
+#include "ocpndc.h"
+#include "route.h"
+#include "viewport.h"
+
+class SendToGpsDlg;
+
+class RouteGui {
 public:
-  PositionParser(const wxString& src);
-  const wxString& GetSeparator() const { return separator; }
-  const wxString& GetLatitudeString() const { return latitudeString; }
-  const wxString& GetLongitudeString() const { return longitudeString; }
-  double GetLatitude() const { return latitude; }
-  double GetLongitude() const { return longitude; }
-  bool FindSeparator(const wxString& src);
-  bool IsOk() const { return parsedOk; }
+  RouteGui(Route& route) : m_route(route) {}
+  virtual void Draw(ocpnDC &dc, ChartCanvas *canvas, const LLBBox &box);
+  void DrawPointWhich(ocpnDC &dc, ChartCanvas *canvas, int iPoint,
+                      wxPoint *rpn);
+  void DrawSegment(ocpnDC &dc, ChartCanvas *canvas, wxPoint *rp1, wxPoint *rp2,
+                   ViewPort &vp, bool bdraw_arrow);
+
+  void DrawGLLines(ViewPort &vp, ocpnDC *dc, ChartCanvas *canvas);
+  void DrawGL(ViewPort &vp, ChartCanvas *canvas);
+  void DrawGLRouteLines(ViewPort &vp, ChartCanvas *canvas);
+  void CalculateDCRect(wxDC &dc_route, ChartCanvas *canvas, wxRect *prect);
+  void RenderSegment(ocpnDC &dc, int xa, int ya, int xb, int yb, ViewPort &vp,
+                     bool bdraw_arrow, int hilite_width = 0);
+  void RenderSegmentArrowsGL(ocpnDC &dc, int xa, int ya, int xb, int yb,
+                             ViewPort &vp);
+  int SendToGPS(const wxString &com_name, bool bsend_waypoints,
+                SendToGpsDlg *dialog);
 
 private:
-  wxString source;
-  wxString separator;
-  wxString latitudeString;
-  wxString longitudeString;
-  double latitude;
-  double longitude;
-  bool parsedOk;
+  Route& m_route;
 };
 
-#endif
+#endif   // _ROUTE_GUI_H

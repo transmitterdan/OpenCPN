@@ -807,7 +807,7 @@ set(
   include/catalog_mgr.h
   include/catalog_parser.h
   include/cat_settings.h
-  include/ChartDataInputStream.h
+  include/chartdata_input_stream.h
   include/chartdb.h
   include/chartdbs.h
   include/chartimg.h
@@ -846,13 +846,14 @@ set(
   include/FlexHash.h
   include/FontDesc.h
   include/FontMgr.h
-  include/GarminProtocolHandler.h
+  include/garmin_wrapper.h
+  include/garmin_protocol_mgr.h
   include/geodesic.h
   include/georef.h
   include/GoToPositionDialog.h
   include/gui_lib.h
   include/gshhs.h
-  include/Hyperlink.h
+  include/hyperlink.h
   include/idents.h
   include/IDX_entry.h
   include/iENCToolbar.h
@@ -865,7 +866,7 @@ set(
   include/MarkInfo.h
   include/mbtiles.h
   include/multiplexer.h
-  include/NavObjectCollection.h
+  include/nav_object_database.h
   include/navutil.h
   include/navutil_base.h
   include/NMEALogWindow.h
@@ -893,14 +894,17 @@ set(
   include/plugin_loader.h
   include/plugin_paths.h
   include/pluginmanager.h
-  include/PositionParser.h
+  include/position_parser.h
   include/printtable.h
   include/Quilt.h
   include/RolloverWin.h
-  include/Route.h
+  include/route.h
+  include/route_gui.h
   include/routemanagerdialog.h
   include/routeman.h
-  include/RoutePoint.h
+  include/routeman_gui.h
+  include/route_point.h
+  include/route_point_gui.h
   include/routeprintout.h
   include/RoutePropDlg.h
   include/RoutePropDlgImpl.h
@@ -910,7 +914,7 @@ set(
   include/S57QueryDialog.h
   include/S57Sector.h
   include/safe_mode.h
-  include/Select.h
+  include/select.h
   include/select_item.h
   include/semantic_vers.h
   include/SendToGpsDlg.h
@@ -927,7 +931,8 @@ set(
   include/tide_time.h
   include/timers.h
   include/toolbar.h
-  include/Track.h
+  include/track.h
+  include/track_gui.h
   include/trackprintout.h
   include/TrackPropDlg.h
   include/TTYScroll.h
@@ -935,6 +940,7 @@ set(
   include/undo.h
   include/update_mgr.h
   include/usb_devices.h
+  include/waypointman_gui.h
   include/vector2D.h
   include/viewport.h
   include/WindowDestroyListener.h
@@ -950,6 +956,7 @@ set(MODEL_SRC
   ${CMAKE_SOURCE_DIR}/src/bbox.cpp
   ${CMAKE_SOURCE_DIR}/src/catalog_handler.cpp
   ${CMAKE_SOURCE_DIR}/src/catalog_parser.cpp
+  ${CMAKE_SOURCE_DIR}/src/chartdata_input_stream.cpp
   ${CMAKE_SOURCE_DIR}/src/comm_ais.cpp
   ${CMAKE_SOURCE_DIR}/src/comm_navmsg.cpp
   ${CMAKE_SOURCE_DIR}/src/comm_navmsg_bus.cpp
@@ -957,27 +964,49 @@ set(MODEL_SRC
   ${CMAKE_SOURCE_DIR}/src/comm_appmsg_bus.cpp
   ${CMAKE_SOURCE_DIR}/src/comm_bridge.cpp
   ${CMAKE_SOURCE_DIR}/src/comm_decoder.cpp
-  ${CMAKE_SOURCE_DIR}/src/comm_drv_registry.cpp
   ${CMAKE_SOURCE_DIR}/src/comm_drv_file.cpp
+  ${CMAKE_SOURCE_DIR}/src/comm_drv_factory.cpp
+  ${CMAKE_SOURCE_DIR}/src/comm_drv_n0183.cpp
+  ${CMAKE_SOURCE_DIR}/src/comm_drv_n0183_net.cpp
+  ${CMAKE_SOURCE_DIR}/src/comm_drv_n0183_serial.cpp
+  ${CMAKE_SOURCE_DIR}/src/comm_drv_n2k.cpp
+  ${CMAKE_SOURCE_DIR}/src/comm_drv_n2k_serial.cpp
+  ${CMAKE_SOURCE_DIR}/src/comm_drv_registry.cpp
+  ${CMAKE_SOURCE_DIR}/src/comm_drv_signalk.cpp
+  ${CMAKE_SOURCE_DIR}/src/comm_drv_signalk_net.cpp
+  ${CMAKE_SOURCE_DIR}/src/comm_navmsg.cpp
+  ${CMAKE_SOURCE_DIR}/src/comm_n0183_output.cpp
   ${CMAKE_SOURCE_DIR}/src/comm_util.cpp
   ${CMAKE_SOURCE_DIR}/src/comm_plugin_api.cpp
   ${CMAKE_SOURCE_DIR}/src/conn_params.cpp
   ${CMAKE_SOURCE_DIR}/src/cutil.cpp
   ${CMAKE_SOURCE_DIR}/src/downloader.cpp
+  ${CMAKE_SOURCE_DIR}/src/garmin_protocol_mgr.cpp
+  ${CMAKE_SOURCE_DIR}/src/geodesic.cpp
   ${CMAKE_SOURCE_DIR}/src/georef.cpp
+  ${CMAKE_SOURCE_DIR}/src/hyperlink.cpp
   ${CMAKE_SOURCE_DIR}/src/logger.cpp
+  ${CMAKE_SOURCE_DIR}/src/nav_object_database.cpp
   ${CMAKE_SOURCE_DIR}/src/navutil_base.cpp
   ${CMAKE_SOURCE_DIR}/src/observable.cpp
   ${CMAKE_SOURCE_DIR}/src/observable_confvar.cpp
   ${CMAKE_SOURCE_DIR}/src/ocpn_plugin.cpp
   ${CMAKE_SOURCE_DIR}/src/ocpn_utils.cpp
+  ${CMAKE_SOURCE_DIR}/src/plugin_blacklist.cpp
   ${CMAKE_SOURCE_DIR}/src/plugin_cache.cpp
   ${CMAKE_SOURCE_DIR}/src/plugin_handler.cpp
   ${CMAKE_SOURCE_DIR}/src/plugin_loader.cpp
   ${CMAKE_SOURCE_DIR}/src/plugin_paths.cpp
+  ${CMAKE_SOURCE_DIR}/src/position_parser.cpp
   ${CMAKE_SOURCE_DIR}/src/pugixml.cpp
+  ${CMAKE_SOURCE_DIR}/src/route.cpp
+  ${CMAKE_SOURCE_DIR}/src/route_point.cpp
+  ${CMAKE_SOURCE_DIR}/src/routeman.cpp
+  ${CMAKE_SOURCE_DIR}/src/select.cpp
   ${CMAKE_SOURCE_DIR}/src/select_item.cpp
   ${CMAKE_SOURCE_DIR}/src/semantic_vers.cpp
+  ${CMAKE_SOURCE_DIR}/src/ser_ports.cpp
+  ${CMAKE_SOURCE_DIR}/src/track.cpp
 )
 
 set(
@@ -990,30 +1019,17 @@ set(
   src/AISTargetListDialog.cpp
   src/AISTargetQueryDialog.cpp
   src/ais_info_gui.cpp
-  src/base_platform.cpp
   src/CanvasConfig.cpp
   src/canvasMenu.cpp
   src/CanvasOptions.cpp
   src/catalog_mgr.cpp
   src/cat_settings.cpp
-  src/ChartDataInputStream.cpp
   src/chartdb.cpp
   src/chartdbs.cpp
   src/chartimg.cpp
   src/chcanv.cpp
   src/ChInfoWin.cpp
   src/color_handler.cpp
-  src/comm_drv_factory.cpp
-  src/comm_drv_n0183.cpp
-  src/comm_drv_n0183_net.cpp
-  src/comm_drv_n0183_serial.cpp
-  src/comm_drv_n2k.cpp
-  src/comm_drv_n2k_serial.cpp
-  src/comm_drv_registry.cpp
-  src/comm_drv_signalk.cpp
-  src/comm_drv_signalk_net.cpp
-  src/comm_n0183_output.cpp
-  src/comm_navmsg.cpp
   src/compass.cpp
   src/concanv.cpp
   src/ConfigMgr.cpp
@@ -1025,13 +1041,9 @@ set(
   src/FlexHash.cpp
   src/FontDesc.cpp
   src/FontMgr.cpp
-  src/GarminProtocolHandler.cpp
-  src/garmin_wrapper.h
-  src/geodesic.cpp
   src/GoToPositionDialog.cpp
   src/gshhs.cpp
   src/gui_lib.cpp
-  src/Hyperlink.cpp
   src/IDX_entry.cpp
   src/iENCToolbar.cpp
   src/kml.cpp
@@ -1042,7 +1054,6 @@ set(
   src/mbtiles.cpp
   src/MUIBar.cpp
   src/multiplexer.cpp
-  src/NavObjectCollection.cpp
   src/navutil.cpp
   src/NMEALogWindow.cpp
   src/ocpCursor.cpp
@@ -1058,25 +1069,21 @@ set(
   src/OCPNRegion.cpp
   src/options.cpp
   src/piano.cpp
-  src/plugin_blacklist.cpp
   src/pluginmanager.cpp
   src/plugin_paths.cpp
-  src/PositionParser.cpp
   src/printtable.cpp
   src/Quilt.cpp
   src/RolloverWin.cpp
-  src/Route.cpp
   src/routemanagerdialog.cpp
-  src/routeman.cpp
-  src/RoutePoint.cpp
+  src/routeman_gui.cpp
+  src/route_gui.cpp
+  src/route_point_gui.cpp
   src/routeprintout.cpp
   src/RoutePropDlg.cpp
   src/RoutePropDlgImpl.cpp
   src/S57QueryDialog.cpp
   src/safe_mode.cpp
-  src/Select.cpp
   src/SendToGpsDlg.cpp
-  src/ser_ports.cpp
   src/Station_Data.cpp
   src/styles.cpp
   src/svg_utils.cpp
@@ -1088,30 +1095,30 @@ set(
   src/TCWin.cpp
   src/thumbwin.cpp
   src/toolbar.cpp
-  src/Track.cpp
+  src/track_gui.cpp
   src/trackprintout.cpp
   src/TrackPropDlg.cpp
   src/TTYScroll.cpp
   src/TTYWindow.cpp
   src/undo.cpp
   src/update_mgr.cpp
+  src/waypointman_gui.cpp
   src/viewport.cpp
 )
 
-set(SRCS ${SRCS} ${MODEL_SRC})
 
-if (LINUX AND NOT QT_ANDROID)
-  set( HDRS ${HDRS}  include/comm_drv_n2k_socketcan.h )
-  set( SRCS ${SRCS}  src/comm_drv_n2k_socketcan.cpp )
+if (LINUX)
+  list(APPEND HDRS include/comm_drv_n2k_socketcan.h )
+  list(APPEND MODEL_SRC ${CMAKE_SOURCE_DIR}/src/comm_drv_n2k_socketcan.cpp)
 endif ()
 
 if (OCPN_USE_GARMINHOST)
   message(STATUS "GarminHost is enabled.")
   set(USE_GARMINHOST 1) # -> config.h
-  set(SRCS ${SRCS} src/garmin_wrapper.cpp)
+  list(APPEND MODEL_SRC ${CMAKE_SOURCE_DIR}/src/garmin_wrapper.cpp)
 endif ()
 
-if (LINUX AND NOT QT_ANDROID)
+if (LINUX)
   list(APPEND SRCS src/linux_devices.cpp src/udev_rule_mgr.cpp)
   list(APPEND HDRS include/linux_devices.h include/udev_rule_mgr.h)
 endif ()
@@ -1139,6 +1146,8 @@ SET(SRC_TINYXML
   src/tinyxmlparser.cpp
   include/tinyxml.h
 )
+
+set(SRCS ${SRCS} ${MODEL_SRC})
 
 if (APPLE)
   add_executable(${PACKAGE_NAME} MACOSX_BUNDLE ${HDRS} ${SRCS})
@@ -2964,9 +2973,24 @@ if (NOT QT_ANDROID AND NOT APPLE)
   target_link_libraries(opencpn-cmd PRIVATE ocpn::libarchive)
   target_link_libraries(opencpn-cmd PRIVATE ocpn::wxjson)
   target_link_libraries(opencpn-cmd PRIVATE ocpn::N2KParser)
+  target_link_libraries(opencpn-cmd PRIVATE ocpn::serial)
+  target_link_libraries(opencpn-cmd PRIVATE ocpn::easywsclient)
+  target_link_libraries(opencpn-cmd PRIVATE ocpn::garminhost)
+  target_link_libraries(opencpn-cmd PRIVATE ocpn::tinyxml)
   if (LIBELF_INCLUDE_DIR AND LIBELF_LIBRARY)
     target_include_directories(opencpn-cmd PUBLIC "${LIBELF_INCLUDE_DIR}")
     target_link_libraries(opencpn-cmd PRIVATE "${LIBELF_LIBRARY}")
   endif ()
+  if (HAVE_LIBUDEV)
+    target_link_libraries(opencpn-cmd PRIVATE ocpn::libudev)
+  endif ()
+  if (LIBLZMA_FOUND)
+    if (TARGET LibLZMA::LibLZMA)
+      target_link_libraries(opencpn-cmd PRIVATE LibLZMA::LibLZMA)
+    else ()
+      target_link_libraries(opencpn-cmd PRIVATE ${LIBLZMA_LIBRARIES})
+    endif ()
+  endif ()
+
   install(TARGETS opencpn-cmd RUNTIME DESTINATION ${PREFIX_BIN})
 endif ()

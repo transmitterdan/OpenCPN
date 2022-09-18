@@ -22,11 +22,10 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
  **************************************************************************/
-#ifdef USE_MOCK_DEFS
-#include "mock_defs.h"
-
-#elif ! defined(_MULTIPLEXER_H__)
+#ifndef _MULTIPLEXER_H__
 #define _MULTIPLEXER_H__
+
+#include <functional>
 
 #include "wx/wxprec.h"
 
@@ -34,14 +33,22 @@
 #include "wx/wx.h"
 #endif  // precompiled headers
 
-//#include "pluginmanager.h"  // for PlugInManager
 #include "observable_navmsg.h"
 #include "comm_navmsg.h"
+
+struct MuxLogCallbacks {
+  std::function<bool()> log_is_active;
+  std::function<void(const std::string&)> log_message;
+  MuxLogCallbacks() 
+    : log_is_active([]() { return false; }),
+      log_message([](const std::string& s) { }) { }
+
+};
 
 
 class Multiplexer : public wxEvtHandler {
 public:
-  Multiplexer();
+  Multiplexer(MuxLogCallbacks log_callbacks);
   ~Multiplexer();
 
   void LogOutputMessage(const wxString &msg, wxString stream_name,
@@ -55,6 +62,8 @@ private:
   ObservedVarListener m_listener_N0183_all;
 
   void HandleN0183(std::shared_ptr<const Nmea0183Msg> n0183_msg);
+
+  MuxLogCallbacks m_log_callbacks;
 
 };
 #endif  // _MULTIPLEXER_H__

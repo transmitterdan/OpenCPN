@@ -70,10 +70,10 @@
 #include "RoutePropDlgImpl.h"
 #include "MUIBar.h"
 #include "toolbar.h"
-#include "NavObjectCollection.h"
+#include "nav_object_database.h"
 #include "toolbar.h"
 #include "iENCToolbar.h"
-#include "Select.h"
+#include "select.h"
 #include "routeman.h"
 #include "CanvasOptions.h"
 //#include "SerialDataStream.h"
@@ -4731,7 +4731,7 @@ int doAndroidPersistState() {
   pConfig->UpdateSettings();
   pConfig->UpdateNavObj();
 
-  delete pConfig->m_pNavObjectChangesSet;
+  pConfig->m_pNavObjectChangesSet->reset();
 
   // Remove any leftover Routes and Waypoints from config file as they were
   // saved to navobj before

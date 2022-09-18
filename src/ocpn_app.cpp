@@ -105,14 +105,14 @@
 #include "logger.h"
 #include "MarkInfo.h"
 #include "multiplexer.h"
-#include "NavObjectCollection.h"
+#include "nav_object_database.h"
 #include "navutil.h"
 #include "navutil_base.h"
 #include "OCPN_AUIManager.h"
 #include "OCPNPlatform.h"
 #include "options.h"
 #include "plugin_handler.h"
-#include "Route.h"
+#include "route.h"
 #include "routemanagerdialog.h"
 #include "routeman.h"
 #include "RoutePropDlgImpl.h"
@@ -120,12 +120,12 @@
 #include "s57chart.h"
 #include "S57QueryDialog.h"
 #include "safe_mode.h"
-#include "Select.h"
+#include "select.h"
 #include "SoundFactory.h"
 #include "styles.h"
 #include "tcmgr.h"
 #include "thumbwin.h"
-#include "Track.h"
+#include "track.h"
 #include "TrackPropDlg.h"
 #include "AISTargetListDialog.h"
 #include "comm_n0183_output.h"
@@ -150,7 +150,7 @@
 #endif
 
 #ifdef __WXMSW__
-#include "GarminProtocolHandler.h"  // Used for port probing on Windows
+#include "garmin_protocol_mgr.h"  // Used for port probing on Windows
 void RedirectIOToConsole();
 #endif
 
@@ -1277,7 +1277,32 @@ bool MyApp::OnInit() {
   pMessageOnceArray = new wxArrayString;
 
   //      Init the Route Manager
-  g_pRouteMan = new Routeman(this);
+
+  struct RoutePropDlgCtx ctx;
+  ctx.SetRouteAndUpdate = [&](Route* r) {
+    if (pRoutePropDialog && (pRoutePropDialog->IsShown())) {
+      pRoutePropDialog->SetRouteAndUpdate(r, true);
+    }
+  };
+  ctx.SetEnroutePoint = [&](Route* r, RoutePoint* rt) {
+    if (pRoutePropDialog && pRoutePropDialog->IsShown()) {
+      if (pRoutePropDialog->GetRoute() == r) {
+        pRoutePropDialog->SetEnroutePoint(rt);
+      }
+    }
+  };
+  ctx.Hide = [&](Route* r) {
+    if (pRoutePropDialog && (pRoutePropDialog->IsShown()) &&
+        (r == pRoutePropDialog->GetRoute())) {
+      pRoutePropDialog->Hide();
+    }
+  };
+  auto RouteMgrDlgUpdateListCtrl = [&]() {
+    if (pRouteManagerDialog && pRouteManagerDialog->IsShown())
+      pRouteManagerDialog->UpdateRouteListCtrl();
+  };
+
+  g_pRouteMan = new Routeman(ctx, RouteMgrDlgUpdateListCtrl);
 
   //      Init the Selectable Route Items List
   pSelect = new Select();

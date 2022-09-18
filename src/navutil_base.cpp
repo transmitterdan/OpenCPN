@@ -28,9 +28,11 @@
 /**************************************************************************/
 
 
+#include <wx/datetime.h>
 #include <wx/math.h>
 #include <wx/string.h>
 #include <wx/translation.h>
+#include <wx/utils.h>
 
 #include "navutil_base.h"
 
@@ -488,6 +490,175 @@ const wxChar *ParseGPXDateTime(wxDateTime &dt, const wxChar *datetime) {
   } else
     // Invalid ISO 8601 date/time
     return NULL;
+}
+
+wxString formatTimeDelta(wxTimeSpan span) {
+  wxString timeStr;
+  int days = span.GetDays();
+  span -= wxTimeSpan::Days(days);
+  int hours = span.GetHours();
+  span -= wxTimeSpan::Hours(hours);
+  double minutes = (double)span.GetSeconds().ToLong() / 60.0;
+  span -= wxTimeSpan::Minutes(span.GetMinutes());
+  int seconds = (double)span.GetSeconds().ToLong();
+
+  timeStr =
+      (days ? wxString::Format(_("%dd "), days) : _T("")) +
+      (hours || days
+           ? wxString::Format(_("%2dH %2dM"), hours, (int)round(minutes))
+           : wxString::Format(_("%2dM %2dS"), (int)floor(minutes), seconds));
+
+  return timeStr;
+}
+
+wxString formatTimeDelta(wxDateTime startTime, wxDateTime endTime) {
+  wxString timeStr;
+  if (startTime.IsValid() && endTime.IsValid()) {
+    wxTimeSpan span = endTime - startTime;
+    return formatTimeDelta(span);
+  } else {
+    return _("N/A");
+  }
+}
+
+wxString formatTimeDelta(wxLongLong secs) {
+  wxString timeStr;
+
+  wxTimeSpan span(0, 0, secs);
+  return formatTimeDelta(span);
+}
+
+// RFC4122 version 4 compliant random UUIDs generator.
+wxString GpxDocument::GetUUID(void) {
+  wxString str;
+  struct {
+    int time_low;
+    int time_mid;
+    int time_hi_and_version;
+    int clock_seq_hi_and_rsv;
+    int clock_seq_low;
+    int node_hi;
+    int node_low;
+  } uuid;
+
+  uuid.time_low = GetRandomNumber(
+      0, 2147483647);  // FIXME: the max should be set to something like
+                       // MAXINT32, but it doesn't compile un gcc...
+  uuid.time_mid = GetRandomNumber(0, 65535);
+  uuid.time_hi_and_version = GetRandomNumber(0, 65535);
+  uuid.clock_seq_hi_and_rsv = GetRandomNumber(0, 255);
+  uuid.clock_seq_low = GetRandomNumber(0, 255);
+  uuid.node_hi = GetRandomNumber(0, 65535);
+  uuid.node_low = GetRandomNumber(0, 2147483647);
+
+  /* Set the two most significant bits (bits 6 and 7) of the
+   * clock_seq_hi_and_rsv to zero and one, respectively. */
+  uuid.clock_seq_hi_and_rsv = (uuid.clock_seq_hi_and_rsv & 0x3F) | 0x80;
+
+  /* Set the four most significant bits (bits 12 through 15) of the
+   * time_hi_and_version field to 4 */
+  uuid.time_hi_and_version = (uuid.time_hi_and_version & 0x0fff) | 0x4000;
+
+  str.Printf(_T("%08x-%04x-%04x-%02x%02x-%04x%08x"), uuid.time_low,
+             uuid.time_mid, uuid.time_hi_and_version, uuid.clock_seq_hi_and_rsv,
+             uuid.clock_seq_low, uuid.node_hi, uuid.node_low);
+
+  return str;
+}
+
+int GpxDocument::GetRandomNumber(int range_min, int range_max) {
+  long u = (long)wxRound(
+      ((double)rand() / ((double)(RAND_MAX) + 1) * (range_max - range_min)) +
+      range_min);
+  return (int)u;
+}
+
+/****************************************************************************/
+// Modified from the code posted by Andy Ross at
+//     http://www.mail-archive.com/flightgear-devel@flightgear.org/msg06702.html
+// Basically, it looks for a list of decimal numbers embedded in the
+// string and uses the first three as degree, minutes and seconds.  The
+// presence of a "S" or "W character indicates that the result is in a
+// hemisphere where the final answer must be negated.  Non-number
+// characters are treated as whitespace separating numbers.
+//
+// So there are lots of bogus strings you can feed it to get a bogus
+// answer, but that's not surprising.  It does, however, correctly parse
+// all the well-formed strings I can thing of to feed it.  I've tried all
+// the following:
+//
+// 37°54.204' N
+// N37 54 12
+// 37°54'12"
+// 37.9034
+// 122°18.621' W
+// 122w 18 37
+// -122.31035
+/****************************************************************************/
+double fromDMM(wxString sdms) {
+  wchar_t buf[64];
+  char narrowbuf[64];
+  int i, len, top = 0;
+  double stk[32], sign = 1;
+
+  // First round of string modifications to accomodate some known strange
+  // formats
+  wxString replhelper;
+  replhelper = wxString::FromUTF8("´·");  // UKHO PDFs
+  sdms.Replace(replhelper, _T("."));
+  replhelper =
+      wxString::FromUTF8("\"·");  // Don't know if used, but to make sure
+  sdms.Replace(replhelper, _T("."));
+  replhelper = wxString::FromUTF8("·");
+  sdms.Replace(replhelper, _T("."));
+
+  replhelper =
+      wxString::FromUTF8("s. š.");  // Another example: cs.wikipedia.org
+                                    // (someone was too active translating...)
+  sdms.Replace(replhelper, _T("N"));
+  replhelper = wxString::FromUTF8("j. š.");
+  sdms.Replace(replhelper, _T("S"));
+  sdms.Replace(_T("v. d."), _T("E"));
+  sdms.Replace(_T("z. d."), _T("W"));
+
+  // If the string contains hemisphere specified by a letter, then '-' is for
+  // sure a separator...
+  sdms.UpperCase();
+  if (sdms.Contains(_T("N")) || sdms.Contains(_T("S")) ||
+      sdms.Contains(_T("E")) || sdms.Contains(_T("W")))
+    sdms.Replace(_T("-"), _T(" "));
+
+  wcsncpy(buf, sdms.wc_str(wxConvUTF8), 63);
+  buf[63] = 0;
+  len = wxMin(wcslen(buf), sizeof(narrowbuf) - 1);
+  ;
+
+  for (i = 0; i < len; i++) {
+    wchar_t c = buf[i];
+    if ((c >= '0' && c <= '9') || c == '-' || c == '.' || c == '+') {
+      narrowbuf[i] = c;
+      continue; /* Digit characters are cool as is */
+    }
+    if (c == ',') {
+      narrowbuf[i] = '.'; /* convert to decimal dot */
+      continue;
+    }
+    if ((c | 32) == 'w' || (c | 32) == 's')
+      sign = -1;      /* These mean "negate" (note case insensitivity) */
+    narrowbuf[i] = 0; /* Replace everything else with nuls */
+  }
+
+  /* Build a stack of doubles */
+  stk[0] = stk[1] = stk[2] = 0;
+  for (i = 0; i < len; i++) {
+    while (i < len && narrowbuf[i] == 0) i++;
+    if (i != len) {
+      stk[top++] = atof(narrowbuf + i);
+      i += strlen(narrowbuf + i);
+    }
+  }
+
+  return sign * (stk[0] + (stk[1] + stk[2] / 60) / 60);
 }
 
 

@@ -71,16 +71,16 @@
 #include "geodesic.h"
 #include "multiplexer.h"
 #include "ais.h"
-#include "Route.h"
-#include "Select.h"
+#include "route.h"
+#include "select.h"
 #include "FontMgr.h"
 #include "OCPN_Sound.h"
 #include "Layer.h"
-#include "NavObjectCollection.h"
+#include "nav_object_database.h"
 #include "NMEALogWindow.h"
 #include "ais_decoder.h"
 #include "OCPNPlatform.h"
-#include "Track.h"
+#include "track.h"
 #include "chartdb.h"
 #include "CanvasConfig.h"
 #include "ocpn_frame.h"
@@ -516,7 +516,6 @@ MyConfig::MyConfig(const wxString &LocalFileName)
   m_pNavObjectInputSet = NULL;
   m_pNavObjectChangesSet = NULL;
 
-  m_bSkipChangeSetUpdate = false;
 }
 
 void MyConfig::CreateRotatingNavObjBackup() {
@@ -1834,56 +1833,45 @@ bool MyConfig::LoadChartDirArray(ArrayOfCDI &ChartDirArray) {
   return true;
 }
 
-void MyConfig::AddNewRoute(Route *pr) {
-  //    if( pr->m_bIsInLayer )
-  //        return true;
-  if (!m_bSkipChangeSetUpdate) m_pNavObjectChangesSet->AddRoute(pr, "add");
+void MyConfig::AddNewRoute(Route *r) { 
+  m_pNavObjectChangesSet->AddNewRoute(r);
 }
 
-void MyConfig::UpdateRoute(Route *pr) {
-  //    if( pr->m_bIsInLayer ) return true;
-  if (!m_bSkipChangeSetUpdate) m_pNavObjectChangesSet->AddRoute(pr, "update");
+void MyConfig::UpdateRoute(Route *r) {
+  m_pNavObjectChangesSet->UpdateRoute(r);
 }
 
 void MyConfig::DeleteConfigRoute(Route *pr) {
-  //    if( pr->m_bIsInLayer )
-  //        return true;
-  if (!m_bSkipChangeSetUpdate) m_pNavObjectChangesSet->AddRoute(pr, "delete");
+  m_pNavObjectChangesSet->DeleteConfigRoute(pr);
 }
 
 void MyConfig::AddNewTrack(Track *pt) {
-  if (!pt->m_bIsInLayer && !m_bSkipChangeSetUpdate)
-    m_pNavObjectChangesSet->AddTrack(pt, "add");
+    m_pNavObjectChangesSet->AddNewTrack(pt);
 }
 
 void MyConfig::UpdateTrack(Track *pt) {
-  if (pt->m_bIsInLayer && !m_bSkipChangeSetUpdate)
-    m_pNavObjectChangesSet->AddTrack(pt, "update");
+    m_pNavObjectChangesSet->UpdateTrack(pt);
 }
 
 void MyConfig::DeleteConfigTrack(Track *pt) {
-  if (!pt->m_bIsInLayer && !m_bSkipChangeSetUpdate)
-    m_pNavObjectChangesSet->AddTrack(pt, "delete");
+    m_pNavObjectChangesSet->DeleteConfigTrack(pt);
 }
 
 void MyConfig::AddNewWayPoint(RoutePoint *pWP, int crm) {
-  if (!pWP->m_bIsInLayer && pWP->m_bIsolatedMark && !m_bSkipChangeSetUpdate)
-    m_pNavObjectChangesSet->AddWP(pWP, "add");
+    m_pNavObjectChangesSet->AddNewWayPoint(pWP);
 }
 
 void MyConfig::UpdateWayPoint(RoutePoint *pWP) {
-  if (!pWP->m_bIsInLayer && !m_bSkipChangeSetUpdate)
-    m_pNavObjectChangesSet->AddWP(pWP, "update");
+    m_pNavObjectChangesSet->UpdateWayPoint(pWP);
 }
 
 void MyConfig::DeleteWayPoint(RoutePoint *pWP) {
-  if (!pWP->m_bIsInLayer && !m_bSkipChangeSetUpdate)
-    m_pNavObjectChangesSet->AddWP(pWP, "delete");
+    m_pNavObjectChangesSet->DeleteWayPoint(pWP);
 }
 
-void MyConfig::AddNewTrackPoint(TrackPoint *pWP, const wxString &parent_GUID) {
-  if (!m_bSkipChangeSetUpdate)
-    m_pNavObjectChangesSet->AddTrackPoint(pWP, "add", parent_GUID);
+void MyConfig::AddNewTrackPoint(TrackPoint *pWP,
+                                const wxString &parent_GUID) {
+    m_pNavObjectChangesSet->AddNewTrackPoint(pWP, parent_GUID);
 }
 
 bool MyConfig::UpdateChartDirs(ArrayOfCDI &dir_array) {
@@ -2812,8 +2800,8 @@ void MyConfig::UpdateNavObj(bool bRecreate) {
   }
 
   if (bRecreate) {
-    delete m_pNavObjectChangesSet;
-    m_pNavObjectChangesSet = new NavObjectChanges(m_sNavObjSetChangesFile);
+    m_pNavObjectChangesSet->reset();
+    m_pNavObjectChangesSet->load_file(m_sNavObjSetChangesFile.fn_str());
   }
 }
 
@@ -3206,101 +3194,6 @@ void SwitchInlandEcdisMode(bool Switch) {
 //          Static GPX Support Routines
 //
 //-------------------------------------------------------------------------
-RoutePoint *WaypointExists(const wxString &name, double lat, double lon) {
-  RoutePoint *pret = NULL;
-  //    if( g_bIsNewLayer ) return NULL;
-  wxRoutePointListNode *node = pWayPointMan->GetWaypointList()->GetFirst();
-  while (node) {
-    RoutePoint *pr = node->GetData();
-
-    //        if( pr->m_bIsInLayer ) return NULL;
-
-    if (name == pr->GetName()) {
-      if (fabs(lat - pr->m_lat) < 1.e-6 && fabs(lon - pr->m_lon) < 1.e-6) {
-        pret = pr;
-        break;
-      }
-    }
-    node = node->GetNext();
-  }
-
-  return pret;
-}
-
-RoutePoint *WaypointExists(const wxString &guid) {
-  wxRoutePointListNode *node = pWayPointMan->GetWaypointList()->GetFirst();
-  while (node) {
-    RoutePoint *pr = node->GetData();
-
-    //        if( pr->m_bIsInLayer ) return NULL;
-
-    if (guid == pr->m_GUID) {
-      return pr;
-    }
-    node = node->GetNext();
-  }
-
-  return NULL;
-}
-
-bool WptIsInRouteList(RoutePoint *pr) {
-  bool IsInList = false;
-
-  wxRouteListNode *node1 = pRouteList->GetFirst();
-  while (node1) {
-    Route *pRoute = node1->GetData();
-    RoutePointList *pRoutePointList = pRoute->pRoutePointList;
-
-    wxRoutePointListNode *node2 = pRoutePointList->GetFirst();
-    RoutePoint *prp;
-
-    while (node2) {
-      prp = node2->GetData();
-
-      if (pr->IsSame(prp)) {
-        IsInList = true;
-        break;
-      }
-
-      node2 = node2->GetNext();
-    }
-    node1 = node1->GetNext();
-  }
-  return IsInList;
-}
-
-Route *RouteExists(const wxString &guid) {
-  wxRouteListNode *route_node = pRouteList->GetFirst();
-
-  while (route_node) {
-    Route *proute = route_node->GetData();
-
-    if (guid == proute->m_GUID) return proute;
-
-    route_node = route_node->GetNext();
-  }
-  return NULL;
-}
-
-Route *RouteExists(Route *pTentRoute) {
-  wxRouteListNode *route_node = pRouteList->GetFirst();
-  while (route_node) {
-    Route *proute = route_node->GetData();
-
-    if (proute->IsEqualTo(pTentRoute)) return proute;
-
-    route_node = route_node->GetNext();  // next route
-  }
-  return NULL;
-}
-
-Track *TrackExists(const wxString &guid) {
-  for (Track* ptrack : g_TrackList) {
-    if (guid == ptrack->m_GUID) return ptrack;
-  }
-  return NULL;
-}
-
 // This function formats the input date/time into a valid GPX ISO 8601
 // time string specified in the UTC time zone.
 
@@ -3439,130 +3332,6 @@ wxString getUsrTempUnit(int unit) {
   return ret;
 }
 
-wxString formatTimeDelta(wxTimeSpan span) {
-  wxString timeStr;
-  int days = span.GetDays();
-  span -= wxTimeSpan::Days(days);
-  int hours = span.GetHours();
-  span -= wxTimeSpan::Hours(hours);
-  double minutes = (double)span.GetSeconds().ToLong() / 60.0;
-  span -= wxTimeSpan::Minutes(span.GetMinutes());
-  int seconds = (double)span.GetSeconds().ToLong();
-
-  timeStr =
-      (days ? wxString::Format(_("%dd "), days) : _T("")) +
-      (hours || days
-           ? wxString::Format(_("%2dH %2dM"), hours, (int)round(minutes))
-           : wxString::Format(_("%2dM %2dS"), (int)floor(minutes), seconds));
-
-  return timeStr;
-}
-
-wxString formatTimeDelta(wxDateTime startTime, wxDateTime endTime) {
-  wxString timeStr;
-  if (startTime.IsValid() && endTime.IsValid()) {
-    wxTimeSpan span = endTime - startTime;
-    return formatTimeDelta(span);
-  } else {
-    return _("N/A");
-  }
-}
-
-wxString formatTimeDelta(wxLongLong secs) {
-  wxString timeStr;
-
-  wxTimeSpan span(0, 0, secs);
-  return formatTimeDelta(span);
-}
-
-/****************************************************************************/
-// Modified from the code posted by Andy Ross at
-//     http://www.mail-archive.com/flightgear-devel@flightgear.org/msg06702.html
-// Basically, it looks for a list of decimal numbers embedded in the
-// string and uses the first three as degree, minutes and seconds.  The
-// presence of a "S" or "W character indicates that the result is in a
-// hemisphere where the final answer must be negated.  Non-number
-// characters are treated as whitespace separating numbers.
-//
-// So there are lots of bogus strings you can feed it to get a bogus
-// answer, but that's not surprising.  It does, however, correctly parse
-// all the well-formed strings I can thing of to feed it.  I've tried all
-// the following:
-//
-// 37°54.204' N
-// N37 54 12
-// 37°54'12"
-// 37.9034
-// 122°18.621' W
-// 122w 18 37
-// -122.31035
-/****************************************************************************/
-double fromDMM(wxString sdms) {
-  wchar_t buf[64];
-  char narrowbuf[64];
-  int i, len, top = 0;
-  double stk[32], sign = 1;
-
-  // First round of string modifications to accomodate some known strange
-  // formats
-  wxString replhelper;
-  replhelper = wxString::FromUTF8("´·");  // UKHO PDFs
-  sdms.Replace(replhelper, _T("."));
-  replhelper =
-      wxString::FromUTF8("\"·");  // Don't know if used, but to make sure
-  sdms.Replace(replhelper, _T("."));
-  replhelper = wxString::FromUTF8("·");
-  sdms.Replace(replhelper, _T("."));
-
-  replhelper =
-      wxString::FromUTF8("s. š.");  // Another example: cs.wikipedia.org
-                                    // (someone was too active translating...)
-  sdms.Replace(replhelper, _T("N"));
-  replhelper = wxString::FromUTF8("j. š.");
-  sdms.Replace(replhelper, _T("S"));
-  sdms.Replace(_T("v. d."), _T("E"));
-  sdms.Replace(_T("z. d."), _T("W"));
-
-  // If the string contains hemisphere specified by a letter, then '-' is for
-  // sure a separator...
-  sdms.UpperCase();
-  if (sdms.Contains(_T("N")) || sdms.Contains(_T("S")) ||
-      sdms.Contains(_T("E")) || sdms.Contains(_T("W")))
-    sdms.Replace(_T("-"), _T(" "));
-
-  wcsncpy(buf, sdms.wc_str(wxConvUTF8), 63);
-  buf[63] = 0;
-  len = wxMin(wcslen(buf), sizeof(narrowbuf) - 1);
-  ;
-
-  for (i = 0; i < len; i++) {
-    wchar_t c = buf[i];
-    if ((c >= '0' && c <= '9') || c == '-' || c == '.' || c == '+') {
-      narrowbuf[i] = c;
-      continue; /* Digit characters are cool as is */
-    }
-    if (c == ',') {
-      narrowbuf[i] = '.'; /* convert to decimal dot */
-      continue;
-    }
-    if ((c | 32) == 'w' || (c | 32) == 's')
-      sign = -1;      /* These mean "negate" (note case insensitivity) */
-    narrowbuf[i] = 0; /* Replace everything else with nuls */
-  }
-
-  /* Build a stack of doubles */
-  stk[0] = stk[1] = stk[2] = 0;
-  for (i = 0; i < len; i++) {
-    while (i < len && narrowbuf[i] == 0) i++;
-    if (i != len) {
-      stk[top++] = atof(narrowbuf + i);
-      i += strlen(narrowbuf + i);
-    }
-  }
-
-  return sign * (stk[0] + (stk[1] + stk[2] / 60) / 60);
-}
-
 wxString formatAngle(double angle) {
   wxString out;
   if (g_bShowMag && g_bShowTrue) {
@@ -3672,51 +3441,6 @@ void AlphaBlending(ocpnDC &dc, int x, int y, int size_x, int size_y,
 #endif
 #endif
   }
-}
-
-// RFC4122 version 4 compliant random UUIDs generator.
-wxString GpxDocument::GetUUID(void) {
-  wxString str;
-  struct {
-    int time_low;
-    int time_mid;
-    int time_hi_and_version;
-    int clock_seq_hi_and_rsv;
-    int clock_seq_low;
-    int node_hi;
-    int node_low;
-  } uuid;
-
-  uuid.time_low = GetRandomNumber(
-      0, 2147483647);  // FIXME: the max should be set to something like
-                       // MAXINT32, but it doesn't compile un gcc...
-  uuid.time_mid = GetRandomNumber(0, 65535);
-  uuid.time_hi_and_version = GetRandomNumber(0, 65535);
-  uuid.clock_seq_hi_and_rsv = GetRandomNumber(0, 255);
-  uuid.clock_seq_low = GetRandomNumber(0, 255);
-  uuid.node_hi = GetRandomNumber(0, 65535);
-  uuid.node_low = GetRandomNumber(0, 2147483647);
-
-  /* Set the two most significant bits (bits 6 and 7) of the
-   * clock_seq_hi_and_rsv to zero and one, respectively. */
-  uuid.clock_seq_hi_and_rsv = (uuid.clock_seq_hi_and_rsv & 0x3F) | 0x80;
-
-  /* Set the four most significant bits (bits 12 through 15) of the
-   * time_hi_and_version field to 4 */
-  uuid.time_hi_and_version = (uuid.time_hi_and_version & 0x0fff) | 0x4000;
-
-  str.Printf(_T("%08x-%04x-%04x-%02x%02x-%04x%08x"), uuid.time_low,
-             uuid.time_mid, uuid.time_hi_and_version, uuid.clock_seq_hi_and_rsv,
-             uuid.clock_seq_low, uuid.node_hi, uuid.node_low);
-
-  return str;
-}
-
-int GpxDocument::GetRandomNumber(int range_min, int range_max) {
-  long u = (long)wxRound(
-      ((double)rand() / ((double)(RAND_MAX) + 1) * (range_max - range_min)) +
-      range_min);
-  return (int)u;
 }
 
 void GpxDocument::SeedRandom() {

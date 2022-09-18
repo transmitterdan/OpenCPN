@@ -24,16 +24,17 @@
 #ifndef _CONNECTIONPARAMS_H__
 #define _CONNECTIONPARAMS_H__
 
+#include <wx/wxprec.h>
+
 #ifndef __DSPORTTYPE_H__
 #include <dsPortType.h>
 #endif
 
-#include "wx/wxprec.h"
 
 #ifndef WX_PRECOMP
-#include "wx/arrstr.h"
-#include "wx/dynarray.h"
-#include "wx/string.h"
+#include <wx/arrstr.h>
+#include <wx/dynarray.h>
+#include <wx/string.h>
 #endif  // precompiled headers
 
 #include "comm_navmsg.h"
@@ -64,7 +65,8 @@ typedef enum { FILTER_INPUT = 0, FILTER_OUTPUT = 1 } FilterDirection;
 
 typedef enum {
   PROTO_NMEA0183 = 0,
-  PROTO_NMEA2000 = 1
+  PROTO_NMEA2000 = 1,
+  PROTO_SIGNALK = 2
 } DataProtocol;
 
 #define CONN_ENABLE_ID 47621

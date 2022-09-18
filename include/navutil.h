@@ -55,9 +55,6 @@ extern double fromUsrSpeed(double usr_speed, int unit = -1);
 extern double toUsrTemp(double cel_temp, int unit = -1);
 extern double fromUsrTemp(double usr_temp, int unit = -1);
 extern wxString getUsrTempUnit(int unit = -1);
-extern wxString formatTimeDelta(wxTimeSpan span);
-extern wxString formatTimeDelta(wxDateTime startTime, wxDateTime endTime);
-extern wxString formatTimeDelta(wxLongLong secs);
 extern wxString formatAngle(double angle);
 
 extern void AlphaBlending(ocpnDC &dc, int x, int y, int size_x, int size_y,
@@ -70,7 +67,6 @@ void DimeControl(wxWindow *ctrl, wxColour col, wxColour col1,
                  wxColour back_color, wxColour text_color, wxColour uitext,
                  wxColour udkrd, wxColour gridline);
 
-extern double fromDMM(wxString sdms);
 
 class Route;
 class NavObjectCollection;
@@ -187,19 +183,9 @@ public:
 
   NavObjectChanges *m_pNavObjectChangesSet;
   NavObjectCollection1 *m_pNavObjectInputSet;
-  bool m_bSkipChangeSetUpdate;
 };
 
 void SwitchInlandEcdisMode(bool Switch);
 
-
-class GpxDocument {
-public:
-  static wxString GetUUID(void);
-  static void SeedRandom();
-
-private:
-  static int GetRandomNumber(int min, int max);
-};
 
 #endif
