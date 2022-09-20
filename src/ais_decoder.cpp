@@ -453,7 +453,11 @@ bool AisDecoder::HandleN2K_129038( std::shared_ptr<const Nmea2000Msg> n2k_msg ){
       pTargetData = it->second;    // find current entry
     }
 
+    wxDateTime now = wxDateTime::Now();
+    now.MakeUTC();
+
     //Populate the target_data
+    pTargetData->MMSI = mmsi;
     pTargetData->MID = MessageID;
     pTargetData->MMSI = mmsi;
     pTargetData->Class = AIS_CLASS_A;
@@ -481,6 +485,7 @@ bool AisDecoder::HandleN2K_129038( std::shared_ptr<const Nmea2000Msg> n2k_msg ){
     pTargetData->b_active = true;
     pTargetData->b_lost = false;
     pTargetData->b_positionOnceValid = true;
+    pTargetData->PositionReportTicks = now.GetTicks();
 
     CommitAISTarget(pTargetData, "", true, bnewtarget);
 
@@ -541,7 +546,11 @@ bool AisDecoder::HandleN2K_129039( std::shared_ptr<const Nmea2000Msg> n2k_msg ){
       pTargetData = it->second;    // find current entry
     }
 
+    wxDateTime now = wxDateTime::Now();
+    now.MakeUTC();
+
     //Populate the target_data
+    pTargetData->MMSI = mmsi;
     pTargetData->MID = MessageID;
     pTargetData->MMSI = mmsi;
     pTargetData->Class = AIS_CLASS_B;
@@ -557,6 +566,7 @@ bool AisDecoder::HandleN2K_129039( std::shared_ptr<const Nmea2000Msg> n2k_msg ){
     pTargetData->b_positionOnceValid = true;
     pTargetData->b_active = true;
     pTargetData->b_lost = false;
+    pTargetData->PositionReportTicks = now.GetTicks();
 
     CommitAISTarget(pTargetData, "", true, bnewtarget);
 
@@ -573,8 +583,92 @@ bool AisDecoder::HandleN2K_129039( std::shared_ptr<const Nmea2000Msg> n2k_msg ){
 bool AisDecoder::HandleN2K_129041( std::shared_ptr<const Nmea2000Msg> n2k_msg ){
   std::vector<unsigned char> v = n2k_msg->payload;
 
-  touch_state.notify();
-  return true;
+  tN2kAISAtoNReportData data;
+
+#if 0
+  struct tN2kAISAtoNReportData {
+  uint8_t MessageID;
+  tN2kAISRepeat Repeat;
+  uint32_t UserID;
+  double Longitude;
+  double Latitude;
+  bool Accuracy;
+  bool RAIM;
+  uint8_t Seconds;
+  double Length;
+  double Beam;
+  double PositionReferenceStarboard ;
+  double PositionReferenceTrueNorth;
+  tN2kAISAtoNType AtoNType;
+  bool OffPositionIndicator;
+  bool VirtualAtoNFlag;
+  bool AssignedModeFlag;
+  tN2kGNSStype GNSSType;
+  uint8_t AtoNStatus;
+  tN2kAISTransceiverInformation AISTransceiverInformation;
+  char AtoNName[34 + 1];
+#endif
+
+  if (ParseN2kPGN129041(v, data)){
+    // Is this target already in the global target list?
+    //  Search the current AISTargetList for an MMSI match
+    int mmsi = data.UserID;
+    long mmsi_long = mmsi;
+    AisTargetData *pTargetData = 0;
+    bool bnewtarget = false;
+
+    auto it = AISTargetList.find(mmsi);
+    if (it == AISTargetList.end())  // not found
+    {
+      pTargetData = new AisTargetData;
+      bnewtarget = true;
+      m_n_targets++;
+    } else {
+      pTargetData = it->second;    // find current entry
+    }
+
+    //Populate the target_data
+    pTargetData->MMSI = mmsi;
+
+    wxDateTime now = wxDateTime::Now();
+    now.MakeUTC();
+
+    int offpos = data.OffPositionIndicator;  // off position flag
+    int virt = data.VirtualAtoNFlag;    // virtual flag
+
+    if (virt)
+      pTargetData->NavStatus = ATON_VIRTUAL;
+    else
+      pTargetData->NavStatus = ATON_REAL;
+
+    pTargetData->m_utc_sec = data.Seconds;
+
+    if (pTargetData->m_utc_sec <= 59 ){
+        pTargetData->NavStatus += 1;
+        if (offpos) pTargetData->NavStatus += 1;
+    }
+
+    data.AtoNName[34] = 0;
+    strncpy(pTargetData->ShipName, data.AtoNName, 34);
+    pTargetData->b_nameValid = true;
+
+    pTargetData->Class = AIS_ATON;
+
+    pTargetData->Lon = data.Longitude;
+    pTargetData->Lat = data.Latitude;
+    pTargetData->b_positionDoubtful = false;
+    pTargetData->b_positionOnceValid = true;  // Got the position at least once
+    pTargetData->PositionReportTicks = now.GetTicks();
+
+    //FIXME (dave) Populate more fiddly static data
+
+    CommitAISTarget(pTargetData, "", true, bnewtarget);
+
+    touch_state.notify();
+    return true;
+  }
+  else
+    return false;
 }
 
 //AIS static data class A
@@ -626,6 +720,8 @@ bool AisDecoder::HandleN2K_129794( std::shared_ptr<const Nmea2000Msg> n2k_msg ){
     }
 
     //Populate the target_data
+    pTargetData->MMSI = mmsi;
+    Name[20] = 0;
     strncpy(pTargetData->ShipName, Name, 20);
     pTargetData->b_nameValid = true;
 
@@ -646,7 +742,7 @@ bool AisDecoder::HandleN2K_129809( std::shared_ptr<const Nmea2000Msg> n2k_msg ){
   uint8_t MessageID;
   tN2kAISRepeat Repeat;
   uint32_t UserID;
-  char Name[20];
+  char Name[21];
 
   if (ParseN2kPGN129809(v, MessageID, Repeat, UserID, Name))
   {
@@ -668,6 +764,8 @@ bool AisDecoder::HandleN2K_129809( std::shared_ptr<const Nmea2000Msg> n2k_msg ){
     }
 
     //Populate the target_data
+    pTargetData->MMSI = mmsi;
+    Name[20] = 0;
     strncpy(pTargetData->ShipName, Name, 20);
     pTargetData->b_nameValid = true;
 
@@ -721,6 +819,7 @@ bool AisDecoder::HandleN2K_129810( std::shared_ptr<const Nmea2000Msg> n2k_msg ){
     }
 
     //Populate the target_data
+    pTargetData->MMSI = mmsi;
 
       //FIXME (dave) Populate more fiddly static data
 
