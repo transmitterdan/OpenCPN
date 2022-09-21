@@ -18,9 +18,9 @@ export PATH=/opt/local/bin:$PATH
 sudo mkdir -p ${HOME}/project/opt_local_cache
 sudo ln -s ${HOME}/project/opt_local_cache /opt/local
 
-curl -k -o /tmp/opt_macports.tar.xz  \
-    https://download.opencpn.org/s/FpPXeWqEif8cLCT/download
-sudo tar -C / -xJf /tmp/opt_macports.tar.xz
+# curl -k -o /tmp/opt_macports.tar.xz  \
+#     https://download.opencpn.org/s/FpPXeWqEif8cLCT/download
+# sudo tar -C / -xJf /tmp/opt_macports.tar.xz
 
 #ls ${HOME}/project/opt_local_cache || echo "OK"
 #ls ${HOME}/project/opt_local_cache/bin || echo "OK"
@@ -44,17 +44,17 @@ port info zstd || {
     sudo make install
     cd ..
 
-    #sudo port -d selfupdate
+    sudo port -d selfupdate
 }
 
-sudo port rev-upgrade
+#sudo port rev-upgrade
 
     # add our local ports to the sources.conf
-sudo cp buildosx/macports/sources.conf /opt/local/etc/macports
+#sudo cp buildosx/macports/sources.conf /opt/local/etc/macports
 
 # rebuild the port index
 pushd buildosx/macports/ports
-  portindex
+#  portindex
 popd
 
 # Remove any leftover libcurl coming from earlier cached macports build
@@ -72,17 +72,22 @@ popd
 # install the local port libraries
 #  n.b.  ORDER IS IMPORTANT
 
-sudo port -q install OCPN_openssl
-sudo port -q install OCPN_libpixman
+#try non-local ports
+#sudo port -q install OCPN_openssl
+#sudo port -q install OCPN_libpixman
 
-sudo port -fq install OCPN_cairo
+#sudo port -fq install OCPN_cairo
 
-sudo port -q install zstd
+#sudo port -q install zstd
 
 #sudo port -fN deactivate libarchive
-sudo port -q install OCPN_libarchive
+#sudo port -q install OCPN_libarchive
 
-sudo port -q -f install OCPN_libpng
+#sudo port -q -f install OCPN_libpng
+
+sudo port -q install libarchive
+sudo port -q install freetype
+sudo port -q install cairo
 
 # Return latest installed brew version of given package
 pkg_version() { brew list --versions $2 $1 | tail -1 | awk '{print $2}'; }
