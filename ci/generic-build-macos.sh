@@ -15,8 +15,8 @@ export macosx_deployment_target=10.10
 export PATH=/opt/local/bin:$PATH
 
 # allow caching of macports state in $HOME    "/Users/distiller/project/opt_local_cache"
-#sudo mkdir -p ${HOME}/project/opt_local_cache
-#sudo ln -s ${HOME}/project/opt_local_cache /opt/local
+sudo mkdir -p ${HOME}/project/opt_local_cache
+sudo ln -s ${HOME}/project/opt_local_cache /opt/local
 
 curl -k -o /tmp/opt_macports.tar.xz  \
     https://download.opencpn.org/s/FpPXeWqEif8cLCT/download
@@ -47,6 +47,8 @@ port info zstd || {
     #sudo port -d selfupdate
 }
 
+sudo port rev-upgrade
+
     # add our local ports to the sources.conf
 sudo cp buildosx/macports/sources.conf /opt/local/etc/macports
 
@@ -56,9 +58,9 @@ pushd buildosx/macports/ports
 popd
 
 # Remove any leftover libcurl coming from earlier cached macports build
-sudo rm /opt/local/lib/libcurl.4.dylib
-sudo rm /opt/local/lib/libcurl.a
-sudo rm -rf /opt/local/include/curl
+# rm /opt/local/lib/libcurl.4.dylib
+#sudo rm /opt/local/lib/libcurl.a
+#sudo rm -rf /opt/local/include/curl
 
 # Install curl to get the TLS certificate bundle
 ##sudo port -q install curl
