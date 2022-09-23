@@ -85,6 +85,14 @@ tN2kMsg MakeN2kMsg(std::vector<unsigned char> &v) {
   return Msg;
 }
 
+bool ParseN2kPGN128275(std::vector<unsigned char> &v, uint16_t &DaysSince1970,
+                       double &SecondsSinceMidnight, uint32_t &Log, uint32_t &TripLog) {
+
+  tN2kMsg msg = MakeN2kMsg(v);
+
+  return ParseN2kPGN128275(msg, DaysSince1970, SecondsSinceMidnight, Log, TripLog);
+}
+
 
 bool ParseN2kPGN129029(std::vector<unsigned char> &v, unsigned char &SID, uint16_t &DaysSince1970, double &SecondsSinceMidnight,
                      double &Latitude, double &Longitude, double &Altitude,
@@ -104,6 +112,7 @@ bool ParseN2kPGN129029(std::vector<unsigned char> &v, unsigned char &SID, uint16
                      AgeOfCorrection
                      );
 }
+
 
 bool ParseN2kPGN129025(std::vector<unsigned char> &v, double &Latitude, double &Longitude) {
 
@@ -138,6 +147,15 @@ bool ParseN2kPGN127250(std::vector<unsigned char> &v, unsigned char &SID,
   tN2kMsg msg = MakeN2kMsg(v);
 
   return ParseN2kPGN127250(msg, SID, Heading, Deviation, Variation, ref);
+
+}
+
+bool ParseN2kPGN127257(std::vector<unsigned char> &v, unsigned char &SID,
+                       double &Yaw, double &Pitch, double &Roll) {
+
+  tN2kMsg msg = MakeN2kMsg(v);
+
+  return ParseN2kPGN127257(msg, SID, Yaw, Pitch, Roll);
 
 }
 

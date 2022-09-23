@@ -12,18 +12,17 @@ export MACOSX_DEPLOYMENT_TARGET=10.10
 export macosx_deployment_target=10.10
 
 # allow shell to find Macports executable
-export PATH=/opt/local/bin:$PATH
+#export PATH=/opt/local/bin:$PATH
 
 # allow caching of macports state in $HOME    "/Users/distiller/project/opt_local_cache"
-sudo mkdir -p ${HOME}/project/opt_local_cache
-sudo ln -s ${HOME}/project/opt_local_cache /opt/local
+#sudo mkdir -p ${HOME}/project/opt_local_cache
+#sudo ln -s ${HOME}/project/opt_local_cache /opt/local
 
-# curl -k -o /tmp/opt_macports.tar.xz  \
-#     https://download.opencpn.org/s/FpPXeWqEif8cLCT/download
-# sudo tar -C / -xJf /tmp/opt_macports.tar.xz
 
 #ls ${HOME}/project/opt_local_cache || echo "OK"
 #ls ${HOME}/project/opt_local_cache/bin || echo "OK"
+
+#ls /opt/local/bin || echo "OK"
 
 #sudo mkdir -p /opt/local/share/curl
 #sudo cp buildosx/cacert.pem /opt/local/share/curl/curl-ca-bundle.crt
@@ -35,17 +34,19 @@ sudo ln -s ${HOME}/project/opt_local_cache /opt/local
 #sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain "buildosx/ISRGROOTX1.pem"
 
 # Check if the cache is with us. If not, re-install macports
-port info zstd || {
-    curl -k -O https://distfiles.macports.org/MacPorts/MacPorts-2.7.1.tar.bz2
-    tar xf MacPorts-2.7.1.tar.bz2
-    cd MacPorts-2.7.1/
-    ./configure
-    make
-    sudo make install
-    cd ..
+#port info zstd || {
+#    curl -k -O https://distfiles.macports.org/MacPorts/MacPorts-2.7.1.tar.bz2
+#    tar xf MacPorts-2.7.1.tar.bz2
+#    cd MacPorts-2.7.1/
+#    ./configure
+#    make
+#    sudo make install
+#    cd ..
 
-    sudo port -d selfupdate
-}
+#    sudo port -d selfupdate
+#}
+
+#sudo port -d selfupdate
 
 #sudo port rev-upgrade
 
@@ -53,14 +54,10 @@ port info zstd || {
 #sudo cp buildosx/macports/sources.conf /opt/local/etc/macports
 
 # rebuild the port index
-pushd buildosx/macports/ports
+#pushd buildosx/macports/ports
 #  portindex
-popd
+#popd
 
-# Remove any leftover libcurl coming from earlier cached macports build
-# rm /opt/local/lib/libcurl.4.dylib
-#sudo rm /opt/local/lib/libcurl.a
-#sudo rm -rf /opt/local/include/curl
 
 # Install curl to get the TLS certificate bundle
 ##sudo port -q install curl
@@ -71,13 +68,13 @@ popd
 
 # install the local port libraries
 #  n.b.  ORDER IS IMPORTANT
+# does not work on Mojave and earlier
+#sudo port -fq install OCPN_openssl
 
-#try non-local ports
-#sudo port -q install OCPN_openssl
+#sudo port -fN deactivate libpixman
 #sudo port -q install OCPN_libpixman
 
 #sudo port -fq install OCPN_cairo
-
 #sudo port -q install zstd
 
 #sudo port -fN deactivate libarchive
@@ -85,9 +82,7 @@ popd
 
 #sudo port -q -f install OCPN_libpng
 
-sudo port -q install libarchive
-sudo port -q install freetype
-sudo port -q install cairo
+
 
 # Return latest installed brew version of given package
 pkg_version() { brew list --versions $2 $1 | tail -1 | awk '{print $2}'; }
@@ -103,19 +98,35 @@ brew list --versions python3 || {
         #fetch --unshallow
 }
 
+#exit 0
+
+
+
+# build libarchive, for legacy compatibility.
+curl -k -o libarchive-3.3.3.tar.gz  \
+    https://libarchive.org/downloads/libarchive-3.3.3.tar.gz
+tar zxf libarchive-3.3.3.tar.gz
+cd libarchive-3.3.3
+./configure --without-lzo2 --without-nettle --without-xml2 --without-openssl --with-expat
+# installs to /usr/local
+sudo rm /usr/local/include/archive.h
+sudo rm /usr/local/include/archive_entry.h
+sudo make install
+cd ..
+
+
+
+brew install freetype
+brew install cairo
+brew install zstd
+brew install xz
+brew install lz4
+
+
 for pkg in python3  cmake ; do
     brew list --versions $pkg || brew install $pkg || brew install $pkg || :
     brew link --overwrite $pkg || :
 done
-
-# Make sure cmake finds libarchive
-pushd /usr/local/include
-    ln -sf /opt/local/include/archive.h .
-    ln -sf /opt/local/include/archive_entry.h .
-    cd ../lib
-    ln -sf  /opt/local/lib/libarchive.13.dylib .
-    ln -sf  /opt/local/lib/libarchive.dylib .
-popd
 
 if brew list --cask --versions packages; then
     version=$(pkg_version packages '--cask')
@@ -125,9 +136,6 @@ if brew list --cask --versions packages; then
 else
     brew install --cask packages
 fi
-
-#wget -q https://download.opencpn.org/s/MCiRiq4fJcKD56r/download \
-#    -O /tmp/wx315_opencpn50_macos1010.tar.xz
 
 curl -k -o /tmp/wx315_opencpn50_macos1010.tar.xz  \
     https://download.opencpn.org/s/MCiRiq4fJcKD56r/download
@@ -158,7 +166,7 @@ make install # Dunno why the second is needed but it is, otherwise
 
 sudo ls -l /tmp/opencpn/bin/OpenCPN.app/Contents/Frameworks
 
-make create-pkg
+#make create-pkg
 make create-dmg
 
 # Install the stuff needed by upload.

@@ -1,3 +1,5 @@
+
+
 # ---------------------------------------------------------------------------
 # Author:      Dave Register DEB
 # config from: antonm - Anton Martchukov <anton@martchukov.com>
@@ -83,6 +85,7 @@ set(
   ${CMAKE_SOURCE_DIR}/cmake
 )
 
+set(CMAKE_CXX_VISIBILITY_PRESET=hidden)
 
 include(FindPkgConfig)
 include(CMakeDependentOption)
@@ -173,7 +176,11 @@ cmake_dependent_option(
 
 option(OCPN_USE_GARMINHOST "Enable Garmin Host Mode support" ON)
 
-option(-DOCPN_BUILD_TEST "Enable test subproject build" ON)
+if (QT_ANDROID OR ${CMAKE_VERSION} VERSION_LESS 3.14)
+  set(OCPN_BUILD_TEST OFF)
+else ()
+  option(OCPN_BUILD_TEST "Enable test subproject build" ON)
+endif ()
 
 set(
   OCPN_WXWIDGETS_FORCE_VERSION
@@ -403,6 +410,7 @@ if (APPLE)
       "-Wno-deprecated"
       "-Wno-deprecated-declarations"
       "-Wno-unknown-pragmas"
+      "-Wno-unknown-warning-option"
       "-D_WCHAR_H_CPLUSPLUS_98_CONFORMANCE_"
     )
   endif ()
@@ -1130,6 +1138,11 @@ if (LINUX)
   list(APPEND HDRS include/x11_font_picker.h)
 endif ()
 
+if (APPLE)
+  list(APPEND HDRS include/macutils.h )
+  list(APPEND MODEL_SRC ${CMAKE_SOURCE_DIR}/src/macutils.c)
+endif ()
+
 if (NOT WIN32 AND NOT APPLE AND NOT QT_ANDROID AND OCPN_USE_CRASHREPORT)
   list(APPEND HDRS include/crashprint.h)
   list(APPEND SRCS src/crashprint.cpp)
@@ -1375,6 +1388,7 @@ if (UNIX)
     if (APPLE)
       if (wxWidgets_VERSION_STRING VERSION_LESS "3.1.6")
         #Only needed if we build with wxSVG implementation of SVG support
+        message(STATUS "Building with wxSVG support")
         find_package(Freetype REQUIRED)
         target_link_libraries(${PACKAGE_NAME} PRIVATE Freetype::Freetype)
         find_package(Fontconfig REQUIRED)
@@ -1683,6 +1697,10 @@ target_link_libraries(
     ocpn::tinyxml
 )
 
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang|GNU")  # Apple is AppleClang
+  target_compile_options(S57ENC PRIVATE -fvisibility=default)
+endif ()
+
 if (OCPN_USE_CURL AND NOT QT_ANDROID)
   target_link_libraries(S57ENC PUBLIC ocpn::wxcurl)
 endif ()
@@ -1722,6 +1740,9 @@ set_property(TARGET SYMBOLS PROPERTY COMPILE_FLAGS "${OBJ_VISIBILITY}")
 target_link_libraries(SYMBOLS PRIVATE ocpn::tinyxml)
 target_include_directories(SYMBOLS PRIVATE ${CMAKE_SOURCE_DIR}/include)
 target_link_libraries(${PACKAGE_NAME} PRIVATE SYMBOLS)
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang|GNU")  # Apple is AppleClang
+  target_compile_options(SYMBOLS PRIVATE -fvisibility=default)
+endif ()
 
 # Compile texcompression support library
 if (OPENGL_FOUND)
@@ -1830,17 +1851,15 @@ if (UNIX)
 endif (UNIX)
 
 if (OCPN_BUILD_TEST)
-  if (${CMAKE_VERSION} VERSION_GREATER_EQUAL 3.14)
-    if (NOT QT_ANDROID AND NOT APPLE)
-      add_subdirectory(test)
-      add_custom_target(run-tests
-        COMMAND ctest  -C $<CONFIG>
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test
-      )
-      add_dependencies(run-tests tests)
-    endif ()
-  endif ()
-endif (OCPN_BUILD_TEST)
+  add_subdirectory(test)
+  add_custom_target(run-tests
+    COMMAND ctest  -C $<CONFIG>
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/test
+  )
+  add_dependencies(run-tests tests)
+else ()
+  add_custom_target(run-tests COMMAND cmake -E echo "No tests available")
+endif ()
 
 # If we build for windows systems, we also include the resource file containing
 # the manifest, icon and other resources
@@ -1907,10 +1926,6 @@ if (OCPN_BUNDLE_TCDATA)
     data/tcdata/README.harmonics
   )
 endif (OCPN_BUNDLE_TCDATA)
-
-if (APPLE)
-  target_sources(${PACKAGE_NAME} PRIVATE include/macutils.h src/macutils.c)
-endif ()
 
 # Mac has trouble finding libgobject-2.0.dylib We look for it explicitely
 if (xAPPLE)
