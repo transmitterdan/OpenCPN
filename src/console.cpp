@@ -25,6 +25,11 @@
  */
 
 #include "config.h"
+#include "wx/wxprec.h"
+
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif
 
 #ifdef _WIN32
 #include <windows.h>
