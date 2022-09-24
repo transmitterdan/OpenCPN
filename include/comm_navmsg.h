@@ -39,6 +39,12 @@
 #include <netinet/in.h>
 #endif
 
+#include "wx/wxprec.h"
+
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif  // precompiled headers
+
 #include <wx/jsonval.h>
 
 #ifndef _DRIVER_NAVMSG_H

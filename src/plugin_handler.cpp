@@ -41,6 +41,11 @@
 #include <streambuf>
 #include <unordered_map>
 
+#include "wx/wxprec.h"
+
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif  // precompiled headers
 //#include <wx/jsonreader.h>
 #include <wx/dir.h>
 #include <wx/file.h>

@@ -25,6 +25,10 @@
 
 #include "wx/wxprec.h"
 
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif  // precompiled headers
+
 #include <cstdlib>
 #include <string>
 #include <vector>
@@ -33,10 +37,6 @@
 #undef IPV6STRICT  // mingw FTBS fix:  missing struct ip_mreq
 #include <windows.h>
 #endif
-
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif  // precompiled headers
 
 #ifdef __WXMSW__
 #include <windows.h>
@@ -281,7 +281,7 @@ wxString GetPluginDataDir(const char* plugin_name) {
     }
     tryDir.Close();
   }
-  wxLogMessage(_T("Warnińg: no data directory found, using \"\""));
+  wxLogMessage(_T("Warning: no data directory found, using \"\""));
   return "";
 }
 

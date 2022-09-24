@@ -26,6 +26,12 @@
 #include <sstream>
 #include <unordered_map>
 
+#include "wx/wxprec.h"
+
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif  // precompiled headers
+
 #include <wx/log.h>
 
 #include "observable.h"
