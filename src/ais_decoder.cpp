@@ -2091,6 +2091,40 @@ AisError AisDecoder::DecodeN0183(const wxString &str) {
   return ret;
 }
 
+static wxJSONValue CreateAisJsonMessage(AisTargetData *pTarget) {
+  // Create JSON message
+  wxJSONValue jMsg;
+
+  wxLongLong t = ::wxGetLocalTimeMillis();
+
+  jMsg[wxS("Source")] = wxS("AisDecoder");
+  jMsg[wxT("Type")] = wxT("Information");
+  jMsg[wxT("Msg")] = wxS("AIS Target");
+  jMsg[wxT("MsgId")] = t.GetValue();
+  jMsg[wxS("lat")] = pTarget->Lat;
+  jMsg[wxS("lon")] = pTarget->Lon;
+  jMsg[wxS("sog")] = pTarget->SOG;
+  jMsg[wxS("cog")] = pTarget->COG;
+  jMsg[wxS("hdg")] = pTarget->HDG;
+  jMsg[wxS("mmsi")] = pTarget->MMSI;
+  jMsg[wxS("class")] = pTarget->Class;
+  jMsg[wxS("ownship")] = pTarget->b_OwnShip;
+  jMsg[wxS("active")] = pTarget->b_active;
+  jMsg[wxS("lost")] = pTarget->b_lost;
+  wxString l_ShipName = wxString::FromUTF8(pTarget->ShipName);
+  for (size_t i = 0; i < l_ShipName.Len(); i++) {
+    if (l_ShipName.GetChar(i) == '@') l_ShipName.SetChar(i, '\n');
+  }
+  jMsg[wxS("shipname")] = l_ShipName;
+  wxString l_CallSign = wxString::FromUTF8(pTarget->CallSign);
+  for (size_t i = 0; i < l_CallSign.Len(); i++) {
+    if (l_CallSign.GetChar(i) == '@') l_CallSign.SetChar(i, '\n');
+  }
+  jMsg[wxS("callsign")] = l_CallSign;
+  jMsg[wxS("removed")] = pTarget->b_removed;
+  return jMsg;
+}
+
 void AisDecoder::CommitAISTarget(AisTargetData *pTargetData,
                                   const wxString &str,
                                   bool message_valid,
@@ -2158,7 +2192,10 @@ void AisDecoder::CommitAISTarget(AisTargetData *pTargetData,
         if (pTargetData->b_show_track) UpdateOneTrack(pTargetData);
       }
       // TODO add ais message call
-      plugin_msg.Notify(std::make_shared<AisTargetData>(*pTargetData), "");
+      std::shared_ptr<wxJSONValue> p_JsonMsg(
+          new wxJSONValue(CreateAisJsonMessage(pTargetData)));
+      plugin_AISmsg.Notify(p_JsonMsg, "");
+      p_JsonMsg.reset();
     } else {
       //             printf("Unrecognised AIS message ID: %d\n",
       //             pTargetData->MID);
@@ -3620,7 +3657,7 @@ void AisDecoder::OnTimerAIS(wxTimerEvent &event) {
       current_targets.erase(it);
       break;  // leave the loop
     }
-    std::shared_ptr<AisTargetData> td(std::make_shared<AisTargetData>(*it->second));
+    AisTargetData *td = it->second;
 
     int target_posn_age = now.GetTicks() - td->PositionReportTicks;
     int target_static_age = now.GetTicks() - td->StaticReportTicks;
@@ -3688,7 +3725,10 @@ void AisDecoder::OnTimerAIS(wxTimerEvent &event) {
         td->HDG = 511.0;
         td->ROTAIS = -128;
 
-        plugin_msg.Notify(td, "");
+        std::shared_ptr<wxJSONValue> p_JsonMsg(
+          new wxJSONValue(CreateAisJsonMessage(td)));
+        plugin_AISmsg.Notify(p_JsonMsg, "");
+        p_JsonMsg.reset();
 
         long mmsi_long = td->MMSI;
         pSelectAIS->DeleteSelectablePoint((void *)mmsi_long, SELTYPE_AISTARGET);
@@ -3698,7 +3738,10 @@ void AisDecoder::OnTimerAIS(wxTimerEvent &event) {
         //      or a lost ARPA target.
         if (target_static_age > removelost_Mins * 60 * 3 || b_arpalost) {
           td->b_removed = true;
-          plugin_msg.Notify(td, "");
+          std::shared_ptr<wxJSONValue> p_JsonMsg(
+              new wxJSONValue(CreateAisJsonMessage(td)));
+          plugin_AISmsg.Notify(p_JsonMsg, "");
+          p_JsonMsg.reset();
           remove_array.push_back(td->MMSI);  // Add this target to removal list
         }
       }
@@ -3712,7 +3755,10 @@ void AisDecoder::OnTimerAIS(wxTimerEvent &event) {
         if (props->m_bignore) {
           remove_array.push_back(td->MMSI);  // Add this target to removal list
           td->b_removed = true;
-          plugin_msg.Notify(td, "");
+          std::shared_ptr<wxJSONValue> p_JsonMsg(
+              new wxJSONValue(CreateAisJsonMessage(td)));
+          plugin_AISmsg.Notify(p_JsonMsg, "");
+          p_JsonMsg.reset();
         }
         break;
       }
