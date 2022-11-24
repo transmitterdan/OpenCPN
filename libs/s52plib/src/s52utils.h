@@ -25,10 +25,21 @@
 #ifndef __S52UTILS_H__
 #define __S52UTILS_H__
 
-inline int roundint(double x) {
+#include "wx/wxprec.h"
+
+#ifndef WX_PRECOMP
+#include "wx/wx.h"
+#endif  // precompiled headers
+
+inline int roundint (double x)
+{
+#ifdef __WXOSX__
+    return wxRound(x);     //FS#1278
+#else
   int tmp = static_cast<int>(x);
   tmp += (x - tmp >= .5) - (x - tmp <= -.5);
   return tmp;
+#endif
 }
 
 #ifdef SOLARIS
