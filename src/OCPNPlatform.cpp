@@ -817,7 +817,7 @@ void OCPNPlatform::SetLocaleSearchPrefixes(void) {
 
   // Managed plugin location
   wxFileName usrShare(GetWinPluginBaseDir() + wxFileName::GetPathSeparator());
-  usrShare.RemoveLastDir();
+  if (usrShare.GetDirCount() > 1) usrShare.RemoveLastDir();
   locale_location = usrShare.GetFullPath() + ("share\\locale");
   wxLocale::AddCatalogLookupPathPrefix(locale_location);
   imsg = _T("Adding catalog lookup path:  ");

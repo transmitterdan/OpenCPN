@@ -423,8 +423,8 @@ static void AtoN_Diamond(ocpnDC &dc, int x, int y, int radius,
   else
     aton_DrawPen = wxPen(GetGlobalColor(_T ( "UBLCK" )), 2);
 
-  bool b_virt = (td->NavStatus == ATON_VIRTUAL) |
-                (td->NavStatus == ATON_VIRTUAL_ONPOSITION) |
+  bool b_virt = (td->NavStatus == ATON_VIRTUAL) ||
+                (td->NavStatus == ATON_VIRTUAL_ONPOSITION) ||
                 (td->NavStatus == ATON_VIRTUAL_OFFPOSITION);
 
   if (b_virt) aton_DrawPen.SetStyle(wxPENSTYLE_SHORT_DASH);

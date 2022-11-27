@@ -137,6 +137,7 @@ private:
   bool DoJob(JobTicket *pticket);
   bool DoThreadJob(JobTicket *pticket);
   bool StartTopJob();
+  void ClearProgList();
 
   JobList running_list;
   JobList todo_list;

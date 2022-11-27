@@ -745,8 +745,9 @@ glTextureManager::glTextureManager() {
 }
 
 glTextureManager::~glTextureManager() {
-  //    ClearAllRasterTextures();
+  ClearAllRasterTextures();
   ClearJobList();
+  ClearProgList();
 }
 
 #define NBAR_LENGTH 40
@@ -1158,6 +1159,14 @@ void glTextureManager::ClearJobList() {
     node = node->GetNext();
   }
   todo_list.Clear();
+}
+
+void glTextureManager::ClearProgList() {
+  wxProgressInfoListNode *tnode = progList.GetFirst();
+  while (tnode) {
+    delete tnode->GetData();
+    tnode = tnode->GetNext();
+  }
 }
 
 void glTextureManager::ClearAllRasterTextures(void) {
