@@ -719,6 +719,10 @@ if (NOT QT_ANDROID)
     # Exclude wxexpat.lib, since we use our own version. Other things are
     # excluded as well, but we don't need them
     set(wxWidgets_EXCLUDE_COMMON_LIBRARIES TRUE)
+
+    # build only for release/unicode configuration
+    set(wxWidgets_CONFIGURATION mswu)
+
   endif (MSVC)
 
   if (GTK2_FOUND)
@@ -2566,13 +2570,21 @@ endif (APPLE)
 # directory
 #
 if (WIN32 AND NOT UNIX)
-  if (OCPN_BUNDLE_WXDLLS)
-    file(
-      GLOB wxdll_files "${CMAKE_CURRENT_SOURCE_DIR}/buildwin/wxWidgets/*.dll"
-    )
-    install(FILES ${wxdll_files} DESTINATION ".")
-    message(STATUS "wxWidgets DLLs bundled into the installer package...")
-  endif (OCPN_BUNDLE_WXDLLS)
+  message(STATUS "wxWidgets DLLs bundled into the installer package: ...")
+
+  list(GET wxWidgets_LIBRARIES 1 first_file)
+  message(STATUS "first_file: ${first_file}")
+  get_filename_component(dll_dir ${first_file} DIRECTORY)
+
+  message(STATUS "dll_dir: ${dll_dir}")
+
+  file(
+      GLOB wxdll_files "${dll_dir}/wx*u_*.dll"
+  )
+  message(STATUS "wxdll_files: ${wxdll_files}")
+  install(FILES ${wxdll_files} DESTINATION ".")
+
+
   if (OCPN_BUNDLE_VCDLLS)
     file(GLOB vcdll_files "${CMAKE_CURRENT_SOURCE_DIR}/buildwin/vc/*.dll")
     install(FILES ${vcdll_files} DESTINATION ".")

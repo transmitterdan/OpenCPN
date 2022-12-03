@@ -29,13 +29,24 @@ install:
   - choco install poedit
   - choco install git
 
-  # - choco install nsis-3.04 -x86
-  - ps: Start-FileDownload https://download.opencpn.org/s/54HsBDLNzRZLL6i/download -FileName nsis-3.04-setup.exe
-  - cmd: nsis-3.04-setup.exe /S
+  - choco install nsis
+  #- ps: Start-FileDownload https://download.opencpn.org/s/54HsBDLNzRZLL6i/download -FileName nsis-3.04-setup.exe
+  #- cmd: nsis-3.04-setup.exe /S
 
   # Download and unzip wxwidgets, version 3.2.1
-  - ps: Start-FileDownload https://download.opencpn.org/s/mKn7bczRPSJXBtF/download -FileName wxWidgets-3.2.1.7z
-  - cmd: 7z x wxWidgets-3.2.1.7z -oC:\wxWidgets-3.2.1
+  #- ps: Start-FileDownload https://download.opencpn.org/s/mKn7bczRPSJXBtF/download -FileName wxWidgets-3.2.1.7z
+  #- cmd: 7z x wxWidgets-3.2.1.7z -oC:\wxWidgets-3.2.1
+
+  - cmd: wget --version > nul 2>&1 || choco install -y wget
+
+  - cmd: wget -nv https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.1/wxMSW-3.2.1_vc14x_Dev.7z
+  - cmd: 7z x -oC:\wxWidgets-3.2.1 wxMSW-3.2.1_vc14x_Dev.7z
+
+  - cmd: wget -nv https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.1/wxMSW-3.2.1_vc14x_ReleaseDLL.7z
+  - cmd: 7z x -oC:\wxWidgets-3.2.1 wxMSW-3.2.1_vc14x_ReleaseDLL.7z -y
+
+  - cmd: wget -nv https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.1/wxWidgets-3.2.1-headers.7z
+  - cmd: 7z x -oC:\wxWidgets-3.2.1 wxWidgets-3.2.1-headers.7z
 
   # some debugging information
   # - set   Displays sensitive password!
@@ -55,16 +66,16 @@ before_build:
   - cmd: mkdir c:\projects\opencpn\buildwin
   - cmd: XCOPY c:\project\opencpn\buildwintemp\OCPNWindowsCoreBuildSupport-0.3\buildwin c:\project\opencpn\buildwin /s /y /q
 
-  - cmake -T v143 -DOCPN_CI_BUILD=ON -DCMAKE_GENERATOR_PLATFORM=Win32 ..
+  - cmake -T v143 -DOCPN_CI_BUILD=ON -DCMAKE_GENERATOR_PLATFORM=Win32 -DOCPN_BUILD_TEST=OFF ..
   # Add runtime test path:
   - cmd: SET PATH=%PATH%;c:\project\opencpn\buildwin
 build_script:
   # - cmake --build . --config debug
   - cmake --build . --target opencpn --config RelWithDebInfo
   - SET PATH=..\buildwin;%PATH%
-  - cmake --build . --target run-tests --config RelWithDebInfo
-  - cmake --build . --target package --config RelWithDebInfo
-
+  #- cmake --build . --target run-tests --config RelWithDebInfo
+  #- cmake --build . --target package --config RelWithDebInfo
+  - cmake --build . --target package --config Release
 deploy_script:
   - |
       cd %APPVEYOR_BUILD_FOLDER%\ci
