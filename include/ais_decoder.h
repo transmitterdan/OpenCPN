@@ -30,7 +30,7 @@
 #include <memory>
 
 #include <wx/datetime.h>
-#include <wx/jsonval.h>
+#include "rapidjson/fwd.h"
 #include <wx/event.h>
 #include <wx/string.h>
 
@@ -146,9 +146,9 @@ private:
                     int &last_report_ticks, wxDateTime &now);
   void getMmsiProperties(std::shared_ptr<AisTargetData> &pTargetData);
   void handleUpdate(std::shared_ptr<AisTargetData> pTargetData, bool bnewtarget,
-                    wxJSONValue &update);
+                    const rapidjson::Value &update);
   void updateItem(std::shared_ptr<AisTargetData> pTargetData, bool bnewtarget,
-                  wxJSONValue &item, wxString &sfixtime) const;
+                  const rapidjson::Value &item, wxString &sfixtime) const;
   void CommitAISTarget( std::shared_ptr<AisTargetData> pTargetData,
                         const wxString &str, bool message_valid,
                         bool new_target);
@@ -172,7 +172,8 @@ private:
 
   ObservableListener listener_N0183_VDM;
   ObservableListener listener_N0183_FRPOS;
-  ObservableListener listener_N0183_CD;
+  ObservableListener listener_N0183_CDDSC;
+  ObservableListener listener_N0183_CDDSE;
   ObservableListener listener_N0183_TLL;
   ObservableListener listener_N0183_TTM;
   ObservableListener listener_N0183_OSD;
