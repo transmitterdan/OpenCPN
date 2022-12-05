@@ -237,6 +237,7 @@ extern wxString g_catalog_custom_url;
 
 WX_DEFINE_ARRAY_PTR(ChartCanvas *, arrayofCanvasPtr);
 extern arrayofCanvasPtr g_canvasArray;
+extern wxString g_ownshipMMSI_SK;
 
 const char *const LINUX_LOAD_PATH = "~/.local/lib:/usr/local/lib:/usr/lib";
 const char *const FLATPAK_LOAD_PATH = "~/.var/app/org.opencpn.OpenCPN/lib";
@@ -1694,6 +1695,7 @@ void PlugInManager::FinalizePluginLoadall() {
   // Tell all the PlugIns about the current OCPN configuration
   SendBaseConfigToAllPlugIns();
   SendS52ConfigToAllPlugIns( true );
+  SendSKConfigToAllPlugIns();
 
   // Inform Plugins of OpenGL configuration, if enabled
   if(g_bopengl){
@@ -2522,16 +2524,15 @@ void PlugInManager::PrepareAllPluginContextMenus() {
 
 
 //FIXME (dave) unused?
-// void PlugInManager::SendSKConfigToAllPlugIns() {
-//   // Send the current ownship MMSI, encoded as sK,  to all PlugIns
-//   wxJSONValue v;
-//   v[_T("self")] = g_ownshipMMSI_SK;
-//
-//   wxJSONWriter w;
-//   wxString out;
-//   w.Write(v, out);
-//   SendMessageToAllPlugins(wxString(_T("OCPN_CORE_SIGNALK")), out);
-// }
+void PlugInManager::SendSKConfigToAllPlugIns() {
+  // Send the current ownship MMSI, encoded as sK,  to all PlugIns
+  wxJSONValue v;
+  v[_T("self")] = g_ownshipMMSI_SK;
+  wxJSONWriter w;
+  wxString out;
+  w.Write(v, out);
+  SendMessageToAllPlugins(wxString(_T("OCPN_CORE_SIGNALK")), out);
+}
 
 void PlugInManager::SendBaseConfigToAllPlugIns() {
   // Send the current run-time configuration to all PlugIns
@@ -4937,6 +4938,9 @@ PluginPanel::PluginPanel(wxPanel *parent, wxWindowID id, const wxPoint &pos,
   Bind(wxEVT_LEFT_UP, &PluginPanel::OnPluginSelectedUp, this);
 
   double iconSize = GetCharWidth() * 4;
+  double dpi_mult = g_Platform->GetDisplayDPIMult(this);
+  int icon_scale = iconSize * dpi_mult;
+
   wxImage plugin_icon;
   ocpnStyle::Style *style = g_StyleManager->GetCurrentStyle();
   if (m_pPlugin->m_bitmap && m_pPlugin->m_bitmap->IsOk()) {
@@ -4945,17 +4949,16 @@ PluginPanel::PluginPanel(wxPanel *parent, wxWindowID id, const wxPoint &pos,
   wxBitmap bitmap;
   if (plugin_icon.IsOk()) {
     int nowSize = plugin_icon.GetWidth();
-    if ((nowSize > iconSize) || ((iconSize / nowSize) > 1.5))
-      plugin_icon.Rescale(iconSize, iconSize, wxIMAGE_QUALITY_HIGH);
+    plugin_icon.Rescale(icon_scale, icon_scale, wxIMAGE_QUALITY_HIGH);
     bitmap = wxBitmap(plugin_icon);
   } else if (m_pPlugin->m_pluginStatus ==
              PluginStatus::ManagedInstallAvailable) {
     wxFileName path(g_Platform->GetSharedDataDir(), "packageBox.svg");
     path.AppendDir("uidata");
     path.AppendDir("traditional");
-    bitmap = LoadSVG(path.GetFullPath(), iconSize, iconSize);
+    bitmap = LoadSVG(path.GetFullPath(), icon_scale, icon_scale);
   } else {
-    bitmap = wxBitmap(style->GetIcon(_T("default_pi"), iconSize, iconSize));
+    bitmap = wxBitmap(style->GetIcon(_T("default_pi"), icon_scale, icon_scale));
   }
   m_itemStaticBitmap = new wxStaticBitmap(this, wxID_ANY, bitmap);
 
