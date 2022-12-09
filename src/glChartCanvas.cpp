@@ -427,6 +427,7 @@ void glChartCanvas::Init() {
   m_currentTex = 0;
 
   m_gldc.SetGLCanvas(this);
+  m_gldc.SetDPIFactor(g_BasePlatform->GetDisplayDPIMult(GetParent()));
 
   m_displayScale = 1.0;
 #if defined(__WXOSX__) || defined(__WXGTK3__)
@@ -3848,11 +3849,6 @@ void glChartCanvas::Render() {
   }
 
   ViewPort VPoint = m_pParentCanvas->VPoint;
-
-
-#ifdef __WXOSX__
-  gl_height = m_pParentCanvas->GetClientSize().y;
-#endif
 
   OCPNRegion screen_region(wxRect(0, 0, gl_width, gl_height));
 
