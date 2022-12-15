@@ -361,6 +361,8 @@ wxDialog *g_pcurtain;
 extern double gLat, gLat;
 
 extern int g_GUIScaleFactor;
+// Win DPI scale factor
+double g_scaler;
 
 #define MIN_BRIGHT 10
 #define MAX_BRIGHT 100
@@ -782,6 +784,13 @@ ChartCanvas::ChartCanvas(wxFrame *frame, int canvasIndex)
   m_pianoFrozen = false;
 
   SetMinSize(wxSize(200, 200));
+
+  m_displayScale = 1.0;
+#if defined(__WXOSX__) || defined(__WXGTK3__)
+  // Support scaled HDPI displays.
+  m_displayScale = GetContentScaleFactor();
+#endif
+
 
 #ifdef HAVE_WX_GESTURE_EVENTS
   if (!EnableTouchEvents(wxTOUCH_ZOOM_GESTURE |
@@ -2366,11 +2375,8 @@ void ChartCanvas::SetDisplaySizeMM(double size) {
   // Calculate pixels per mm for later reference
   wxSize sd = g_Platform->getDisplaySize();
   double max_physical = wxMax(sd.x, sd.y);
-
-#ifdef __WXOSX__
-  // Support Mac Retina displays.
-  max_physical /= GetContentScaleFactor();
-#endif
+  // Set DPI (Win) scale factor
+  g_scaler = g_Platform->GetDisplayDPIMult(this);
 
   m_pix_per_mm = (max_physical) / ((double)m_display_size_mm);
   m_canvas_scale_factor = (max_physical) / (m_display_size_mm / 1000.);
@@ -5636,6 +5642,8 @@ void ChartCanvas::ShipIndicatorsDraw(ocpnDC &dc, int img_height,
       double png_pred_icon_scale_factor = .4;
       if (g_ShipScaleFactorExp > 1.0)
         png_pred_icon_scale_factor *= (log(g_ShipScaleFactorExp) + 1.0) * 1.1;
+      if (g_scaler)
+        png_pred_icon_scale_factor *= 1.0 / g_scaler;
 
       wxPoint icon[4];
 
@@ -6574,6 +6582,14 @@ void ChartCanvas::OnActivate(wxActivateEvent &event) { ReloadVP(); }
 void ChartCanvas::OnSize(wxSizeEvent &event) {
   GetClientSize(&m_canvas_width, &m_canvas_height);
 
+
+  m_canvas_width *= m_displayScale;
+  m_canvas_height *= m_displayScale;
+
+  //    Resize the current viewport
+  VPoint.pix_width = m_canvas_width;
+  VPoint.pix_height = m_canvas_height;
+
   //    Get some canvas metrics
 
   //          Rescale to current value, in order to rebuild VPoint data
@@ -6609,11 +6625,6 @@ void ChartCanvas::OnSize(wxSizeEvent &event) {
 
   if (m_pQuilt)
     m_pQuilt->SetQuiltParameters(m_canvas_scale_factor, m_canvas_width);
-
-  //    Resize the current viewport
-
-  VPoint.pix_width = m_canvas_width;
-  VPoint.pix_height = m_canvas_height;
 
   // Resize the scratch BM
   delete pscratch_bm;
@@ -6938,6 +6949,9 @@ bool ChartCanvas::MouseEventSetup(wxMouseEvent &event, bool b_handle_dclick) {
   bool bret = false;
 
   event.GetPosition(&x, &y);
+
+  x *= m_displayScale;
+  y *= m_displayScale;
 
   m_MouseDragging = event.Dragging();
 
@@ -10441,6 +10455,7 @@ void ChartCanvas::RenderRouteLegs(ocpnDC &dc) {
       route->m_NextLegGreatCircle = true;
     }
 
+    //FIXME  (MacOS, the first segment is rendered wrong)
     RouteGui(*route).DrawPointWhich(dc, this, route->m_lastMousePointIndex, &lastPoint);
 
     if (route->m_NextLegGreatCircle) {
@@ -11095,7 +11110,9 @@ void ChartCanvas::OnPaint(wxPaintEvent &event) {
   }
 
   if (m_brepaint_piano && g_bShowChartBar) {
-    m_Piano->Paint(GetClientSize().y - m_Piano->GetHeight(), mscratch_dc);
+    int canvas_height = GetClientSize().y;
+    canvas_height *= m_displayScale;
+    m_Piano->Paint(canvas_height - m_Piano->GetHeight(), mscratch_dc);
     // m_brepaint_piano = false;
   }
 
@@ -11639,7 +11656,7 @@ void ChartCanvas::DrawOverlayObjects(ocpnDC &dc, const wxRegion &ru) {
     m_pAISRolloverWin->Draw(dc);
     m_brepaint_piano = true;
   }
-  
+
   if (g_pi_manager) {
     g_pi_manager->RenderAllCanvasOverlayPlugIns(dc, GetVP(), m_canvasIndex, OVERLAY_OVER_UI);
   }
@@ -13075,6 +13092,8 @@ void ChartCanvas::UpdateGPSCompassStatusBox(bool b_force_new) {
   int cc1_edge_comp = 2;
   wxRect rect = m_Compass->GetRect();
   wxSize parent_size = GetSize();
+
+  parent_size *= m_displayScale;
 
   // check to see if it would overlap if it was in its home position (upper
   // right)

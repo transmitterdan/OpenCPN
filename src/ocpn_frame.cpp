@@ -3495,9 +3495,8 @@ Track *MyFrame::TrackOff(bool do_add_point) {
         }
       }
     }
+    g_pActiveTrack = NULL;
   }
-
-  g_pActiveTrack = NULL;
 
   g_bTrackActive = false;
 
@@ -3516,6 +3515,10 @@ Track *MyFrame::TrackOff(bool do_add_point) {
 #ifdef __OCPN__ANDROID__
   androidSetTrackTool(false);
 #endif
+
+   if (pConfig && pConfig->IsChangesFileDirty()) {
+    pConfig->UpdateNavObj(true);
+  }
 
   g_FlushNavobjChangesTimeout =
       600;  // Revert to checking/flushing navob changes every 5 minutes
