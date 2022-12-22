@@ -6,10 +6,10 @@
 set -xe
 
 # Build for legacy Mac machines
-export MACOSX_DEPLOYMENT_TARGET=10.10
+export MACOSX_DEPLOYMENT_TARGET=10.13
 
 # Required to build libcurl for legacy machines
-export macosx_deployment_target=10.10
+export macosx_deployment_target=10.13
 
 
 # Return latest installed brew version of given package
@@ -94,7 +94,7 @@ make install # Dunno why the second is needed but it is, otherwise
 
 sudo ls -l /tmp/opencpn/bin/OpenCPN.app/Contents/Frameworks
 
-#make create-pkg
+make create-pkg
 make create-dmg
 
 # Install the stuff needed by upload.

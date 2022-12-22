@@ -156,7 +156,7 @@ extern bool g_bsmoothpanzoom;
 extern bool g_bShowTrue, g_bShowMag;
 extern double g_UserVar;
 extern double gVar;
-extern int g_chart_zoom_modifier;
+extern int g_chart_zoom_modifier_raster;
 extern int g_chart_zoom_modifier_vector;
 extern int g_NMEAAPBPrecision;
 extern wxString g_TalkerIdText;
@@ -1985,14 +1985,14 @@ void options::CreatePanel_Ownship(size_t parent, int border_size,
       itemPanelShip, wxID_ANY, _("COG Predictor Length (min)"));
   dispOptionsGrid->Add(pStatic_OSCOG_Predictor, 0);
 
-  m_pText_OSCOG_Predictor = new wxTextCtrl(itemPanelShip, wxID_ANY);
+  m_pText_OSCOG_Predictor = new wxTextCtrl(itemPanelShip, wxID_ANY, "TEXT");
   dispOptionsGrid->Add(m_pText_OSCOG_Predictor, 0, wxALIGN_RIGHT);
 
   wxStaticText* pStatic_OSHDT_Predictor = new wxStaticText(
       itemPanelShip, wxID_ANY, _("Heading Predictor Length (NMi)"));
   dispOptionsGrid->Add(pStatic_OSHDT_Predictor, 0);
 
-  m_pText_OSHDT_Predictor = new wxTextCtrl(itemPanelShip, wxID_ANY);
+  m_pText_OSHDT_Predictor = new wxTextCtrl(itemPanelShip, wxID_ANY, "TEXT");
   dispOptionsGrid->Add(m_pText_OSHDT_Predictor, 0, wxALIGN_RIGHT);
 
   wxStaticText* iconTypeTxt =
@@ -2320,7 +2320,7 @@ void options::CreatePanel_Routes(size_t parent, int border_size,
       itemPanelRoutes, wxID_STATIC, _("Waypoint Arrival Circle Radius (NMi)"));
   pRouteGrid->Add(raText, 1, wxEXPAND | wxALL, group_item_spacing);
 
-  m_pText_ACRadius = new wxTextCtrl(itemPanelRoutes, -1);
+  m_pText_ACRadius = new wxTextCtrl(itemPanelRoutes, -1, "TEXT  ");
   pRouteGrid->Add(m_pText_ACRadius, 0, wxALL | wxALIGN_RIGHT,
                   group_item_spacing);
 
@@ -2382,7 +2382,7 @@ void options::CreatePanel_Routes(size_t parent, int border_size,
       new wxCheckBox(itemPanelRoutes, wxID_ANY,
                      _("Show waypoints only at a chartscale greater than 1 :"));
   ScaMinSizer->Add(pScaMinChckB, 0);
-  m_pText_ScaMin = new wxTextCtrl(itemPanelRoutes, -1);
+  m_pText_ScaMin = new wxTextCtrl(itemPanelRoutes, -1, "TEXTTEXTTEXT");
   ScaMinSizer->Add(m_pText_ScaMin, 0, wxALL | wxALIGN_RIGHT,
                    group_item_spacing);
 
@@ -3061,7 +3061,7 @@ void options::CreatePanel_Advanced(size_t parent, int border_size,
         new wxStaticText(m_ChartDisplayPage, wxID_ANY, _("Raster")),
         inputFlags);
 
-    m_pSlider_Zoom =
+    m_pSlider_Zoom_Raster =
         new wxSlider(m_ChartDisplayPage, ID_RASTERZOOM, 0, -5, 5,
                      wxDefaultPosition, m_sliderSize, SLIDER_STYLE);
 
@@ -3069,7 +3069,7 @@ void options::CreatePanel_Advanced(size_t parent, int border_size,
     prepareSlider(m_pSlider_Zoom);
 #endif
 
-    itemBoxSizerUI->Add(m_pSlider_Zoom, inputFlags);
+    itemBoxSizerUI->Add(m_pSlider_Zoom_Raster, inputFlags);
 
     itemBoxSizerUI->Add(
         new wxStaticText(m_ChartDisplayPage, wxID_ANY, _("Vector")),
@@ -3234,15 +3234,15 @@ With a higher value, the same zoom level shows a more detailed chart."));
     itemBoxSizerUI->Add(
         new wxStaticText(m_ChartDisplayPage, wxID_ANY, _("Raster")),
         labelFlags);
-    m_pSlider_Zoom =
+    m_pSlider_Zoom_Raster =
         new wxSlider(m_ChartDisplayPage, ID_RASTERZOOM, 0, -5, 5,
                      wxDefaultPosition, m_sliderSize, SLIDER_STYLE);
 
 #ifdef __OCPN__ANDROID__
-    prepareSlider(m_pSlider_Zoom);
+    prepareSlider(m_pSlider_Zoom_Raster);
 #endif
 
-    itemBoxSizerUI->Add(m_pSlider_Zoom, inputFlags);
+    itemBoxSizerUI->Add(m_pSlider_Zoom_Raster, inputFlags);
 
     itemBoxSizerUI->Add(
         new wxStaticText(m_ChartDisplayPage, wxID_ANY, _("Vector")),
@@ -3454,6 +3454,13 @@ void options::CreatePanel_VectorCharts(size_t parent, int border_size,
     pCheck_SCAMIN->SetValue(FALSE);
     optionsColumn->Add(pCheck_SCAMIN, inputFlags);
 
+    optionsColumn->Add(new wxStaticText(ps57Ctl, wxID_ANY, ""),
+                       labelFlags);
+    pCheck_SuperSCAMIN = new wxCheckBox(ps57Ctl, ID_SUPERSCAMINCHECKBOX,
+                                   _("Additonal detail reduction at Small Scale"));
+    pCheck_SuperSCAMIN->SetValue(FALSE);
+    optionsColumn->Add(pCheck_SuperSCAMIN, inputFlags);
+
     // spacer
     optionsColumn->Add(0, border_size * 4);
     optionsColumn->Add(0, border_size * 4);
@@ -3634,6 +3641,13 @@ void options::CreatePanel_VectorCharts(size_t parent, int border_size,
                                    _("Reduced Detail at Small Scale"));
     pCheck_SCAMIN->SetValue(FALSE);
     optionsColumn->Add(pCheck_SCAMIN, inputFlags);
+
+    optionsColumn->Add(new wxStaticText(ps57Ctl, wxID_ANY, ""),
+                       labelFlags);
+    pCheck_SuperSCAMIN = new wxCheckBox(ps57Ctl, ID_SUPERSCAMINCHECKBOX,
+                                   _("Additonal detail reduction at Small Scale"));
+    pCheck_SuperSCAMIN->SetValue(FALSE);
+    optionsColumn->Add(pCheck_SuperSCAMIN, inputFlags);
 
     // spacer
     optionsColumn->Add(0, border_size * 4);
@@ -4919,7 +4933,7 @@ void options::CreatePanel_AIS(size_t parent, int border_size,
       _("No (T)CPA Alerts if target range is greater than (NMi)"));
   pCPAGrid->Add(m_pCheck_CPA_Max, 0, wxALL, group_item_spacing);
 
-  m_pText_CPA_Max = new wxTextCtrl(panelAIS, -1);
+  m_pText_CPA_Max = new wxTextCtrl(panelAIS, -1, "TEXT  ");
   pCPAGrid->Add(m_pText_CPA_Max, 0, wxALL | wxALIGN_RIGHT, group_item_spacing);
 
   m_pCheck_CPA_Warn =
@@ -4927,7 +4941,7 @@ void options::CreatePanel_AIS(size_t parent, int border_size,
   pCPAGrid->Add(m_pCheck_CPA_Warn, 0, wxALL, group_item_spacing);
 
   m_pText_CPA_Warn =
-      new wxTextCtrl(panelAIS, -1, _T(""), wxDefaultPosition, wxSize(-1, -1));
+      new wxTextCtrl(panelAIS, -1,"TEXT  ", wxDefaultPosition, wxSize(-1, -1));
   pCPAGrid->Add(m_pText_CPA_Warn, 0, wxALL | wxALIGN_RIGHT, group_item_spacing);
 
   m_pCheck_CPA_Warn->Connect(wxEVT_COMMAND_CHECKBOX_CLICKED,
@@ -4938,7 +4952,7 @@ void options::CreatePanel_AIS(size_t parent, int border_size,
       new wxCheckBox(panelAIS, -1, _("...and TCPA is less than (min)"));
   pCPAGrid->Add(m_pCheck_CPA_WarnT, 0, wxALL, group_item_spacing);
 
-  m_pText_CPA_WarnT = new wxTextCtrl(panelAIS, -1);
+  m_pText_CPA_WarnT = new wxTextCtrl(panelAIS, -1, "TEXT  ");
   pCPAGrid->Add(m_pText_CPA_WarnT, 0, wxALL | wxALIGN_RIGHT,
                 group_item_spacing);
 
@@ -4955,7 +4969,7 @@ void options::CreatePanel_AIS(size_t parent, int border_size,
       new wxCheckBox(panelAIS, -1, _("Mark targets as lost after (min)"));
   pLostGrid->Add(m_pCheck_Mark_Lost, 1, wxALL, group_item_spacing);
 
-  m_pText_Mark_Lost = new wxTextCtrl(panelAIS, -1);
+  m_pText_Mark_Lost = new wxTextCtrl(panelAIS, -1, "TEXT  ");
   pLostGrid->Add(m_pText_Mark_Lost, 1, wxALL | wxALIGN_RIGHT,
                  group_item_spacing);
 
@@ -4963,7 +4977,7 @@ void options::CreatePanel_AIS(size_t parent, int border_size,
       new wxCheckBox(panelAIS, -1, _("Remove lost targets after (min)"));
   pLostGrid->Add(m_pCheck_Remove_Lost, 1, wxALL, group_item_spacing);
 
-  m_pText_Remove_Lost = new wxTextCtrl(panelAIS, -1);
+  m_pText_Remove_Lost = new wxTextCtrl(panelAIS, -1, "TEXT  ");
   pLostGrid->Add(m_pText_Remove_Lost, 1, wxALL | wxALIGN_RIGHT,
                  group_item_spacing);
 
@@ -4982,7 +4996,7 @@ void options::CreatePanel_AIS(size_t parent, int border_size,
       panelAIS, -1, _("Show target COG predictor arrow, length (min)"));
   pDisplayGrid->Add(m_pCheck_Show_COG, 1, wxALL | wxEXPAND, group_item_spacing);
 
-  m_pText_COG_Predictor = new wxTextCtrl(panelAIS, -1);
+  m_pText_COG_Predictor = new wxTextCtrl(panelAIS, -1, "TEXT  ");
   pDisplayGrid->Add(m_pText_COG_Predictor, 1, wxALL | wxALIGN_RIGHT,
                     group_item_spacing);
 
@@ -5000,7 +5014,7 @@ void options::CreatePanel_AIS(size_t parent, int border_size,
       new wxCheckBox(panelAIS, -1, _("Show target tracks, length (min)"));
   pDisplayGrid->Add(m_pCheck_Show_Tracks, 1, wxALL, group_item_spacing);
 
-  m_pText_Track_Length = new wxTextCtrl(panelAIS, -1);
+  m_pText_Track_Length = new wxTextCtrl(panelAIS, -1, "TEXT  ");
   pDisplayGrid->Add(m_pText_Track_Length, 1, wxALL | wxALIGN_RIGHT,
                     group_item_spacing);
 
@@ -5008,7 +5022,7 @@ void options::CreatePanel_AIS(size_t parent, int border_size,
       panelAIS, -1, _("Suppress anchored/moored targets, speed max (kn)"));
   pDisplayGrid->Add(m_pCheck_Hide_Moored, 1, wxALL, group_item_spacing);
 
-  m_pText_Moored_Speed = new wxTextCtrl(panelAIS, -1);
+  m_pText_Moored_Speed = new wxTextCtrl(panelAIS, -1, "TEXT  ");
   pDisplayGrid->Add(m_pText_Moored_Speed, 1, wxALL | wxALIGN_RIGHT,
                     group_item_spacing);
 
@@ -5017,7 +5031,7 @@ void options::CreatePanel_AIS(size_t parent, int border_size,
   pDisplayGrid->Add(m_pCheck_Draw_Realtime_Prediction, 1, wxALL,
                     group_item_spacing);
 
-  m_pText_RealtPred_Speed = new wxTextCtrl(panelAIS, -1);
+  m_pText_RealtPred_Speed = new wxTextCtrl(panelAIS, -1, "TEXT  ");
   pDisplayGrid->Add(m_pText_RealtPred_Speed, 1, wxALL | wxALIGN_RIGHT,
                     group_item_spacing);
 
@@ -5026,7 +5040,7 @@ void options::CreatePanel_AIS(size_t parent, int border_size,
       _("Allow attenuation of less critical targets if more than ... targets"));
   pDisplayGrid->Add(m_pCheck_Scale_Priority, 1, wxALL, group_item_spacing);
 
-  m_pText_Scale_Priority = new wxTextCtrl(panelAIS, -1);
+  m_pText_Scale_Priority = new wxTextCtrl(panelAIS, -1, "TEXT  ");
   pDisplayGrid->Add(m_pText_Scale_Priority, 1, wxALL | wxALIGN_RIGHT,
                     group_item_spacing);
 
@@ -5048,7 +5062,7 @@ void options::CreatePanel_AIS(size_t parent, int border_size,
       panelAIS, -1, _("Show names with AIS targets at scale greater than 1:"));
   pDisplayGrid->Add(m_pCheck_Show_Target_Name, 1, wxALL, group_item_spacing);
 
-  m_pText_Show_Target_Name_Scale = new wxTextCtrl(panelAIS, -1);
+  m_pText_Show_Target_Name_Scale = new wxTextCtrl(panelAIS, -1, "TEXT     ");
   pDisplayGrid->Add(m_pText_Show_Target_Name_Scale, 1, wxALL | wxALIGN_RIGHT,
                     group_item_spacing);
 
@@ -5058,8 +5072,8 @@ void options::CreatePanel_AIS(size_t parent, int border_size,
 
   wxString Wpl_Action[] = {_("APRS position report"), _("Create mark")};
   m_pWplAction = new wxChoice(panelAIS, wxID_ANY, wxDefaultPosition,
-                              m_pShipIconType->GetSize(), 2, Wpl_Action);
-  pDisplayGrid->Add(m_pWplAction, 0, wxALIGN_RIGHT | wxALL, group_item_spacing);
+                              wxDefaultSize, 2, Wpl_Action);
+  pDisplayGrid->Add(m_pWplAction, 1, wxALIGN_RIGHT | wxALL, group_item_spacing);
 
   // Rollover
   wxStaticBox* rolloverBox = new wxStaticBox(panelAIS, wxID_ANY, _("Rollover"));
@@ -5147,7 +5161,7 @@ void options::CreatePanel_AIS(size_t parent, int border_size,
       panelAIS, -1, _("Enable Target Alert Acknowledge timeout (min)"));
   pAlertGrid->Add(m_pCheck_Ack_Timout, 1, wxALL, group_item_spacing);
 
-  m_pText_ACK_Timeout = new wxTextCtrl(panelAIS, -1);
+  m_pText_ACK_Timeout = new wxTextCtrl(panelAIS, -1, "TEXT  ");
   pAlertGrid->Add(m_pText_ACK_Timeout, 1, wxALL | wxALIGN_RIGHT,
                   group_item_spacing);
 
@@ -6245,7 +6259,7 @@ void options::SetInitialSettings(void) {
   m_pCheck_Rollover_COG->SetValue(g_bAISRolloverShowCOG);
   m_pCheck_Rollover_CPA->SetValue(g_bAISRolloverShowCPA);
 
-  m_pSlider_Zoom->SetValue(g_chart_zoom_modifier);
+  m_pSlider_Zoom_Raster->SetValue(g_chart_zoom_modifier_raster);
   m_pSlider_Zoom_Vector->SetValue(g_chart_zoom_modifier_vector);
 
   m_pSlider_GUI_Factor->SetValue(g_GUIScaleFactor);
@@ -6413,6 +6427,8 @@ void options::SetInitialVectorSettings(void) {
     pCheck_META->SetValue(ps52plib->m_bShowMeta);
     pCheck_SHOWIMPTEXT->SetValue(ps52plib->m_bShowS57ImportantTextOnly);
     pCheck_SCAMIN->SetValue(ps52plib->m_bUseSCAMIN);
+    pCheck_SuperSCAMIN->SetValue(ps52plib->m_bUseSUPER_SCAMIN);
+
     pCheck_DECLTEXT->SetValue(ps52plib->m_bDeClutterText);
     pCheck_NATIONALTEXT->SetValue(ps52plib->m_bShowNationalTexts);
 
@@ -7135,7 +7151,7 @@ void options::OnApplyClick(wxCommandEvent& event) {
   g_bAISRolloverShowCOG = m_pCheck_Rollover_COG->GetValue();
   g_bAISRolloverShowCPA = m_pCheck_Rollover_CPA->GetValue();
 
-  g_chart_zoom_modifier = m_pSlider_Zoom->GetValue();
+  g_chart_zoom_modifier_raster = m_pSlider_Zoom_Raster->GetValue();
   g_chart_zoom_modifier_vector = m_pSlider_Zoom_Vector->GetValue();
   g_cm93_zoom_factor = m_pSlider_CM93_Zoom->GetValue();
   g_GUIScaleFactor = m_pSlider_GUI_Factor->GetValue();
@@ -7231,6 +7247,7 @@ void options::OnApplyClick(wxCommandEvent& event) {
     ps52plib->m_bShowNationalTexts = pCheck_NATIONALTEXT->GetValue();
     ps52plib->m_bShowS57ImportantTextOnly = pCheck_SHOWIMPTEXT->GetValue();
     ps52plib->m_bUseSCAMIN = pCheck_SCAMIN->GetValue();
+    ps52plib->m_bUseSUPER_SCAMIN = pCheck_SuperSCAMIN->GetValue();
 
     ps52plib->m_nSymbolStyle =
         pPointStyle->GetSelection() == 0 ? PAPER_CHART : SIMPLIFIED;
