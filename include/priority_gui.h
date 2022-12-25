@@ -42,22 +42,26 @@ public:
 private:
   void OnMoveUpClick(wxCommandEvent& event);
   void OnMoveDownClick(wxCommandEvent& event);
+  void OnRefreshClick(wxCommandEvent& event);
+  void OnClearClick(wxCommandEvent& event);
   void OnItemSelected(wxCommandEvent& event);
 
   void ProcessMove(wxTreeItemId, int dir);
 
   void Populate();
   void AddLeaves(const std::vector<std::string> &map_list,
-                            size_t map_index,
+                            size_t map_index, std::string map_name,
                             wxTreeItemId leaf_parent);
+  void AdjustSatPriority();
 
   wxButton *btnMoveUp, *btnMoveDown;
+  wxButton *btnRefresh, *btnClear;
   wxTreeCtrl *m_prioTree;
   std::vector<std::string> m_map;
 
   size_t m_selmap_index;
   size_t m_selIndex;
-  wxTreeItemId m_selID;
+  wxString m_selString;
 
   int m_maxStringLength;
 };

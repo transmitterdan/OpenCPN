@@ -148,6 +148,7 @@ typedef __LA_INT64_T la_int64_t;  //  "older" libarchive versions support
 #include "comm_drv_n0183_serial.h"
 #include "comm_drv_n0183_net.h"
 #include "comm_drv_registry.h"
+#include "comm_drv_n2k.h"
 
 #ifdef __OCPN__ANDROID__
 #include <dlfcn.h>
@@ -8495,3 +8496,33 @@ const std::unordered_map<std::string, std::string> GetAttributes(DriverHandle ha
 
   return found->get()->GetAttributes();
 }
+
+CommDriverResult WriteCommDriverN2K( DriverHandle handle, int PGN,
+                                     int destinationCANAddress, int priority,
+                                     const std::shared_ptr <std::vector<uint8_t>> &payload){
+
+  uint64_t _PGN;
+  _PGN = PGN;
+
+  // Find the driver from the handle
+  auto& registry = CommDriverRegistry::GetInstance();
+  auto drivers = registry.GetDrivers();
+  auto func = [handle](const DriverPtr d) { return d->Key() == handle; };
+  auto driver = std::find_if(drivers.begin(), drivers.end(), func);
+
+  if (driver == drivers.end()){
+    return RESULT_COMM_INVALID_HANDLE;
+  }
+
+  auto dest_addr = std::make_shared<const NavAddr2000>(driver->get()->iface, destinationCANAddress);
+
+  const std::vector<uint8_t> load;
+  size_t data_len = payload.get()->size();
+
+  auto msg = std::make_shared<const Nmea2000Msg>(_PGN, *(payload), dest_addr);
+
+  bool result = driver->get()->SendMessage(msg, dest_addr);
+
+  return RESULT_COMM_NO_ERROR;
+}
+
