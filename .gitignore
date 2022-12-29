@@ -11,5 +11,6 @@ crowdin.yaml
 buildwin/NSIS_Unicode/Include/Langstrings_*.nsh
 buildwin/crashrpt/CrashRpt1402.dll
 buildwin/crashrpt/CrashSender1402.exe
+buildwin/wxWidgets
 cache
 .DS_Store
