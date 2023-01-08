@@ -21,39 +21,42 @@
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
  **************************************************************************/
 
-#ifndef __SHADERS_H__
-#define __SHADERS_H__
+#ifndef __XSHADERS_H__
+#define __XSHADERS_H__
 
 #include <wx/wxprec.h>
 #ifndef WX_PRECOMP
 #include <wx/wx.h>
 #endif  // precompiled headers
 
-#include "dychart.h"
+#include "s52plibGL.h"
+
+#ifdef __OCPN__ANDROID__
+#include "qdebug.h"
+#endif
 
 #include <memory>
 #include <vector>
 #include <fstream>
 #include <unordered_map>
 
-class GLShaderProgram;
+class CGLShaderProgram;
 
-extern GLShaderProgram *pAALine_shader_program[2];
-extern GLShaderProgram *pcolor_tri_shader_program[2];
-extern GLShaderProgram *ptexture_2D_shader_program[2];
-extern GLShaderProgram *pcircle_filled_shader_program[2];
-extern GLShaderProgram *ptexture_2DA_shader_program[2];
-extern GLShaderProgram *pring_shader_program[2];
+extern CGLShaderProgram *pAALine_shader_program[2];
+extern CGLShaderProgram *pCcolor_tri_shader_program[2];
+extern CGLShaderProgram *ptexture_2D_shader_program[2];
+extern CGLShaderProgram *pcircle_filled_shader_program[2];
+extern CGLShaderProgram *ptexture_2DA_shader_program[2];
 
 extern const GLchar* preamble;
 
-class GLShaderProgram
+class CGLShaderProgram
 {
 public:
-    GLShaderProgram() : programId_(0), linked_(false) {
+    CGLShaderProgram() : programId_(0), linked_(false) {
       programId_ = glCreateProgram();
     }
-    ~GLShaderProgram() { }
+    ~CGLShaderProgram() { }
 
     bool addShaderFromSource(std::string const &shaderSource, GLenum shaderType) {
       char const *shaderCStr = shaderSource.c_str();
@@ -140,7 +143,14 @@ public:
 
     }
 
+    GLint getAttributeLocation(const std::string &name) {
+      if(m_attribLocationCache.find(name) != m_attribLocationCache.end())
+        return m_attribLocationCache[name];
 
+      GLint loc = glGetAttribLocation(programId_, name.c_str());
+      m_attribLocationCache[name] = loc;
+      return loc;
+    }
 
 
     GLuint programId() const { return programId_; }
@@ -148,6 +158,7 @@ public:
 
 private:
     std::unordered_map<std::string, GLint> m_uniformLocationCache;
+    std::unordered_map<std::string, GLint> m_attribLocationCache;
     GLuint programId_;
     bool linked_;
     GLint success;
@@ -165,9 +176,9 @@ private:
 };
 
 
-bool loadShaders(int index = 0);
-void reConfigureShaders(int index = 0);
-void unloadShaders();
+bool loadCShaders(int index = 0);
+void reConfigureCShaders(int index = 0);
+void unloadCShaders();
 
-GLShaderProgram *GetStaticTriShader();
+CGLShaderProgram *CGetStaticTriShader();
 #endif
