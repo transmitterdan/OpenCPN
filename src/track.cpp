@@ -91,12 +91,12 @@ millions of points.
 #include "json_event.h"
 #include "nav_object_database.h"
 #include "navutil_base.h"
+#include "own_ship.h"
 #include "routeman.h"
 #include "select.h"
 
 extern WayPointman *pWayPointMan;
 extern Select *pSelect;
-extern double gLat, gLon;
 extern double g_PlanSpeed;
 extern int g_nTrackPrecision;
 extern bool g_bTrackDaily;
@@ -291,10 +291,14 @@ Track *ActiveTrack::DoExtendDaily() {
   TrackPoint *pExtendPoint = NULL;
 
   TrackPoint *pLastPoint = GetPoint(0);
+  if (!pLastPoint->GetCreateTime().IsValid())
+    return NULL;
 
   for (Track* ptrack : g_TrackList) {
     if (!ptrack->m_bIsInLayer && ptrack->m_GUID != m_GUID) {
       TrackPoint *track_node = ptrack->GetLastPoint();
+      if (!track_node->GetCreateTime().IsValid())
+        continue;     // Skip this bad track
       if (track_node->GetCreateTime() <= pLastPoint->GetCreateTime()) {
         if (!pExtendPoint ||
             track_node->GetCreateTime() > pExtendPoint->GetCreateTime()) {
