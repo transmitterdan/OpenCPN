@@ -4,6 +4,8 @@ tags
 index.sh
 build
 cscope.out
+*.po
+*.pot
 *~
 *.kdev*
 *.patch
