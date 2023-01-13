@@ -1224,7 +1224,7 @@ set_target_properties(
     OUTPUT_NAME ${PACKAGE_NAME}
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
-  message(STATUS "PackageNem debug  ${PACKAGE_NAME} ${CMAKE_CURRENT_SOURCE_DIR}")
+  message(STATUS "PackageName debug  ${PACKAGE_NAME} ${CMAKE_CURRENT_SOURCE_DIR}")
 
 target_include_directories(
   ${PACKAGE_NAME}
@@ -1232,13 +1232,16 @@ target_include_directories(
 )
 
 if (MSVC AND NOT OCPN_CI_BUILD)
+  MESSAGE(STATUS "wxWidgets_LIB_DIR = ${wxWidgets_LIB_DIR}")
+  set_target_properties(${PACKAGE_NAME} PROPERTIES VS_DEBUGGER_ENVIRONMENT "\"path=${wxWidgets_LIB_DIR};$(path)\"")
+  MESSAGE(STATUS "PACKAGE_NAME = ${PACKAGE_NAME}")
+  set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PACKAGE_NAME})
   set_target_properties(
   ${PACKAGE_NAME}
   PROPERTIES
     VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PACKAGE_NAME}>"
     VS_DEBUGGER_COMMAND_ARGUMENTS "-p")
-
-endif (MSVC AND not OCPN_CI_BUILD)
+endif (MSVC AND NOT OCPN_CI_BUILD)
 
 if (APPLE)
   target_include_directories(
