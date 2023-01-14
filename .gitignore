@@ -4,8 +4,11 @@ tags
 index.sh
 build
 cscope.out
-*.po
-*.pot
+plugins/chartdldr_pi/po/*.po*
+plugins/dashboard_pi/po/*.po*
+plugins/grib_pi/po/*.po*
+plugins/wmm_pi/po/*.po*
+po/*.po*
 *~
 *.kdev*
 *.patch
