@@ -1573,6 +1573,12 @@ GetActiveRouteGUID(void);  // if no active route, returns wxEmptyString
 
 // API 1.18
 
+//  Scaled display support, as on some GTK3 and Mac Retina devices
+extern DECL_EXP double OCPN_GetDisplayContentScaleFactor();
+
+//  Scaled display support, on Windows devices
+extern DECL_EXP double OCPN_GetWinDIPScaleFactor();
+
 //  Comm Priority query support
 extern DECL_EXP std::vector<std::string> GetPriorityMaps();
 extern DECL_EXP std::vector<std::string> GetActivePriorityIdentifiers();

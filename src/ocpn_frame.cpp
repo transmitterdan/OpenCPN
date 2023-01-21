@@ -2175,6 +2175,9 @@ void MyFrame::ODoSetSize(void) {
     font_size = statusBarFont->GetPointSize();
 #endif
 
+    // Accomodate HDPI displays
+    font_size /= OCPN_GetDisplayContentScaleFactor();
+
     wxFont *pstat_font = FontMgr::Get().FindOrCreateFont(
         font_size, statusBarFont->GetFamily(), statusBarFont->GetStyle(),
         statusBarFont->GetWeight(), false, statusBarFont->GetFaceName());
@@ -5005,6 +5008,8 @@ void MyFrame::OnInitTimer(wxTimerEvent &event) {
 #endif
 
       if (g_MainToolbar) g_MainToolbar->EnableTool(ID_SETTINGS, true);
+
+      UpdateStatusBar();
 
       SendSizeEvent();
 
@@ -8493,8 +8498,8 @@ void LoadS57() {
 
     if (gFrame){
       ps52plib->SetPPMM(g_BasePlatform->GetDisplayDPmm());
-      double dpi_factor = g_BasePlatform->GetDisplayDPIMult(gFrame);
-      ps52plib->SetDIPFactor(dpi_factor);
+      double dip_factor = g_BasePlatform->GetDisplayDIPMult(gFrame);
+      ps52plib->SetDIPFactor(dip_factor);
     }
 
     // preset S52 PLIB scale factors

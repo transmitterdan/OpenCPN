@@ -43,6 +43,10 @@ extern bool g_bSatValid;
 extern int g_SatsInView;
 extern bool g_bopengl;
 
+#ifndef GL_RGBA8
+#define GL_RGBA8 0x8058
+#endif
+
 ocpnCompass::ocpnCompass(ChartCanvas* parent, bool bShowGPS) {
   m_parent = parent;
   m_bshowGPS = bShowGPS;
@@ -65,6 +69,7 @@ ocpnCompass::ocpnCompass(ChartCanvas* parent, bool bShowGPS) {
 #ifdef ocpnUSE_GL
   m_texobj = 0;
 #endif
+  m_texOK = false;
 
   m_scale = 1.0;
   m_cs = GLOBAL_COLOR_SCHEME_RGB;
@@ -83,10 +88,15 @@ ocpnCompass::~ocpnCompass() {
 
 void ocpnCompass::Paint(ocpnDC& dc) {
   if (m_shown && m_StatBmp.IsOk()) {
-#if defined(ocpnUSE_GLES) || \
-    defined(                 \
-        ocpnUSE_GL)  // GLES does not do ocpnDC::DrawBitmap(), so use texture
-    if (g_bopengl && m_texobj) {
+#if defined(ocpnUSE_GLES) || defined(ocpnUSE_GL)
+    if (!m_texobj){
+      // The glContext is known active here,
+      // so safe to create a texture.
+      glGenTextures(1, &m_texobj);
+      CreateTexture();
+    }
+
+    if (g_bopengl && m_texobj /*&& m_texOK*/) {
       glBindTexture(GL_TEXTURE_2D, m_texobj);
       glEnable(GL_TEXTURE_2D);
 
@@ -187,10 +197,11 @@ void ocpnCompass::UpdateStatus(bool bnew) {
     m_lastgpsIconName.Clear();  // force an update to occur
 
   CreateBmp(bnew);
-  if (m_texobj == 0)
+
+#ifdef ocpnUSE_GL
+  if (g_bopengl && m_texobj)
     CreateTexture();
-  else
-    UpdateTexture();
+#endif
 
 }
 
@@ -478,7 +489,7 @@ void ocpnCompass::CreateTexture() {
     m_tex_h = height_pot;
 
     GLuint format = GL_RGBA;
-    GLuint internalformat = format;
+    GLuint internalformat = GL_RGBA8; //format;
     int stride = 4;
 
     if (imgdata) {
@@ -497,7 +508,6 @@ void ocpnCompass::CreateTexture() {
         }
       }
 
-      glGenTextures(1, &m_texobj);
       glBindTexture(GL_TEXTURE_2D, m_texobj);
 
       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -511,6 +521,7 @@ void ocpnCompass::CreateTexture() {
 
       free(teximage);
       glBindTexture(GL_TEXTURE_2D, 0);
+      m_texOK = true;
     }
   }
 #endif
@@ -561,7 +572,7 @@ void ocpnCompass::UpdateTexture() {
     m_tex_h = height_pot;
 
     GLuint format = GL_RGBA;
-    GLuint internalformat = format;
+    GLuint internalformat = GL_RGBA8; //format;
     int stride = 4;
 
     if (imgdata) {
@@ -581,7 +592,7 @@ void ocpnCompass::UpdateTexture() {
       }
 
       glBindTexture(GL_TEXTURE_2D, m_texobj);
-
+      glEnable(GL_TEXTURE_2D);
 
       glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, m_tex_w, m_tex_h, format, GL_UNSIGNED_BYTE, teximage);
 

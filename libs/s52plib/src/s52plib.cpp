@@ -86,21 +86,6 @@ extern "C" wxString *GetpSharedDataLocation();
 #include "qdebug.h"
 #endif
 
-#ifndef __OCPN_USE_GLEW__
- extern PFNGLGENBUFFERSPROC                 s_glGenBuffers;
- extern PFNGLBINDBUFFERPROC                 s_glBindBuffer;
- extern PFNGLBUFFERDATAPROC                 s_glBufferData;
- extern PFNGLDELETEBUFFERSPROC              s_glDeleteBuffers;
-
-#ifndef USE_ANDROID_GLES2
-#define glGenBuffers (s_glGenBuffers)
-#define glBindBuffer (s_glBindBuffer)
-#define glBufferData (s_glBufferData)
-#define glDeleteBuffers (s_glDeleteBuffers)
-#endif
-
-#endif
-
 float g_scaminScale;
 
 //#ifndef __MSVC__
@@ -498,9 +483,9 @@ void s52plib::SetPPMM(float ppmm) {
 
   m_display_size_mm /= m_displayScale;
 
-  wxString msg;
-  msg.Printf("Core s52plib:  ppmm: %g rv_scale_factor: %g  calc_display_size_mm: %g", ppmm, m_rv_scale_factor, m_display_size_mm);
-  wxLogMessage(msg);
+//   wxString msg;
+//   msg.Printf("Core s52plib:  ppmm: %g rv_scale_factor: %g  calc_display_size_mm: %g", ppmm, m_rv_scale_factor, m_display_size_mm);
+//   wxLogMessage(msg);
 }
 
 void s52plib::SetScaleFactorExp(double ChartScaleFactorExp) {
@@ -9456,6 +9441,9 @@ bool s52plib::ObjectRenderCheckCat(ObjRazRules *rzRules) {
           if ( (strncmp(rzRules->obj->FeatureName, "LNDARE", 6) &&
                 strncmp(rzRules->obj->FeatureName, "DEPARE", 6) &&
                 strncmp(rzRules->obj->FeatureName, "SWPARE", 6) &&
+                strncmp(rzRules->obj->FeatureName, "RECTRK", 6) &&
+                strncmp(rzRules->obj->FeatureName, "TSS",    3) &&
+                strncmp(rzRules->obj->FeatureName, "TSEZNE", 6) &&
                 strncmp(rzRules->obj->FeatureName, "DRGARE", 6) &&
                 strncmp(rzRules->obj->FeatureName, "COALNE", 6)) ||
               (!strncmp(rzRules->obj->FeatureName, "LNDARE", 6) && (rzRules->LUP->ruleList->ruleType != RUL_ARE_CO))) {

@@ -426,7 +426,7 @@ void glChartCanvas::Init() {
   m_currentTex = 0;
 
   m_gldc.SetGLCanvas(this);
-  m_gldc.SetDPIFactor(g_BasePlatform->GetDisplayDPIMult(GetParent()));
+  m_gldc.SetDPIFactor(g_BasePlatform->GetDisplayDIPMult(GetParent()));
 
   m_displayScale = 1.0;
 #if defined(__WXOSX__) || defined(__WXGTK3__)
@@ -1908,7 +1908,7 @@ void glChartCanvas::GridDraw() {
   wxColour GridColor = GetGlobalColor(_T ( "SNDG1" ));
 
   if (!m_gridfont.IsBuilt()) {
-    double dpi_factor = g_BasePlatform->GetDisplayDPIMult(this);
+    double dpi_factor = g_BasePlatform->GetDisplayDIPMult(this);
     wxFont *dFont = FontMgr::Get().GetFont(_("ChartTexts"), 0);
     wxFont font = *dFont;
     font.SetPointSize(10 * m_displayScale);
@@ -5362,6 +5362,8 @@ void glChartCanvas::RenderSingleTexture(ocpnDC &dc, float *coords, float *uvCoor
 #if defined(USE_ANDROID_GLES2) || defined(ocpnUSE_GLSL)
 
     GLShaderProgram *shader = ptexture_2D_shader_program[dc.m_canvasIndex];
+    if(!shader) return;
+
     shader->Bind();
 
    // Set up the texture sampler to texture unit 0
