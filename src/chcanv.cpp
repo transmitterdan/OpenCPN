@@ -10326,7 +10326,7 @@ static void RouteLegInfo(ocpnDC &dc, wxPoint ref_point, const wxString &first,
   wxFont *dFont = FontMgr::Get().GetFont(_("RouteLegInfoRollover"));
 
   int pointsize = dFont->GetPointSize();
-  pointsize *= OCPN_GetWinDIPScaleFactor();
+  pointsize /= OCPN_GetWinDIPScaleFactor();
 
   wxFont *psRLI_font = FontMgr::Get().FindOrCreateFont(
         pointsize, dFont->GetFamily(), dFont->GetStyle(),
@@ -10351,8 +10351,8 @@ static void RouteLegInfo(ocpnDC &dc, wxPoint ref_point, const wxString &first,
   if (second.Len()) dc.GetTextExtent(second, &w2, &h2);
 #endif
 
-  h1 /= (OCPN_GetWinDIPScaleFactor() * 100.) / 100;
-  h2 /= (OCPN_GetWinDIPScaleFactor() * 100.) / 100;
+  h1 *= (OCPN_GetWinDIPScaleFactor() * 100.) / 100;
+  h2 *= (OCPN_GetWinDIPScaleFactor() * 100.) / 100;
 
   w = wxMax(w1, w2) + (h1 / 2); // Add a little right pad
   h = h1 + h2;
