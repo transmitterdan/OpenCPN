@@ -2293,10 +2293,14 @@ void glChartCanvas::ShipDraw(ocpnDC &dc) {
                                                      // less than 20 pixel
       float v = (nominal_ownship_size_pixels * scale_factor) / 3;
 
-      wxPen ppPen1(GetGlobalColor(_T ( "YELO1" )), v / 10, wxPENSTYLE_SOLID);
-      dc.SetPen(ppPen1);
-      dc.SetBrush(
-          wxBrush(GetGlobalColor(_T ( "URED" )), wxBRUSHSTYLE_TRANSPARENT));
+      wxPen ppSmallScaleShip;
+      if (SHIP_NORMAL == m_pParentCanvas->m_ownship_state)
+        ppSmallScaleShip = wxPen(GetGlobalColor(_T ( "URED" )), v / 5, wxPENSTYLE_SOLID);
+      else
+        ppSmallScaleShip = wxPen(GetGlobalColor(_T ( "YELO1" )), v / 5, wxPENSTYLE_SOLID);
+      dc.SetPen(ppSmallScaleShip);
+
+      dc.SetBrush(wxBrush(GetGlobalColor(_T ( "URED" )), wxBRUSHSTYLE_TRANSPARENT));
 
       // start with cross
       dc.DrawLine((-v * 1.2) + lShipMidPoint.x, lShipMidPoint.y,
@@ -4474,9 +4478,9 @@ void glChartCanvas::Render() {
       // Simple low pass filter
       g_gl_ms_per_frame = g_gl_ms_per_frame * (1. - filter) +
                           ((double)(g_glstopwatch.Time()) * filter);
-      //            if(g_gl_ms_per_frame > 0)
-      //                printf(" OpenGL frame time: %3.0f  %3.0f\n",
-      //                g_gl_ms_per_frame, 1000./ g_gl_ms_per_frame);
+                  if(g_gl_ms_per_frame > 0)
+                      printf(" OpenGL frame time: %3.0f ms-->  %3.0fFPS\n",
+                      g_gl_ms_per_frame, 1000./ g_gl_ms_per_frame);
     }
   }
 
