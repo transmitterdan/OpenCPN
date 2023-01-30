@@ -130,6 +130,7 @@ extern GLuint g_raster_format;
 #include "observable_globvar.h"
 #include "ser_ports.h"
 #include "svg_utils.h"
+#include "waypointman_gui.h"
 
 #if !defined(__WXOSX__)
 #define SLIDER_STYLE wxSL_HORIZONTAL | wxSL_AUTOTICKS | wxSL_LABELS
@@ -340,6 +341,7 @@ extern int g_nAutoHideToolbar;
 extern int g_GUIScaleFactor;
 extern int g_ChartScaleFactor;
 extern float g_ChartScaleFactorExp;
+extern float g_MarkScaleFactorExp;
 extern bool g_bRollover;
 extern int g_ShipScaleFactor;
 extern float g_ShipScaleFactorExp;
@@ -2301,7 +2303,7 @@ void options::CreatePanel_Routes(size_t parent, int border_size,
 
   //  Accomodate scaling of icon
   int min_size = GetCharHeight() * 2;
-  min_size = wxMax(min_size, (32 * g_ChartScaleFactorExp) + 4);
+  min_size = wxMax(min_size, (32 * g_MarkScaleFactorExp) + 4);
   pRoutepointDefaultIconChoice->SetMinSize(
       wxSize(GetCharHeight() * 15, min_size));
 
@@ -2364,7 +2366,7 @@ void options::CreatePanel_Routes(size_t parent, int border_size,
 
   //  Accomodate scaling of icon
   int rmin_size = GetCharHeight() * 2;
-  min_size = wxMax(rmin_size, (32 * g_ChartScaleFactorExp) + 4);
+  min_size = wxMax(rmin_size, (32 * g_MarkScaleFactorExp) + 4);
   pWaypointDefaultIconChoice->SetMinSize(
       wxSize(GetCharHeight() * 15, rmin_size));
 
@@ -5399,11 +5401,14 @@ void options::CreatePanel_UI(size_t parent, int border_size,
                                _("Enable Scaled Graphics interface"));
   miscOptions->Add(pResponsive, 0, wxALL, border_size);
 
-  //  This two options are always needed for Android
+  //  These two options are always needed ON for Android
 #ifdef __OCPN__ANDROID__
   pMobile->Hide();
   pResponsive->Hide();
 #endif
+
+  //  "Responsive graphics" option deprecated in O58+
+  pResponsive->Hide();
 
   pZoomButtons =
       new wxCheckBox(itemPanelFont, ID_ZOOMBUTTONS, _("Show Zoom buttons"));
@@ -6864,7 +6869,12 @@ void options::OnApplyClick(wxCommandEvent& event) {
   g_bOverruleScaMin = pScaMinOverruleChckB->GetValue();
 
   //  Any Font changes?
-  if (m_bfontChanged) m_returnChanges |= FONT_CHANGED;
+  if (m_bfontChanged){
+    if (gFrame->GetPrimaryCanvas()->GetglCanvas()) {
+      gFrame->GetPrimaryCanvas()->GetglCanvas()->ResetGridFont();
+    }
+    m_returnChanges |= FONT_CHANGED;
+  }
 
   // Handle Chart Tab
   UpdateWorkArrayFromDisplayPanel();
@@ -7169,6 +7179,8 @@ void options::OnApplyClick(wxCommandEvent& event) {
   g_ChartScaleFactor = m_pSlider_Chart_Factor->GetValue();
   g_ChartScaleFactorExp =
       g_Platform->GetChartScaleFactorExp(g_ChartScaleFactor);
+  g_MarkScaleFactorExp =
+      g_Platform->GetMarkScaleFactorExp(g_ChartScaleFactor);
   g_ShipScaleFactor = m_pSlider_Ship_Factor->GetValue();
   g_ShipScaleFactorExp = g_Platform->GetChartScaleFactorExp(g_ShipScaleFactor);
   g_ENCSoundingScaleFactor = m_pSlider_Text_Factor->GetValue();
@@ -7179,8 +7191,9 @@ void options::OnApplyClick(wxCommandEvent& event) {
       MouseZoom::ui_to_config(g_mouse_zoom_sensitivity_ui);
 
   //  Only reload the icons if user has actually visted the UI page
-  // if(m_bVisitLang)
-  //  pWayPointMan->ReloadAllIcons();
+   if(m_bVisitLang)
+    if (pWayPointMan)
+      WayPointmanGui(*pWayPointMan).ReloadRoutepointIcons();
 
   //FIXME Move these two
   //g_NMEAAPBPrecision = m_choicePrecision->GetCurrentSelection();

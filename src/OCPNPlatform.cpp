@@ -1082,6 +1082,7 @@ void OCPNPlatform::SetDefaultOptions(void) {
   gps_watchdog_timeout_ticks = GPS_TIMEOUT_SECONDS;
   g_n_ownship_min_mm = 8;
   g_bShowMuiZoomButtons = true;
+  g_bresponsive = false;
 
   // Initial S52/S57 options
   if (pConfig) {
@@ -1972,6 +1973,13 @@ float OCPNPlatform::GetChartScaleFactorExp(float scale_linear) {
   factor = wxMin(factor, 6.);
 
   return factor;
+}
+
+float OCPNPlatform::GetMarkScaleFactorExp(float scale_linear) {
+  if(scale_linear <= 0)
+    return GetChartScaleFactorExp(scale_linear);
+  else
+    return GetChartScaleFactorExp(scale_linear-1);
 }
 
 // float OCPNPlatform::GetDIPScaleFactor() {
