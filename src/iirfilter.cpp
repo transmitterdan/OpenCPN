@@ -14,35 +14,34 @@ iirfilter::iirfilter(double fc, int tp) {
   wxASSERT(tp == IIRFILTER_TYPE_DEG || tp == IIRFILTER_TYPE_LINEAR ||
     tp == IIRFILTER_TYPE_RAD);
   b1 = 1.0;
-  a0 = 1 - b1;
+  a0 = 0;
   setFC(fc);
   type = tp;
   reset();
+  accum = NAN;
 }
 
 double iirfilter::filter(double data) {
-  if (!std::isnan(data) && !std::isnan(b1)) {
-    if (std::isnan(accum)) accum = 0.0;
+  if (!std::isnan(data) && !std::isnan(b1) && !std::isnan(accum)) {
     switch (type) {
-    case IIRFILTER_TYPE_LINEAR:
-      accum = accum * b1 + a0 * data;
-      break;
+      case IIRFILTER_TYPE_LINEAR:
+        accum = accum * b1 + a0 * data;
+        break;
 
-    case IIRFILTER_TYPE_DEG:
-      unwrapDeg(data);
-      accum = accum * b1 + a0 * (oldDeg + 360.0 * wraps);
-      break;
+      case IIRFILTER_TYPE_DEG:
+        unwrapDeg(data);
+        accum = accum * b1 + a0 * (oldDeg + 360.0 * wraps);
+        break;
 
-    case IIRFILTER_TYPE_RAD:
-      unwrapRad(data);
-      accum = accum * b1 + a0 * (oldRad + 2.0 * M_PI * wraps);
-      break;
+      case IIRFILTER_TYPE_RAD:
+        unwrapRad(data);
+        accum = accum * b1 + a0 * (oldRad + 2.0 * M_PI * wraps);
+        break;
 
-    default:
-      wxASSERT(false);
+      default:
+        wxASSERT(false);
     }
-  }
-  else
+  } else
     accum = data;
   return get();
 }
@@ -85,13 +84,13 @@ double iirfilter::get(void) {
   double res = accum;
   switch (type) {
   case IIRFILTER_TYPE_DEG:
-    while (res < 0) res += 360.0;
-    while (res > 360) res -= 360.0;
+    while (res < -180) res += 360.0;
+    while (res > 180) res -= 360.0;
     break;
 
   case IIRFILTER_TYPE_RAD:
-    while (res < 0) res += 2.0 * M_PI;
-    while (res > 2.0 * M_PI) res -= 2.0 * M_PI;
+    while (res < -M_PI) res += 2.0 * M_PI;
+    while (res > M_PI) res -= 2.0 * M_PI;
     break;
   }
   return res;
