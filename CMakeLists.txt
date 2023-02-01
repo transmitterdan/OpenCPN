@@ -2890,7 +2890,11 @@ endif (UNIX AND NOT APPLE)
 # Apple application bundle
 #
 if (APPLE)
-  set(APKG_MOD $ENV{pkg_mod})
+  if($ENV{pkg_mod})
+    set(APKG_MOD $ENV{pkg_mod})
+  else()
+    set(APKG_MOD 11)
+  endif()
   message(STATUS "MacOS PKG_MOD: ${APKG_MOD} ")
 
   # -- Run the BundleUtilities cmake code
@@ -3154,6 +3158,8 @@ if (NOT QT_ANDROID)
       message(STATUS
         "OpenSSL found ${OPENSSL_INCLUDE_DIR} ${OPENSSL_LIBRARIES}"
       )
+      target_include_directories(opencpn-cmd PRIVATE ${OPENSSL_INCLUDE_DIR})
+      target_include_directories(${PACKAGE_NAME} PRIVATE ${OPENSSL_INCLUDE_DIR})
       target_link_libraries(opencpn-cmd PRIVATE ${OPENSSL_LIBRARIES})
       add_definitions(-DMG_ENABLE_OPENSSL)
     endif ()
