@@ -54,7 +54,7 @@ else
         old=$(basename $src)
         new=$(echo $old | sed "s/+/+${BUILD_NR}./")
         if [ "$old" != "$new" ]; then $SUDO mv "$old" "$new"; fi
-        cloudsmith push raw --republish --no-wait-for-sync $REPO $new
+        cloudsmith push raw --republish dan-dickey/opencpn-github $new
     done
     set +x
 fi
