@@ -5,6 +5,7 @@ name: Windows
 'on':
   push:
     branches:
+      - master
       - mastertd2
     paths-ignore:
       - 'buildandroid/**'
