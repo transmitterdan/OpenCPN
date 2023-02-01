@@ -498,7 +498,7 @@ bool g_bGDAL_Debug;
 
 double g_VPRotate;  // Viewport rotation angle, used on "Course Up" mode
 bool g_bCourseUp;
-int g_COGAvgSec = 15;  // COG average period (sec.) for Course Up Mode
+int g_COGAvgSec = 60;  // COG average period (sec.) for Course Up Mode
 double g_COGAvg;
 bool g_bLookAhead;
 bool g_bskew_comp;

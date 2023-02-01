@@ -901,6 +901,7 @@ set(
   include/idents.h
   include/IDX_entry.h
   include/iENCToolbar.h
+  include/iirfilter.h
   include/kml.h
   include/Layer.h
   include/LinkPropDlg.h
@@ -1029,6 +1030,7 @@ set(MODEL_SRC
   ${CMAKE_SOURCE_DIR}/src/geodesic.cpp
   ${CMAKE_SOURCE_DIR}/src/georef.cpp
   ${CMAKE_SOURCE_DIR}/src/hyperlink.cpp
+  ${CMAKE_SOURCE_DIR}/src/iirfilter.cpp
   ${CMAKE_SOURCE_DIR}/src/logger.cpp
   ${CMAKE_SOURCE_DIR}/src/nav_object_database.cpp
   ${CMAKE_SOURCE_DIR}/src/navutil_base.cpp

@@ -805,7 +805,8 @@ MyFrame::MyFrame(wxFrame *frame, const wxString &title, const wxPoint &pos,
   gSog = NAN;
   gCog = NAN;
 
-  for (int i = 0; i < MAX_COG_AVERAGE_SECONDS; i++) COGTable[i] = NAN;
+  COGiir.setFC(0.5);
+  COGiir.setType(IIRFILTER_TYPE_DEG);
 
   m_fixtime = -1;
 
@@ -5081,34 +5082,10 @@ void MyFrame::HandleBasicNavMsg(std::shared_ptr<const BasicNavDataMsg> msg) {
   if (!std::isnan(gCog)) {
     if (g_COGAvgSec > 0) {
       //    Make a hole
-      for (int i = g_COGAvgSec - 1; i > 0; i--) COGTable[i] = COGTable[i - 1];
-      COGTable[0] = gCog;
-
-      double sum = 0., count = 0;
-      for (int i = 0; i < g_COGAvgSec; i++) {
-        double adder = COGTable[i];
-        if (std::isnan(adder)) continue;
-
-        if (fabs(adder - g_COGAvg) > 180.) {
-          if ((adder - g_COGAvg) > 0.)
-            adder -= 360.;
-          else
-            adder += 360.;
-        }
-
-        sum += adder;
-        count++;
-      }
-      sum /= count;
-
-      if (sum < 0.)
-        sum += 360.;
-      else if (sum >= 360.)
-        sum -= 360.;
-
-      g_COGAvg = sum;
-    } else
-      g_COGAvg = gCog;
+      double COGfc = 0.01 / double(g_COGAvgSec);
+      COGiir.setFC(COGfc);
+    }
+    g_COGAvg = COGiir.filter(gCog);
   }
 
   FilterCogSog();

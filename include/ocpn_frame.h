@@ -42,6 +42,7 @@
 #include "SencManager.h"
 #include "comm_appmsg_bus.h"
 #include "bbox.h"
+#include "iirfilter.h"
 
 wxColour GetGlobalColor(wxString colorName);
 wxColour GetDialogColor(DialogColor color);
@@ -119,7 +120,7 @@ class ArrayOfCDI;
 //    minutes So maybe 5 minute updates should provide sufficient oversampling
 #define TIMER_TC_VALUE_SECONDS 300
 
-#define MAX_COG_AVERAGE_SECONDS 60
+#define MAX_COG_AVERAGE_SECONDS 6000
 #define MAX_COGSOG_FILTER_SECONDS 60
 //----------------------------------------------------------------------------
 // fwd class declarations
@@ -349,7 +350,8 @@ public:
   bool m_bdefer_resize;
   wxSize m_defer_size;
   wxSize m_newsize;
-  double COGTable[MAX_COG_AVERAGE_SECONDS];
+  iirfilter COGiir;
+  // double COGTable[MAX_COG_AVERAGE_SECONDS];
 
   void FastClose();
   void SetChartUpdatePeriod();

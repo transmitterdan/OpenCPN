@@ -3348,14 +3348,6 @@ void ChartCanvas::SetUpMode(int mode) {
   m_upMode = mode;
 
   if (mode != NORTH_UP_MODE) {
-    //    Stuff the COGAvg table in case COGUp is selected
-    double stuff = 0;
-    if (!std::isnan(gCog)) stuff = gCog;
-
-    if (g_COGAvgSec > 0) {
-      for (int i = 0; i < g_COGAvgSec; i++) gFrame->COGTable[i] = stuff;
-    }
-    g_COGAvg = stuff;
     gFrame->FrameCOGTimer.Start(100, wxTIMER_CONTINUOUS);
   } else {
     if (!g_bskew_comp && (fabs(GetVPSkew()) > 0.0001))
