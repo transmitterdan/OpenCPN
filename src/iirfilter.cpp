@@ -82,6 +82,7 @@ int iirfilter::getType(void) { return type; }
 double iirfilter::get(void) {
   if (std::isnan(accum)) return accum;
   double res = accum;
+  wxASSERT((abs(wraps) < 10), "Too many wraps.");
   switch (type) {
   case IIRFILTER_TYPE_DEG:
     while (res < -180) res += 360.0;
