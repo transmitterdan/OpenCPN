@@ -6743,12 +6743,14 @@ void ChartCanvas::ShowChartInfoWindow(int x, int dbIndex) {
       m_pCIWin->FitToChars(char_width, char_height);
 
       wxPoint p;
-      p.x = x;
-      if ((p.x + m_pCIWin->GetWinSize().x) > m_canvas_width)
-        p.x = (m_canvas_width - m_pCIWin->GetWinSize().x) / 2;  // centered
+      p.x = x / GetContentScaleFactor();
+      if ((p.x + m_pCIWin->GetWinSize().x) > (m_canvas_width / GetContentScaleFactor()))
+        p.x = ((m_canvas_width / GetContentScaleFactor())
+                - m_pCIWin->GetWinSize().x) / 2;  // centered
 
       p.y =
-          m_canvas_height - m_Piano->GetHeight() - 4 - m_pCIWin->GetWinSize().y;
+          (m_canvas_height - m_Piano->GetHeight()) / GetContentScaleFactor()
+                - 4 - m_pCIWin->GetWinSize().y;
 
       m_pCIWin->dbIndex = dbIndex;
       m_pCIWin->SetPosition(p);
@@ -12138,9 +12140,13 @@ void ChartCanvas::DrawAllTidesInBBox(ocpnDC &dc, LLBBox &BBox) {
 
   wxFont *dFont = FontMgr::Get().GetFont(_("ExtendedTideIcon"));
   dc.SetTextForeground(FontMgr::Get().GetFontColor(_("ExtendedTideIcon")));
-  int font_size = wxMax(8, dFont->GetPointSize());
-  wxFont *plabelFont = FontMgr::Get().FindOrCreateFont(
-      font_size, dFont->GetFamily(), dFont->GetStyle(), dFont->GetWeight());
+  int font_size = wxMax(10, dFont->GetPointSize());
+  font_size /= g_Platform->GetDisplayDIPMult(this);
+  wxFont *plabelFont =
+          FontMgr::Get().FindOrCreateFont(font_size,
+                                  dFont->GetFamily(), dFont->GetStyle(),
+                                  dFont->GetWeight(), false,
+                                  dFont->GetFaceName());
 
   dc.SetPen(*pblack_pen);
   dc.SetBrush(*pgreen_brush);
@@ -12435,7 +12441,15 @@ void ChartCanvas::DrawAllCurrentsInBBox(ocpnDC &dc, LLBBox &BBox) {
 
   double skew_angle = GetVPRotation();
 
-  pTCFont = FontMgr::Get().GetFont(_("CurrentValue"));
+  wxFont *dFont = FontMgr::Get().GetFont(_("CurrentValue"));
+  int font_size = wxMax(10, dFont->GetPointSize());
+  font_size /= g_Platform->GetDisplayDIPMult(this);
+  pTCFont =
+          FontMgr::Get().FindOrCreateFont(font_size,
+                                  dFont->GetFamily(), dFont->GetStyle(),
+                                  dFont->GetWeight(), false,
+                                  dFont->GetFaceName());
+
 
   float scale_factor = 1.0;
 
