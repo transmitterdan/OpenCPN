@@ -3954,7 +3954,7 @@ void glChartCanvas::Render() {
       bool busy = false;
       if (VPoint.b_quilt && m_pParentCanvas->m_pQuilt->IsQuiltVector() &&
           (m_cache_vp.view_scale_ppm != VPoint.view_scale_ppm ||
-           m_cache_vp.rotation != VPoint.rotation)) {
+           abs(m_cache_vp.rotation - VPoint.rotation)>5.0)) {
         OCPNPlatform::ShowBusySpinner();
         busy = true;
       }

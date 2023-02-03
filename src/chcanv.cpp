@@ -6573,7 +6573,9 @@ void ChartCanvas::OnSize(wxSizeEvent &event) {
 
 
   m_canvas_width *= m_displayScale;
+  wxASSERT_MSG(m_canvas_width > 0, _T("Canvas width is zero!"));
   m_canvas_height *= m_displayScale;
+  wxASSERT_MSG(m_canvas_height > 0, _T("Canvas height is zero!"));
 
   //    Resize the current viewport
   VPoint.pix_width = m_canvas_width;
