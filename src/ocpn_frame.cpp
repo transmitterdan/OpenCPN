@@ -5083,9 +5083,10 @@ void MyFrame::HandleBasicNavMsg(std::shared_ptr<const BasicNavDataMsg> msg) {
     if (g_COGAvgSec > 0) {
       //    Make a hole
       double COGfc = 0.01 / double(g_COGAvgSec);
-      COGiir.setFC(COGfc);
-    }
-    g_COGAvg = COGiir.filter(gCog);
+      if (COGiir.getFC() != COGfc) COGiir.setFC(COGfc);
+      g_COGAvg = COGiir.filter(gCog);
+    } else
+      g_COGAvg = gCog;
   }
 
   FilterCogSog();
