@@ -42,6 +42,7 @@ IMPLEMENT_DYNAMIC_CLASS(SendToPeerDlg, wxDialog)
 BEGIN_EVENT_TABLE(SendToPeerDlg, wxDialog)
   EVT_BUTTON(ID_STP_CANCEL, SendToPeerDlg::OnCancelClick)
   EVT_BUTTON(ID_STP_OK, SendToPeerDlg::OnSendClick)
+  EVT_BUTTON(ID_STP_SCAN, SendToPeerDlg::OnScanClick)
 END_EVENT_TABLE()
 
 SendToPeerDlg::SendToPeerDlg() {
@@ -49,8 +50,6 @@ SendToPeerDlg::SendToPeerDlg() {
   m_pgauge = NULL;
   m_SendButton = NULL;
   m_CancelButton = NULL;
-  m_pRoute = NULL;
-  m_pRoutePoint = NULL;
   premtext = NULL;
 }
 
@@ -133,6 +132,10 @@ void SendToPeerDlg::CreateControls(const wxString& hint) {
 
   comm_box_sizer->Add(m_PeerListBox, 0, wxEXPAND | wxALL, 5);
 
+  m_RescanButton = new wxButton(itemDialog1, ID_STP_SCAN, _("Scan"),
+                                wxDefaultPosition, wxDefaultSize, 0);
+  itemBoxSizer2->Add(m_RescanButton, 0, wxALIGN_CENTER_VERTICAL | wxALL, 5);
+
   //    Add a reminder text box
   itemBoxSizer2->AddSpacer(20);
 
@@ -173,7 +176,7 @@ void SendToPeerDlg::SetMessage(wxString msg) {
 }
 
 void SendToPeerDlg::OnSendClick(wxCommandEvent& event) {
-  if (!m_pRoute)
+  if (m_RouteList.empty() && m_TrackList.empty() && m_RoutePointList.empty())
     Close();
 
   //    Get the selected peer information
@@ -200,13 +203,39 @@ void SendToPeerDlg::OnSendClick(wxCommandEvent& event) {
 
 
   //    And send it out
-  int return_code = SendRoute(server_address, server_name.ToStdString(), m_pRoute, true);
-
-  //if (m_pRoutePoint) RoutePointGui(*m_pRoutePoint).SendToGPS(destPort, this);
+  if (!m_RouteList.empty() || !m_RoutePointList.empty() || !m_TrackList.empty())
+  {
+    int return_code = SendRoute(server_address, server_name.ToStdString(), m_RouteList, m_RoutePointList, m_TrackList, true);
+  }
 
   //    Show( false );
   //    event.Skip();
   Close();
+}
+
+void SendToPeerDlg::OnScanClick(wxCommandEvent& event) {
+   g_Platform->ShowBusySpinner();
+   FindAllOCPNServers(2);
+   g_Platform->HideBusySpinner();
+
+   // Clear the combo box
+   m_PeerListBox->Clear();
+
+   //    Fill in the wxComboBox with all detected peers
+  for (unsigned int i=0; i < g_DNS_cache.size(); i++){
+    wxString item(g_DNS_cache[i]->hostname.c_str());
+
+    //skip "self"
+    if (!g_hostname.IsSameAs(item.BeforeFirst('.'))) {
+      item += " {";
+      item += g_DNS_cache[i]->ip.c_str();
+      item += "}";
+      m_PeerListBox->Append(item);
+    }
+  }
+  if (m_PeerListBox->GetCount())
+    m_PeerListBox->SetSelection(0);
+
 }
 
 void SendToPeerDlg::OnCancelClick(wxCommandEvent& event) {
