@@ -47,7 +47,7 @@
 #define IIRFILTER_CLASS_HEADER
 
   // Define filter types
-enum {
+enum IIRfilter_type {
   IIRFILTER_TYPE_LINEAR = 1 << 0,
   IIRFILTER_TYPE_DEG = 1 << 1,
   IIRFILTER_TYPE_RAD = 1 << 2
@@ -57,15 +57,15 @@ class iirfilter {
 public:
   //    iirfilter() {setFC(0.5); type = IIRFILTER_TYPE_LINEAR; reset();};
 
-  iirfilter(double fc = 0.5, int tp = IIRFILTER_TYPE_LINEAR);
+  iirfilter(double fc = 0.5, IIRfilter_type tp = IIRFILTER_TYPE_LINEAR);
   ~iirfilter() {};
   double filter(double data);   // Return filtered data given new data point
   void reset(double a = 0.0);   // Clear filter
   void setFC(double fc = 0.1);  // Set cutoff frequency
-  void setType(int tp);         // Set type of filter (linear or angle type)
-  double getFC(void);           // Return cutoff frequency
-  int getType(void);            // Return type of filter
-  double get(void);             // Return the current filtered data
+  void setType(IIRfilter_type tp);  // Set type of filter (linear or angle type)
+  double getFC(void) const;           // Return cutoff frequency
+  IIRfilter_type getType(void) const;     // Return type of filter
+  double get(void) const;             // Return the current filtered data
 
 protected:
   void unwrapDeg(double deg);
@@ -78,7 +78,7 @@ private:
   double oldDeg;
   double oldRad;
   int wraps;
-  int type;
+  IIRfilter_type type;
 };
 
 #endif

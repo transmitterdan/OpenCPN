@@ -1930,7 +1930,7 @@ bool ChartCanvas::DoCanvasUpdate(void) {
         //  paper scale equivalent. Note that first chart opened on application
         //  startup (bOpenSpecified = true) will open at the config saved scale
         if (bNewChart && !g_bPreserveScaleOnX && !bOpenSpecified) {
-          proposed_scale_onscreen = m_singleChart->GetNativeScale() / 2;
+          proposed_scale_onscreen = (double) m_singleChart->GetNativeScale() / 2.0;
           double equivalent_vp_scale =
               GetCanvasScaleFactor() / proposed_scale_onscreen;
           double new_scale_ppm =
