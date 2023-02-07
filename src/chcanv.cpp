@@ -656,7 +656,7 @@ ChartCanvas::ChartCanvas(wxFrame *frame, int canvasIndex)
 
   //    Build icons for tide/current points
   ocpnStyle::Style *style = g_StyleManager->GetCurrentStyle();
-  m_bmTideDay = style->GetIcon(_T("tidesml"));
+  m_bmTideDay = style->GetIconScaled(_T("tidesml"), 1. / g_Platform->GetDisplayDIPMult(this));
 
   //    Dusk
   m_bmTideDusk = CreateDimBitmap(m_bmTideDay, .50);
@@ -12188,8 +12188,17 @@ void ChartCanvas::DrawAllTidesInBBox(ocpnDC &dc, LLBBox &BBox) {
   // of a raster symbol (e.g.BOYLAT)
   //  This is a bit of a hack that will suffice until until we get fully
   //  scalable ENC symbol sets
+  //   float nominal_icon_size_pixels = 48;  // 3 x 16
+  //   float pix_factor = nominal_icon_size_pixels / icon_pixelRefDim;
+
+  // or, x times size of text font
+  wxScreenDC sdc;
+  int height;
+  sdc.GetTextExtent("M", NULL, &height, NULL, NULL, plabelFont);
+  height *= g_Platform->GetDisplayDIPMult(this);
   float nominal_icon_size_pixels = 48;  // 3 x 16
-  float pix_factor = nominal_icon_size_pixels / icon_pixelRefDim;
+  float pix_factor = (2 * height) / nominal_icon_size_pixels;
+
 
 #else
   //  Yet another method goes like this:
@@ -12218,6 +12227,8 @@ void ChartCanvas::DrawAllTidesInBBox(ocpnDC &dc, LLBBox &BBox) {
                         1.2;  // soften the scale factor a bit
 
   scale_factor *= user_scale_factor;
+  scale_factor *= GetContentScaleFactor();
+
 
   {
     double lon_last = 0.;
@@ -12373,6 +12384,7 @@ void ChartCanvas::DrawAllTidesInBBox(ocpnDC &dc, LLBBox &BBox) {
                   if (pmsd) s.Append(wxString(pmsd->units_abbrv, wxConvUTF8));
                   int wx1;
                   dc.GetTextExtent(s, &wx1, NULL);
+                  wx1 *= g_Platform->GetDisplayDIPMult(this);
                   dc.DrawText(s, r.x - (wx1 / 2), yDraw + height);
                 }
               }
@@ -12455,7 +12467,6 @@ void ChartCanvas::DrawAllCurrentsInBBox(ocpnDC &dc, LLBBox &BBox) {
 
   //  Set the onscreen size of the symbol
   //  Compensate for various display resolutions
-  float icon_pixelRefDim = 5;
 
 #if 0
     float nominal_icon_size_mm = g_Platform->GetDisplaySizeMM() *3 / 1000; // Intended physical rendered size onscreen
@@ -12471,10 +12482,22 @@ void ChartCanvas::DrawAllCurrentsInBBox(ocpnDC &dc, LLBBox &BBox) {
     float pix_factor = nominal_icon_size_pixels / icon_pixelRefDim;
 #endif
 
+#ifndef __OCPN__ANDROID__
+  // or, x times size of text font
+  wxScreenDC sdc;
+  int height;
+  sdc.GetTextExtent("M", NULL, &height, NULL, NULL, pTCFont);
+  height *= g_Platform->GetDisplayDIPMult(this);
+  float nominal_icon_size_pixels = 15;
+  float pix_factor = (1 * height) / nominal_icon_size_pixels;
+
+#else
   //  Yet another method goes like this:
   //  Set the onscreen size of the symbol
   //  Compensate for various display resolutions
-  //  Develop empirically, making a symbol about 16 mm tall
+  //  Develop empirically....
+  float icon_pixelRefDim = 5;
+
   double symHeight =
       icon_pixelRefDim /
       GetPixPerMM();  // from draw instructions, symbol is xx pix high
@@ -12486,6 +12509,7 @@ void ChartCanvas::DrawAllCurrentsInBBox(ocpnDC &dc, LLBBox &BBox) {
 
   float targetHeight = wxMin(targetHeight0, displaySize / 50);
   double pix_factor = targetHeight / symHeight;
+#endif
 
   scale_factor *= pix_factor;
 
@@ -12496,11 +12520,7 @@ void ChartCanvas::DrawAllCurrentsInBBox(ocpnDC &dc, LLBBox &BBox) {
 
   scale_factor *= user_scale_factor;
 
-  //  TODO  Convert this method to "DPI-Pixel aware"
-#ifdef __WXMSW__
-  double csf = GetContentScaleFactor();
-  scale_factor /= csf;
-#endif
+  scale_factor *= GetContentScaleFactor();
 
   {
     for (int i = 1; i < ptcmgr->Get_max_IDX() + 1; i++) {
