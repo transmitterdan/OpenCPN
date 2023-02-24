@@ -10,7 +10,7 @@ name: Windows
       - 'buildandroid/**'
   pull_request:
     branches:
-      - master
+      - main
     paths-ignore:
       - 'buildandroid/**'
 
