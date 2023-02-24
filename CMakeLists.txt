@@ -2582,14 +2582,15 @@ endif (APPLE)
 #
 if (WIN32 AND NOT UNIX)
   if (OCPN_BUNDLE_WXDLLS)
-    file(GLOB wxdll_files
-      "${wxWidgets_LIB_DIR}/wxmsw32u_*.dll"
-      "${wxWidgets_LIB_DIR}/wxbase32u_*.dll"
-    )
+    SET(wxWidgets_LibFiles ${wxWidgets_LIB_DIR}/*.dll)
+    file(GLOB wxdll_files ${wxWidgets_LibFiles})
     install(FILES ${wxdll_files} DESTINATION ".")
-    list(LENGTH "${wxdll_files}" wxdll_count)
+    list(LENGTH wxdll_files wxdll_count)
+	if(wxdll_count LESS 2)
+	    message(FATAL_ERROR "Illegal wxdll_count=${wxdll_count}")
+    endif ()
     message(STATUS
-      "${wxdll_count} wxWidgets DLLs bundled into the installer package..."
+      "${wxdll_count} wxWidgets DLLs bundled into the installer package... ${wxdll_files}"
     )
   endif ()
   if (OCPN_BUNDLE_VCDLLS)
