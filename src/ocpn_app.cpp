@@ -1063,8 +1063,6 @@ bool MyApp::OnInit() {
 #endif
 
   GpxDocument::SeedRandom();
-  safe_mode::set_mode(false);
-
   last_own_ship_sog_cog_calc_ts = wxInvalidDateTime;
 
 #if defined(__WXGTK__) && defined(ocpnUSE_GLES) && defined(__ARM_ARCH)
@@ -1132,7 +1130,7 @@ bool MyApp::OnInit() {
         if (wxFileExists(lockFile)) wxRemoveFile(lockFile);
 
         wxMessageBox(_("Sorry, an existing instance of OpenCPN may be too busy "
-                       "too respond.\nPlease retry."),
+                       "to respond.\nPlease retry."),
                      wxT("OpenCPN"), wxICON_INFORMATION | wxOK);
       }
       delete client;

@@ -43,6 +43,7 @@
 #include "comm_appmsg_bus.h"
 #include "bbox.h"
 #include "iirfilter.h"
+#include "load_errors_dlg.h"
 
 wxColour GetGlobalColor(wxString colorName);
 wxColour GetDialogColor(DialogColor color);
@@ -432,6 +433,8 @@ private:
   int m_nMasterToolCountShown;
   wxTimer m_recaptureTimer;
   bool m_b_new_data;
+
+  std::unique_ptr<LoadErrorsDlgCtrl> m_load_errors_dlg_ctrl;
 
   ObservableListener listener_basic_navdata;
   ObservableListener listener_gps_watchdog;
