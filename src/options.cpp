@@ -132,10 +132,14 @@ extern GLuint g_raster_format;
 #include "svg_utils.h"
 #include "waypointman_gui.h"
 
-#if !defined(__WXOSX__)
-#define SLIDER_STYLE wxSL_HORIZONTAL | wxSL_AUTOTICKS | wxSL_LABELS
+#ifdef __WXOSX__
+  #if wxCHECK_VERSION(3,2,0)
+    #define SLIDER_STYLE wxSL_HORIZONTAL | wxSL_AUTOTICKS | wxSL_LABELS
+  #else
+    #define SLIDER_STYLE wxSL_HORIZONTAL | wxSL_AUTOTICKS
+  #endif
 #else
-#define SLIDER_STYLE wxSL_HORIZONTAL | wxSL_AUTOTICKS
+  #define SLIDER_STYLE wxSL_HORIZONTAL | wxSL_AUTOTICKS | wxSL_LABELS
 #endif
 
 wxString GetOCPNKnownLanguage(const wxString lang_canonical,
@@ -5514,7 +5518,7 @@ void options::CreatePanel_UI(size_t parent, int border_size,
 #endif
 
   sliderSizer->Add(
-      new wxStaticText(itemPanelFont, wxID_ANY, "Mouse wheel zoom sensitivity"),
+      new wxStaticText(itemPanelFont, wxID_ANY, _("Mouse wheel zoom sensitivity")),
       inputFlags);
   m_pMouse_Zoom_Slider = new MouseZoomSlider(itemPanelFont, m_sliderSize);
   sliderSizer->Add(m_pMouse_Zoom_Slider, 0, wxALL, border_size);

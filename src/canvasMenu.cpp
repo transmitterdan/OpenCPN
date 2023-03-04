@@ -257,20 +257,17 @@ CanvasMenuHandler::~CanvasMenuHandler() {}
 
 void CanvasMenuHandler::PrepareMenuItem( wxMenuItem *item ){
 #if defined(__WXMSW__)
-  if (m_DIPFactor == 1.0){
-    wxColour ctrl_back_color = GetGlobalColor(_T("DILG1"));    // Control Background
-    item->SetBackgroundColour(ctrl_back_color);
-    wxColour menu_text_color = GetGlobalColor(_T ( "UITX1" ));
-    item->SetTextColour(menu_text_color);
-  }
+  wxColour ctrl_back_color = GetGlobalColor(_T("DILG1"));    // Control Background
+  item->SetBackgroundColour(ctrl_back_color);
+  wxColour menu_text_color = GetGlobalColor(_T ( "UITX1" ));
+  item->SetTextColour(menu_text_color);
 #endif
 }
 
 void CanvasMenuHandler::MenuPrepend1(wxMenu *menu, int id, wxString label) {
   wxMenuItem *item = new wxMenuItem(menu, id, label);
 #if defined(__WXMSW__)
-  if (m_DIPFactor == 1.0)
-    item->SetFont(m_scaledFont);
+  item->SetFont(m_scaledFont);
 #endif
 
 #ifdef __OCPN__ANDROID__
@@ -287,8 +284,7 @@ void CanvasMenuHandler::MenuPrepend1(wxMenu *menu, int id, wxString label) {
 void CanvasMenuHandler::MenuAppend1(wxMenu *menu, int id, wxString label) {
   wxMenuItem *item = new wxMenuItem(menu, id, label);
 #if defined(__WXMSW__)
-  if (m_DIPFactor == 1.0)
-    item->SetFont(m_scaledFont);
+  item->SetFont(m_scaledFont);
 #endif
 
 #ifdef __OCPN__ANDROID__
@@ -304,8 +300,7 @@ void CanvasMenuHandler::MenuAppend1(wxMenu *menu, int id, wxString label) {
 
 void CanvasMenuHandler::SetMenuItemFont1(wxMenuItem *item) {
 #if defined(__WXMSW__)
-  if (m_DIPFactor == 1.0)
-    item->SetFont(m_scaledFont);
+  item->SetFont(m_scaledFont);
 #endif
 
 #if defined(__OCPN__ANDROID__)
@@ -1022,8 +1017,7 @@ void CanvasMenuHandler::CanvasPopupMenu(int x, int y, int seltype) {
                                          (*it)->GetHelp(), (*it)->GetKind());
 
 #ifdef __WXMSW__
-        if (m_DIPFactor == 1.0)
-          pmi->SetFont(m_scaledFont);
+        pmi->SetFont(m_scaledFont);
 #endif
         PrepareMenuItem( pmi );
         submenu->Append(pmi);
@@ -1040,8 +1034,7 @@ void CanvasMenuHandler::CanvasPopupMenu(int x, int y, int seltype) {
                                      pimis->pmenu_item->GetHelp(),
                                      pimis->pmenu_item->GetKind(), submenu);
 #ifdef __WXMSW__
-    if (m_DIPFactor == 1.0)
-      pmi->SetFont(m_scaledFont);
+    pmi->SetFont(m_scaledFont);
 #endif
 
     PrepareMenuItem( pmi );
@@ -1317,19 +1310,33 @@ void CanvasMenuHandler::PopupMenuHandler(wxCommandEvent &event) {
       break;
 
     case ID_WP_MENU_CLEAR_ANCHORWATCH:
+    {
+      wxString guid = wxEmptyString;
       if (pAnchorWatchPoint1 == m_pFoundRoutePoint) {
         pAnchorWatchPoint1 = NULL;
+        guid = g_AW1GUID;
         g_AW1GUID.Clear();
       } else if (pAnchorWatchPoint2 == m_pFoundRoutePoint) {
         pAnchorWatchPoint2 = NULL;
+        guid = g_AW2GUID;
         g_AW2GUID.Clear();
       }
+      if(!guid.IsEmpty()) {
+        wxJSONValue v;
+        v[_T("GUID")] = guid;
+        wxString msg_id(_T("OCPN_ANCHOR_WATCH_CLEARED"));
+        g_pi_manager->SendJSONMessageToAllPlugins(msg_id, v);
+      }
       break;
+    }
 
     case ID_WP_MENU_SET_ANCHORWATCH:
+    {
+      wxString guid = wxEmptyString;
       if (pAnchorWatchPoint1 == NULL) {
         pAnchorWatchPoint1 = m_pFoundRoutePoint;
         g_AW1GUID = pAnchorWatchPoint1->m_GUID;
+        guid = g_AW1GUID;
         wxString nn;
         nn = m_pFoundRoutePoint->GetName();
         if (nn.IsNull()) {
@@ -1339,6 +1346,7 @@ void CanvasMenuHandler::PopupMenuHandler(wxCommandEvent &event) {
       } else if (pAnchorWatchPoint2 == NULL) {
         pAnchorWatchPoint2 = m_pFoundRoutePoint;
         g_AW2GUID = pAnchorWatchPoint2->m_GUID;
+        guid = g_AW2GUID;
         wxString nn;
         nn = m_pFoundRoutePoint->GetName();
         if (nn.IsNull()) {
@@ -1346,7 +1354,14 @@ void CanvasMenuHandler::PopupMenuHandler(wxCommandEvent &event) {
           m_pFoundRoutePoint->SetName(nn);
         }
       }
+      if(!guid.IsEmpty()) {
+        wxJSONValue v;
+        v[_T("GUID")] = guid;
+        wxString msg_id(_T("OCPN_ANCHOR_WATCH_SET"));
+        g_pi_manager->SendJSONMessageToAllPlugins(msg_id, v);
+      }
       break;
+    }
 
     case ID_DEF_MENU_ACTIVATE_MEASURE:
       parent->StartMeasureRoute();
