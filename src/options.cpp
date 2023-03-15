@@ -3387,7 +3387,7 @@ void options::CreatePanel_VectorCharts(size_t parent, int border_size,
     optionsColumn->Add(new wxStaticText(ps57Ctl, wxID_ANY, _T("")));
 
     // display options
-    optionsColumn->Add(new wxStaticText(ps57Ctl, wxID_ANY, _("Display")),
+    optionsColumn->Add(new wxStaticText(ps57Ctl, wxID_ANY, _("")),
                        groupLabelFlags);
 
     wxBoxSizer* miscSizer = new wxBoxSizer(wxVERTICAL);
@@ -3599,7 +3599,7 @@ void options::CreatePanel_VectorCharts(size_t parent, int border_size,
     miscSizer->Add(pCheck_SOUNDG, inputFlags);
 
     pCheck_META = new wxCheckBox(ps57Ctl, ID_METACHECKBOX,
-                                 _("Chart Information Objects"));
+                                  _("Chart Information Objects"));
     pCheck_META->SetValue(FALSE);
     miscSizer->Add(pCheck_META, inputFlags);
 

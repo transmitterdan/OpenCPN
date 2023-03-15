@@ -62,6 +62,7 @@ wxDEFINE_EVENT(EVT_N2K_129025, ObservedEvt);
 wxDEFINE_EVENT(EVT_N2K_129026, ObservedEvt);
 wxDEFINE_EVENT(EVT_N2K_127250, ObservedEvt);
 wxDEFINE_EVENT(EVT_N2K_129540, ObservedEvt);
+wxDEFINE_EVENT(EVT_N2K_ALL, ObservedEvt);
 
 #ifdef HAVE_READLINK
 
@@ -298,50 +299,35 @@ void Multiplexer::InitN2KCommListeners() {
   // Create a series of N2K listeners
   // to allow minimal N2K Debug window logging
 
-  // GNSS Position Data PGN  129029
+  // All N2K
   //----------------------------------
-  Nmea2000Msg n2k_msg_129029(static_cast<uint64_t>(129029));
-  listener_N2K_129029.Listen(n2k_msg_129029, this, EVT_N2K_129029);
-  Bind(EVT_N2K_129029, [&](ObservedEvt ev) {
-    HandleN2K_Log(UnpackEvtPointer<Nmea2000Msg>(ev));
-  });
-
-  // Position rapid   PGN 129025
-  //-----------------------------
-  Nmea2000Msg n2k_msg_129025(static_cast<uint64_t>(129025));
-  listener_N2K_129025.Listen(n2k_msg_129025, this, EVT_N2K_129025);
-  Bind(EVT_N2K_129025, [&](ObservedEvt ev) {
-    HandleN2K_Log(UnpackEvtPointer<Nmea2000Msg>(ev));
-  });
-
-  // COG SOG rapid   PGN 129026
-  //-----------------------------
-  Nmea2000Msg n2k_msg_129026(static_cast<uint64_t>(129026));
-  listener_N2K_129026.Listen(n2k_msg_129026, this, EVT_N2K_129026);
-  Bind(EVT_N2K_129026, [&](ObservedEvt ev) {
-    HandleN2K_Log(UnpackEvtPointer<Nmea2000Msg>(ev));
-  });
-
-  // Heading rapid   PGN 127250
-  //-----------------------------
-  Nmea2000Msg n2k_msg_127250(static_cast<uint64_t>(127250));
-  listener_N2K_127250.Listen(n2k_msg_127250, this, EVT_N2K_127250);
-  Bind(EVT_N2K_127250, [&](ObservedEvt ev) {
-    HandleN2K_Log(UnpackEvtPointer<Nmea2000Msg>(ev));
-  });
-
-  // GNSS Satellites in View   PGN 129540
-  //-----------------------------
-  Nmea2000Msg n2k_msg_129540(static_cast<uint64_t>(129540));
-  listener_N2K_129540.Listen(n2k_msg_129540, this, EVT_N2K_129540);
-  Bind(EVT_N2K_129540, [&](ObservedEvt ev) {
+  Nmea2000Msg n2k_msg_All(static_cast<uint64_t>(1));
+  listener_N2K_All.Listen(n2k_msg_All, this, EVT_N2K_ALL);
+  Bind(EVT_N2K_ALL, [&](ObservedEvt ev) {
     HandleN2K_Log(UnpackEvtPointer<Nmea2000Msg>(ev));
   });
 }
 
 bool Multiplexer::HandleN2K_Log(std::shared_ptr<const Nmea2000Msg> n2k_msg) {
+  if (!m_log_callbacks.log_is_active())
+    return false;
 
-  if (n2k_msg->PGN.pgn == last_pgn_logged) {
+  // extract PGN
+  unsigned int pgn = 0;
+  pgn += n2k_msg.get()->payload.at(3);
+  pgn += n2k_msg.get()->payload.at(4) << 8;
+  pgn += n2k_msg.get()->payload.at(5) << 16;
+
+  // extract data source
+  std::string source = n2k_msg.get()->source->to_string();
+
+  // extract source ID
+  unsigned char source_id = n2k_msg.get()->payload.at(7);
+  char ss[4];
+  sprintf(ss, "%d", source_id);
+  std::string ident = std::string(ss);
+
+  if (pgn == last_pgn_logged) {
     n_N2K_repeat++;
     return false;
   }
@@ -355,20 +341,22 @@ bool Multiplexer::HandleN2K_Log(std::shared_ptr<const Nmea2000Msg> n2k_msg) {
   }
 
   wxString log_msg;
-  log_msg.Printf("%s : %s\n", n2k_msg->PGN.to_string().c_str(), N2K_LogMessage_Detail(n2k_msg).c_str());
+  log_msg.Printf("PGN: %d Source: %s ID: %s  Desc: %s\n", pgn, source,
+                 ident,N2K_LogMessage_Detail(pgn, n2k_msg).c_str());
 
   LogInputMessage(log_msg, "N2000", false, false);
 
-  last_pgn_logged = n2k_msg->PGN.pgn;
+  last_pgn_logged = pgn;
   return true;
 }
 
 
-std::string Multiplexer::N2K_LogMessage_Detail(std::shared_ptr<const Nmea2000Msg> n2k_msg) {
+std::string Multiplexer::N2K_LogMessage_Detail(unsigned int pgn, std::shared_ptr<const Nmea2000Msg> n2k_msg) {
+  std::string notused = "Not used by OCPN, maybe by Plugins";
 
-  switch (n2k_msg->PGN.pgn){
+  switch (pgn){
     case 129029:
-      return "GNSS Position";
+      return "GNSS Position & DBoard: SAT System";
       break;
     case 129025:
       return "Position rapid";
@@ -376,13 +364,162 @@ std::string Multiplexer::N2K_LogMessage_Detail(std::shared_ptr<const Nmea2000Msg
     case 129026:
       return "COG/SOG rapid";
       break;
+    case 129038:
+      return "AIS Class A position report";
+      break;
+    case 129039:
+      return "AIS Class B position report";
+      break;
+    case 129041:
+      return "AIS Aids to Navigation (AtoN) Report";
+      break;
+    case 129793:
+      return "AIS Base Station report";
+      break;
+    case 129794:
+      return "AIS static data class A";
+      break;
+    case 129809:
+      return "AIS static data class B part A";
+      break;
+    case 129810:
+      return "AIS static data class B part B";
+      break;
     case 127250:
       return "Heading rapid";
       break;
     case 129540:
-      return "GNSS Sats";
+      return "GNSS Sats & DBoard: SAT Status";
+      break;
+    //>> Dashboard
+    case 127245:
+      return "DBoard: Rudder data";
+      break;
+    case 127257:
+      return "DBoard: Roll Pitch";
+      break;
+    case 128259:
+      return "DBoard: Speed through water";
+      break;
+    case 128267:
+      return "DBoard: Depth Data";
+      break;
+    case 128275:
+      return "DBoard: Distance log";
+      break;
+    case 130306:
+      return "DBoard: Wind data";
+      break;
+    case 130310:
+      return "DBoard: Envorinment data";
+      break;
+    // Not used PGNs
+    case 126992:
+      return "System time. " + notused;
+      break;
+    case 127233:
+      return "Man Overboard Notification. " + notused;
+      break;
+    case 127237:
+      return "Heading/Track control. " + notused;
+      break;
+    case 127251:
+      return "Rate of turn. " + notused;
+      break;
+    case 127258:
+      return "Magnetic variation. " + notused;
+      break;
+    case 127488:
+      return "Engine rapid param. " + notused;
+      break;
+    case 127489:
+      return "Engine parameters dynamic. " + notused;
+      break;
+    case 127493:
+      return "Transmission parameters dynamic. " + notused;
+      break;
+    case 127497:
+      return "Trip Parameters, Engine. " + notused;
+      break;
+    case 127501:
+      return "Binary status report. " + notused;
+      break;
+    case 127505:
+      return "Fluid level. " + notused;
+      break;
+    case 127506:
+      return "DC Detailed Status. " + notused;
+      break;
+    case 127507:
+      return "Charger Status. " + notused;
+      break;
+    case 127508:
+      return "Battery Status. " + notused;
+      break;
+    case 127513:
+      return "Battery Configuration Status. " + notused;
+      break;
+    case 128000:
+      return "Leeway. " + notused;
+      break;
+    case 128776:
+      return "Windlass Control Status. " + notused;
+      break;
+    case 128777:
+      return "Windlass Operating Status. " + notused;
+      break;
+    case 128778:
+      return "Windlass Monitoring Status. " + notused;
+      break;
+    case 129033:
+      return "Date,Time & Local offset. " + notused;
+      break;
+    case 129539:
+      return "GNSS DOP data. " + notused;
+      break;
+    case 129283:
+      return "Cross Track Error. " + notused;
+      break;
+    case 129284:
+      return "Navigation info. " + notused;
+      break;
+    case 129285:
+      return "Waypoint list. " + notused;
+      break;
+    case 129802:
+      return "AIS Safety Related Broadcast Message. " + notused;
+      break;
+    case 130074:
+      return "Waypoint list. " + notused;
+      break;
+    case 130311:
+      return "Environmental parameters. " + notused;
+      break;
+    case 130312:
+      return "Temperature. " + notused;
+      break;
+    case 130313:
+      return "Humidity. " + notused;
+      break;
+    case 130314:
+      return "Actual Pressure. " + notused;
+      break;
+    case 130315:
+      return "Set Pressure. " + notused;
+      break;
+    case 130316:
+      return "Temperature extended range. " + notused;
+      break;
+    case 130323:
+      return "Meteorological Station Data. " + notused;
+      break;
+    case 130576:
+      return "Trim Tab Position. " + notused;
+      break;
+    case 130577:
+      return "Direction Data. " + notused;
       break;
     default:
-      return "";
+      return "No description. Not used by OCPN, maybe passed to plugins";
   }
 }
