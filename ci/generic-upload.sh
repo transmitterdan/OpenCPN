@@ -58,7 +58,7 @@ else
         new=$(echo $old | sed "s/+/+${BUILD_NR}./")
         if [ "$old" != "$new" ]; then $SUDO mv "$old" "$new"; fi
         cloudsmith push raw --republish --no-wait-for-sync $REPO $new
- one
+    done
     set +x
 fi
 
