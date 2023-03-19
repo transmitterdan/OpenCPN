@@ -2,7 +2,7 @@
 
 expand() { for arg in "$@"; do test -f $arg && echo $arg; done }
 
-REPO=${CLOUDSMITH_REPO:-"dan-dickey/opencpn-github"}
+REPO=${CLOUDSMITH_REPO:-"dan-dickey/opencpn-unstable-testing"}
 
 test -z "$TRAVIS_BUILD_DIR" || cd $TRAVIS_BUILD_DIR
 cd build
@@ -56,7 +56,8 @@ else
         new=$(echo $old | sed "s/+/+${BUILD_NR}./")
         if [ "$old" != "$new" ]; then $SUDO mv "$old" "$new"; fi
         cloudsmith push raw --republish --no-wait-for-sync $REPO $new
-    done
+        cloudsmith push raw dan-dickey/opencpn-unstable-testing your-package.zip [--version VERSION] [--summary TEXT] [--description TEXT]
+done
     set +x
 fi
 
