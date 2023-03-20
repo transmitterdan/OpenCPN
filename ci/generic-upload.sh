@@ -2,10 +2,6 @@
 
 expand() { for arg in "$@"; do test -f $arg && echo $arg; done }
 
-echo CLOUDSMITH_REPO=${CLOUDSMITH_REPO:-}
-REPO=${CLOUDSMITH_REPO:-"dan-dickey/opencpn-unstable-testing"}
-echo REPO=$REPO
-
 test -z "$TRAVIS_BUILD_DIR" || cd $TRAVIS_BUILD_DIR
 cd build
 
@@ -37,8 +33,8 @@ else
     BUILD_NR="1"
 fi
 
-if [ -z "$CLOUDSMITH_API_KEY" ]; then
-    echo 'Cannot deploy to cloudsmith: missing $CLOUDSMITH_API_KEY'
+if [ -z "$CLOUDSMITH_API_KEY" -o -z "$CLOUDSMITH_REPO" ]; then
+    echo 'Cannot deploy to cloudsmith: missing $CLOUDSMITH_API_KEY or $CLOUDSMITH_REPO'
 else
     echo 'Deploying to cloudsmith'
     set -x
@@ -57,7 +53,7 @@ else
         old=$(basename $src)
         new=$(echo $old | sed "s/+/+${BUILD_NR}./")
         if [ "$old" != "$new" ]; then $SUDO mv "$old" "$new"; fi
-        cloudsmith push raw --republish --no-wait-for-sync $REPO $new
+        cloudsmith push raw --republish --no-wait-for-sync $CLOUDSMITH_REPO $new
     done
     set +x
 fi
