@@ -53,6 +53,10 @@ jobs:
         shell: cmd
         run: ci\appveyor.bat
 
+      - name: Debug
+        shell: bash
+        run: env
+
       - name: Upload
         shell: bash
         run: ci/generic-upload.sh
