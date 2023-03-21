@@ -368,6 +368,7 @@ extern double gLat, gLat;
 extern int g_GUIScaleFactor;
 // Win DPI scale factor
 double g_scaler;
+wxString g_lastS52PLIBPluginMessage;
 
 #define MIN_BRIGHT 10
 #define MAX_BRIGHT 100
@@ -4105,7 +4106,8 @@ void ChartCanvas::OnRolloverPopupTimerEvent(wxTimerEvent &event) {
 }
 
 void ChartCanvas::OnCursorTrackTimerEvent(wxTimerEvent &event) {
-  if (s57_CheckExtendedLightSectors(this, mouse_x, mouse_y, VPoint,
+  if ((GetShowENCLights() || m_bsectors_shown ) &&
+      s57_CheckExtendedLightSectors( this, mouse_x, mouse_y, VPoint,
                                     extendedSectorLegs)) {
     if (!m_bsectors_shown) {
       ReloadVP(false);
@@ -10608,9 +10610,9 @@ void ChartCanvas::UpdateCanvasS52PLIBConfig() {
     v[_T("OpenCPN S52PLIB ShowSoundings")] = GetShowENCDepth();
     v[_T("OpenCPN S52PLIB ShowLights")] = GetShowENCLights();
     v[_T("OpenCPN S52PLIB ShowAnchorConditions")] =
-        m_encShowAnchor;  // ps52plib->GetAnchorOn();
+        m_encShowAnchor;  
     v[_T("OpenCPN S52PLIB ShowQualityOfData")] =
-        GetShowENCDataQual();  // ps52plib->GetQualityOfDataOn();
+        GetShowENCDataQual();
     v[_T("OpenCPN S52PLIB ShowATONLabel")] = GetShowENCBuoyLabels();
     v[_T("OpenCPN S52PLIB ShowLightDescription")] = GetShowENCLightDesc();
 
@@ -10641,10 +10643,10 @@ void ChartCanvas::UpdateCanvasS52PLIBConfig() {
     wxString out;
     w.Write(v, out);
 
-    if (!g_lastPluginMessage.IsSameAs(out)) {
-      // printf("message %d  %d\n", s_msg++, m_canvasIndex);
+    if (!g_lastS52PLIBPluginMessage.IsSameAs(out)) {
       g_pi_manager->SendMessageToAllPlugins(wxString(_T("OpenCPN Config")),
                                             out);
+      g_lastS52PLIBPluginMessage = out;
     }
   }
 }
