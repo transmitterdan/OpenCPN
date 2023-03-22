@@ -42,6 +42,11 @@ jobs:
         with:
           submodules: 'recursive'
 
+      # Print all the environment variables into the log file
+      - name: "Environment dump"
+        shell: bash
+        run: env
+
       # required for CMake to find Ninja
       - name: "Set up MSVC Developer Command Prompt"
         uses: seanmiddleditch/gha-setup-vsdevenv@v3
@@ -52,10 +57,6 @@ jobs:
       - name: "Dependencies, configure, build"
         shell: cmd
         run: ci\appveyor.bat
-
-      - name: Debug
-        shell: bash
-        run: env
 
       - name: Upload
         shell: bash
