@@ -1233,6 +1233,18 @@ target_include_directories(
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
+if (MSVC AND NOT OCPN_CI_BUILD)
+  MESSAGE(STATUS "wxWidgets_LIB_DIR = ${wxWidgets_LIB_DIR}")
+  set_target_properties(${PACKAGE_NAME} PROPERTIES VS_DEBUGGER_ENVIRONMENT "\"path=${wxWidgets_LIB_DIR};$(path)\"")
+  MESSAGE(STATUS "PACKAGE_NAME = ${PACKAGE_NAME}")
+  set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PACKAGE_NAME})
+  set_target_properties(
+  ${PACKAGE_NAME}
+  PROPERTIES
+    VS_DEBUGGER_WORKING_DIRECTORY "$<TARGET_FILE_DIR:${PACKAGE_NAME}>"
+    VS_DEBUGGER_COMMAND_ARGUMENTS "-p")
+endif (MSVC AND NOT OCPN_CI_BUILD)
+
 if (APPLE)
   target_include_directories(
     ${PACKAGE_NAME}
@@ -2573,10 +2585,17 @@ endif (APPLE)
 #
 if (WIN32 AND NOT UNIX)
   if (OCPN_BUNDLE_WXDLLS)
-    file(GLOB wxdll_files
-      "${wxWidgets_LIB_DIR}/wxmsw32u_*.dll"
-      "${wxWidgets_LIB_DIR}/wxbase32u_*.dll"
-    )
+    if (CMAKE_BUILD_TYPE MATCHES "Debug")
+      file(GLOB wxdll_files
+        "${wxWidgets_LIB_DIR}/wxmsw32ud_*.dll"
+        "${wxWidgets_LIB_DIR}/wxbase32ud_*.dll"
+      )
+    else ()
+      file(GLOB wxdll_files
+        "${wxWidgets_LIB_DIR}/wxmsw32u_*.dll"
+        "${wxWidgets_LIB_DIR}/wxbase32u_*.dll"
+      )
+    endif ()
     install(FILES ${wxdll_files} DESTINATION ".")
     list(LENGTH wxdll_files wxdll_count)
     message(STATUS
@@ -3056,16 +3075,15 @@ if (APPLE)
 endif (APPLE)
 
 include(CPack)
-
-if (MSVC)
+if(CMAKE_BUILD_TYPE MATCHES "Debug" OR CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo")
+  if (MSVC)
   add_custom_command(
     TARGET ${PACKAGE_NAME} POST_BUILD
     COMMAND
-    cmake -E copy "$<TARGET_PDB_FILE:${PACKAGE_NAME}>"
-      "$<TARGET_PDB_FILE_DIR:${PACKAGE_NAME}>/${PACKAGE_NAME}-${PACKAGE_VERSION}.pdb"
+    ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_PDB_FILE:${PACKAGE_NAME}>" "$<TARGET_PDB_FILE_DIR:${PACKAGE_NAME}>/${PACKAGE_NAME}-${PACKAGE_VERSION}.pdb"
   )
-endif (MSVC)
-
+  endif (MSVC)
+endif ()
 # uninstall target
 if (NOT TARGET uninstall)
   configure_file(
