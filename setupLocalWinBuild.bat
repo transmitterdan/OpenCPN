@@ -1,18 +1,50 @@
 @echo off
 @setlocal enableextensions
+goto :main
+:usage
+@echo ****************************************************************************
+@echo *  This script can be used to create a local build environment for OpenCPN.*
+@echo *  Here are some basic steps that are known to work.  There are            *
+@echo *  probably other ways to do this, but this is the way that works for me.  *
+@echo *                                                                          *
+@echo *  1. Install Visual Studio 2022 Community Edition.                        *
+@echo *              https://visualstudio.microsoft.com/downloads/               *
+@echo *  2. Install PoEdit (https://poedit.net/download/)                        *
+@echo *     Be sure the program 'xgettext.exe' is in the environment %PATH%      *
+@echo *     Usually: C:\Program Files (x86)\Poedit\GettextTools\bin\xgettext.exe *
+@echo *  3. Install NullSoft Installer (https://nsis.sourceforge.io/Download)    *
+@echo *  4. Open 'x86 Native Tools Command Prompt for Visual Studio 2022'        *
+@echo *  5. Create folder where you want to work with OpenCPN sources            *
+@echo *        Example: mkdir \Users\myname\source\repos                         *
+@echo *                 cd \Users\myname\source\repos                            *
+@echo *  6. Clone Opencpn                                                        *
+@echo *        Example: clone https://github.com/opencpn/opencpn                 *
+@echo *                 cd \Users\myname\source\repos\opencpn                    *
+@echo *  7. Set up local build environment by executing this script              *
+@echo *        Example: setupLocalWinBuild.bat                                   *
+@echo *  8. Open solution file (type solution file name at VS command prompt)    *
+@echo *        Example: .\build\opencpn.sln                                      *
+@echo *                                                                          *
+@echo *  Start building and debugging in Visual Studio.                          *
+@echo ****************************************************************************
+goto :EOF
+:main
 set "OD=%CD%
 @echo "OD=%OD%"
+
 where msbuild && goto :vsok
 @echo Please run this from "x86 Native Tools Command Prompt for VS2022
-exit /b 1
+goto :usage
+
 :vsok
 where cmake && goto :cmakeok
 @echo Please install cmake first
-exit /b 1
+goto :usage
+
 :cmakeok
-where poedit && goto :save
+where xgettext && goto :save
 @echo Please install poedit first
-exit /b 1
+goto :usage
 
 :save
 
@@ -99,10 +131,20 @@ call :restore
 endlocal
 
 cmake -A Win32 -G "Visual Studio 17 2022" -DCMAKE_GENERATOR_PLATFORM=Win32 -DwxWidgets_LIB_DIR="%wxWidgets_LIB_DIR%" -DwxWidgets_ROOT_DIR="%wxWidgets_ROOT_DIR%" -D CMAKE_CXX_FLAGS="/MP /EHsc /DWIN32" -D CMAKE_C_FLAGS="/MP" -D OCPN_ENABLE_SYSTEM_CMD_SOUND=ON -DOCPN_CI_BUILD=OFF -DOCPN_BUNDLE_WXDLLS=ON -DOCPN_BUILD_TEST=OFF ..
+if errorlevel 1 goto :cmakeErr
 popd
-@echo To build OpenCPN for debuggin at command line do this:
-@echo "cd build && msbuild /noLogo /m "-p:Configuration=Debug" -p:Platform=Win32 opencpn.sln && devenv opencpn.sln"
+@echo To build OpenCPN for debugging at command line do this:
+@echo > cd build
+@echo > msbuild /noLogo /m -p:Configuration=Debug -p:Platform=Win32 opencpn.sln
+@echo > devenv opencpn.sln
 @echo and start debugging
+goto :EOF
+
+:cmakeErr
+popd
+@echo CMake failed to configure OpenCPN build folder.
+@echo Review the error messages and read the OpenCPN Developer Manual for help.
+@echo Be sure to install all dependencies such as GetText and NullSoft installer.
 goto :EOF
 
 rem Local subroutines
@@ -114,9 +156,12 @@ if not exist .\tmp (mkdir .\tmp)
 if not exist ".\tmp\%folder%" (mkdir ".\tmp\%folder%")
 @echo backing up %folder%
 xcopy /Q /Y "%OD%\build\%folder%\opencpn.ini" ".\tmp\%folder%"
+xcopy /Q /Y "%OD%\build\%folder%\*.log.log" ".\tmp\%folder%"
 xcopy /Q /Y "%OD%\build\%folder%\*.log" ".\tmp\%folder%"
 xcopy /Q /Y "%OD%\build\%folder%\*.dat" ".\tmp\%folder%"
-xcopy /Q /Y "%OD%\build\%folder%\navobj*.*" ".\tmp\%folder%"
+xcopy /Q /Y "%OD%\build\%folder%\*.csv" ".\tmp\%folder%"
+xcopy /Q /Y "%OD%\build\%folder%\navobj.*" ".\tmp\%folder%"
+xcopy /Q /Y "%OD%\build\%folder%\navobj.xml.?" ".\tmp\%folder%"
 if not exist "%OD%\build\%folder%\Charts" goto :breturn
 @echo cmake -E copy_directory "%OD%\build\%folder%\Charts" "tmp\%folder%"
 cmake -E copy_directory "%OD%\build\%folder%\Charts" "tmp\%folder%"
