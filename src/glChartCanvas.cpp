@@ -1173,7 +1173,10 @@ void glChartCanvas::SetupOpenGL() {
     //m_b_DisableFBO = true;
 #endif
 
-  //m_b_DisableFBO = true;
+  // Accelerated pan is not used for MacOS Retina display
+  // So there is no advantage to using FBO
+  if (m_displayScale > 1)
+    m_b_DisableFBO = true;
 
   //      Maybe build FBO(s)
   BuildFBO();
@@ -3817,6 +3820,11 @@ void glChartCanvas::Render() {
   quiltHash = m_pParentCanvas->m_pQuilt->GetXStackHash();
   refChartIndex = m_pParentCanvas->m_pQuilt->GetRefChartdbIndex();
 
+#endif
+
+#ifdef __WXOSX__
+  // Support scaled HDPI displays.
+  m_displayScale = GetContentScaleFactor();
 #endif
 
   m_last_render_time = wxDateTime::Now().GetTicks();

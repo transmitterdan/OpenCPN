@@ -6584,6 +6584,11 @@ void ChartCanvas::OnActivate(wxActivateEvent &event) { ReloadVP(); }
 void ChartCanvas::OnSize(wxSizeEvent &event) {
   GetClientSize(&m_canvas_width, &m_canvas_height);
 
+#ifdef __WXOSX__
+  // Support scaled HDPI displays.
+  m_displayScale = GetContentScaleFactor();
+#endif
+
 
   m_canvas_width *= m_displayScale;
   wxASSERT_MSG(m_canvas_width > 0, _T("Canvas width is zero!"));
@@ -10606,7 +10611,7 @@ void ChartCanvas::UpdateCanvasS52PLIBConfig() {
     v[_T("OpenCPN S52PLIB ShowSoundings")] = GetShowENCDepth();
     v[_T("OpenCPN S52PLIB ShowLights")] = GetShowENCLights();
     v[_T("OpenCPN S52PLIB ShowAnchorConditions")] =
-        m_encShowAnchor;  
+        m_encShowAnchor;
     v[_T("OpenCPN S52PLIB ShowQualityOfData")] =
         GetShowENCDataQual();
     v[_T("OpenCPN S52PLIB ShowATONLabel")] = GetShowENCBuoyLabels();

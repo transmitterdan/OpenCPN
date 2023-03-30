@@ -1587,7 +1587,7 @@ EVT_CHAR_HOOK(options::OnCharHook)
 
 END_EVENT_TABLE()
 
-options::options(MyFrame* parent, wxWindowID id, const wxString& caption,
+options::options(wxWindow* parent, wxWindowID id, const wxString& caption,
                  const wxPoint& pos, const wxSize& size, long style) {
   Init();
 
@@ -1600,13 +1600,7 @@ options::options(MyFrame* parent, wxWindowID id, const wxString& caption,
   SetFont(*dialogFont);
 
   CreateControls();
-  RecalculateSize();
-
-  // Protect against unreasonable small size
-  // And also handle the empty config file init case.
-  if (((size.x < 200) || (size.y < 200)) && !g_bresponsive) Fit();
-
-  Center();
+  RecalculateSize( size.x, size.y);
 
   wxDEFINE_EVENT(EVT_COMPAT_OS_CHANGE, wxCommandEvent);
   GlobalVar<wxString> compat_os(&g_compatOS);
@@ -1648,9 +1642,28 @@ bool options::SendIdleEvents(wxIdleEvent& event) {
 }
 #endif
 
-void options::RecalculateSize(void) {
+void options::RecalculateSize(int hint_x, int hint_y) {
   if (!g_bresponsive) {
     m_nCharWidthMax = GetSize().x / GetCharWidth();
+
+    // Protect against unreasonable small size
+    // And also handle the empty config file init case.
+    if ((hint_x < 200) || (hint_y < 200)){
+
+      // Constrain size on small displays
+      int display_width, display_height;
+      wxDisplaySize(&display_width, &display_height);
+
+      if(display_height < 600){
+        SetSize(wxSize(GetOCPNCanvasWindow()->GetSize() ));
+      }
+      else {
+        vectorPanel-> SetSizeHints(ps57Ctl);
+        Fit();
+      }
+    }
+
+    CenterOnScreen();
     return;
   }
 
@@ -5781,7 +5794,6 @@ void options::CreateControls(void) {
 
   // ChartGroups must be created after ChartsLoad and must be at least third
   CreatePanel_ChartGroups(m_pageCharts, border_size, group_item_spacing);
-  RecalculateSize();
   CreatePanel_TidesCurrents(m_pageCharts, border_size, group_item_spacing);
 
   wxNotebook* nb =
@@ -5857,6 +5869,7 @@ void options::CreateControls(void) {
   //  to avoid horizontal scroll bars
   //vectorPanel->SetSizeHints(ps57Ctl);
 #endif
+
 }
 
 void options::SetInitialPage(int page_sel, int sub_page) {
@@ -7945,7 +7958,7 @@ void options::OnChooseFont(wxCommandEvent& event) {
     wxFont* psfont = new wxFont(font);
     wxColor color = font_data.GetColour();
     FontMgr::Get().SetFont(sel_text_element, psfont, color);
-    pParent->UpdateAllFonts();
+    gFrame->UpdateAllFonts();
     m_bfontChanged = true;
     OnFontChoice(event);
   }
@@ -8008,7 +8021,7 @@ void options::OnChooseFontColor(wxCommandEvent& event) {
     wxColor color = colour_data.GetColour();
     FontMgr::Get().SetFont(sel_text_element, pif, color);
 
-    pParent->UpdateAllFonts();
+    gFrame->UpdateAllFonts();
     m_bfontChanged = true;
     OnFontChoice(event);
   }
