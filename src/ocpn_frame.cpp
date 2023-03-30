@@ -1621,11 +1621,13 @@ void MyFrame::OnCloseWindow(wxCloseEvent &event) {
   if (!g_bDeferredInitDone) return;
 #endif
 
+#ifndef __WXOSX__
   if (g_options) {
     delete g_options;
     g_options = NULL;
     g_pOptions = NULL;
   }
+#endif
 
   //  If the multithread chart compressor engine is running, cancel the close
   //  command
@@ -1974,6 +1976,10 @@ void MyFrame::OnMove(wxMoveEvent &event) {
     ChartCanvas *cc = g_canvasArray.Item(i);
     if (cc) cc->SetMUIBarPosition();
   }
+
+#ifdef __WXOSX__
+  SendSizeEvent();
+#endif
 
   UpdateGPSCompassStatusBoxes();
 
@@ -3912,8 +3918,12 @@ int MyFrame::DoOptionsDialog() {
     pConfig->Read("OptionsSizeX", &sx, -1);
     pConfig->Read("OptionsSizeY", &sy, -1);
 
+    wxWindow *optionsParent = this;
+#ifdef __WXOSX__
+    optionsParent = GetPrimaryCanvas();
+#endif
     g_options =
-        new options(this, -1, _("Options"), wxPoint(-1, -1), wxSize(sx, sy));
+        new options(optionsParent, -1, _("Options"), wxPoint(-1, -1), wxSize(sx, sy));
 
     g_Platform->HideBusySpinner();
   }
@@ -3974,7 +3984,7 @@ int MyFrame::DoOptionsDialog() {
     g_options->Move(options_lastWindowPos);
     g_options->SetSize(options_lastWindowSize);
   } else {
-    g_options->Center();
+    g_options->CenterOnScreen();
   }
   if (options_lastWindowSize != wxSize(0, 0)) {
     g_options->SetSize(options_lastWindowSize);
@@ -4966,8 +4976,12 @@ void MyFrame::OnInitTimer(wxTimerEvent &event) {
       pConfig->Read("OptionsSizeX", &sx, -1);
       pConfig->Read("OptionsSizeY", &sy, -1);
 
+    wxWindow *optionsParent = this;
+#ifdef __WXOSX__
+    optionsParent = GetPrimaryCanvas();
+#endif
       g_options =
-          new options(this, -1, _("Options"), wxPoint(-1, -1), wxSize(sx, sy));
+          new options(optionsParent, -1, _("Options"), wxPoint(-1, -1), wxSize(sx, sy));
 
       // needed to ensure that the chart window starts with keyboard focus
       SurfaceAllCanvasToolbars();
@@ -7066,7 +7080,11 @@ void MyFrame::RequestNewMasterToolbar(bool bforcenew) {
 
   if (!g_MainToolbar) {
     long orient = g_Platform->GetDefaultToolbarOrientation();
-    g_MainToolbar = new ocpnFloatingToolbarDialog(this, wxPoint(-1, -1), orient,
+    wxWindow *toolbarParent = this;
+#ifdef __WXOSX__
+    toolbarParent = GetPrimaryCanvas();
+#endif
+    g_MainToolbar = new ocpnFloatingToolbarDialog(toolbarParent, wxPoint(-1, -1), orient,
                                                   g_toolbar_scalefactor);
     g_MainToolbar->SetCornerRadius(5);
     g_MainToolbar->SetBackGroundColorString(_T("GREY3"));
