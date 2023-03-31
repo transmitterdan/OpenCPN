@@ -10,8 +10,8 @@ goto :main
 @echo *  1. Install Visual Studio 2022 Community Edition.                        *
 @echo *              https://visualstudio.microsoft.com/downloads/               *
 @echo *  2. Install PoEdit (https://poedit.net/download/)                        *
-@echo *     Be sure the program 'xgettext.exe' is in the environment %PATH%      *
-@echo *     Usually: C:\Program Files (x86)\Poedit\GettextTools\bin\xgettext.exe *
+@echo *     Be sure folder with 'xgettext.exe' is in the environment %PATH%      *
+@echo *     Usually: C:\Program Files (x86)\Poedit\GettextTools\bin              *
 @echo *  3. Install NullSoft Installer (https://nsis.sourceforge.io/Download)    *
 @echo *  4. Open 'x86 Native Tools Command Prompt for Visual Studio 2022'        *
 @echo *  5. Create folder where you want to work with OpenCPN sources            *
@@ -20,6 +20,7 @@ goto :main
 @echo *  6. Clone Opencpn                                                        *
 @echo *        Example: clone https://github.com/opencpn/opencpn                 *
 @echo *                 cd \Users\myname\source\repos\opencpn                    *
+@echo *                 git checkout localWinBuild                               *
 @echo *  7. Set up local build environment by executing this script              *
 @echo *        Example: setupLocalWinBuild.bat                                   *
 @echo *  8. Open solution file (type solution file name at VS command prompt)    *
