@@ -12,7 +12,7 @@ rem If the argument is "Release" (without ") then it will copy dependent files  
 rem into the build\Release folder under the build folder.                           *
 rem *********************************************************************************
 set PSH=powershell
-where pwsh > NUL 2> NUL && set PSH=pwsh
+rem where pwsh > NUL 2> NUL && set PSH=pwsh
 
 goto :start
 
