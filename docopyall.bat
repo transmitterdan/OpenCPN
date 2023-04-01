@@ -1,4 +1,3 @@
-
 @setlocal enableextensions enabledelayedexpansion
 @echo off
 @echo %0 %1 %2 %3
@@ -12,25 +11,25 @@ rem If the argument is "Release" (without ") then it will copy dependent files  
 rem into the build\Release folder under the build folder.                           *
 rem *********************************************************************************
 set PSH=powershell
-rem where pwsh > NUL 2> NUL && set PSH=pwsh
+where pwsh > NUL 2> NUL && set PSH=pwsh
 
 goto :start
 
 :toupper
-@rem convert str to uppercase and put it in variable upper
-for /f "usebackq delims=" %%I in (`%PWSH% "\"%str%\".toUpper()"`) do set "upper=%%~I"
-goto :EOF
+FOR /F "usebackq tokens=*" %%A IN (`%PSH% -Command "('%*').ToUpper( )"`) DO SET upper=%%A
+EXIT /b
 
 :start
 
-set "str=%1"
-
-call :toupper
+rem set "str=%1"
+call :toupper %%1
+@echo set upper=%upper%
 
 pushd ..
 for /f %%i in ('cd') do set SRCFOLDER=%%i
 popd
 @echo Setting up %SRCFOLDER% for %1 execution.
+@echo if "%1"=="" goto :usage
 if "%1"=="" goto :usage
 
 set "mode=%upper%"
@@ -231,7 +230,6 @@ FOR %%a IN (%2) DO (
         set FILEEXT=%%~nxa
     )
 )
-rem @echo "call :copyPlugin %FILEEXT% %1 %3"
 call :copyPlugin %FILEEXT% %1 %3
 exit /b 0
 
@@ -241,7 +239,7 @@ exit /b 0
 @echo arg1=%1
 @echo arg2=%2
 @echo arg3=%3
-if not exist "%SRCFOLDER%\build\plugins\%1\%2\%1.dll" goto :endCopyPlugin
+rem if not exist "%SRCFOLDER%\build\plugins\%1\%2\%1.dll" goto :endCopyPlugin
 if not exist %3\NUL mkdir %3
 @echo "Copying %SRCFOLDER%\build\plugins\%1\%2\%1.dll--->%3"
 copy /Y /V %SRCFOLDER%\build\plugins\%1\%2\%1.dll %3
