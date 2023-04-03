@@ -1,5 +1,5 @@
 @echo off
-enableextensions
+setlocal enableextensions
 goto :main
 :usage
 @echo ****************************************************************************
@@ -28,17 +28,20 @@ goto :main
 @echo ****************************************************************************
 goto :EOF
 :main
-rem we want these to remain in the environment after completion
-set "OD=%CD%
-@echo "OD=%OD%"
-set "wxDIR=%OD%\build\buildwxWidgets"
-@echo set "wxWidgets_ROOT_DIR="%wxDIR%"
+set "OD=%CD%"
+@echo OD=%OD%
+set "wxDIR=%OD%\cache\buildwxWidgets"
 set "wxWidgets_ROOT_DIR=%wxDIR%"
-@echo set "wxWidgets_LIB_DIR=%wxDIR%\\lib\\vc_dll"
-set "wxWidgets_LIB_DIR=%wxDIR%\\lib\\vc_dll"
-set "PATH=%PATH%;%OD%\build\Gettext.Tools.0.21.1\tools\bin\"
-rem Now we can go local
-setlocal 
+set "wxWidgets_LIB_DIR=%wxDIR%\lib\vc_dll"
+set "OLDPATH=%PATH%"
+rem we want these to remain in the environment after completion
+@echo set "wxDIR=%wxDIR%" > configdev.bat
+@echo set "wxWidgets_ROOT_DIR=%wxWidgets_ROOT_DIR%" >> configdev.bat
+@echo set "wxWidgets_LIB_DIR=%wxWidgets_LIB_DIR%" >> configdev.bat
+
+SET "CACHE_DIR=%OD%\cache"
+SET "buildWINtmp=%CACHE_DIR%\buildwintemp"
+
 set PSH=powershell
 where pwsh > NUL 2> NUL && set PSH=pwsh
 where msbuild && goto :vsok
@@ -49,9 +52,9 @@ goto :usage
 
 :save
 
+rem Save user configuration
 set folder=Release
 call :backup
-@echo returned
 set folder=RelWithDebInfo
 call :backup
 set folder=Debug
@@ -59,41 +62,36 @@ call :backup
 set folder=MinSizeRel
 call :backup
 
-if not exist "%OD%\build" (mkdir "%OD%\build") else (rmdir /s /q "%OD%\build" & mkdir "%OD%\build")
-SET wxBuild="%OD%\build\buildwxWidgets"
-SET buildWINtmp="%OD%\build\buildwintemp"
-SET CACHE_DIR="%OD%\cache"
-@echo wxBuild="%OD%\build\buildwxWidgets"
-@echo buildWINtmp="%OD%\build\buildwintemp"
-@echo CACHE_DIR="%OD%\cache"
-if exist "%CACHE_DIR%" (rmdir /s /q "%CACHE_DIR%")
+if not exist "%OD%\build" (mkdir "%OD%\build")
+rem if not exist "%OD%\build" (mkdir "%OD%\build") else (rmdir /s /q "%OD%\build" & mkdir "%OD%\build")
+rem if exist "%CACHE_DIR%" (rmdir /s /q "%CACHE_DIR%")
 if not exist "%CACHE_DIR%" (mkdir "%CACHE_DIR%")
 if not exist "%CACHE_DIR%\buildwin" (mkdir "%CACHE_DIR%\buildwin")
 
-if exist "%buildWINTmp%" (rmdir /s /q "%buildWINtmp%")
-mkdir "%buildWINtmp%"
+rem if exist "%buildWINTmp%" (rmdir /s /q "%buildWINtmp%")
+if not exist "%buildWINtmp%" (mkdir "%buildWINtmp%")
 %PSH% -Command "[System.Net.ServicePointManager]::MaxServicePointIdleTime = 5000000; if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Invoke-WebRequest https://dist.nuget.org/win-x86-commandline/latest/nuget.exe   -OutFile '%buildWINtmp%\nuget.exe'; exit $LASTEXITCODE"
 if errorlevel 1 (exit /b 1) 
 
 @echo Downloading Windows depencencies from OpenCPN repository
 %PSH% -Command "[System.Net.ServicePointManager]::MaxServicePointIdleTime = 5000000; if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Invoke-WebRequest https://github.com/OpenCPN/OCPNWindowsCoreBuildSupport/archive/refs/tags/v0.3.zip   -OutFile '%buildWINtmp%\OCPNWindowsCoreBuildSupport.zip'; exit $LASTEXITCODE"
-%PSH% -Command "if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Expand-Archive -Path '%buildWINtmp%\\OCPNWindowsCoreBuildSupport.zip' -DestinationPath '%buildWINtmp%' "
+%PSH% -Command "if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Expand-Archive -Force -Path '%buildWINtmp%\\OCPNWindowsCoreBuildSupport.zip' -DestinationPath '%buildWINtmp%' "
 if errorlevel 1 (echo not OK) else (xcopy /e /q /y "%buildWINtmp%\OCPNWindowsCoreBuildSupport-0.3\buildwin" "%CACHE_DIR%\buildwin" && echo OK)
 
 @echo Downloading wxWidgets sources
-if exist "%wxBuild%" (rmdir /s /q "%wxBuild%")
-mkdir "%wxBuild%"
-%PSH% -Command "[System.Net.ServicePointManager]::MaxServicePointIdleTime = 5000000; if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Invoke-WebRequest https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.2.1/wxWidgets-3.2.2.1.zip -OutFile '%wxBuild%\wxWidgets-3.2.2.1.zip'; exit $LASTEXITCODE"
-%PSH% -Command "if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Expand-Archive -Path '%wxBuild%\\wxWidgets-3.2.2.1.zip' -DestinationPath '%wxBuild%'"
-if errorlevel 1 (echo not OK) else (echo OK)
-
-@echo Downloading Windows Webview2 kit
-%PSH% -Command "[System.Net.ServicePointManager]::MaxServicePointIdleTime = 5000000; if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Invoke-WebRequest https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2 -OutFile '%wxBuild%\webview2.zip'; exit $LASTEXITCODE"
-%PSH% -Command "if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Expand-Archive -Path '%wxBuild%\\webview2.zip' -DestinationPath '%wxBuild%\\build\3rdparty\webview2'"
-if errorlevel 1 (echo not OK) else (echo OK)
+if not exist "%wxDIR%" (
+  mkdir "%wxDIR%"
+  %PSH% -Command "[System.Net.ServicePointManager]::MaxServicePointIdleTime = 5000000; if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Invoke-WebRequest https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.2.1/wxWidgets-3.2.2.1.zip -OutFile '%wxDIR%\wxWidgets-3.2.2.1.zip'; exit $LASTEXITCODE"
+  %PSH% -Command "if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Expand-Archive -Path '%wxDIR%\\wxWidgets-3.2.2.1.zip' -DestinationPath '%wxDIR%'"
+  if errorlevel 1 (echo not OK) else (echo OK)
+  @echo Downloading Windows Webview2 kit
+  %PSH% -Command "[System.Net.ServicePointManager]::MaxServicePointIdleTime = 5000000; if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Invoke-WebRequest https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2 -OutFile '%wxDIR%\webview2.zip'; exit $LASTEXITCODE"
+  %PSH% -Command "if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Expand-Archive -Path '%wxDIR%\\webview2.zip' -DestinationPath '%wxDIR%\\build\3rdparty\webview2'"
+  if errorlevel 1 (echo not OK) else (echo OK)
+)
 
 @echo Building wxWidgets
-pushd "%wxBuild%"
+pushd %wxDIR%
 msbuild /noLogo /m "-p:Configuration=DLL Debug" -p:Platform=Win32 build\msw\wx_vc17.sln
 msbuild /noLogo /m "-p:Configuration=DLL Release" -p:Platform=Win32 build\msw\wx_vc17.sln
 if not exist "%CACHE_DIR%\buildwin\wxWidgets" (mkdir "%CACHE_DIR%\buildwin\wxWidgets")
@@ -103,16 +101,13 @@ xcopy /e /q /y .\locale\ "%CACHE_DIR%\buildwin\wxWidgets\locale"
 popd
 pushd build
 
+rem Copy files needed to run OpenCPN
 call ..\docopyAll.bat Debug
 call ..\docopyAll.bat RelWithDebInfo
 call ..\docopyAll.bat MinSizeRel
 call ..\docopyAll.bat Release
 
-%buildWINtmp%\nuget install Gettext.Tools -Version 0.21.1
-dir /s xgettext.exe
-echo PATH=%PATH%
-rem restore configurations if we saved them
-setlocal
+rem restore user configurations if we saved them
 set folder=Release
 call :restore
 set folder=RelWithDebInfo
@@ -121,21 +116,42 @@ set folder=Debug
 call :restore
 set folder=MinSizeRel
 call :restore
+
+rem Install some tools CMake will need
+%buildWINtmp%\nuget install Gettext.Tools
+%buildWINtmp%\nuget install NSIS-Package
+
+for /D %%D in ("Gettext*") do (set gettext=%%~D)
+for /D %%D in ("NSIS-Package*") do (set nsis=%%~D)
+@echo gettext=%gettext%
+@echo nsis=%nsis%
+
+@echo Finishing configdev.bat
+@echo SET "PATH=%%PATH%%;%OD%\build\%nsis%\NSIS\;%OD%\build\%nsis%\NSIS\bin\;%OD%\build\%gettext%\tools\bin\" >>..\configdev.bat
+@echo exit /b 0 >> ..\configdev.bat
 endlocal
+rem endlocal also does a popd so we are back in the CMake source folder
 
-@echo cmake -A Win32 -G "Visual Studio 17 2022" -DCMAKE_GENERATOR_PLATFORM=Win32 -DwxWidgets_LIB_DIR="%wxWidgets_LIB_DIR%" -DwxWidgets_ROOT_DIR="%wxWidgets_ROOT_DIR%" -D CMAKE_CXX_FLAGS="/MP /EHsc /DWIN32" -D CMAKE_C_FLAGS="/MP" -D OCPN_ENABLE_SYSTEM_CMD_SOUND=ON -DOCPN_CI_BUILD=OFF -DOCPN_BUNDLE_WXDLLS=ON -DOCPN_BUILD_TEST=OFF ..
+rem set environment for VS development
+call configdev.bat
+pushd build
 cmake -A Win32 -G "Visual Studio 17 2022" -DCMAKE_GENERATOR_PLATFORM=Win32 -DwxWidgets_LIB_DIR="%wxWidgets_LIB_DIR%" -DwxWidgets_ROOT_DIR="%wxWidgets_ROOT_DIR%" -D CMAKE_CXX_FLAGS="/MP /EHsc /DWIN32" -D CMAKE_C_FLAGS="/MP" -D OCPN_ENABLE_SYSTEM_CMD_SOUND=ON -DOCPN_CI_BUILD=OFF -DOCPN_BUNDLE_WXDLLS=ON -DOCPN_BUILD_TEST=OFF ..
-
 if errorlevel 1 goto :cmakeErr
 if exist opencpn.sln (msbuild /noLogo /m -p:Configuration=Debug -p:Platform=Win32 opencpn.sln)
 if exist opencpn.sln (msbuild /noLogo /m -p:Configuration=RelWithDebInfo -p:Platform=Win32 opencpn.sln)
 
 popd
-@echo To build OpenCPN for debugging at command line do this:
-@echo ^> cd build
-@echo ^> msbuild /noLogo /m -p:Configuration=Debug -p:Platform=Win32 opencpn.sln
-@echo ^> devenv opencpn.sln
-@echo and start debugging
+@echo To build OpenCPN for debugging at command line do this in the folder where you cloned OpenCPN:
+@echo
+@echo  configdev.bat ^&^& cd build
+@echo  msbuild /noLogo /m -p:Configuration=Debug -p:Platform=Win32 opencpn.sln
+@echo  devenv opencpn.sln
+@echo
+@echo Now you are ready to start debugging
+@echo
+@echo [101;93mIf you close this CMD prompt and open another be sure to run:[0m
+@echo  configdev.bat
+@echo [101;93mfirst before starting Visual Studio[0m.
 goto :EOF
 
 :cmakeErr
