@@ -142,13 +142,13 @@ if exist opencpn.sln (msbuild /noLogo /m -p:Configuration=RelWithDebInfo -p:Plat
 
 popd
 @echo To build OpenCPN for debugging at command line do this in the folder where you cloned OpenCPN:
-@echo
+@echo.
 @echo  configdev.bat ^&^& cd build
 @echo  msbuild /noLogo /m -p:Configuration=Debug -p:Platform=Win32 opencpn.sln
 @echo  devenv opencpn.sln
-@echo
+@echo.
 @echo Now you are ready to start debugging
-@echo
+@echo.
 @echo [101;93mIf you close this CMD prompt and open another be sure to run:[0m
 @echo  configdev.bat
 @echo [101;93mfirst before starting Visual Studio[0m.
