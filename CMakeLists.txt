@@ -2589,13 +2589,13 @@ if (WIN32 AND NOT UNIX)
   if (OCPN_BUNDLE_WXDLLS)
     if (CMAKE_BUILD_TYPE MATCHES "Debug")
       file(GLOB wxdll_files
-        "${wxWidgets_LIB_DIR}/wxmsw32ud_*.dll"
-        "${wxWidgets_LIB_DIR}/wxbase32ud_*.dll"
+        "${wxWidgets_LIB_DIR}/wxmsw32*ud_*.dll"
+        "${wxWidgets_LIB_DIR}/wxbase32*ud_*.dll"
       )
     else ()
       file(GLOB wxdll_files
-        "${wxWidgets_LIB_DIR}/wxmsw32u_*.dll"
-        "${wxWidgets_LIB_DIR}/wxbase32u_*.dll"
+        "${wxWidgets_LIB_DIR}/wxmsw32*u_*.dll"
+        "${wxWidgets_LIB_DIR}/wxbase32*u_*.dll"
       )
     endif ()
     install(FILES ${wxdll_files} DESTINATION ".")
