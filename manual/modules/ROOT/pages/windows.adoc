@@ -61,25 +61,25 @@ Here are some basic steps that are known to work.
 There are probably other ways to do this, but this is the way that works for
 me.
 
-1. Install Visual Studio 2022 Community Edition
-   https://visualstudio.microsoft.com/downloads/
-2. Install git for Windows: https://git-scm.com/download/win
-3. Open _x86 Native Tools Command Prompt for Visual Studio 2022_
-4. Create folder where you want to work with OpenCPN sources, something
-   like+
+. Install Visual Studio 2022 Community Edition
+  https://visualstudio.microsoft.com/downloads/
+. Install git for Windows: https://git-scm.com/download/win
+. Open _x86 Native Tools Command Prompt for Visual Studio 2022_
+. Create folder where you want to work with OpenCPN sources, something
+   like
 
         mkdir \Users\myname\src
         cd \Users\myname\src
-
-5. Clone Opencpn, for example
++
+. Clone Opencpn, for example
 
         cd \Users\myname\src
         git clone https://github.com/opencpn/opencpn
         cd opencpn
-
-6. Set up local build environment by executing
++
+. Set up local build environment by executing
    `buildwin\setupLocalWinBuild.bat`
-7. OpenCPN can now be built on the command line. Debug, Release and
+. OpenCPN can now be built on the command line. Debug, Release and
    RelWithDebinfo configurations are available. For example, to make a
    Debug build:
 
@@ -87,13 +87,16 @@ me.
        msbuild /noLogo /m -p:Configuration=Debug -p:Platform=Win32 opencpn.sln
        devenv opencpn.sln
 
-8. Open solution file (type solution file name at VS command prompt)
-        Example: .\build\opencpn.sln
+. Open solution file (type solution file name at VS command prompt). Example:
++
+```
+        .\build\opencpn.sln
+```
++
+Start building and debugging in Visual Studio. Available targets includes:
 
-Start building and debugging in Visual Studio. Available targets includes
-
-- opencpn -- Build  main executable
-- package -- Build NSIS installer
-- opencpn-cmd  -- Build command line tool
-- tests -- Build unit tests.
-- run-tests -- Run unit tests
+    - opencpn -- Build  main executable
+    - package -- Build NSIS installer
+    - opencpn-cmd  -- Build command line tool
+    - tests -- Build unit tests.
+    - run-tests -- Run unit tests
