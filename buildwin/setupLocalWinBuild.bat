@@ -28,7 +28,7 @@ goto :main
 @echo ****************************************************************************
 goto :EOF
 :main
-set "OD=%CD%"
+set "OD=%~dp0.."
 @echo OD=%OD%
 set "wxDIR=%OD%\cache\buildwxWidgets"
 set "wxWidgets_ROOT_DIR=%wxDIR%"

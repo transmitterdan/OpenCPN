@@ -25,9 +25,7 @@ rem set "str=%1"
 call :toupper %%1
 @echo set upper=%upper%
 
-pushd ..
-for /f %%i in ('cd') do set SRCFOLDER=%%i
-popd
+set SRCFOLDER=%~dp0..
 @echo Setting up %SRCFOLDER% for %1 execution.
 @echo if "%1"=="" goto :usage
 if "%1"=="" goto :usage
