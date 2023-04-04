@@ -62,11 +62,11 @@ call :backup
 set folder=MinSizeRel
 call :backup
 
-if not exist "%OD%\build" (mkdir "%OD%\build")
-rem if not exist "%OD%\build" (mkdir "%OD%\build")
-rem else (rmdir /s /q "%OD%\build" & mkdir "%OD%\build")
+rem uncomment the next 2 lines to fully clean/rebuild
+rem if exist "%OD%\build" (rmdir /s /q "%OD%\build")
 rem if exist "%CACHE_DIR%" (rmdir /s /q "%CACHE_DIR%")
 
+if not exist "%OD%\build" (mkdir "%OD%\build")
 if not exist "%CACHE_DIR%" (mkdir "%CACHE_DIR%")
 if not exist "%CACHE_DIR%\buildwin" (mkdir "%CACHE_DIR%\buildwin")
 
@@ -110,10 +110,10 @@ popd
 pushd build
 
 rem Copy files needed to run OpenCPN
-call ..\docopyAll.bat Debug
-call ..\docopyAll.bat RelWithDebInfo
-call ..\docopyAll.bat MinSizeRel
-call ..\docopyAll.bat Release
+call ..\buildwin\docopyAll.bat Debug
+call ..\buildwin\docopyAll.bat RelWithDebInfo
+call ..\buildwin\docopyAll.bat MinSizeRel
+call ..\buildwin\docopyAll.bat Release
 
 rem restore user configurations if we saved them
 set folder=Release

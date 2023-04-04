@@ -1235,9 +1235,11 @@ target_include_directories(
 
 if (MSVC AND NOT OCPN_CI_BUILD)
   MESSAGE(STATUS "wxWidgets_LIB_DIR = ${wxWidgets_LIB_DIR}")
-  set_target_properties(${PACKAGE_NAME} PROPERTIES VS_DEBUGGER_ENVIRONMENT "\"path=${wxWidgets_LIB_DIR};$(path)\"")
+  set_target_properties(${PACKAGE_NAME} PROPERTIES
+    VS_DEBUGGER_ENVIRONMENT "\"path=${wxWidgets_LIB_DIR};$(path)\"")
   MESSAGE(STATUS "PACKAGE_NAME = ${PACKAGE_NAME}")
-  set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PACKAGE_NAME})
+  set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    PROPERTY VS_STARTUP_PROJECT ${PACKAGE_NAME})
   set_target_properties(
   ${PACKAGE_NAME}
   PROPERTIES
