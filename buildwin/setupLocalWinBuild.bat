@@ -63,8 +63,10 @@ set folder=MinSizeRel
 call :backup
 
 if not exist "%OD%\build" (mkdir "%OD%\build")
-rem if not exist "%OD%\build" (mkdir "%OD%\build") else (rmdir /s /q "%OD%\build" & mkdir "%OD%\build")
+rem if not exist "%OD%\build" (mkdir "%OD%\build")
+rem else (rmdir /s /q "%OD%\build" & mkdir "%OD%\build")
 rem if exist "%CACHE_DIR%" (rmdir /s /q "%CACHE_DIR%")
+
 if not exist "%CACHE_DIR%" (mkdir "%CACHE_DIR%")
 if not exist "%CACHE_DIR%\buildwin" (mkdir "%CACHE_DIR%\buildwin")
 
@@ -92,11 +94,17 @@ if not exist "%wxDIR%" (
 
 @echo Building wxWidgets
 pushd %wxDIR%
-msbuild /noLogo /m "-p:Configuration=DLL Debug" -p:Platform=Win32 build\msw\wx_vc17.sln
-msbuild /noLogo /m "-p:Configuration=DLL Release" -p:Platform=Win32 build\msw\wx_vc17.sln
-if not exist "%CACHE_DIR%\buildwin\wxWidgets" (mkdir "%CACHE_DIR%\buildwin\wxWidgets")
+msbuild /noLogo /m "-p:Configuration=DLL Debug" ^
+  -p:Platform=Win32 build\msw\wx_vc17.sln
+msbuild /noLogo /m "-p:Configuration=DLL Release" ^
+  -p:Platform=Win32 build\msw\wx_vc17.sln
+if not exist "%CACHE_DIR%\buildwin\wxWidgets" (
+    mkdir "%CACHE_DIR%\buildwin\wxWidgets"
+)
 xcopy /e /q /y .\lib\vc_dll\ "%CACHE_DIR%\buildwin\wxWidgets"
-if not exist "%CACHE_DIR%\buildwin\wxWidgets\locale" (mkdir "%CACHE_DIR%\buildwin\wxWidgets\locale")
+if not exist "%CACHE_DIR%\buildwin\wxWidgets\locale" (
+  mkdir "%CACHE_DIR%\buildwin\wxWidgets\locale"
+)
 xcopy /e /q /y .\locale\ "%CACHE_DIR%\buildwin\wxWidgets\locale"
 popd
 pushd build
@@ -127,7 +135,9 @@ for /D %%D in ("NSIS-Package*") do (set nsis=%%~D)
 @echo nsis=%nsis%
 
 @echo Finishing configdev.bat
-@echo SET "PATH=%%PATH%%;%OD%\build\%nsis%\NSIS\;%OD%\build\%nsis%\NSIS\bin\;%OD%\build\%gettext%\tools\bin\" >>..\configdev.bat
+set "_newpath=%OD%\build\%nsis%\NSIS\;%OD%\build\%nsis%\NSIS\bin\"
+set "_newpath=%_newpath%;%OD%\build\%gettext%\tools\bin\"
+@echo SET "PATH=%%PATH%%;%_newpath%" >>..\configdev.bat
 @echo exit /b 0 >> ..\configdev.bat
 endlocal
 rem endlocal also does a popd so we are back in the CMake source folder
@@ -135,13 +145,28 @@ rem endlocal also does a popd so we are back in the CMake source folder
 rem set environment for VS development
 call configdev.bat
 pushd build
-cmake -A Win32 -G "Visual Studio 17 2022" -DCMAKE_GENERATOR_PLATFORM=Win32 -DwxWidgets_LIB_DIR="%wxWidgets_LIB_DIR%" -DwxWidgets_ROOT_DIR="%wxWidgets_ROOT_DIR%" -D CMAKE_CXX_FLAGS="/MP /EHsc /DWIN32" -D CMAKE_C_FLAGS="/MP" -D OCPN_ENABLE_SYSTEM_CMD_SOUND=ON -DOCPN_CI_BUILD=OFF -DOCPN_BUNDLE_WXDLLS=ON -DOCPN_BUILD_TEST=OFF ..
+cmake -A Win32 -G "Visual Studio 17 2022" ^
+  -DCMAKE_GENERATOR_PLATFORM=Win32 ^
+  -DwxWidgets_LIB_DIR="%wxWidgets_LIB_DIR%" ^
+  -DwxWidgets_ROOT_DIR="%wxWidgets_ROOT_DIR%" ^
+  -DCMAKE_CXX_FLAGS="/MP /EHsc /DWIN32" ^
+  -DCMAKE_C_FLAGS="/MP" ^
+  -DOCPN_ENABLE_SYSTEM_CMD_SOUND=ON ^
+  -DOCPN_CI_BUILD=OFF ^
+  -DOCPN_BUNDLE_WXDLLS=ON ^
+  -DOCPN_BUILD_TEST=OFF ^
+  ..
 if errorlevel 1 goto :cmakeErr
-if exist opencpn.sln (msbuild /noLogo /m -p:Configuration=Debug -p:Platform=Win32 opencpn.sln)
-if exist opencpn.sln (msbuild /noLogo /m -p:Configuration=RelWithDebInfo -p:Platform=Win32 opencpn.sln)
+if exist opencpn.sln (
+  msbuild /noLogo /m -p:Configuration=Debug -p:Platform=Win32 opencpn.sln
+)
+if exist opencpn.sln (
+  msbuild /noLogo /m -p:Configuration=RelWithDebInfo -p:Platform=Win32 opencpn.sln
+)
 
 popd
-@echo To build OpenCPN for debugging at command line do this in the folder where you cloned OpenCPN:
+@echo To build OpenCPN for debugging at command line do this in the folder
+@echo where you cloned OpenCPN:
 @echo.
 @echo  configdev.bat ^&^& cd build
 @echo  msbuild /noLogo /m -p:Configuration=Debug -p:Platform=Win32 opencpn.sln
