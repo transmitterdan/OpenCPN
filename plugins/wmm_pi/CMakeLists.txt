@@ -127,23 +127,19 @@ if (NOT OCPN_CI_BUILD)
       POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E echo "Copying dll file"
       COMMAND ${CMAKE_COMMAND} -E echo "$<TARGET_FILE:${PACKAGE_NAME}>"
-              "${CMAKE_BINARY_DIR}/$(configuration)/plugins"
+                "${CMAKE_BINARY_DIR}/$(configuration)/plugins"
       COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:${PACKAGE_NAME}>"
-              "${CMAKE_BINARY_DIR}/$(configuration)/plugins"
+                "${CMAKE_BINARY_DIR}/$(configuration)/plugins"
     )
-    if (CMAKE_BUILD_TYPE MATCHES "Debug")
-      add_custom_command(
-        TARGET ${PACKAGE_NAME}
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E echo "Copying pdb file"
-        COMMAND
-          ${CMAKE_COMMAND} -E echo "$<TARGET_PDB_FILE:${PACKAGE_NAME}>"
-          "${CMAKE_BINARY_DIR}/$(configuration)/plugins"
-        COMMAND
-          ${CMAKE_COMMAND} -E copy "$<TARGET_PDB_FILE:${PACKAGE_NAME}>"
-          "${CMAKE_BINARY_DIR}/$(configuration)/plugins"
-        )
-    endif ()
+    add_custom_command(
+      TARGET ${PACKAGE_NAME}
+      POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E echo "Copying pdb file"
+      COMMAND ${CMAKE_COMMAND} -E echo "$<TARGET_PDB_FILE:${PACKAGE_NAME}>"
+                "${CMAKE_BINARY_DIR}/$(configuration)/plugins"
+      COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_PDB_FILE:${PACKAGE_NAME}>"
+                "${CMAKE_BINARY_DIR}/$(configuration)/plugins"
+    )
   endif (MSVC)
 endif (NOT OCPN_CI_BUILD)
 
