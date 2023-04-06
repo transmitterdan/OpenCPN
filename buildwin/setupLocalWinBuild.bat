@@ -23,6 +23,7 @@ goto :main
 @echo *        Example: setupLocalWinBuild.bat                                   *
 @echo *  7. Open solution file (type solution file name at VS command prompt)    *
 @echo *        Example: .\build\opencpn.sln                                      *
+@echo *        Reinitialize build folder: .\build\opencpn.sln --clean            *
 @echo *                                                                          *
 @echo *  Start building and debugging in Visual Studio.                          *
 @echo ****************************************************************************
@@ -62,33 +63,64 @@ call :backup
 set folder=MinSizeRel
 call :backup
 
-rem uncomment the next 2 lines to fully clean/rebuild
-rem if exist "%OD%\build" (rmdir /s /q "%OD%\build")
-rem if exist "%CACHE_DIR%" (rmdir /s /q "%CACHE_DIR%")
+rem Shall we start from scratch?
+if [%1]==[--clean] (^
+  if exist "%OD%\build" (^
+   @echo Clearing "%OD%\build"
+   rmdir /s /q "%OD%\build"
+  )
+  if exist "%CACHE_DIR%" (rmdir /s /q "%CACHE_DIR%")
+  if exist "%buildWINtmp%" (rmdir /s /q "%buildWINtmp%")
+)
 
 if not exist "%OD%\build" (mkdir "%OD%\build")
 if not exist "%CACHE_DIR%" (mkdir "%CACHE_DIR%")
 if not exist "%CACHE_DIR%\buildwin" (mkdir "%CACHE_DIR%\buildwin")
-
-rem if exist "%buildWINTmp%" (rmdir /s /q "%buildWINtmp%")
 if not exist "%buildWINtmp%" (mkdir "%buildWINtmp%")
-%PSH% -Command "[System.Net.ServicePointManager]::MaxServicePointIdleTime = 5000000; if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Invoke-WebRequest https://dist.nuget.org/win-x86-commandline/latest/nuget.exe   -OutFile '%buildWINtmp%\nuget.exe'; exit $LASTEXITCODE"
+
+rem Get dependencies
+@echo Downloading nuget
+set "URL=https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
+set "DEST=%buildWINtmp%\nuget.exe"
+call :download
 if errorlevel 1 (exit /b 1) 
 
 @echo Downloading Windows depencencies from OpenCPN repository
-%PSH% -Command "[System.Net.ServicePointManager]::MaxServicePointIdleTime = 5000000; if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Invoke-WebRequest https://github.com/OpenCPN/OCPNWindowsCoreBuildSupport/archive/refs/tags/v0.3.zip   -OutFile '%buildWINtmp%\OCPNWindowsCoreBuildSupport.zip'; exit $LASTEXITCODE"
-%PSH% -Command "if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Expand-Archive -Force -Path '%buildWINtmp%\\OCPNWindowsCoreBuildSupport.zip' -DestinationPath '%buildWINtmp%' "
-if errorlevel 1 (echo not OK) else (xcopy /e /q /y "%buildWINtmp%\OCPNWindowsCoreBuildSupport-0.3\buildwin" "%CACHE_DIR%\buildwin" && echo OK)
+set "URL=https://github.com/OpenCPN/OCPNWindowsCoreBuildSupport/archive/refs/tags/v0.3.zip"
+set "DEST=%buildWINtmp%\OCPNWindowsCoreBuildSupport.zip"
+call :download
 
-@echo Downloading wxWidgets sources
+@echo Exploding Windows dependencies
+set "SOURCE=%DEST%"
+set "DEST=%buildWINtmp%"
+call :explode
+if errorlevel 1 (echo not OK) else (
+  xcopy /e /q /y "%buildWINtmp%\OCPNWindowsCoreBuildSupport-0.3\buildwin" "%CACHE_DIR%\buildwin"
+  if errorlevel 1 (echo NOT OK) else (echo OK))
 if not exist "%wxDIR%" (
+  @echo Downloading wxWidgets sources
   mkdir "%wxDIR%"
-  %PSH% -Command "[System.Net.ServicePointManager]::MaxServicePointIdleTime = 5000000; if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Invoke-WebRequest https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.2.1/wxWidgets-3.2.2.1.zip -OutFile '%wxDIR%\wxWidgets-3.2.2.1.zip'; exit $LASTEXITCODE"
-  %PSH% -Command "if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Expand-Archive -Path '%wxDIR%\\wxWidgets-3.2.2.1.zip' -DestinationPath '%wxDIR%'"
+  set "URL=https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.2.1/wxWidgets-3.2.2.1.zip"
+  set "DEST=%wxDIR%\wxWidgets-3.2.2.1.zip"
+  call :download
   if errorlevel 1 (echo not OK) else (echo OK)
-  @echo Downloading Windows Webview2 kit
-  %PSH% -Command "[System.Net.ServicePointManager]::MaxServicePointIdleTime = 5000000; if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Invoke-WebRequest https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2 -OutFile '%wxDIR%\webview2.zip'; exit $LASTEXITCODE"
-  %PSH% -Command "if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Expand-Archive -Path '%wxDIR%\\webview2.zip' -DestinationPath '%wxDIR%\\build\3rdparty\webview2'"
+
+  @echo exploding wxWidgets
+  set "SOURCE=%wxDIR%\wxWidgets-3.2.2.1.zip"
+  set "DEST=%wxDIR%"
+  call :explode
+  if errorlevel 1 (echo not OK) else (echo OK)
+
+  @echo Downloading Windows WebView2 kit
+  set "URL=https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2"
+  set "DEST=%wxDIR%\webview2.zip"
+  call :download
+  if errorlevel 1 (echo not OK) else (echo OK)
+
+  @echo Exploding WebView2
+  set "SOURCE=%wxDIR%\webview2.zip"
+  set "DEST=%wxDIR%\build\3rdparty\webview2"
+  call :explode
   if errorlevel 1 (echo not OK) else (echo OK)
 )
 
@@ -216,3 +248,16 @@ if errorlevel 0 (rmdir /s /q "..\tmp\%folder%")
 :rreturn
 @echo restore returning
 exit /b 0
+
+:download
+%PSH% -Command [System.Net.ServicePointManager]::MaxServicePointIdleTime = 5000000; ^
+  if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; ^
+  Invoke-WebRequest "%URL%" -OutFile '%DEST%'; ^
+  exit $LASTEXITCODE
+exit /b
+
+:explode
+@echo SOURCE=%SOURCE%, DEST=%DEST%
+%PSH% -Command if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; ^
+  Expand-Archive -Force -Path '%SOURCE%' -DestinationPath '%DEST%'
+exit /b

@@ -52,8 +52,8 @@ using:
 
 == Complete builds using Visual Studio
 
-The steps here describes how to make a complete build in Visual Studio,
-inclusive debugging.
+The steps here describe how to make a complete build in Visual Studio,
+including full source debugging with Intellisense(R).
 The setup is based on the script _buildwin\setupLocalWinBuild.bat_.
 This script can be used to create a local build environment for OpenCPN
 
@@ -62,36 +62,50 @@ There are probably other ways to do this, but this is the way that works for
 me.
 
 . Install Visual Studio 2022 Community Edition
-  https://visualstudio.microsoft.com/downloads/
+  https://visualstudio.microsoft.com/downloads/. Be sure to select components:
++
+* [*] ```Desktop development with C++```
+* [*] ```C++ CMake tools for windows```
++
 . Install git for Windows: https://git-scm.com/download/win
 . Open _x86 Native Tools Command Prompt for Visual Studio 2022_
 . Create folder where you want to work with OpenCPN sources, something
-   like
-
-        mkdir \Users\myname\src
-        cd \Users\myname\src
+   like this:
 +
-. Clone Opencpn, for example
-
-        cd \Users\myname\src
-        git clone https://github.com/opencpn/opencpn
-        cd opencpn
+[,console]
+----
+$ mkdir \Users\myname\src
+$ cd \Users\myname\src
+----
++
+. Clone Opencpn, for example:
++
+[,console]
+----
+$ cd \Users\myname\src
+$ git clone https://github.com/opencpn/opencpn
+$ cd opencpn
+----
 +
 . Set up local build environment by executing
    `buildwin\setupLocalWinBuild.bat`
 . OpenCPN can now be built on the command line. Debug, Release and
    RelWithDebinfo configurations are available. For example, to make a
    Debug build:
-
-       buildwin\configdev.bat && cd build
-       msbuild /noLogo /m -p:Configuration=Debug -p:Platform=Win32 opencpn.sln
-       devenv opencpn.sln
-
++
+[,console]
+----
+$ buildwin\configdev.bat && cd build
+$ msbuild /noLogo /m -p:Configuration=Debug;Platform=Win32 opencpn.sln
+$ devenv opencpn.sln
+----
++
 . Open solution file (type solution file name at VS command prompt). Example:
 +
-```
-        .\build\opencpn.sln
-```
+[,console]
+----
+$ .\build\opencpn.sln
+----
 +
 Start building and debugging in Visual Studio. Available targets includes:
 
@@ -100,3 +114,83 @@ Start building and debugging in Visual Studio. Available targets includes:
     - opencpn-cmd  -- Build command line tool
     - tests -- Build unit tests.
     - run-tests -- Run unit tests
+
+*Notes:*
+
+* We recommend using msbuild as the builder instead of CMake.  The reasons:
+** msbuild is faster than CMake or CMake w/Ninja
+** msbuild gives full access to every type of build and project
+** as it turns out, by default, cmake uses msbuild under the covers
+
+* We also recommend installing the latest powershell version.  It is much more
+powerful and visually friendly.  Install like this:
++
+[,console]
+----
+$ winget install --id Microsoft.Powershell --source winget
+----
++
+* Useful msbuild command line examples follow. Type these commands from the
+ build folder just below the folder where you cloned OpenCPN.
+** Create an executable Windows installer for a fully debuggable version
++
+[,console]
+----
+$ msbuild  /m --target:Build -p:Configuration=Debug;Platform=Win32 PACKAGE.vcxproj
+----
++
+** Clean and build every project to create debug build
++
+[,console]
+----
+$ msbuild /m -t:Rebuild -p:Configuration=Debug All_BUILD.vcxproj`
+----
++
+** Clean and build every project to create Release with debug info
++
+[,console]
+----
+$ msbuild /m -t:Rebuild -p:Configuration=RelWithDebInfo All_BUILD.vcxproj
+----
++
+** Build debug version of OpenCPN core
++
+[,console]
+----
+$ msbuild /m -t:Build -p:Configuration=Debug opencpn.vcxproj
+----
++
+** Clean and build opencpn-cmd.exe
++
+[,console]
+----
+$ msbuild /m -t:Clean -p:Configuration=Debug opencpn-cmd.vcxproj
+----
++
+** Clean and build chart downloader plugin
++
+[,console]
+----
+$ msbuild /m -t:Rebuild -p:Configuration=Debug plugins\chartdldr_pi\chartdldr_pi.vcxproj
+----
++
+* You can use still use CMake if you like:
++
+[,console]
+----
+$ cmake --build . --config Debug --target Package
+----
++
+will create a full debug executable installer
+* This will clean and build a Release build
++
+[,console]
+----
+$ cmake --build . --config Release --clean-first
+----
++
+* It is possible to `attach` the Visual Studio debugger to a running instance.
+ This is useful if you create an installer, install and run OpenCPN from the start menu.
+ Once OpenCPN is running in its native enviroment the Visual Studio debugger can attach
+ itself to the running instance.  Find ```Attach to process...``` under the Debug menu item.
+   
