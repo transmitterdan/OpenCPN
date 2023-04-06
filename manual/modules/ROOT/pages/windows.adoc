@@ -136,6 +136,7 @@ $ winget install --id Microsoft.Powershell --source winget
 +
 [,console]
 ----
+$ cmake -DCMAKE_BUILD_TYPE=Debug ..
 $ msbuild  /m --target:Build -p:Configuration=Debug;Platform=Win32 PACKAGE.vcxproj
 ----
 +
@@ -143,6 +144,7 @@ $ msbuild  /m --target:Build -p:Configuration=Debug;Platform=Win32 PACKAGE.vcxpr
 +
 [,console]
 ----
+$ cmake -DCMAKE_BUILD_TYPE=Debug ..
 $ msbuild /m -t:Rebuild -p:Configuration=Debug All_BUILD.vcxproj`
 ----
 +
@@ -150,6 +152,7 @@ $ msbuild /m -t:Rebuild -p:Configuration=Debug All_BUILD.vcxproj`
 +
 [,console]
 ----
+$ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo ..
 $ msbuild /m -t:Rebuild -p:Configuration=RelWithDebInfo All_BUILD.vcxproj
 ----
 +
@@ -157,6 +160,7 @@ $ msbuild /m -t:Rebuild -p:Configuration=RelWithDebInfo All_BUILD.vcxproj
 +
 [,console]
 ----
+$ cmake -DCMAKE_BUILD_TYPE=Debug ..
 $ msbuild /m -t:Build -p:Configuration=Debug opencpn.vcxproj
 ----
 +
@@ -164,6 +168,7 @@ $ msbuild /m -t:Build -p:Configuration=Debug opencpn.vcxproj
 +
 [,console]
 ----
+$ cmake -DCMAKE_BUILD_TYPE=Debug ..
 $ msbuild /m -t:Clean -p:Configuration=Debug opencpn-cmd.vcxproj
 ----
 +
@@ -171,6 +176,7 @@ $ msbuild /m -t:Clean -p:Configuration=Debug opencpn-cmd.vcxproj
 +
 [,console]
 ----
+$ cmake -DCMAKE_BUILD_TYPE=Debug ..
 $ msbuild /m -t:Rebuild -p:Configuration=Debug plugins\chartdldr_pi\chartdldr_pi.vcxproj
 ----
 +
@@ -178,6 +184,7 @@ $ msbuild /m -t:Rebuild -p:Configuration=Debug plugins\chartdldr_pi\chartdldr_pi
 +
 [,console]
 ----
+$ cmake -DCMAKE_BUILD_TYPE=Debug ..
 $ cmake --build . --config Debug --target Package
 ----
 +
@@ -186,6 +193,7 @@ will create a full debug executable installer
 +
 [,console]
 ----
+$ cmake -DCMAKE_BUILD_TYPE=Release ..
 $ cmake --build . --config Release --clean-first
 ----
 +
