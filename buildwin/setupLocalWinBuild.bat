@@ -36,9 +36,9 @@ set "wxWidgets_ROOT_DIR=%wxDIR%"
 set "wxWidgets_LIB_DIR=%wxDIR%\lib\vc_dll"
 set "OLDPATH=%PATH%"
 rem we want these to remain in the environment after completion
-@echo set "wxDIR=%wxDIR%" > configdev.bat
-@echo set "wxWidgets_ROOT_DIR=%wxWidgets_ROOT_DIR%" >> configdev.bat
-@echo set "wxWidgets_LIB_DIR=%wxWidgets_LIB_DIR%" >> configdev.bat
+@echo set "wxDIR=%wxDIR%" > "%OD%\configdev.bat"
+@echo set "wxWidgets_ROOT_DIR=%wxWidgets_ROOT_DIR%" >> "%OD%\configdev.bat"
+@echo set "wxWidgets_LIB_DIR=%wxWidgets_LIB_DIR%" >> "%OD%\configdev.bat"
 
 SET "CACHE_DIR=%OD%\cache"
 SET "buildWINtmp=%CACHE_DIR%\buildwintemp"
@@ -125,27 +125,30 @@ if not exist "%wxDIR%" (
 )
 
 @echo Building wxWidgets
-pushd %wxDIR%
+cd %wxDIR%
+rem if not exist cmake (mkdir cmake)
+rem cmake -E chdir %WXDIR%\cmake cmake -DCMAKE_CONFIGURATION_TYPES="Debug;RelWithDebInfo;Release;MinSizeRel" -dwxBUILD_VENDOR="vc14x" -DwxBUILD_SAMPLES:STRING="OFF" -DwxBUILD_TESTS:STRING="OFF" -G "Visual Studio 17 2022" -T "v143" -A Win32 ..
 msbuild /noLogo /m "-p:Configuration=DLL Debug" ^
-  -p:Platform=Win32 build\msw\wx_vc17.sln
+  -p:Platform=Win32;wxVendor=14x;wxVersionString=32 build\msw\wx_vc17.sln
 msbuild /noLogo /m "-p:Configuration=DLL Release" ^
-  -p:Platform=Win32 build\msw\wx_vc17.sln
+  -p:Platform=Win32;wxVendor=14x;wxVersionString=32 build\msw\wx_vc17.sln
 if not exist "%CACHE_DIR%\buildwin\wxWidgets" (
     mkdir "%CACHE_DIR%\buildwin\wxWidgets"
 )
-xcopy /e /q /y .\lib\vc_dll\ "%CACHE_DIR%\buildwin\wxWidgets"
+xcopy /e /q /y "%WXDIR%\lib\vc_dll\" "%CACHE_DIR%\buildwin\wxWidgets"
 if not exist "%CACHE_DIR%\buildwin\wxWidgets\locale" (
   mkdir "%CACHE_DIR%\buildwin\wxWidgets\locale"
 )
-xcopy /e /q /y .\locale\ "%CACHE_DIR%\buildwin\wxWidgets\locale"
-popd
-pushd build
-
+xcopy /e /q /y "%WXDIR%\locale\" "%CACHE_DIR%\buildwin\wxWidgets\locale"
+cd
+@echo cd %OD%\build
+cd "%OD%\build"
+cd
 rem Copy files needed to run OpenCPN
-call ..\buildwin\docopyAll.bat Debug
-call ..\buildwin\docopyAll.bat RelWithDebInfo
-call ..\buildwin\docopyAll.bat MinSizeRel
-call ..\buildwin\docopyAll.bat Release
+call "%OD%\buildwin\docopyAll.bat" Debug
+call "%OD%\buildwin\docopyAll.bat" RelWithDebInfo
+call "%OD%\buildwin\docopyAll.bat" MinSizeRel
+call "%OD%\buildwin\docopyAll.bat" Release
 
 rem restore user configurations if we saved them
 set folder=Release
@@ -166,17 +169,18 @@ for /D %%D in ("NSIS-Package*") do (set nsis=%%~D)
 @echo gettext=%gettext%
 @echo nsis=%nsis%
 
-@echo Finishing configdev.bat
-set "_newpath=%OD%\build\%nsis%\NSIS\;%OD%\build\%nsis%\NSIS\bin\"
-set "_newpath=%_newpath%;%OD%\build\%gettext%\tools\bin\"
-@echo SET "PATH=%%PATH%%;%_newpath%" >>..\configdev.bat
-@echo exit /b 0 >> ..\configdev.bat
+@echo Finishing %OD%\configdev.bat
+set "_addpath=%OD%\build\%nsis%\NSIS\;%OD%\build\%nsis%\NSIS\bin\"
+set "_addpath=%_addpath%;%OD%\build\%gettext%\tools\bin\"
+@echo SET "PATH=%%PATH%%;%_addpath%" >> "%OD%\configdev.bat"
+@echo set _addpath= >> "%OD%\configdev.bat"
+@echo cd "%OD%\build" >> "%OD%\configdev.bat"
+@echo exit /b 0 >> "%OD%\configdev.bat"
+cd %OD%
 endlocal
-rem endlocal also does a popd so we are back in the CMake source folder
 
 rem set environment for VS development
 call configdev.bat
-pushd build
 cmake -A Win32 -G "Visual Studio 17 2022" ^
   -DCMAKE_GENERATOR_PLATFORM=Win32 ^
   -DwxWidgets_LIB_DIR="%wxWidgets_LIB_DIR%" ^
@@ -196,7 +200,6 @@ if exist opencpn.sln (
   msbuild /noLogo /m -p:Configuration=RelWithDebInfo -p:Platform=Win32 opencpn.sln
 )
 
-popd
 @echo To build OpenCPN for debugging at command line do this in the folder
 @echo where you cloned OpenCPN:
 @echo.
@@ -212,7 +215,6 @@ popd
 goto :EOF
 
 :cmakeErr
-popd
 @echo CMake failed to configure OpenCPN build folder.
 @echo Review the error messages and read the OpenCPN Developer Manual for help.
 goto :EOF
@@ -222,16 +224,16 @@ rem Local subroutines
 :backup
 @echo "Backing up %OD%\build\%folder%"
 if not exist "%OD%\build\%folder%" goto :breturn
-if not exist .\tmp (mkdir .\tmp)
-if not exist ".\tmp\%folder%" (mkdir ".\tmp\%folder%")
+if not exist "%OD%\tmp" (mkdir "%OD%\tmp")
+if not exist "%OD%\tmp\%folder%" (mkdir "%OD%\tmp\%folder%")
 @echo backing up %folder%
-xcopy /Q /Y "%OD%\build\%folder%\opencpn.ini" ".\tmp\%folder%"
-xcopy /Q /Y "%OD%\build\%folder%\*.log.log" ".\tmp\%folder%"
-xcopy /Q /Y "%OD%\build\%folder%\*.log" ".\tmp\%folder%"
-xcopy /Q /Y "%OD%\build\%folder%\*.dat" ".\tmp\%folder%"
-xcopy /Q /Y "%OD%\build\%folder%\*.csv" ".\tmp\%folder%"
-xcopy /Q /Y "%OD%\build\%folder%\navobj.*" ".\tmp\%folder%"
-xcopy /Q /Y "%OD%\build\%folder%\navobj.xml.?" ".\tmp\%folder%"
+xcopy /Q /Y "%OD%\build\%folder%\opencpn.ini" "%OD%\tmp\%folder%"
+xcopy /Q /Y "%OD%\build\%folder%\*.log.log" "%OD%\tmp\%folder%"
+xcopy /Q /Y "%OD%\build\%folder%\*.log" "%OD%\tmp\%folder%"
+xcopy /Q /Y "%OD%\build\%folder%\*.dat" "%OD%\tmp\%folder%"
+xcopy /Q /Y "%OD%\build\%folder%\*.csv" "%OD%\tmp\%folder%"
+xcopy /Q /Y "%OD%\build\%folder%\navobj.*" "%OD%\tmp\%folder%"
+xcopy /Q /Y "%OD%\build\%folder%\navobj.xml.?" "%OD%\tmp\%folder%"
 if not exist "%OD%\build\%folder%\Charts" goto :breturn
 @echo cmake -E copy_directory "%OD%\build\%folder%\Charts" "tmp\%folder%"
 cmake -E copy_directory "%OD%\build\%folder%\Charts" "tmp\%folder%"
@@ -240,16 +242,18 @@ cmake -E copy_directory "%OD%\build\%folder%\Charts" "tmp\%folder%"
 exit /b 0
 
 :restore
-if not exist "..\tmp\%folder%" goto :rreturn
+if not exist "%OD%\tmp\%folder%" goto :rreturn
 @echo Restoring %folder% settings
-cmake -E copy_directory "..\tmp\%folder%" ".\%folder%"
-if errorlevel 0 (rmdir /s /q "..\tmp\%folder%")
+cmake -E copy_directory "%OD%\tmp\%folder%" "%OD%\build\%folder%"
+if errorlevel 0 (rmdir /s /q "%OD%\tmp\%folder%")
 
 :rreturn
 @echo restore returning
 exit /b 0
 
 :download
+@echo URL=%URL%
+@echo DEST=%DEST%
 %PSH% -Command [System.Net.ServicePointManager]::MaxServicePointIdleTime = 5000000; ^
   if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; ^
   Invoke-WebRequest "%URL%" -OutFile '%DEST%'; ^
@@ -257,7 +261,8 @@ exit /b 0
 exit /b
 
 :explode
-@echo SOURCE=%SOURCE%, DEST=%DEST%
+@echo SOURCE=%SOURCE%
+@echo DEST=%DEST%
 %PSH% -Command if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; ^
   Expand-Archive -Force -Path '%SOURCE%' -DestinationPath '%DEST%'
 exit /b
