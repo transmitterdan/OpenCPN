@@ -29,20 +29,26 @@ goto :main
 @echo ****************************************************************************
 goto :EOF
 :main
+::-------------------------------------------------------------
+:: Initialize local environment
+::-------------------------------------------------------------
 set "OD=%~dp0.."
 @echo OD=%OD%
 set "wxDIR=%OD%\cache\buildwxWidgets"
 set "wxWidgets_ROOT_DIR=%wxDIR%"
 set "wxWidgets_LIB_DIR=%wxDIR%\lib\vc_dll"
 set "OLDPATH=%PATH%"
-rem we want these to remain in the environment after completion
+::-------------------------------------------------------------
+:: Initialize local helper script to reinitialize environment
+::-------------------------------------------------------------
 @echo set "wxDIR=%wxDIR%" > "%OD%\configdev.bat"
 @echo set "wxWidgets_ROOT_DIR=%wxWidgets_ROOT_DIR%" >> "%OD%\configdev.bat"
 @echo set "wxWidgets_LIB_DIR=%wxWidgets_LIB_DIR%" >> "%OD%\configdev.bat"
-
+::-------------------------------------------------------------
+:: Initialize local variables
+::-------------------------------------------------------------
 SET "CACHE_DIR=%OD%\cache"
 SET "buildWINtmp=%CACHE_DIR%\buildwintemp"
-
 set PSH=powershell
 where pwsh > NUL 2> NUL && set PSH=pwsh
 where msbuild && goto :vsok
@@ -50,10 +56,9 @@ where msbuild && goto :vsok
 goto :usage
 
 :vsok
-
-:save
-
-rem Save user configuration
+::-------------------------------------------------------------
+:: Save user configuration data
+::-------------------------------------------------------------
 set folder=Release
 call :backup
 set folder=RelWithDebInfo
@@ -63,7 +68,9 @@ call :backup
 set folder=MinSizeRel
 call :backup
 
-rem Shall we start from scratch?
+::-------------------------------------------------------------
+:: Handle command line parameters
+::-------------------------------------------------------------
 if [%1]==[--clean] (^
   if exist "%OD%\build" (^
    @echo Clearing "%OD%\build"
@@ -72,19 +79,25 @@ if [%1]==[--clean] (^
   if exist "%CACHE_DIR%" (rmdir /s /q "%CACHE_DIR%")
   if exist "%buildWINtmp%" (rmdir /s /q "%buildWINtmp%")
 )
-
+::-------------------------------------------------------------
+:: Create needed folders
+::-------------------------------------------------------------
 if not exist "%OD%\build" (mkdir "%OD%\build")
 if not exist "%CACHE_DIR%" (mkdir "%CACHE_DIR%")
 if not exist "%CACHE_DIR%\buildwin" (mkdir "%CACHE_DIR%\buildwin")
 if not exist "%buildWINtmp%" (mkdir "%buildWINtmp%")
 
-rem Get dependencies
+::-------------------------------------------------------------
+:: Install nuget
+::-------------------------------------------------------------
 @echo Downloading nuget
 set "URL=https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
 set "DEST=%buildWINtmp%\nuget.exe"
 call :download
 if errorlevel 1 (exit /b 1) 
-
+::-------------------------------------------------------------
+:: Download OpenCPN Core dependencies
+::-------------------------------------------------------------
 @echo Downloading Windows depencencies from OpenCPN repository
 set "URL=https://github.com/OpenCPN/OCPNWindowsCoreBuildSupport/archive/refs/tags/v0.3.zip"
 set "DEST=%buildWINtmp%\OCPNWindowsCoreBuildSupport.zip"
@@ -97,44 +110,50 @@ call :explode
 if errorlevel 1 (echo not OK) else (
   xcopy /e /q /y "%buildWINtmp%\OCPNWindowsCoreBuildSupport-0.3\buildwin" "%CACHE_DIR%\buildwin"
   if errorlevel 1 (echo NOT OK) else (echo OK))
-if not exist "%wxDIR%" (
-  @echo Downloading wxWidgets sources
-  mkdir "%wxDIR%"
-  set "URL=https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.2.1/wxWidgets-3.2.2.1.zip"
-  set "DEST=%wxDIR%\wxWidgets-3.2.2.1.zip"
-  call :download
-  if errorlevel 1 (echo not OK) else (echo OK)
+::-------------------------------------------------------------
+:: Download wxWidgets 3.2.2 sources
+::-------------------------------------------------------------
+if exist "%wxDIR%" (goto :skipwxDL)
+pause
+@echo Downloading wxWidgets sources
+mkdir "%wxDIR%"
+set "URL=https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.2.1/wxWidgets-3.2.2.1.zip"
+set "DEST=%wxDIR%\wxWidgets-3.2.2.1.zip"
+call :download
+if errorlevel 1 (echo not OK) else (echo OK)
 
-  @echo exploding wxWidgets
-  set "SOURCE=%wxDIR%\wxWidgets-3.2.2.1.zip"
-  set "DEST=%wxDIR%"
-  call :explode
-  if errorlevel 1 (echo not OK) else (echo OK)
+@echo exploding wxWidgets
+set "SOURCE=%wxDIR%\wxWidgets-3.2.2.1.zip"
+set "DEST=%wxDIR%"
+call :explode
+if errorlevel 1 (echo not OK) else (echo OK)
 
-  @echo Downloading Windows WebView2 kit
-  set "URL=https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2"
-  set "DEST=%wxDIR%\webview2.zip"
-  call :download
-  if errorlevel 1 (echo not OK) else (echo OK)
+@echo Downloading Windows WebView2 kit
+set "URL=https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2"
+set "DEST=%wxDIR%\webview2.zip"
+call :download
+if errorlevel 1 (echo not OK) else (echo OK)
 
-  @echo Exploding WebView2
-  set "SOURCE=%wxDIR%\webview2.zip"
-  set "DEST=%wxDIR%\build\3rdparty\webview2"
-  call :explode
-  if errorlevel 1 (echo not OK) else (echo OK)
-)
+@echo Exploding WebView2
+set "SOURCE=%wxDIR%\webview2.zip"
+set "DEST=%wxDIR%\build\3rdparty\webview2"
+call :explode
+if errorlevel 1 (echo not OK) else (echo OK)
 
+:skipwxDL
+::-------------------------------------------------------------
+:: Build wxWidgets from sources
+::-------------------------------------------------------------
 @echo Building wxWidgets
-cd %wxDIR%
 rem if not exist cmake (mkdir cmake)
 rem cmake -E chdir %WXDIR%\cmake cmake -DCMAKE_CONFIGURATION_TYPES="Debug;RelWithDebInfo;Release;MinSizeRel" -dwxBUILD_VENDOR="vc14x" -DwxBUILD_SAMPLES:STRING="OFF" -DwxBUILD_TESTS:STRING="OFF" -G "Visual Studio 17 2022" -T "v143" -A Win32 ..
 
-msbuild /noLogo /m "-p:Configuration=DLL Debug";Platform=Win32 ^
+msbuild /noLogo /v:m /m "-p:Configuration=DLL Debug";Platform=Win32 ^
   -p:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix="_vc14x" ^
-  -t:Rebuild build\msw\wx_vc17.sln
-msbuild /noLogo /m "-p:Configuration=DLL Release";Platform=Win32 ^
+  "%wxDIR%\build\msw\wx_vc17.sln"
+msbuild /noLogo /v:m /m "-p:Configuration=DLL Release";Platform=Win32 ^
   -p:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix="_vc14x" ^
-  -t:Rebuild build\msw\wx_vc17.sln
+  "%wxDIR%\build\msw\wx_vc17.sln"
 if not exist "%CACHE_DIR%\buildwin\wxWidgets" (
     mkdir "%CACHE_DIR%\buildwin\wxWidgets"
 )
@@ -143,17 +162,21 @@ if not exist "%CACHE_DIR%\buildwin\wxWidgets\locale" (
   mkdir "%CACHE_DIR%\buildwin\wxWidgets\locale"
 )
 xcopy /e /q /y "%WXDIR%\locale\" "%CACHE_DIR%\buildwin\wxWidgets\locale"
-cd
+::-------------------------------------------------------------
+:: Initialize the build folder
+::-------------------------------------------------------------
 @echo cd %OD%\build
 cd "%OD%\build"
-cd
-rem Copy files needed to run OpenCPN
+::-------------------------------------------------------------
+:: Copy files needed to run OpenCPN (must be in build folder)
+::-------------------------------------------------------------
 call "%OD%\buildwin\docopyAll.bat" Debug
 call "%OD%\buildwin\docopyAll.bat" RelWithDebInfo
 call "%OD%\buildwin\docopyAll.bat" MinSizeRel
 call "%OD%\buildwin\docopyAll.bat" Release
-
-rem restore user configurations if we saved them
+::-------------------------------------------------------------
+:: Restore user configurations
+::-------------------------------------------------------------
 set folder=Release
 call :restore
 set folder=RelWithDebInfo
@@ -162,16 +185,18 @@ set folder=Debug
 call :restore
 set folder=MinSizeRel
 call :restore
-
-rem Install some tools CMake will need
+::-------------------------------------------------------------
+:: Download and initialize build dependencies
+::-------------------------------------------------------------
 %buildWINtmp%\nuget install Gettext.Tools
 %buildWINtmp%\nuget install NSIS-Package
-
 for /D %%D in ("Gettext*") do (set gettext=%%~D)
 for /D %%D in ("NSIS-Package*") do (set nsis=%%~D)
 @echo gettext=%gettext%
 @echo nsis=%nsis%
-
+::-------------------------------------------------------------
+:: Finalize local environment helper script
+::-------------------------------------------------------------
 @echo Finishing %OD%\configdev.bat
 set "_addpath=%OD%\build\%nsis%\NSIS\;%OD%\build\%nsis%\NSIS\bin\"
 set "_addpath=%_addpath%;%OD%\build\%gettext%\tools\bin\"
@@ -179,11 +204,16 @@ set "_addpath=%_addpath%;%OD%\build\%gettext%\tools\bin\"
 @echo set _addpath= >> "%OD%\configdev.bat"
 @echo cd "%OD%\build" >> "%OD%\configdev.bat"
 @echo exit /b 0 >> "%OD%\configdev.bat"
-cd %OD%
 endlocal
-
-rem set environment for VS development
-call configdev.bat
+::-------------------------------------------------------------
+:: Change to build folder
+::-------------------------------------------------------------
+cd /D "%~dp0.."
+@echo In folder %CD%
+if exist configdev.bat (call configdev.bat) else (goto :hint)
+::-------------------------------------------------------------
+:: Build Release and Debug executables
+::-------------------------------------------------------------
 cmake -A Win32 -G "Visual Studio 17 2022" ^
   -DCMAKE_GENERATOR_PLATFORM=Win32 ^
   -DwxWidgets_LIB_DIR="%wxWidgets_LIB_DIR%" ^
@@ -197,12 +227,17 @@ cmake -A Win32 -G "Visual Studio 17 2022" ^
   ..
 if errorlevel 1 goto :cmakeErr
 if exist opencpn.sln (
-  msbuild /noLogo /m -p:Configuration=Debug -p:Platform=Win32 opencpn.sln
+  msbuild /noLogo /v:m /m -p:Configuration=Debug -p:Platform=Win32 opencpn.sln
+  if errorlevel 1 goto :buildErr
 )
 if exist opencpn.sln (
-  msbuild /noLogo /m -p:Configuration=RelWithDebInfo -p:Platform=Win32 opencpn.sln
+  msbuild /noLogo /v:m /m -p:Configuration=RelWithDebInfo -p:Platform=Win32 opencpn.sln
+  if errorlevel 1 goto :buildErr
 )
-
+::-------------------------------------------------------------
+:: Offer some helpful hints
+::-------------------------------------------------------------
+:hint
 @echo To build OpenCPN for debugging at command line do this in the folder
 @echo where you cloned OpenCPN:
 @echo.
@@ -216,14 +251,28 @@ if exist opencpn.sln (
 @echo  configdev.bat
 @echo [101;93mfirst before starting Visual Studio[0m.
 goto :EOF
-
+::-------------------------------------------------------------
+:: CMake failed
+::-------------------------------------------------------------
 :cmakeErr
 @echo CMake failed to configure OpenCPN build folder.
-@echo Review the error messages and read the OpenCPN Developer Manual for help.
+@echo Review the error messages and read the OpenCPN
+@echo Developer Manual for help.
 goto :EOF
-
-rem Local subroutines
-
+::-------------------------------------------------------------
+:: Build failed
+::-------------------------------------------------------------
+:buildErr
+@echo Build using msbuild failed.
+@echo Review the error messages and read the OpenCPN
+@echo Developer Manual for help.
+goto :EOF
+::-------------------------------------------------------------
+:: Local subroutines
+::-------------------------------------------------------------
+::-------------------------------------------------------------
+:: Backup user configuration
+::-------------------------------------------------------------
 :backup
 @echo "Backing up %OD%\build\%folder%"
 if not exist "%OD%\build\%folder%" goto :breturn
@@ -243,17 +292,20 @@ cmake -E copy_directory "%OD%\build\%folder%\Charts" "tmp\%folder%"
 :breturn
 @echo backup returning
 exit /b 0
-
+::-------------------------------------------------------------
+:: Restore user configuration to build folder
+::-------------------------------------------------------------
 :restore
 if not exist "%OD%\tmp\%folder%" goto :rreturn
 @echo Restoring %folder% settings
 cmake -E copy_directory "%OD%\tmp\%folder%" "%OD%\build\%folder%"
 if errorlevel 0 (rmdir /s /q "%OD%\tmp\%folder%")
-
 :rreturn
 @echo restore returning
 exit /b 0
-
+::-------------------------------------------------------------
+:: Download URL to a DEST folder
+::-------------------------------------------------------------
 :download
 @echo URL=%URL%
 @echo DEST=%DEST%
@@ -262,7 +314,9 @@ exit /b 0
   Invoke-WebRequest "%URL%" -OutFile '%DEST%'; ^
   exit $LASTEXITCODE
 exit /b
-
+::-------------------------------------------------------------
+:: Explode SOURCE zip file to DEST folder
+::-------------------------------------------------------------
 :explode
 @echo SOURCE=%SOURCE%
 @echo DEST=%DEST%
