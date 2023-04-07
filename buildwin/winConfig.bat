@@ -20,7 +20,7 @@ goto :main
 @echo *                 cd \Users\myname\source\repos\opencpn                    *
 @echo *                 git checkout localWinBuild                               *
 @echo *  6. Set up local build environment by executing this script              *
-@echo *        Example: setupLocalWinBuild.bat                                   *
+@echo *        Example: winConfig.bat                                            *
 @echo *  7. Open solution file (type solution file name at VS command prompt)    *
 @echo *        Example: .\build\opencpn.sln                                      *
 @echo *        Reinitialize build folder: .\build\opencpn.sln --clean            *
