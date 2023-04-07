@@ -1,0 +1,1 @@
+git checkout master && git pull upstream master --recurse-submodules && git push && git checkout masterCI --recurse-submodules && git merge master && git push && git checkout mastertd2 --recurse-submodules && git merge master && git push
