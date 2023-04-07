@@ -128,10 +128,12 @@ if not exist "%wxDIR%" (
 cd %wxDIR%
 rem if not exist cmake (mkdir cmake)
 rem cmake -E chdir %WXDIR%\cmake cmake -DCMAKE_CONFIGURATION_TYPES="Debug;RelWithDebInfo;Release;MinSizeRel" -dwxBUILD_VENDOR="vc14x" -DwxBUILD_SAMPLES:STRING="OFF" -DwxBUILD_TESTS:STRING="OFF" -G "Visual Studio 17 2022" -T "v143" -A Win32 ..
-msbuild /noLogo /m "-p:Configuration=DLL Debug" ^
-  -p:Platform=Win32;wxVendor=14x;wxVersionString=32 build\msw\wx_vc17.sln
-msbuild /noLogo /m "-p:Configuration=DLL Release" ^
-  -p:Platform=Win32;wxVendor=14x;wxVersionString=32 build\msw\wx_vc17.sln
+msbuild /noLogo /m "-p:Configuration=DLL Debug";Platform=Win32 ^
+  -p:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix="_vc14x" ^
+  build\msw\wx_vc17.sln
+msbuild /noLogo /m "-p:Configuration=DLL Release";Platform=Win32 ^
+  -p:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix="_vc14x" ^
+  build\msw\wx_vc17.sln
 if not exist "%CACHE_DIR%\buildwin\wxWidgets" (
     mkdir "%CACHE_DIR%\buildwin\wxWidgets"
 )
