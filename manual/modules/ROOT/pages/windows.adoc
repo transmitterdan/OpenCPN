@@ -54,7 +54,7 @@ using:
 
 The steps here describe how to make a complete build in Visual Studio,
 including full source debugging with Intellisense(R).
-The setup is based on the script _buildwin\setupLocalWinBuild.bat_.
+The setup is based on the script _buildwin\winConfig.bat_.
 This script can be used to create a local build environment for OpenCPN
 
 Here are some basic steps that are known to work.
