@@ -2,6 +2,8 @@
 
 expand() { for arg in "$@"; do test -f $arg && echo $arg; done }
 
+REPO=${CLOUDSMITH_REPO:-"dan-dickey/opencpn-unstable-testing"}
+
 test -z "$TRAVIS_BUILD_DIR" || cd $TRAVIS_BUILD_DIR
 cd build
 
