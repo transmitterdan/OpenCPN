@@ -96,15 +96,19 @@ $ cd opencpn
 [,console]
 ----
 $ buildwin\configdev.bat && cd build
+$ .\configdev.bat
 $ msbuild /noLogo /m -p:Configuration=Debug;Platform=Win32 opencpn.sln
-$ devenv opencpn.sln
+$ .\opencpn.sln
 ----
 +
-. Open solution file (type solution file name at VS command prompt). Example:
+. An alternative is to use Visual Studio GUI to build and debug. Configure the
+  environment using configdev.bat then open solution file (type solution file
+  name at VS command prompt). Example:
 +
 [,console]
 ----
-$ .\build\opencpn.sln
+$ .\configdev.bat
+$ .\opencpn.sln
 ----
 +
 Start building and debugging in Visual Studio. Available targets includes:
@@ -117,9 +121,10 @@ Start building and debugging in Visual Studio. Available targets includes:
 
 *Notes:*
 
-* We recommend using msbuild as the builder instead of CMake.  The reasons:
+* We recommend using msbuild as the command line builder instead of CMake.  The reasons:
 ** msbuild is faster than CMake or CMake w/Ninja
 ** msbuild gives full access to every type of build and project
+** CMake requires a configure step to change the build type (Release, Debug, etc.)
 ** as it turns out, by default, cmake uses msbuild under the covers
 
 * We also recommend installing the latest powershell version.  It is much more

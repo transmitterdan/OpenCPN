@@ -114,7 +114,6 @@ if errorlevel 1 (echo not OK) else (
 :: Download wxWidgets 3.2.2 sources
 ::-------------------------------------------------------------
 if exist "%wxDIR%" (goto :skipwxDL)
-pause
 @echo Downloading wxWidgets sources
 mkdir "%wxDIR%"
 set "URL=https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.2.1/wxWidgets-3.2.2.1.zip"
@@ -200,10 +199,11 @@ for /D %%D in ("NSIS-Package*") do (set nsis=%%~D)
 @echo Finishing %OD%\configdev.bat
 set "_addpath=%OD%\build\%nsis%\NSIS\;%OD%\build\%nsis%\NSIS\bin\"
 set "_addpath=%_addpath%;%OD%\build\%gettext%\tools\bin\"
-@echo SET "PATH=%%PATH%%;%_addpath%" >> "%OD%\configdev.bat"
-@echo set _addpath= >> "%OD%\configdev.bat"
+@echo path^|find /i "%_addpath%"    ^>nul ^|^| set "path=%path%;%_addpath%" >> "%OD%\configdev.bat
+:: @echo SET "PATH=%%PATH%%;%_addpath%" >> "%OD%\configdev.bat"
+@set _addpath=
 @echo cd "%OD%\build" >> "%OD%\configdev.bat"
-@echo exit /b 0 >> "%OD%\configdev.bat"
+:: @echo exit /b 0 >> "%OD%\configdev.bat"
 endlocal
 ::-------------------------------------------------------------
 :: Change to build folder
@@ -211,6 +211,7 @@ endlocal
 cd /D "%~dp0.."
 @echo In folder %CD%
 if exist configdev.bat (call configdev.bat) else (goto :hint)
+pause
 ::-------------------------------------------------------------
 :: Build Release and Debug executables
 ::-------------------------------------------------------------
