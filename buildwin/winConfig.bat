@@ -211,7 +211,6 @@ endlocal
 cd /D "%~dp0.."
 @echo In folder %CD%
 if exist configdev.bat (call configdev.bat) else (goto :hint)
-pause
 ::-------------------------------------------------------------
 :: Build Release and Debug executables
 ::-------------------------------------------------------------
@@ -227,6 +226,8 @@ cmake -A Win32 -G "Visual Studio 17 2022" ^
   -DOCPN_BUILD_TEST=OFF ^
   ..
 if errorlevel 1 goto :cmakeErr
+@echo CMake configuration successful. Ready to build?
+pause
 if exist opencpn.sln (
   msbuild /noLogo /v:m /m -p:Configuration=Debug -p:Platform=Win32 opencpn.sln
   if errorlevel 1 goto :buildErr

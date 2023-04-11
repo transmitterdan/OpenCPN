@@ -200,4 +200,3 @@ $ cmake --build . --config Release --clean-first
  This is useful if you create an installer, install and run OpenCPN from the start menu.
  Once OpenCPN is running in its native enviroment the Visual Studio debugger can attach
  itself to the running instance.  Find ```Attach to process...``` under the Debug menu item.
-   
