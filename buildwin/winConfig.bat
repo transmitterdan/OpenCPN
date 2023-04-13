@@ -37,13 +37,12 @@ set "OD=%~dp0.."
 set "wxDIR=%OD%\cache\buildwxWidgets"
 set "wxWidgets_ROOT_DIR=%wxDIR%"
 set "wxWidgets_LIB_DIR=%wxDIR%\lib\vc_dll"
-set "OLDPATH=%PATH%"
 ::-------------------------------------------------------------
 :: Initialize local helper script to reinitialize environment
 ::-------------------------------------------------------------
-@echo set "wxDIR=%wxDIR%" > "%OD%\configdev.bat"
-@echo set "wxWidgets_ROOT_DIR=%wxWidgets_ROOT_DIR%" >> "%OD%\configdev.bat"
-@echo set "wxWidgets_LIB_DIR=%wxWidgets_LIB_DIR%" >> "%OD%\configdev.bat"
+@echo set "wxDIR=%wxDIR%" > "%OD%\buildwin\configdev.bat"
+@echo set "wxWidgets_ROOT_DIR=%wxWidgets_ROOT_DIR%" >> "%OD%\buildwin\configdev.bat"
+@echo set "wxWidgets_LIB_DIR=%wxWidgets_LIB_DIR%" >> "%OD%\buildwin\configdev.bat"
 ::-------------------------------------------------------------
 :: Initialize local variables
 ::-------------------------------------------------------------
@@ -149,9 +148,11 @@ rem cmake -E chdir %WXDIR%\cmake cmake -DCMAKE_CONFIGURATION_TYPES="Debug;RelWit
 
 msbuild /noLogo /v:m /m "-p:Configuration=DLL Debug";Platform=Win32 ^
   -p:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix="_vc14x" ^
+  /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_DEBUG_WIN32_Debug.log ^
   "%wxDIR%\build\msw\wx_vc17.sln"
 msbuild /noLogo /v:m /m "-p:Configuration=DLL Release";Platform=Win32 ^
   -p:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix="_vc14x" ^
+  /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_RELEASE_WIN32_Debug.log ^
   "%wxDIR%\build\msw\wx_vc17.sln"
 if not exist "%CACHE_DIR%\buildwin\wxWidgets" (
     mkdir "%CACHE_DIR%\buildwin\wxWidgets"
@@ -196,21 +197,19 @@ for /D %%D in ("NSIS-Package*") do (set nsis=%%~D)
 ::-------------------------------------------------------------
 :: Finalize local environment helper script
 ::-------------------------------------------------------------
-@echo Finishing %OD%\configdev.bat
+@echo Finishing %OD%\buildwin\configdev.bat
 set "_addpath=%OD%\build\%nsis%\NSIS\;%OD%\build\%nsis%\NSIS\bin\"
 set "_addpath=%_addpath%;%OD%\build\%gettext%\tools\bin\"
-@echo path^|find /i "%_addpath%"    ^>nul ^|^| set "path=%path%;%_addpath%" >> "%OD%\configdev.bat
-:: @echo SET "PATH=%%PATH%%;%_addpath%" >> "%OD%\configdev.bat"
+@echo path^|find /i "%_addpath%"    ^>nul ^|^| set "path=%path%;%_addpath%" >> "%OD%\buildwin\configdev.bat
 @set _addpath=
-@echo cd "%OD%\build" >> "%OD%\configdev.bat"
-:: @echo exit /b 0 >> "%OD%\configdev.bat"
+@echo cd "%OD%\build" >> "%OD%\buildwin\configdev.bat"
 endlocal
 ::-------------------------------------------------------------
 :: Change to build folder
 ::-------------------------------------------------------------
 cd /D "%~dp0.."
 @echo In folder %CD%
-if exist configdev.bat (call configdev.bat) else (goto :hint)
+if exist .\buildwin\configdev.bat (call .\buildwin\configdev.bat) else (goto :hint)
 ::-------------------------------------------------------------
 :: Build Release and Debug executables
 ::-------------------------------------------------------------
@@ -229,12 +228,18 @@ if errorlevel 1 goto :cmakeErr
 @echo CMake configuration successful. Ready to build?
 pause
 if exist opencpn.sln (
-  msbuild /noLogo /v:m /m -p:Configuration=Debug -p:Platform=Win32 opencpn.sln
+  msbuild /noLogo /v:m /m -p:Configuration=Debug;Platform=Win32 -t:Rebuild ^
+  /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_DEBUG_WIN32_Debug.log ^
+  opencpn.sln
   if errorlevel 1 goto :buildErr
+  @echo OpenCPN Debug build successful!
 )
 if exist opencpn.sln (
-  msbuild /noLogo /v:m /m -p:Configuration=RelWithDebInfo -p:Platform=Win32 opencpn.sln
+  msbuild /noLogo /v:m /m -p:Configuration=RelWithDebInfo;Platform=Win32 -t:Rebuild ^
+  /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_RELWITHDEBINFO_WIN32_Debug.log ^
+  opencpn.sln
   if errorlevel 1 goto :buildErr
+  @echo OpenCPN RelWithDebInfo build successful!
 )
 ::-------------------------------------------------------------
 :: Offer some helpful hints
@@ -243,14 +248,14 @@ if exist opencpn.sln (
 @echo To build OpenCPN for debugging at command line do this in the folder
 @echo where you cloned OpenCPN:
 @echo.
-@echo  configdev.bat ^&^& cd build
+@echo  .\buildwin\configdev.bat
 @echo  msbuild /noLogo /m -p:Configuration=Debug -p:Platform=Win32 opencpn.sln
 @echo  devenv opencpn.sln
 @echo.
 @echo Now you are ready to start debugging
 @echo.
 @echo [101;93mIf you close this CMD prompt and open another be sure to run:[0m
-@echo  configdev.bat
+@echo  .\buildwin\configdev.bat
 @echo [101;93mfirst before starting Visual Studio[0m.
 goto :EOF
 ::-------------------------------------------------------------

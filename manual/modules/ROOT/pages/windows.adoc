@@ -95,8 +95,7 @@ $ cd opencpn
 +
 [,console]
 ----
-$ buildwin\configdev.bat && cd build
-$ .\configdev.bat
+$ .\buildwin\configdev.bat
 $ msbuild /noLogo /m -p:Configuration=Debug;Platform=Win32 opencpn.sln
 $ .\opencpn.sln
 ----
@@ -107,7 +106,7 @@ $ .\opencpn.sln
 +
 [,console]
 ----
-$ .\configdev.bat
+$ .\buildwin\configdev.bat
 $ .\opencpn.sln
 ----
 +
@@ -134,9 +133,17 @@ powerful and visually friendly.  Install like this:
 ----
 $ winget install --id Microsoft.Powershell --source winget
 ----
-+
-* Useful msbuild command line examples follow. Type these commands from the
- build folder just below the folder where you cloned OpenCPN.
+* It is important to have a 'clean' environment.
+** Make sure there are no permanent environment variables related to
+   wxWidgets (these all begin with WX).  If you have any it is safe to delete them.
+** Remove all references to wxWidgets from the permanent PATH environment variables.
+** It is ok to install tools such as NSIS but not required.  Any tools required to
+   build or package will be automatically installed by the 'buildwin\winConfig.bat' script.
+** The 'winConfig.bat' script does not install Visual Studio. Neither does it install
+   tools such as git or npm as these are not used by the build system.
+
+* Useful msbuild command line examples follow. Type these commands after running
+  '.\buildwin\configdev.bat' from the root opencpn git managed folder.
 ** Create an executable Windows installer for a fully debuggable version
 +
 [,console]
