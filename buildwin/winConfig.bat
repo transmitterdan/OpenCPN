@@ -103,7 +103,7 @@ if not exist "%buildWINtmp%" (mkdir "%buildWINtmp%")
 set "URL=https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
 set "DEST=%buildWINtmp%\nuget.exe"
 call :download
-if errorlevel 1 (exit /b 1) 
+if errorlevel 1 (exit /b 1)
 ::-------------------------------------------------------------
 :: Download OpenCPN Core dependencies
 ::-------------------------------------------------------------
@@ -253,7 +253,7 @@ if exist opencpn.sln (
 ::-------------------------------------------------------------
 :hint
 @echo To build OpenCPN for debugging at command line do this in the folder
-@echo %CD% 
+@echo %CD%
 @echo.
 @echo  .\buildwin\configdev.bat
 @echo  msbuild /noLogo /m -p:Configuration=Debug;Win32 opencpn.sln
