@@ -37,12 +37,22 @@ set "OD=%~dp0.."
 set "wxDIR=%OD%\cache\buildwxWidgets"
 set "wxWidgets_ROOT_DIR=%wxDIR%"
 set "wxWidgets_LIB_DIR=%wxDIR%\lib\vc_dll"
+if [%VisualStudioVersion%]==[16.0] (^
+  set VCver=16
+  set "VCstr=Visual Studio 16"
+)
+if [%VisualStudioVersion%]==[17.0] (^
+  set VCver=17
+  set "VCstr=Visual Studio 17"
+)
 ::-------------------------------------------------------------
 :: Initialize local helper script to reinitialize environment
 ::-------------------------------------------------------------
 @echo set "wxDIR=%wxDIR%" > "%OD%\buildwin\configdev.bat"
 @echo set "wxWidgets_ROOT_DIR=%wxWidgets_ROOT_DIR%" >> "%OD%\buildwin\configdev.bat"
 @echo set "wxWidgets_LIB_DIR=%wxWidgets_LIB_DIR%" >> "%OD%\buildwin\configdev.bat"
+@echo set "VCver=%VCver%" >> "%OD%\buildwin\configdev.bat"
+@echo set "VCstr=%VCstr%" >> "%OD%\buildwin\configdev.bat"
 ::-------------------------------------------------------------
 :: Initialize local variables
 ::-------------------------------------------------------------
@@ -58,19 +68,19 @@ goto :usage
 ::-------------------------------------------------------------
 :: Save user configuration data
 ::-------------------------------------------------------------
-set folder=Release
-call :backup
-set folder=RelWithDebInfo
-call :backup
-set folder=Debug
-call :backup
-set folder=MinSizeRel
-call :backup
+if [%1]==[--clean] (^
+  set folder=Release
+  call :backup
+  set folder=RelWithDebInfo
+  call :backup
+  set folder=Debug
+  call :backup
+  set folder=MinSizeRel
+  call :backup
 
 ::-------------------------------------------------------------
 :: Handle command line parameters
 ::-------------------------------------------------------------
-if [%1]==[--clean] (^
   if exist "%OD%\build" (^
    @echo Clearing "%OD%\build"
    rmdir /s /q "%OD%\build"
@@ -143,17 +153,14 @@ if errorlevel 1 (echo not OK) else (echo OK)
 :: Build wxWidgets from sources
 ::-------------------------------------------------------------
 @echo Building wxWidgets
-rem if not exist cmake (mkdir cmake)
-rem cmake -E chdir %WXDIR%\cmake cmake -DCMAKE_CONFIGURATION_TYPES="Debug;RelWithDebInfo;Release;MinSizeRel" -dwxBUILD_VENDOR="vc14x" -DwxBUILD_SAMPLES:STRING="OFF" -DwxBUILD_TESTS:STRING="OFF" -G "Visual Studio 17 2022" -T "v143" -A Win32 ..
-
 msbuild /noLogo /v:m /m "-p:Configuration=DLL Debug";Platform=Win32 ^
   -p:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix="_vc14x" ^
   /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_DEBUG_WIN32_Debug.log ^
-  "%wxDIR%\build\msw\wx_vc17.sln"
+  "%wxDIR%\build\msw\wx_vc%VCver%.sln"
 msbuild /noLogo /v:m /m "-p:Configuration=DLL Release";Platform=Win32 ^
   -p:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix="_vc14x" ^
   /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_RELEASE_WIN32_Debug.log ^
-  "%wxDIR%\build\msw\wx_vc17.sln"
+  "%wxDIR%\build\msw\wx_vc%VCver%.sln"
 if not exist "%CACHE_DIR%\buildwin\wxWidgets" (
     mkdir "%CACHE_DIR%\buildwin\wxWidgets"
 )
@@ -213,7 +220,7 @@ if exist .\buildwin\configdev.bat (call .\buildwin\configdev.bat) else (goto :hi
 ::-------------------------------------------------------------
 :: Build Release and Debug executables
 ::-------------------------------------------------------------
-cmake -A Win32 -G "Visual Studio 17 2022" ^
+cmake -A Win32 -G "%VCstr%" ^
   -DCMAKE_GENERATOR_PLATFORM=Win32 ^
   -DwxWidgets_LIB_DIR="%wxWidgets_LIB_DIR%" ^
   -DwxWidgets_ROOT_DIR="%wxWidgets_ROOT_DIR%" ^
@@ -246,16 +253,16 @@ if exist opencpn.sln (
 ::-------------------------------------------------------------
 :hint
 @echo To build OpenCPN for debugging at command line do this in the folder
-@echo where you cloned OpenCPN:
+@echo %CD% 
 @echo.
 @echo  .\buildwin\configdev.bat
-@echo  msbuild /noLogo /m -p:Configuration=Debug -p:Platform=Win32 opencpn.sln
+@echo  msbuild /noLogo /m -p:Configuration=Debug;Win32 opencpn.sln
 @echo  devenv opencpn.sln
 @echo.
 @echo Now you are ready to start debugging
 @echo.
 @echo [101;93mIf you close this CMD prompt and open another be sure to run:[0m
-@echo  .\buildwin\configdev.bat
+@echo  %CD%\buildwin\configdev.bat
 @echo [101;93mfirst before starting Visual Studio[0m.
 goto :EOF
 ::-------------------------------------------------------------
@@ -303,7 +310,7 @@ exit /b 0
 :: Restore user configuration to build folder
 ::-------------------------------------------------------------
 :restore
-if not exist "%OD%\tmp\%folder%" goto :rreturn
+if not exist "%OD%\tmp\%folder%" (exit /b 0)
 @echo Restoring %folder% settings
 cmake -E copy_directory "%OD%\tmp\%folder%" "%OD%\build\%folder%"
 if errorlevel 0 (rmdir /s /q "%OD%\tmp\%folder%")
