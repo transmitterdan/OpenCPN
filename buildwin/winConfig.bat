@@ -103,7 +103,6 @@ if not exist "%buildWINtmp%" (mkdir "%buildWINtmp%")
 set "URL=https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
 set "DEST=%buildWINtmp%\nuget.exe"
 call :download
-if errorlevel 1 (exit /b 1)
 ::-------------------------------------------------------------
 :: Download OpenCPN Core dependencies
 ::-------------------------------------------------------------
@@ -247,6 +246,7 @@ if exist opencpn.sln (
   opencpn.sln
   if errorlevel 1 goto :buildErr
   @echo OpenCPN RelWithDebInfo build successful!
+  @echo.
 )
 ::-------------------------------------------------------------
 :: Offer some helpful hints
@@ -256,7 +256,7 @@ if exist opencpn.sln (
 @echo %CD%
 @echo.
 @echo  .\buildwin\configdev.bat
-@echo  msbuild /noLogo /m -p:Configuration=Debug;Win32 opencpn.sln
+@echo  msbuild /noLogo /m -p:Configuration=Debug;Platform=Win32 opencpn.sln
 @echo  devenv opencpn.sln
 @echo.
 @echo Now you are ready to start debugging
@@ -313,7 +313,10 @@ exit /b 0
 if not exist "%OD%\tmp\%folder%" (exit /b 0)
 @echo Restoring %folder% settings
 cmake -E copy_directory "%OD%\tmp\%folder%" "%OD%\build\%folder%"
-if errorlevel 0 (rmdir /s /q "%OD%\tmp\%folder%")
+if errorlevel 1 (
+  @echo Restore failed
+  goto ::rreturn
+  ) else (rmdir /s /q "%OD%\tmp\%folder%")
 :rreturn
 @echo restore returning
 exit /b 0
@@ -327,6 +330,7 @@ exit /b 0
   if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; ^
   Invoke-WebRequest "%URL%" -OutFile '%DEST%'; ^
   exit $LASTEXITCODE
+if errorlevel 1 (exit /b 1) else (@echo Download OK)
 exit /b
 ::-------------------------------------------------------------
 :: Explode SOURCE zip file to DEST folder
@@ -336,4 +340,5 @@ exit /b
 @echo DEST=%DEST%
 %PSH% -Command if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; ^
   Expand-Archive -Force -Path '%SOURCE%' -DestinationPath '%DEST%'
+if errorlevel 1 (exit /b 1) else (@echo Unzip OK)
 exit /b
