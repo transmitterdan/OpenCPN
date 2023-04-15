@@ -13,3 +13,4 @@ buildwin/crashrpt/CrashSender1402.exe
 buildwin/configdev.bat
 .DS_Store
 *.log
+.vscode
