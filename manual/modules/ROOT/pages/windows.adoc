@@ -141,6 +141,19 @@ $ winget install --id Microsoft.Powershell --source winget
    build or package will be automatically installed by the 'buildwin\winConfig.bat' script.
 ** The 'winConfig.bat' script does not install Visual Studio. Neither does it install
    tools such as git or npm as these are not used by the build system.
+* The 'winConfig.bat' script sets up 4 folders beneath the 'build' folder that house 4 different
+   runtime configurations based on the 4 standard build types. Since each configuration is a
+   standalone local instance of OpenCPN, they have to be run in 'portable' mode. 
+   To manually launch a particular configruation (e.g. RelWithDebInfo) set the working
+   folder to OpenCPN\build\RelWithDebInfo then launch OpenCPN in portable mode. For example:
++
+[,console]
+----
+$ .\buildwin\configdev.bat
+$ cd .\RelWithDebInfo
+$ .\opencpn -p
+----
++
 
 * Useful msbuild command line examples follow. Type these commands after running
   '.\buildwin\configdev.bat' from the root opencpn git managed folder.
