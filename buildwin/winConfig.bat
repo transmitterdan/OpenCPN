@@ -152,14 +152,17 @@ if errorlevel 1 (echo not OK) else (echo OK)
 :: Build wxWidgets from sources
 ::-------------------------------------------------------------
 @echo Building wxWidgets
+
 msbuild /noLogo /v:m /m "-p:Configuration=DLL Debug";Platform=Win32 ^
   -p:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix="_vc14x" ^
   /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_DEBUG_WIN32_Debug.log ^
   "%wxDIR%\build\msw\wx_vc%VCver%.sln"
+
 msbuild /noLogo /v:m /m "-p:Configuration=DLL Release";Platform=Win32 ^
   -p:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix="_vc14x" ^
   /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_RELEASE_WIN32_Debug.log ^
   "%wxDIR%\build\msw\wx_vc%VCver%.sln"
+
 if not exist "%CACHE_DIR%\buildwin\wxWidgets" (
     mkdir "%CACHE_DIR%\buildwin\wxWidgets"
 )
@@ -206,7 +209,7 @@ for /D %%D in ("NSIS-Package*") do (set nsis=%%~D)
 @echo Finishing %OD%\buildwin\configdev.bat
 set "_addpath=%OD%\build\%nsis%\NSIS\;%OD%\build\%nsis%\NSIS\bin\"
 set "_addpath=%_addpath%;%OD%\build\%gettext%\tools\bin\"
-@echo path^|find /i "%_addpath%"    ^>nul ^|^| set "path=%path%;%_addpath%" >> "%OD%\buildwin\configdev.bat
+@echo path^|find /i "%_addpath%"    ^>nul ^|^| set "path=%path%;%_addpath%" >> "%OD%\buildwin\configdev.bat"
 @set _addpath=
 @echo cd "%OD%\build" >> "%OD%\buildwin\configdev.bat"
 endlocal
@@ -229,29 +232,52 @@ cmake -A Win32 -G "%VCstr%" ^
   -DOCPN_TARGET_TUPLE=msvc-wx32;10;x86_64 ^
   -DOCPN_BUNDLE_WXDLLS=ON ^
   -DOCPN_BUILD_TEST=OFF ^
+  -DCMAKE_BUILD_TYPE=Debug ^
+  -DCMAKE_INSTALL_PREFIX="%OD%\build\Debug" ^
   ..
 if errorlevel 1 goto :cmakeErr
-@echo CMake configuration successful. Ready to build?
-pause
-if exist opencpn.sln (
-  msbuild /noLogo /v:m /m -p:Configuration=Debug;Platform=Win32 -t:Rebuild ^
-  /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_DEBUG_WIN32_Debug.log ^
-  opencpn.sln
-  if errorlevel 1 goto :buildErr
-  @echo OpenCPN Debug build successful!
-)
-if exist opencpn.sln (
-  msbuild /noLogo /v:m /m -p:Configuration=RelWithDebInfo;Platform=Win32 -t:Rebuild ^
+@echo CMake configuration successful.
+@echo Long build starts in 10 seconds.
+timeout /T 10
+
+  msbuild /noLogo /v:m /m -p:Configuration=RelWithDebInfo;Platform=Win32 ^
   /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_RELWITHDEBINFO_WIN32_Debug.log ^
   opencpn.sln
   if errorlevel 1 goto :buildErr
+  cmake config .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="%OD%\build\RelWithDebInfo"
+  cmake --build . --target install
+  @echo OpenCPN RelWithDebInfo build successful!
+
+  msbuild /noLogo /v:m /m -p:Configuration=Release;Platform=Win32 ^
+  /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_RELEASE_WIN32_Debug.log ^
+  opencpn.sln
+  if errorlevel 1 goto :buildErr
+  cmake config .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="%OD%\build\Release"
+  cmake --build . --target install
+  @echo OpenCPN RelWithDebInfo build successful!
+
+  msbuild /noLogo /v:m /m -p:Configuration=MinSizeRel;Platform=Win32 ^
+  /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_RELEASE_WIN32_Debug.log ^
+  opencpn.sln
+  if errorlevel 1 goto :buildErr
+  cmake config .. -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_INSTALL_PREFIX="%OD%\build\MinSizeRel"
+  cmake --build . --target install
   @echo OpenCPN RelWithDebInfo build successful!
   @echo.
+
+if exist opencpn.sln (
+  msbuild /noLogo /v:m /m -p:Configuration=Debug;Platform=Win32 ^
+  /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_DEBUG_WIN32_Debug.log ^
+  opencpn.sln
+  if errorlevel 1 goto :buildErr
+  cmake --build . --target install
+  @echo OpenCPN Debug build successful!
 )
 ::-------------------------------------------------------------
 :: Offer some helpful hints
 ::-------------------------------------------------------------
 :hint
+cd ..
 @echo To build OpenCPN for debugging at command line do this in the folder
 @echo %CD%
 @echo.
@@ -264,6 +290,7 @@ if exist opencpn.sln (
 @echo [101;93mIf you close this CMD prompt and open another be sure to run:[0m
 @echo  %CD%\buildwin\configdev.bat
 @echo [101;93mfirst before starting Visual Studio[0m.
+cd build
 goto :EOF
 ::-------------------------------------------------------------
 :: CMake failed
