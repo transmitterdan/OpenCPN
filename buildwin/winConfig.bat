@@ -247,6 +247,45 @@ if exist .\buildwin\configdev.bat (call .\buildwin\configdev.bat) else (goto :hi
 ::-------------------------------------------------------------
 :: Build Release and Debug executables
 ::-------------------------------------------------------------
+set build_type=RelWithDebInfo
+call :config_build
+
+set build_type=Release
+call :config_build
+
+set build_type=MinSizeRel
+call :config_build
+
+set build_type=Debug
+call :config_build
+
+set build_type=
+::-------------------------------------------------------------
+:: Offer some helpful hints
+::-------------------------------------------------------------
+:hint
+cd ..
+@echo To build OpenCPN for debugging at command line do this in the folder
+@echo %CD%
+@echo.
+@echo  .\buildwin\configdev.bat
+@echo  msbuild /noLogo /m -p:Configuration=Debug;Platform=Win32 opencpn.sln
+@echo  opencpn.sln
+@echo.
+@echo Now you are ready to start debugging
+@echo.
+@echo [101;93mIf you close this CMD prompt and open another be sure to run:[0m
+@echo  %CD%\buildwin\configdev.bat
+@echo [101;93mfirst, before starting Visual Studio[0m.
+cd build
+goto :EOF
+::-------------------------------------------------------------
+:: Local subroutines
+::-------------------------------------------------------------
+::-------------------------------------------------------------
+:: Config and build
+::-------------------------------------------------------------
+:config_build
 cmake -A Win32 -G "%VCstr%" ^
   -DCMAKE_GENERATOR_PLATFORM=Win32 ^
   -DwxWidgets_LIB_DIR="%wxWidgets_LIB_DIR%" ^
@@ -258,66 +297,17 @@ cmake -A Win32 -G "%VCstr%" ^
   -DOCPN_BUNDLE_WXDLLS=ON ^
   -DOCPN_BUILD_TEST=OFF ^
   -DCMAKE_BUILD_TYPE=Debug ^
-  -DCMAKE_INSTALL_PREFIX="%OD%\build\Debug" ^
+  -DCMAKE_INSTALL_PREFIX="%CD%\build\%build_type%" ^
   ..
 if errorlevel 1 goto :cmakeErr
-@echo CMake configuration successful.
-@echo Long build starts in 10 seconds.
-timeout /T 10
 
-  msbuild /noLogo /v:m /m -p:Configuration=RelWithDebInfo;Platform=Win32 ^
-  /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_RELWITHDEBINFO_WIN32_Debug.log ^
-  opencpn.sln
-  if errorlevel 1 goto :buildErr
-  cmake config .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="%CD%\RelWithDebInfo"
-  cmake --build . --target install
-  @echo OpenCPN RelWithDebInfo build successful!
-
-  msbuild /noLogo /v:m /m -p:Configuration=Release;Platform=Win32 ^
-  /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_RELEASE_WIN32_Debug.log ^
-  opencpn.sln
-  if errorlevel 1 goto :buildErr
-  cmake config .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="%CD%\Release"
-  cmake --build . --target install
-  @echo OpenCPN Release build successful!
-
-  msbuild /noLogo /v:m /m -p:Configuration=MinSizeRel;Platform=Win32 ^
-  /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_RELEASE_WIN32_Debug.log ^
-  opencpn.sln
-  if errorlevel 1 goto :buildErr
-  cmake config .. -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_INSTALL_PREFIX="%CD%\MinSizeRel"
-  cmake --build . --target install
-  @echo OpenCPN MinSizeRel build successful!
-  @echo.
-
-if exist opencpn.sln (
-  msbuild /noLogo /v:m /m -p:Configuration=Debug;Platform=Win32 ^
-  /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_DEBUG_WIN32_Debug.log ^
-  opencpn.sln
-  if errorlevel 1 goto :buildErr
-  cmake config .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="%CD%\Debug"
-  cmake --build . --target install
-  @echo OpenCPN Debug build successful!
-)
-::-------------------------------------------------------------
-:: Offer some helpful hints
-::-------------------------------------------------------------
-:hint
-cd ..
-@echo To build OpenCPN for debugging at command line do this in the folder
-@echo %CD%
+msbuild /noLogo /v:m /m -p:Configuration=%build_type%;Platform=Win32 ^
+/l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_%build_type%_WIN32_Debug.log ^
+INSTALL.vcxproj
+if errorlevel 1 goto :buildErr
+@echo OpenCPN %build_type% build successful!
 @echo.
-@echo  .\buildwin\configdev.bat
-@echo  msbuild /noLogo /m -p:Configuration=Debug;Platform=Win32 opencpn.sln
-@echo  devenv opencpn.sln
-@echo.
-@echo Now you are ready to start debugging
-@echo.
-@echo [101;93mIf you close this CMD prompt and open another be sure to run:[0m
-@echo  %CD%\buildwin\configdev.bat
-@echo [101;93mfirst before starting Visual Studio[0m.
-cd build
-goto :EOF
+exit /b 0
 ::-------------------------------------------------------------
 :: CMake failed
 ::-------------------------------------------------------------
@@ -325,7 +315,7 @@ goto :EOF
 @echo CMake failed to configure OpenCPN build folder.
 @echo Review the error messages and read the OpenCPN
 @echo Developer Manual for help.
-goto :EOF
+exit /b 1
 ::-------------------------------------------------------------
 :: Build failed
 ::-------------------------------------------------------------
@@ -333,10 +323,7 @@ goto :EOF
 @echo Build using msbuild failed.
 @echo Review the error messages and read the OpenCPN
 @echo Developer Manual for help.
-goto :EOF
-::-------------------------------------------------------------
-:: Local subroutines
-::-------------------------------------------------------------
+exit /b 1
 ::-------------------------------------------------------------
 :: Backup user configuration
 ::-------------------------------------------------------------
@@ -384,7 +371,7 @@ exit /b 0
   Invoke-WebRequest "%URL%" -OutFile '%DEST%'; ^
   exit $LASTEXITCODE
 if errorlevel 1 (exit /b 1) else (@echo Download OK)
-exit /b
+exit /b 0
 ::-------------------------------------------------------------
 :: Explode SOURCE zip file to DEST folder
 ::-------------------------------------------------------------
@@ -394,4 +381,4 @@ exit /b
 %PSH% -Command if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; ^
   Expand-Archive -Force -Path '%SOURCE%' -DestinationPath '%DEST%'
 if errorlevel 1 (exit /b 1) else (@echo Unzip OK)
-exit /b
+exit /b 0
