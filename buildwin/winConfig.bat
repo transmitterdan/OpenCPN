@@ -1,6 +1,31 @@
 @echo off
 setlocal enableextensions
 goto :main
+:: ***************************************************************************
+:: *
+:: * Project:  OpenCPN
+:: * Purpose:  Windows local build script
+:: * Author:   Dan Dickey
+:: *
+:: ***************************************************************************
+:: *   Copyright (C) 2010-2023 by David S. Register                          *
+:: *                                                                         *
+:: *   This program is free software; you can redistribute it and/or modify  *
+:: *   it under the terms of the GNU General Public License as published by  *
+:: *   the Free Software Foundation; either version 2 of the License, or     *
+:: *   (at your option) any later version.                                   *
+:: *                                                                         *
+:: *   This program is distributed in the hope that it will be useful,       *
+:: *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
+:: *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
+ ::*   GNU General Public License for more details.                          *
+:: *                                                                         *
+:: *   You should have received a copy of the GNU General Public License     *
+:: *   along with this program; if not, write to the                         *
+:: *   Free Software Foundation, Inc.,                                       *
+:: *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
+:: ***************************************************************************
+:: *
 :usage
 @echo ****************************************************************************
 @echo *  This script can be used to create a local build environment for OpenCPN.*
@@ -244,7 +269,7 @@ timeout /T 10
   /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_RELWITHDEBINFO_WIN32_Debug.log ^
   opencpn.sln
   if errorlevel 1 goto :buildErr
-  cmake config .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="%OD%\build\RelWithDebInfo"
+  cmake config .. -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="%CD%\RelWithDebInfo"
   cmake --build . --target install
   @echo OpenCPN RelWithDebInfo build successful!
 
@@ -252,17 +277,17 @@ timeout /T 10
   /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_RELEASE_WIN32_Debug.log ^
   opencpn.sln
   if errorlevel 1 goto :buildErr
-  cmake config .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="%OD%\build\Release"
+  cmake config .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX="%CD%\Release"
   cmake --build . --target install
-  @echo OpenCPN RelWithDebInfo build successful!
+  @echo OpenCPN Release build successful!
 
   msbuild /noLogo /v:m /m -p:Configuration=MinSizeRel;Platform=Win32 ^
   /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_RELEASE_WIN32_Debug.log ^
   opencpn.sln
   if errorlevel 1 goto :buildErr
-  cmake config .. -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_INSTALL_PREFIX="%OD%\build\MinSizeRel"
+  cmake config .. -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_INSTALL_PREFIX="%CD%\MinSizeRel"
   cmake --build . --target install
-  @echo OpenCPN RelWithDebInfo build successful!
+  @echo OpenCPN MinSizeRel build successful!
   @echo.
 
 if exist opencpn.sln (
@@ -270,6 +295,7 @@ if exist opencpn.sln (
   /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_DEBUG_WIN32_Debug.log ^
   opencpn.sln
   if errorlevel 1 goto :buildErr
+  cmake config .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX="%CD%\Debug"
   cmake --build . --target install
   @echo OpenCPN Debug build successful!
 )
