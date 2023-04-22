@@ -108,6 +108,14 @@ if [%1]==[--minsizerel] (set minsizerel=1&& shift /1 && goto :parse)
 if [%1]==[--relwithdebinfo] (set relwithdebinfo=1&& shift /1 && goto :parse)
 if [%1]==[--release] (set release=1&& shift /1 && goto :parse)
 if [%1]==[--debug] (set debug=1&& shift /1 && goto :parse)
+if [%1]==[--all] (^
+  set debug=1
+  set release=1
+  set minsizerel=1
+  set relwithdebinfo=1
+  shift /1
+  goto :parse
+  )
 if [%1]==[] (goto :begin) else (^
   @echo Unknown option: %1
   shift /1
@@ -225,9 +233,11 @@ cd "%OD%\build"
 :: Initialize folders needed to run OpenCPN (must be in build folder)
 :: Restore user configurations
 ::-------------------------------------------------------------
-call "%OD%\buildwin\docopyAll.bat" Debug
-set folder=Debug
-call :restore
+if [%debug%]==[1] (^
+  call "%OD%\buildwin\docopyAll.bat" Debug
+  set folder=Debug
+  call :restore
+  )
 if [%release%]==[1] (^
   call "%OD%\buildwin\docopyAll.bat" Release
   set folder=Release
@@ -287,9 +297,11 @@ if exist .\MinSizeRel (^
   set build_type=MinSizeRel
   call :config_build
   )
-@echo Building Debug
-set build_type=Debug
-call :config_build
+if exist .\Debug (^
+  @echo Building Debug
+  set build_type=Debug
+  call :config_build
+  )
 
 set build_type=
 ::-------------------------------------------------------------
