@@ -18,7 +18,7 @@ goto :main
 :: *   This program is distributed in the hope that it will be useful,       *
 :: *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
 :: *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- ::*   GNU General Public License for more details.                          *
+:: *   GNU General Public License for more details.                          *
 :: *                                                                         *
 :: *   You should have received a copy of the GNU General Public License     *
 :: *   along with this program; if not, write to the                         *
@@ -45,12 +45,17 @@ goto :main
 @echo *                 cd \Users\myname\source\repos\opencpn                    *
 @echo *                 git checkout localWinBuild                               *
 @echo *  6. Set up local build environment by executing this script              *
-@echo *        Example: winConfig.bat                                            *
+@echo *        Example: .\buildwin\winConfig.bat                                 *
 @echo *  7. Open solution file (type solution file name at VS command prompt)    *
 @echo *        Example: .\build\opencpn.sln                                      *
-@echo *        Reinitialize build folder: .\build\opencpn.sln --clean            *
+@echo *  8. Start building and debugging in Visual Studio.                       *
 @echo *                                                                          *
-@echo *  Start building and debugging in Visual Studio.                          *
+@echo *  Command line options:                                                   *
+@echo *      --clean            Clean build folder entirely first                *
+@echo *      --minsizerel       Create MinSizeRel configuration                  *
+@echo *      --release          Create Relase configuration                      *
+@echo *      --relwithdebinfo   Create RelWithDebInfo configuration              *
+@echo *                                                                          *
 @echo ****************************************************************************
 goto :EOF
 :main
@@ -90,12 +95,29 @@ where pwsh > NUL 2> NUL && set PSH=pwsh
 where msbuild && goto :vsok
 @echo Please run this from "x86 Native Tools Command Prompt for VS2022
 goto :usage
-
 :vsok
+
+set clean=0
+set minsizerel=0
+set release=0
+set relwitdebinfo=0
+set debug=1
+:parse
+if [%1]==[--clean] (set clean=1&& shift /1 && goto :parse)
+if [%1]==[--minsizerel] (set minsizerel=1&& shift /1 && goto :parse)
+if [%1]==[--relwithdebinfo] (set relwithdebinfo=1&& shift /1 && goto :parse)
+if [%1]==[--release] (set release=1&& shift /1 && goto :parse)
+if [%1]==[--debug] (set debug=1&& shift /1 && goto :parse)
+if [%1]==[] (goto :begin) else (^
+  @echo Unknown option: %1
+  shift /1
+  goto :parse
+  )
+:begin
 ::-------------------------------------------------------------
 :: Save user configuration data and wipe the build folders
 ::-------------------------------------------------------------
-if [%1]==[--clean] (
+if [%clean%]==[1] (
   set folder=Release
   call :backup
   set folder=RelWithDebInfo
@@ -144,7 +166,7 @@ if errorlevel 1 (echo not OK) else (
 ::-------------------------------------------------------------
 :: Download wxWidgets 3.2.2 sources
 ::-------------------------------------------------------------
-if exist "%wxDIR%" (goto :skipwxDL)
+if exist "%wxDIR%\build\msw\wx_vc%VCver%.sln" (goto :skipwxDL)
 @echo Downloading wxWidgets sources
 mkdir "%wxDIR%"
 set "URL=https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.2.1/wxWidgets-3.2.2.1.zip"
@@ -200,23 +222,28 @@ xcopy /e /q /y "%WXDIR%\locale\" "%CACHE_DIR%\buildwin\wxWidgets\locale"
 @echo cd %OD%\build
 cd "%OD%\build"
 ::-------------------------------------------------------------
-:: Copy files needed to run OpenCPN (must be in build folder)
-::-------------------------------------------------------------
-call "%OD%\buildwin\docopyAll.bat" Debug
-call "%OD%\buildwin\docopyAll.bat" RelWithDebInfo
-call "%OD%\buildwin\docopyAll.bat" MinSizeRel
-call "%OD%\buildwin\docopyAll.bat" Release
-::-------------------------------------------------------------
+:: Initialize folders needed to run OpenCPN (must be in build folder)
 :: Restore user configurations
 ::-------------------------------------------------------------
-set folder=Release
-call :restore
-set folder=RelWithDebInfo
-call :restore
+call "%OD%\buildwin\docopyAll.bat" Debug
 set folder=Debug
 call :restore
-set folder=MinSizeRel
-call :restore
+if [%release%]==[1] (^
+  call "%OD%\buildwin\docopyAll.bat" Release
+  set folder=Release
+  call :restore
+  )
+if [%relwithdebinfo%]==[1] (^
+  call "%OD%\buildwin\docopyAll.bat" RelWithDebInfo
+  set folder=RelWithDebInfo
+  call :restore
+  )
+if [%minsizerel%]==[1] (^
+  call "%OD%\buildwin\docopyAll.bat" MinSizeRel
+  set folder=MinSizeRel
+  call :restore
+  )
+set folder=
 ::-------------------------------------------------------------
 :: Download and initialize build dependencies
 ::-------------------------------------------------------------
@@ -245,15 +272,22 @@ if exist .\buildwin\configdev.bat (call .\buildwin\configdev.bat) else (goto :hi
 ::-------------------------------------------------------------
 :: Build Release and Debug executables
 ::-------------------------------------------------------------
-set build_type=RelWithDebInfo
-call :config_build
-
-set build_type=Release
-call :config_build
-
-set build_type=MinSizeRel
-call :config_build
-
+if exist .\RelWithDebInfo (^
+  @echo Building RelWithDebInfo
+  set build_type=RelWithDebInfo
+  call :config_build
+  )
+if exist .\Release (^
+  @echo Building Release
+  set build_type=Release
+  call :config_build
+  )
+if exist .\MinSizeRel (^
+  @echo Building MinSizeRel
+  set build_type=MinSizeRel
+  call :config_build
+  )
+@echo Building Debug
 set build_type=Debug
 call :config_build
 
@@ -294,8 +328,8 @@ cmake -A Win32 -G "%VCstr%" ^
   -DOCPN_TARGET_TUPLE=msvc-wx32;10;x86_64 ^
   -DOCPN_BUNDLE_WXDLLS=ON ^
   -DOCPN_BUILD_TEST=OFF ^
-  -DCMAKE_BUILD_TYPE=Debug ^
-  -DCMAKE_INSTALL_PREFIX="%CD%\build\%build_type%" ^
+  -DCMAKE_BUILD_TYPE=%buildtype% ^
+  -DCMAKE_INSTALL_PREFIX="%CD%\%build_type%" ^
   ..
 if errorlevel 1 goto :cmakeErr
 
