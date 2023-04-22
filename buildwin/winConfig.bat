@@ -59,6 +59,7 @@ goto :EOF
 ::-------------------------------------------------------------
 set "OD=%~dp0.."
 @echo OD=%OD%
+set "OCPN_Dir=%OD%"
 set "wxDIR=%OD%\cache\buildwxWidgets"
 set "wxWidgets_ROOT_DIR=%wxDIR%"
 set "wxWidgets_LIB_DIR=%wxDIR%\lib\vc_dll"
@@ -73,7 +74,8 @@ if [%VisualStudioVersion%]==[17.0] (^
 ::-------------------------------------------------------------
 :: Initialize local helper script to reinitialize environment
 ::-------------------------------------------------------------
-@echo set "wxDIR=%wxDIR%" > "%OD%\buildwin\configdev.bat"
+@echo set "OCPN_Dir=%OCPN_Dir%" > "%OD%\buildwin\configdev.bat"
+@echo set "wxDIR=%wxDIR%" >> "%OD%\buildwin\configdev.bat"
 @echo set "wxWidgets_ROOT_DIR=%wxWidgets_ROOT_DIR%" >> "%OD%\buildwin\configdev.bat"
 @echo set "wxWidgets_LIB_DIR=%wxWidgets_LIB_DIR%" >> "%OD%\buildwin\configdev.bat"
 @echo set "VCver=%VCver%" >> "%OD%\buildwin\configdev.bat"
@@ -91,9 +93,9 @@ goto :usage
 
 :vsok
 ::-------------------------------------------------------------
-:: Save user configuration data
+:: Save user configuration data and wipe the build folders
 ::-------------------------------------------------------------
-if [%1]==[--clean] (^
+if [%1]==[--clean] (
   set folder=Release
   call :backup
   set folder=RelWithDebInfo
@@ -102,16 +104,12 @@ if [%1]==[--clean] (^
   call :backup
   set folder=MinSizeRel
   call :backup
-
-::-------------------------------------------------------------
-:: Handle command line parameters
-::-------------------------------------------------------------
-  if exist "%OD%\build" (^
-   @echo Clearing "%OD%\build"
-   rmdir /s /q "%OD%\build"
-  )
-  if exist "%CACHE_DIR%" (rmdir /s /q "%CACHE_DIR%")
-  if exist "%buildWINtmp%" (rmdir /s /q "%buildWINtmp%")
+  set folder=
+  @echo Backup complete
+  timeout /T 1
+  if exist "%OD%\build" (rmdir /s /q "%OD%\build" && @echo Cleared %OD%\build)
+  if exist "%CACHE_DIR%" (rmdir /s /q "%CACHE_DIR%" && @echo Cleared %CACHE_DIR%)
+  if exist "%buildWINtmp%" (rmdir /s /q "%buildWINtmp%" && @echo Cleared %buildWINtmp%)
 )
 ::-------------------------------------------------------------
 :: Create needed folders
