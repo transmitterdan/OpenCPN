@@ -208,12 +208,12 @@ if errorlevel 1 (echo not OK) else (echo OK)
 
 msbuild /noLogo /v:m /m "-p:Configuration=DLL Debug";Platform=Win32 ^
   -p:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix="_vc14x" ^
-  /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_DEBUG_WIN32_Debug.log ^
+  /l:FileLogger,Microsoft.Build.Engine;logfile=%CACHE_DIR%\buildwin\wxWidgets\MSBuild_DEBUG_WIN32_Debug.log ^
   "%wxDIR%\build\msw\wx_vc%VCver%.sln"
 
 msbuild /noLogo /v:m /m "-p:Configuration=DLL Release";Platform=Win32 ^
   -p:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix="_vc14x" ^
-  /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_RELEASE_WIN32_Debug.log ^
+  /l:FileLogger,Microsoft.Build.Engine;logfile=%CACHE_DIR%\buildwin\wxWidgets\MSBuild_RELEASE_WIN32_Debug.log ^
   "%wxDIR%\build\msw\wx_vc%VCver%.sln"
 
 if not exist "%CACHE_DIR%\buildwin\wxWidgets" (
