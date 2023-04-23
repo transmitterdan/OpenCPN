@@ -244,16 +244,16 @@ copy /Y /V %SRCFOLDER%\build\plugins\%1\%2\%1.dll %3
 @echo "Copying %SRCFOLDER%\build\plugins\%1\%2\%1.pdb--->%3"
 copy /Y /V %SRCFOLDER%\build\plugins\%1\%2\%1.pdb %3
 @echo Looking for: "%SRCFOLDER%\plugins\%1\data"
-if not exist %SRCFOLDER%\plugins\%1\data\NUL goto :endCopyPlugin
+if not exist %SRCFOLDER%\plugins\%1\data goto :endCopyPlugin
 @echo Trying to copy data files for plugin %1
-if not exist "%3\%1\NUL" mkdir "%3\%1"
+if not exist "%3\%1" mkdir "%3\%1"
 if %ERRORLEVEL% GTR 0 echo Cannot create %3\%1
-if not exist "%3\%1\NUL" mkdir "%3\%1"
+if not exist "%3\%1" mkdir "%3\%1"
 if %ERRORLEVEL% GTR 0 echo Cannot create "%3\%1"
-if not exist "%3\%1\data\NUL" mkdir "%3\%1\data"
+if not exist "%3\%1\data" mkdir "%3\%1\data"
 if %ERRORLEVEL% GTR 0 echo Cannot create %3\%1\data
-if not exist "%3\%1\data\NUL" mkdir "%3\%1\data"
-if not exist "%3\%1\data\NUL" echo Cannot create %3\%1\data
+if not exist "%3\%1\data" mkdir "%3\%1\data"
+if not exist "%3\%1\data" echo Cannot create %3\%1\data
 @echo "Xcopying %SRCFOLDER%\plugins\%1\data-->%3\%1\data"
 xcopy /Y /Q /H /E /K /I %SRCFOLDER%\plugins\%1\data %3\%1\data
 :endCopyPlugin
