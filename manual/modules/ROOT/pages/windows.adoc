@@ -89,9 +89,8 @@ $ cd opencpn
 +
 . Set up local build environment by executing
    `buildwin\winConfig.bat`
-. OpenCPN can now be built on the command line. Debug, Release and
-   RelWithDebinfo configurations are available. For example, to make a
-   Debug build:
+. OpenCPN can now be built on the command line or directly from Visual Studio.
+  For example, to make a Debug build:
 +
 [,console]
 ----
@@ -100,7 +99,7 @@ $ msbuild /noLogo /m -p:Configuration=Debug;Platform=Win32 opencpn.sln
 $ .\opencpn.sln
 ----
 +
-. An alternative is to use Visual Studio GUI to build and debug. Configure the
+. The most common workflow is to use Visual Studio GUI to build and debug. Configure the
   environment using configdev.bat then open solution file (type solution file
   name at VS command prompt). Example:
 +
@@ -110,13 +109,20 @@ $ .\buildwin\configdev.bat
 $ .\opencpn.sln
 ----
 +
-Start building and debugging in Visual Studio. Available targets includes:
+Start building and debugging in Visual Studio. Available targets include:
 
     - opencpn -- Build  main executable
     - package -- Build NSIS installer
     - opencpn-cmd  -- Build command line tool
     - tests -- Build unit tests.
     - run-tests -- Run unit tests
+
+Available Visual Studio Win32 configurations include:
+
+    - Debug -- Build with full debugging sumbols and source info
+    - RelWithDebInfo  -- Build with limited debug/source info (faster)
+    - Release -- Build with no debug or source info (fastest code)
+    - MinSizeRel -- Build with no debug/source info (smallest executable)
 
 *Notes:*
 
@@ -152,6 +158,21 @@ $ winget install --id Microsoft.Powershell --source winget
 $ .\buildwin\configdev.bat
 $ cd .\RelWithDebInfo
 $ .\opencpn -p
+----
++
+
+* The 'winConfig.bat' script also has the ability to automatically clean and/or build various
+  configuations.  Any or all command line options can be used at the same time.  Note that 
+  it can take some time to complete if you use every command line option.  Command line options
+  are all lowercase and case sensitive. The command line options are as follows:
++
+[,console]
+----
+ --clean :: cleans all files from the build folder then sets up the build system anew
+ --release :: builds a Release configuration
+ --relwithdebuinfo :: builds a RelWithDebInfo configuration
+ --debug :: builds a Debug configuration
+ --minsizerel :: builds MinSizeRel configuration
 ----
 +
 
