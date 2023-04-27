@@ -1206,6 +1206,7 @@ PlugInContainer* PluginLoader::LoadPlugIn(wxString plugin_file) {
     return pic;
 }
 
+#ifdef __WXMSW__
 std::vector<std::string> PluginLoader::GetDependencies(PlugInContainer *pic) {
   std::vector<std::string> dependencies;
 
@@ -1233,6 +1234,7 @@ std::vector<std::string> PluginLoader::GetDependencies(PlugInContainer *pic) {
 
   return dependencies;
 }
+#endif
 
 PlugInContainer* PluginLoader::LoadPlugIn(wxString plugin_file,
                                           PlugInContainer* pic) {

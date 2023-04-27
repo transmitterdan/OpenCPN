@@ -214,8 +214,10 @@ public:
   bool UpdatePlugIns();
   void UpdateManagedPlugins();
   PlugInContainer* LoadPlugIn(wxString plugin_file);
+  #ifdef __WXMSW__
   /** Get list of dependencies for a loaded plugin */
   std::vector<std::string> GetDependencies(PlugInContainer* pic);
+  #endif
   PlugInContainer* LoadPlugIn(wxString plugin_file, PlugInContainer* pic);
 
   ArrayOfPlugIns* GetPlugInArray() { return &plugin_array; }
