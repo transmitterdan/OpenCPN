@@ -52,9 +52,11 @@ goto :main
 @echo *                                                                          *
 @echo *  Command line options:                                                   *
 @echo *      --clean            Clean build folder entirely first                *
-@echo *      --minsizerel       Create MinSizeRel configuration                  *
+@echo *      --debug            Create Debug configuration                       *
 @echo *      --release          Create Relase configuration                      *
 @echo *      --relwithdebinfo   Create RelWithDebInfo configuration              *
+@echo *      --minsizerel       Create MinSizeRel configuration                  *
+@echo *      --all              Create all 4 configurations                      *
 @echo *                                                                          *
 @echo ****************************************************************************
 goto :EOF
@@ -97,35 +99,35 @@ where msbuild && goto :vsok
 goto :usage
 :vsok
 
-set clean=0
-set minsizerel=0
-set release=0
-set relwitdebinfo=0
-set debug=1
+set ocpn_clean=0
+set ocpn_minsizerel=0
+set ocpn_release=1
+set ocpn_relwitdebinfo=0
+set ocpn_debug=1
 :parse
-if [%1]==[--clean] (set clean=1&& shift /1 && goto :parse)
-if [%1]==[--minsizerel] (set minsizerel=1&& shift /1 && goto :parse)
-if [%1]==[--relwithdebinfo] (set relwithdebinfo=1&& shift /1 && goto :parse)
-if [%1]==[--release] (set release=1&& shift /1 && goto :parse)
-if [%1]==[--debug] (set debug=1&& shift /1 && goto :parse)
+if [%1]==[--clean] (set ocpn_clean=1&& shift /1 && goto :parse)
+if [%1]==[--minsizerel] (set ocpn_minsizerel=1&& shift /1 && goto :parse)
+if [%1]==[--relwithdebinfo] (set ocpn_relwithdebinfo=1&& shift /1 && goto :parse)
+if [%1]==[--release] (set ocpn_release=1&& shift /1 && goto :parse)
+if [%1]==[--debug] (set ocpn_debug=1&& shift /1 && goto :parse)
 if [%1]==[--all] (^
-  set debug=1
-  set release=1
-  set minsizerel=1
-  set relwithdebinfo=1
+  set ocpn_debug=1
+  set ocpn_release=1
+  set ocpn_minsizerel=1
+  set ocpn_relwithdebinfo=1
   shift /1
   goto :parse
   )
 if [%1]==[] (goto :begin) else (^
   @echo Unknown option: %1
   shift /1
-  goto :parse
+  goto :usage
   )
 :begin
 ::-------------------------------------------------------------
 :: Save user configuration data and wipe the build folders
 ::-------------------------------------------------------------
-if [%clean%]==[1] (
+if [%ocpn_clean%]==[1] (
   set folder=Release
   call :backup
   set folder=RelWithDebInfo
@@ -233,22 +235,22 @@ cd "%OD%\build"
 :: Initialize folders needed to run OpenCPN (must be in build folder)
 :: Restore user configurations
 ::-------------------------------------------------------------
-if [%debug%]==[1] (^
+if [%ocpn_debug%]==[1] (^
   call "%OD%\buildwin\docopyAll.bat" Debug
   set folder=Debug
   call :restore
   )
-if [%release%]==[1] (^
+if [%ocpn_release%]==[1] (^
   call "%OD%\buildwin\docopyAll.bat" Release
   set folder=Release
   call :restore
   )
-if [%relwithdebinfo%]==[1] (^
+if [%ocpn_relwithdebinfo%]==[1] (^
   call "%OD%\buildwin\docopyAll.bat" RelWithDebInfo
   set folder=RelWithDebInfo
   call :restore
   )
-if [%minsizerel%]==[1] (^
+if [%ocpn_minsizerel%]==[1] (^
   call "%OD%\buildwin\docopyAll.bat" MinSizeRel
   set folder=MinSizeRel
   call :restore
@@ -384,6 +386,8 @@ xcopy /Q /Y "%OD%\build\%folder%\*.dat" "%OD%\tmp\%folder%"
 xcopy /Q /Y "%OD%\build\%folder%\*.csv" "%OD%\tmp\%folder%"
 xcopy /Q /Y "%OD%\build\%folder%\navobj.*" "%OD%\tmp\%folder%"
 xcopy /Q /Y "%OD%\build\%folder%\navobj.xml.?" "%OD%\tmp\%folder%"
+@echo cmake -E copy_directory "%OD%\build\%folder%\plugins" "tmp\%folder%"
+cmake -E copy_directory "%OD%\build\%folder%\plugins" "tmp\%folder%"
 if not exist "%OD%\build\%folder%\Charts" goto :breturn
 @echo cmake -E copy_directory "%OD%\build\%folder%\Charts" "tmp\%folder%"
 cmake -E copy_directory "%OD%\build\%folder%\Charts" "tmp\%folder%"

@@ -77,6 +77,11 @@
 #include <dlfcn.h>
 #endif
 
+#ifdef WIN32
+#include <DbgHelp.h>
+#pragma comment(lib, "Dbghelp.lib")
+#endif
+
 extern BasePlatform* g_BasePlatform;
 extern wxWindow* gFrame;
 extern ChartDB* ChartData;
@@ -1044,14 +1049,21 @@ bool PluginLoader::CheckPluginCompatibility(wxString plugin_file) {
                                        pSech, ntheaders));
     LPSTR libname[256];
     size_t i = 0;
+#ifdef _DEBUG
+    std::string wxDLLtype = std::string(strver) + "ud_";
+#else
+    std::string wxDLLtype = std::string(strver) + "u_";
+#endif
     // Walk until you reached an empty IMAGE_IMPORT_DESCRIPTOR
     while (pImportDescriptor->Name != 0) {
       // Get the name of each DLL
       libname[i] =
           (PCHAR)((DWORD_PTR)virtualpointer +
                   Rva2Offset(pImportDescriptor->Name, pSech, ntheaders));
-      if (strstr(libname[i], "wx") != NULL) {
-        if (strstr(libname[i], strver) == NULL) b_compat = false;
+      // Check if the plugin DLL dependencey is wxWidgets
+      if (strstr(libname[i], "wxmsw") != NULL) {
+        // Check if the DLL is compatible with the as-built version of wxWidgets
+        if (strstr(libname[i], wxDLLtype.c_str()) == NULL) b_compat = false;
         break;
       }
       pImportDescriptor++;  // advance to next IMAGE_IMPORT_DESCRIPTOR
@@ -1194,13 +1206,41 @@ PlugInContainer* PluginLoader::LoadPlugIn(wxString plugin_file) {
     return pic;
 }
 
+std::vector<std::string> PluginLoader::GetDependencies(PlugInContainer *pic) {
+  std::vector<std::string> dependencies;
+
+  HMODULE hModule = pic->m_library.GetLibHandle();
+
+  if (hModule != NULL) {
+    // Get the size of the buffer required for the module's import table
+    DWORD importTableSize = 0;
+    PIMAGE_IMPORT_DESCRIPTOR pImportTable =
+        (PIMAGE_IMPORT_DESCRIPTOR)ImageDirectoryEntryToDataEx(
+            hModule, TRUE, IMAGE_DIRECTORY_ENTRY_IMPORT, &importTableSize, NULL);
+
+    if (pImportTable != NULL) {
+      // Loop through the import table and get the name of each DLL that the
+      // module depends on
+      while (pImportTable->Name != NULL) {
+        LPCSTR pszDllName = (LPCSTR)((PBYTE)hModule + pImportTable->Name);
+        dependencies.push_back(pszDllName);
+
+        ++pImportTable;
+      }
+    }
+
+  }
+
+  return dependencies;
+}
+
 PlugInContainer* PluginLoader::LoadPlugIn(wxString plugin_file,
                                           PlugInContainer* pic) {
   wxLogMessage(wxString("PluginLoader: Loading PlugIn: ") + plugin_file);
 
   if (plugin_file == "") {
-      wxLogMessage("Ignoring loading of empty path");
-      return 0;
+    wxLogMessage("Ignoring loading of empty path");
+    return 0;
   }
 
   if (!wxIsReadable(plugin_file)) {
