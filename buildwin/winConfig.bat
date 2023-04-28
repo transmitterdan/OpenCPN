@@ -94,6 +94,7 @@ SET "CACHE_DIR=%OD%\cache"
 SET "buildWINtmp=%CACHE_DIR%\buildwintemp"
 set PSH=powershell
 where pwsh > NUL 2> NUL && set PSH=pwsh
+where %PSH% > NUL 2> NUL || @echo PowerShell is not installed && exit /b 1
 where msbuild && goto :vsok
 @echo Please run this from "x86 Native Tools Command Prompt for VS2022
 goto :usage
