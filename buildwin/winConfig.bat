@@ -126,7 +126,17 @@ if [%1]==[] (goto :begin) else (^
   )
 :begin
 ::-------------------------------------------------------------
-:: Save user configuration data and wipe the build folders
+:: If this is the first build then initialize all build types
+::-------------------------------------------------------------
+if not exist "%OD%\build" (^
+  set ocpn_clean=1
+  set ocpn_debug=1
+  set ocpn_release=1
+  set ocpn_minsizerel=1
+  set ocpn_relwithdebinfo=1
+)
+::-------------------------------------------------------------
+:: Save user configuration data and wipe the build folder
 ::-------------------------------------------------------------
 if [%ocpn_clean%]==[1] (
   set folder=Release
