@@ -124,6 +124,7 @@ extern wxString g_winPluginDir;
 
 extern wxString g_SENCPrefix;
 extern wxString g_UserPresLibData;
+extern wxString g_TalkerIdText;
 
 extern wxString *pInit_Chart_Dir;
 extern wxString gWorldMapLocation;
@@ -3486,6 +3487,11 @@ void DimeControl(wxWindow *ctrl) {
 #ifdef __WXQT__
   return;  // this is seriously broken on wxqt
 #endif
+
+  if(wxSystemSettings::GetColour(wxSystemColour::wxSYS_COLOUR_WINDOW).Red() < 128) {
+    // Dark system color themes usually do better job than we do on diming UI controls, do not fight with them
+    return;
+  }
 
   if (NULL == ctrl) return;
 

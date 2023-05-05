@@ -3077,6 +3077,12 @@ wxBitmap GetBitmapFromSVGFile(wxString filename, unsigned int width,
     // try to find and use dimensions embedded in the SVG file
     unsigned int w, h;
     SVGDocumentPixelSize(filename, w, h);
+    if (w == 0 || h == 0) {
+      // We did not succeed in deducing the size from SVG (svg element misses width, height or both attributes)
+      // let's use some "safe" default
+      w = 32;
+      h = 32;
+    }
     return LoadSVG(filename, w, h);
   }
 }
@@ -8618,7 +8624,7 @@ CommDriverResult RegisterTXPGNs(DriverHandle handle,
   std::shared_ptr<CommDriverN2K> dn2k =
       std::dynamic_pointer_cast<CommDriverN2K>(*driver);
 
-  int nloop;
+  int nloop = 0;
   for (size_t i = 0; i < pgn_list.size(); i++) {
     int nTry = 5;
     int iresult = -1;
