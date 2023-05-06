@@ -63,7 +63,7 @@ From the Windows Desktop open _x86 Native Tools Command Prompt for VS 2022_ (or 
 ----
 $ git clone https://github.com/opencpn/opencpn
 $ cd opencpn
-$ buildwin\winConfig.bat
+$ .\buildwin\winConfig.bat
 $ opencpn.sln
 ----
 When Visual Studio opens, select the desired build configuration (Debug, Release, etc.) and click the Debug button.
@@ -149,8 +149,9 @@ $ winget install --id Microsoft.Powershell --source winget
 +
 [,console]
 ----
+$ cd OpenCPN
 $ .\buildwin\configdev.bat
-$ cd .\RelWithDebInfo
+$ cd .\RELWITHDEBINFO
 $ .\opencpn -p
 ----
 +
