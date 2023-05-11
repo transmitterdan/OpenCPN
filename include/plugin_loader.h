@@ -214,10 +214,6 @@ public:
   bool UpdatePlugIns();
   void UpdateManagedPlugins();
   PlugInContainer* LoadPlugIn(wxString plugin_file);
-  #ifdef __WXMSW__
-  /** Get list of dependencies for a loaded plugin */
-  std::vector<std::string> GetDependencies(PlugInContainer* pic);
-  #endif
   PlugInContainer* LoadPlugIn(wxString plugin_file, PlugInContainer* pic);
 
   ArrayOfPlugIns* GetPlugInArray() { return &plugin_array; }
@@ -232,6 +228,14 @@ private:
   ArrayOfPlugIns plugin_array;
   wxString m_last_error_string;
   wxString m_plugin_location;
+
+#ifdef __WXMSW__
+  wxString m_module_name;
+  bool m_found_wxwidgets;
+  /** Get list of dependencies for a loaded plugin */
+  std::vector<std::string> GetDependencies(PlugInContainer* pic);
+#endif
+
   const wxBitmap* m_default_plugin_icon;
   std::function<void(const PlugInContainer*)> m_on_deactivate_cb;
 
