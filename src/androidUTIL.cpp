@@ -399,6 +399,12 @@ wxFontPickerEvent g_dummy_wxfpe;
 
 #define SCHEDULED_EVENT_CLEAN_EXIT 5498
 
+// Implement a small function missing from Android API 16, or so.
+// FIXME This can go away when Android MIN_SDK is raised to 19 (KitKat)
+int futimens(int fd, const struct timespec times[2]) {
+  return utimensat(fd, nullptr, times, 0);
+}
+
 class androidUtilHandler : public wxEvtHandler {
 public:
   androidUtilHandler();
@@ -549,7 +555,7 @@ void androidUtilHandler::onTimerEvent(wxTimerEvent &event) {
       }
 
       // Tide/Current window
-      if (gFrame->GetPrimaryCanvas()->getTCWin()) {
+      if (gFrame->GetPrimaryCanvas() && gFrame->GetPrimaryCanvas()->getTCWin()) {
         bool bshown = gFrame->GetPrimaryCanvas()->getTCWin()->IsShown();
         gFrame->GetPrimaryCanvas()->getTCWin()->Hide();
         gFrame->GetPrimaryCanvas()->getTCWin()->RecalculateSize();
