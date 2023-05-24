@@ -64,8 +64,8 @@ From the Windows Desktop open _x86 Native Tools Command Prompt for VS 2022_ (or 
 ----
 $ git clone https://github.com/opencpn/opencpn
 $ cd opencpn
-$ "./buildwin/winConfig.bat"
-$ "./build/opencpn.sln"
+$ ".\buildwin\winConfig.bat"
+$ ".\build\opencpn.sln"
 ----
 When Visual Studio opens, select the desired build configuration (Debug, Release, etc.) and you
 are ready to edit and build. Click the Debug button to build and open OpenCPN in the VS debugger.
