@@ -64,8 +64,9 @@ goto :EOF
 ::-------------------------------------------------------------
 set "OD=%~dp0.."
 @echo OD=%OD%
-set "OCPN_Dir=%OD%"
-set "wxDIR=%OD%\cache\buildwxWidgets"
+cd %OD%
+set "OCPN_Dir=%CD%"
+set "wxDIR=%OCPN_DIR%\cache\buildwxWidgets"
 set "wxWidgets_ROOT_DIR=%wxDIR%"
 set "wxWidgets_LIB_DIR=%wxDIR%\lib\vc_dll"
 if [%VisualStudioVersion%]==[16.0] (^
@@ -79,16 +80,15 @@ if [%VisualStudioVersion%]==[17.0] (^
 ::-------------------------------------------------------------
 :: Initialize local helper script to reinitialize environment
 ::-------------------------------------------------------------
-@echo set "OCPN_Dir=%OCPN_Dir%" > "%OD%\buildwin\configdev.bat"
-@echo set "wxDIR=%wxDIR%" >> "%OD%\buildwin\configdev.bat"
-@echo set "wxWidgets_ROOT_DIR=%wxWidgets_ROOT_DIR%" >> "%OD%\buildwin\configdev.bat"
-@echo set "wxWidgets_LIB_DIR=%wxWidgets_LIB_DIR%" >> "%OD%\buildwin\configdev.bat"
-@echo set "VCver=%VCver%" >> "%OD%\buildwin\configdev.bat"
-@echo set "VCstr=%VCstr%" >> "%OD%\buildwin\configdev.bat"
+@echo set "wxDIR=%wxDIR%" >> "%OCPN_Dir%\buildwin\configdev.bat"
+@echo set "wxWidgets_ROOT_DIR=%wxWidgets_ROOT_DIR%" >> "%OCPN_DIR%\buildwin\configdev.bat"
+@echo set "wxWidgets_LIB_DIR=%wxWidgets_LIB_DIR%" >> "%OCPN_DIR%\buildwin\configdev.bat"
+@echo set "VCver=%VCver%" >> "%OCPN_DIR%\buildwin\configdev.bat"
+@echo set "VCstr=%VCstr%" >> "%OCPN_DIR%\buildwin\configdev.bat"
 ::-------------------------------------------------------------
 :: Initialize local variables
 ::-------------------------------------------------------------
-SET "CACHE_DIR=%OD%\cache"
+SET "CACHE_DIR=%OCPN_DIR%\cache"
 SET "buildWINtmp=%CACHE_DIR%\buildwintemp"
 set PSH=powershell
 where pwsh > NUL 2> NUL && set PSH=pwsh
@@ -117,12 +117,8 @@ if [%1]==[] (goto :begin) else (^
 ::-------------------------------------------------------------
 :: If this is the first build then initialize all build types
 ::-------------------------------------------------------------
-if not exist "%OD%\build" (^
+if not exist "%OCPN_DIR%\build" (^
   set ocpn_clean=1
-  set ocpn_debug=1
-  set ocpn_release=1
-  set ocpn_minsizerel=1
-  set ocpn_relwithdebinfo=1
 )
 ::-------------------------------------------------------------
 :: Save user configuration data and wipe the build folder
@@ -138,9 +134,13 @@ if [%ocpn_clean%]==[1] (
   call :backup
   set folder=
   @echo Backup complete
-  if exist "%OD%\build" rmdir /s /q "%OD%\build"
-  if exist "%OD%\build" (@echo Could not remove 'build' folder&& goto :usage)
-  @echo Cleared %OD%\build
+  if exist "%OCPN_DIR%\build" rmdir /s /q "%OCPN_DIR%\build"
+  if exist "%OCPN_DIR%\build" (
+    @echo Could not remove 'build' folder
+    pause
+    goto :usage
+  )
+  @echo Cleared %OCPN_DIR%\build
   if exist "%CACHE_DIR%" (rmdir /s /q "%CACHE_DIR%" && @echo Cleared %CACHE_DIR%)
   if exist "%buildWINtmp%" (rmdir /s /q "%buildWINtmp%" && @echo Cleared %buildWINtmp%)
   timeout /T 5
@@ -148,7 +148,7 @@ if [%ocpn_clean%]==[1] (
 ::-------------------------------------------------------------
 :: Create needed folders
 ::-------------------------------------------------------------
-if not exist "%OD%\build" (mkdir "%OD%\build")
+if not exist "%OCPN_DIR%\build" (mkdir "%OCPN_DIR%\build")
 if not exist "%CACHE_DIR%" (mkdir "%CACHE_DIR%")
 if not exist "%CACHE_DIR%\buildwin" (mkdir "%CACHE_DIR%\buildwin")
 if not exist "%buildWINtmp%" (mkdir "%buildWINtmp%")
@@ -231,8 +231,8 @@ xcopy /e /q /y "%WXDIR%\locale\" "%CACHE_DIR%\buildwin\wxWidgets\locale"
 ::-------------------------------------------------------------
 :: Initialize the build folder
 ::-------------------------------------------------------------
-::@echo cd %OD%\build
-::cd "%OD%\build"
+::@echo cd %OCPN_DIR%\build
+::cd "%OCPN_DIR%\build"
 ::-------------------------------------------------------------
 :: Initialize folders needed to run OpenCPN (must be in build folder)
 :: Restore user configurations
@@ -242,47 +242,47 @@ xcopy /e /q /y "%WXDIR%\locale\" "%CACHE_DIR%\buildwin\wxWidgets\locale"
 @echo ocpn_debug=%ocpn_debug%
 @echo ocpn_minsizerel=%ocpn_minsizerel%
 
-:: call "%OD%\buildwin\docopyAll.bat" clean
+:: call "%OCPN_DIR%\buildwin\docopyAll.bat" clean
 if [%ocpn_debug%]==[1] (^
-::  call "%OD%\buildwin\docopyAll.bat" Debug
-  mkdir "%OD%\build\Debug"
-  mkdir "%OD%\build\Debug\plugins"
+::  call "%OCPN_DIR%\buildwin\docopyAll.bat" Debug
+  if not exist "%OCPN_DIR%\build\Debug" (mkdir "%OCPN_DIR%\build\Debug")
+  if not exist "%OCPN_DIR%\build\Debug\plugins" (mkdir "%OCPN_DIR%\build\Debug\plugins")
   )
 if [%ocpn_release%]==[1] (^
-::  call "%OD%\buildwin\docopyAll.bat" Release
-  mkdir "%OD%\build\Release"
-  mkdir "%OD%\build\Release\plugins"
+::  call "%OCPN_DIR%\buildwin\docopyAll.bat" Release
+  if not exist "%OCPN_DIR%\build\Release" (mkdir "%OCPN_DIR%\build\Release")
+  if not exist "%OCPN_DIR%\build\Release\plugins" (mkdir "%OCPN_DIR%\build\Release\plugins")
   )
 if [%ocpn_relwithdebinfo%]==[1] (^
-::  call "%OD%\buildwin\docopyAll.bat" RelWithDebInfo
-  mkdir "%OD%\build\RelWithDebInfo"
-  mkdir "%OD%\build\RelWithDebInfo\plugins"
+::  call "%OCPN_DIR%\buildwin\docopyAll.bat" RelWithDebInfo
+  if not exist "%OCPN_DIR%\build\RelWithDebInfo" (mkdir "%OCPN_DIR%\build\RelWithDebInfo")
+  if not exist "%OCPN_DIR%\build\RelWithDebInfo\plugins" (mkdir "%OCPN_DIR%\build\RelWithDebInfo\plugins")
   )
 if [%ocpn_minsizerel%]==[1] (^
-::  call "%OD%\buildwin\docopyAll.bat" MinSizeRel
-  mkdir "%OD%\build\MinSizeRel"
-  mkdir "%OD%\build\MinSizeRel\plugins"
+::  call "%OCPN_DIR%\buildwin\docopyAll.bat" MinSizeRel
+  if not exist "%OCPN_DIR%\build\MinSizeRel" (mkdir "%OCPN_DIR%\build\MinSizeRel")
+  if not exist "%OCPN_DIR%\build\MinSizeRel\plugins" (mkdir "%OCPN_DIR%\build\MinSizeRel\plugins")
   )
 ::-------------------------------------------------------------
 :: Download and initialize build dependencies
 ::-------------------------------------------------------------
-cd %OD%\build
+cd %OCPN_DIR%\build
 %buildWINtmp%\nuget install Gettext.Tools
 %buildWINtmp%\nuget install NSIS-Package
 for /D %%D in ("Gettext*") do (set gettext=%%~D)
 for /D %%D in ("NSIS-Package*") do (set nsis=%%~D)
 @echo gettext=%gettext%
 @echo nsis=%nsis%
-cd %OD%
+cd %OCPN_DIR%
 ::-------------------------------------------------------------
 :: Finalize local environment helper script
 ::-------------------------------------------------------------
-@echo Finishing %OD%\buildwin\configdev.bat
-set "_addpath=%OD%\build\%nsis%\NSIS\;%OD%\build\%nsis%\NSIS\bin\"
-set "_addpath=%_addpath%;%OD%\build\%gettext%\tools\bin\"
-@echo path^|find /i "%_addpath%"    ^>nul ^|^| set "path=%path%;%_addpath%" >> "%OD%\buildwin\configdev.bat"
+@echo Finishing %OCPN_DIR%\buildwin\configdev.bat
+set "_addpath=%OCPN_DIR%\build\%nsis%\NSIS\;%OCPN_DIR%\build\%nsis%\NSIS\bin\"
+set "_addpath=%_addpath%;%OCPN_DIR%\build\%gettext%\tools\bin\"
+@echo path^|find /i "%_addpath%"    ^>nul ^|^| set "path=%path%;%_addpath%" >> "%OCPN_DIR%\buildwin\configdev.bat"
 @set _addpath=
-:: @echo cd "%OD%\build" >> "%OD%\buildwin\configdev.bat"
+:: @echo cd "%OCPN_DIR%\build" >> "%OCPN_DIR%\buildwin\configdev.bat"
 endlocal
 ::-------------------------------------------------------------
 :: Change to build folder
@@ -424,7 +424,10 @@ exit /b 0
 ::-------------------------------------------------------------
 :restore
 :: Called from withing build folder
-if not exist "%~dp0..\tmp\%build_type%" (@echo Cannot find "%~dp0..\tmp\%build_type%" && pause && exit /b 1)
+if not exist "%~dp0..\tmp\%build_type%" (
+  @echo INFO: Did not find "%~dp0..\tmp\%build_type%"
+  exit /b 1
+)
 @echo Restoring %build_type% settings from "%~dp0..\tmp\%build_type%"
 cmake -E copy_directory "%~dp0..\tmp\%build_type%" "%~dp0..\build\%build_type%"
 if errorlevel 1 (
@@ -444,6 +447,10 @@ exit /b 0
 :download
 @echo URL=%URL%
 @echo DEST=%DEST%
+if exist %DEST% (
+  @echo Download %DEST% already exists.
+  exit /b 0
+)
 %PSH% -Command [System.Net.ServicePointManager]::MaxServicePointIdleTime = 5000000; ^
   if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; ^
   Invoke-WebRequest "%URL%" -OutFile '%DEST%'; ^
