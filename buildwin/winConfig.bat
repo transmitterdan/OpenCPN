@@ -105,9 +105,10 @@ set ocpn_release=1
 set ocpn_relwithdebinfo=1
 set ocpn_debug=1
 :parse
-if [%1]==[--clean] (set ocpn_clean=1&& shift /1 && goto :parse)
-if [%1]==[--rebuild] (set ocpn_clean=1&& shift /1 && goto :parse)
-if [%1]==[--help] (goto :usage)
+if [%1]==[--clean] (shift /1 && set ocpn_clean=1&& goto :parse)
+if [%1]==[--rebuild] (shift /1 && set ocpn_clean=1&& goto :parse)
+if [%1]==[--help] (shift /1 && goto :usage)
+if [%1]==[--all] (shift /1 && goto :parse)
 if [%1]==[] (goto :begin) else (^
   @echo Unknown option: %1
   shift /1
