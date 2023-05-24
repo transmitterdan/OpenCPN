@@ -2597,23 +2597,19 @@ endif (APPLE)
 #
 if (WIN32 AND NOT UNIX)
   if (OCPN_BUNDLE_WXDLLS)
-    if (CMAKE_BUILD_TYPE MATCHES "Debug")
-      file(GLOB wxdll_files
-        "${wxWidgets_LIB_DIR}/wxmsw32*ud_*.dll"
-        "${wxWidgets_LIB_DIR}/wxbase32*ud_*.dll"
-      )
-    else ()
-      file(GLOB wxdll_files
-        "${wxWidgets_LIB_DIR}/wxmsw32*u_*.dll"
-        "${wxWidgets_LIB_DIR}/wxbase32*u_*.dll"
-      )
-    endif ()
-    install(FILES ${wxdll_files} DESTINATION ".")
-    list(LENGTH wxdll_files wxdll_count)
-    message(STATUS
-      "${wxdll_count} wxWidgets DLLs bundled into the installer package..."
+    file(GLOB wxdll_files
+      "${wxWidgets_LIB_DIR}/wxmsw32*u_*.dll"
+      "${wxWidgets_LIB_DIR}/wxbase32*u_*.dll"
     )
-  endif ()
+    file(GLOB wxdll_debug_files
+      "${wxWidgets_LIB_DIR}/wxmsw32*ud_*.dll"
+      "${wxWidgets_LIB_DIR}/wxbase32*ud_*.dll"
+    )
+    install(FILES ${wxdll_debug_files} DESTINATION "." CONFIGURATIONS Debug)
+    install(FILES ${wxdll_files} DESTINATION "." CONFIGURATIONS Release)
+    install(FILES ${wxdll_files} DESTINATION "." CONFIGURATIONS RelWithDebInfo)
+    install(FILES ${wxdll_files} DESTINATION "." CONFIGURATIONS MinSizeRel)
+  endif (OCPN_BUNDLE_WXDLLS)
   if (OCPN_BUNDLE_VCDLLS)
     file(GLOB vcdll_files "${CMAKE_CURRENT_SOURCE_DIR}/cache/buildwin/vc/*.dll")
     install(FILES ${vcdll_files} DESTINATION ".")

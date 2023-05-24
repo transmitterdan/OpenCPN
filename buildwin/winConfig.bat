@@ -41,22 +41,20 @@ goto :main
 @echo *        Example: mkdir \Users\myname\source\repos                         *
 @echo *                 cd \Users\myname\source\repos                            *
 @echo *  5. Clone Opencpn                                                        *
-@echo *        Example: clone https://github.com/opencpn/opencpn                 *
+@echo *        Example: clone https://github.com/transmitterdan/opencpn          *
 @echo *                 cd \Users\myname\source\repos\opencpn                    *
 @echo *                 git checkout localWinBuild                               *
 @echo *  6. Set up local build environment by executing this script              *
 @echo *        Example: .\buildwin\winConfig.bat                                 *
-@echo *  7. Open solution file (type solution file name at VS command prompt)    *
+@echo *  7. Open solution file                                                   *
+@echo *       (type the solution file name at VS command prompt)                 *
 @echo *        Example: .\build\opencpn.sln                                      *
 @echo *  8. Start building and debugging in Visual Studio.                       *
 @echo *                                                                          *
 @echo *  Command line options:                                                   *
-@echo *      --clean            Clean build folder entirely first                *
-@echo *      --debug            Create Debug configuration                       *
-@echo *      --release          Create Relase configuration                      *
-@echo *      --relwithdebinfo   Create RelWithDebInfo configuration              *
-@echo *      --minsizerel       Create MinSizeRel configuration                  *
-@echo *      --all              Create all 4 configurations                      *
+@echo *      --clean            Clean build folder entirely before building      *
+@echo *      --rebuild          Synonym for --clean                              *
+@echo *      --help             Print thie message                               *
 @echo *                                                                          *
 @echo ****************************************************************************
 goto :EOF
@@ -99,26 +97,17 @@ where msbuild && goto :vsok
 @echo Please run this from "x86 Native Tools Command Prompt for VS2022
 goto :usage
 :vsok
-
 set ocpn_clean=0
-set ocpn_minsizerel=0
+:: By default build all 4 possible configurations
+:: Edit and set to 0 any configurations you do not wish to build
+set ocpn_minsizerel=1
 set ocpn_release=1
-set ocpn_relwitdebinfo=0
+set ocpn_relwithdebinfo=1
 set ocpn_debug=1
 :parse
 if [%1]==[--clean] (set ocpn_clean=1&& shift /1 && goto :parse)
-if [%1]==[--minsizerel] (set ocpn_minsizerel=1&& shift /1 && goto :parse)
-if [%1]==[--relwithdebinfo] (set ocpn_relwithdebinfo=1&& shift /1 && goto :parse)
-if [%1]==[--release] (set ocpn_release=1&& shift /1 && goto :parse)
-if [%1]==[--debug] (set ocpn_debug=1&& shift /1 && goto :parse)
-if [%1]==[--all] (^
-  set ocpn_debug=1
-  set ocpn_release=1
-  set ocpn_minsizerel=1
-  set ocpn_relwithdebinfo=1
-  shift /1
-  goto :parse
-  )
+if [%1]==[--rebuild] (set ocpn_clean=1&& shift /1 && goto :parse)
+if [%1]==[--help] (goto :usage)
 if [%1]==[] (goto :begin) else (^
   @echo Unknown option: %1
   shift /1
@@ -149,10 +138,12 @@ if [%ocpn_clean%]==[1] (
   call :backup
   set folder=
   @echo Backup complete
-  timeout /T 1
-  if exist "%OD%\build" (rmdir /s /q "%OD%\build" && @echo Cleared %OD%\build)
+  if exist "%OD%\build" rmdir /s /q "%OD%\build"
+  if exist "%OD%\build" (@echo Could not remove 'build' folder&& goto :usage)
+  @echo Cleared %OD%\build
   if exist "%CACHE_DIR%" (rmdir /s /q "%CACHE_DIR%" && @echo Cleared %CACHE_DIR%)
   if exist "%buildWINtmp%" (rmdir /s /q "%buildWINtmp%" && @echo Cleared %buildWINtmp%)
+  timeout /T 5
 )
 ::-------------------------------------------------------------
 :: Create needed folders
@@ -181,9 +172,9 @@ call :download
 set "SOURCE=%DEST%"
 set "DEST=%buildWINtmp%"
 call :explode
-if errorlevel 1 (echo not OK) else (
+if errorlevel 1 (@echo [101;93mNOT OK[0m) else (
   xcopy /e /q /y "%buildWINtmp%\OCPNWindowsCoreBuildSupport-0.3\buildwin" "%CACHE_DIR%\buildwin"
-  if errorlevel 1 (echo NOT OK) else (echo OK))
+  if errorlevel 1 (@echo [101;93mNOT OK[0m) else (echo OK))
 ::-------------------------------------------------------------
 :: Download wxWidgets 3.2.2 sources
 ::-------------------------------------------------------------
@@ -193,25 +184,25 @@ mkdir "%wxDIR%"
 set "URL=https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.2.1/wxWidgets-3.2.2.1.zip"
 set "DEST=%wxDIR%\wxWidgets-3.2.2.1.zip"
 call :download
-if errorlevel 1 (echo not OK) else (echo OK)
+if errorlevel 1 (@echo [101;93mNOT OK[0m) else (echo OK)
 
 @echo exploding wxWidgets
 set "SOURCE=%wxDIR%\wxWidgets-3.2.2.1.zip"
 set "DEST=%wxDIR%"
 call :explode
-if errorlevel 1 (echo not OK) else (echo OK)
+if errorlevel 1 (@echo [101;93mNOT OK[0m) else (echo OK)
 
 @echo Downloading Windows WebView2 kit
 set "URL=https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2"
 set "DEST=%wxDIR%\webview2.zip"
 call :download
-if errorlevel 1 (echo not OK) else (echo OK)
+if errorlevel 1 (@echo [101;93mNOT OK[0m) else (echo OK)
 
 @echo Exploding WebView2
 set "SOURCE=%wxDIR%\webview2.zip"
 set "DEST=%wxDIR%\build\3rdparty\webview2"
 call :explode
-if errorlevel 1 (echo not OK) else (echo OK)
+if errorlevel 1 (@echo [101;93mNOT OK[0m) else (echo OK)
 
 :skipwxDL
 ::-------------------------------------------------------------
@@ -240,42 +231,49 @@ xcopy /e /q /y "%WXDIR%\locale\" "%CACHE_DIR%\buildwin\wxWidgets\locale"
 ::-------------------------------------------------------------
 :: Initialize the build folder
 ::-------------------------------------------------------------
-@echo cd %OD%\build
-cd "%OD%\build"
+::@echo cd %OD%\build
+::cd "%OD%\build"
 ::-------------------------------------------------------------
 :: Initialize folders needed to run OpenCPN (must be in build folder)
 :: Restore user configurations
 ::-------------------------------------------------------------
+@echo ocpn_relwithdebinfo=%ocpn_relwithdebinfo%
+@echo ocpn_release=%ocpn_release%
+@echo ocpn_debug=%ocpn_debug%
+@echo ocpn_minsizerel=%ocpn_minsizerel%
+
+:: call "%OD%\buildwin\docopyAll.bat" clean
 if [%ocpn_debug%]==[1] (^
-  call "%OD%\buildwin\docopyAll.bat" Debug
-  set folder=Debug
-  call :restore
+::  call "%OD%\buildwin\docopyAll.bat" Debug
+  mkdir "%OD%\build\Debug"
+  mkdir "%OD%\build\Debug\plugins"
   )
 if [%ocpn_release%]==[1] (^
-  call "%OD%\buildwin\docopyAll.bat" Release
-  set folder=Release
-  call :restore
+::  call "%OD%\buildwin\docopyAll.bat" Release
+  mkdir "%OD%\build\Release"
+  mkdir "%OD%\build\Release\plugins"
   )
 if [%ocpn_relwithdebinfo%]==[1] (^
-  call "%OD%\buildwin\docopyAll.bat" RelWithDebInfo
-  set folder=RelWithDebInfo
-  call :restore
+::  call "%OD%\buildwin\docopyAll.bat" RelWithDebInfo
+  mkdir "%OD%\build\RelWithDebInfo"
+  mkdir "%OD%\build\RelWithDebInfo\plugins"
   )
 if [%ocpn_minsizerel%]==[1] (^
-  call "%OD%\buildwin\docopyAll.bat" MinSizeRel
-  set folder=MinSizeRel
-  call :restore
+::  call "%OD%\buildwin\docopyAll.bat" MinSizeRel
+  mkdir "%OD%\build\MinSizeRel"
+  mkdir "%OD%\build\MinSizeRel\plugins"
   )
-set folder=
 ::-------------------------------------------------------------
 :: Download and initialize build dependencies
 ::-------------------------------------------------------------
+cd %OD%\build
 %buildWINtmp%\nuget install Gettext.Tools
 %buildWINtmp%\nuget install NSIS-Package
 for /D %%D in ("Gettext*") do (set gettext=%%~D)
 for /D %%D in ("NSIS-Package*") do (set nsis=%%~D)
 @echo gettext=%gettext%
 @echo nsis=%nsis%
+cd %OD%
 ::-------------------------------------------------------------
 :: Finalize local environment helper script
 ::-------------------------------------------------------------
@@ -284,57 +282,70 @@ set "_addpath=%OD%\build\%nsis%\NSIS\;%OD%\build\%nsis%\NSIS\bin\"
 set "_addpath=%_addpath%;%OD%\build\%gettext%\tools\bin\"
 @echo path^|find /i "%_addpath%"    ^>nul ^|^| set "path=%path%;%_addpath%" >> "%OD%\buildwin\configdev.bat"
 @set _addpath=
-@echo cd "%OD%\build" >> "%OD%\buildwin\configdev.bat"
+:: @echo cd "%OD%\build" >> "%OD%\buildwin\configdev.bat"
 endlocal
 ::-------------------------------------------------------------
 :: Change to build folder
 ::-------------------------------------------------------------
 cd /D "%~dp0.."
 @echo In folder %CD%
+@echo if exist .\buildwin\configdev.bat (call .\buildwin\configdev.bat) else (goto :hint)
+@echo path=%path%
 if exist .\buildwin\configdev.bat (call .\buildwin\configdev.bat) else (goto :hint)
+@echo path=%path%
 ::-------------------------------------------------------------
 :: Build Release and Debug executables
 ::-------------------------------------------------------------
-if exist .\RelWithDebInfo (^
-  @echo Building RelWithDebInfo
-  set build_type=RelWithDebInfo
-  call :config_build
-  )
-if exist .\Release (^
-  @echo Building Release
-  set build_type=Release
-  call :config_build
-  )
-if exist .\MinSizeRel (^
-  @echo Building MinSizeRel
-  set build_type=MinSizeRel
-  call :config_build
-  )
+pushd build
+@echo In folder %CD%
 if exist .\Debug (^
   @echo Building Debug
   set build_type=Debug
   call :config_build
-  )
-
+  if errorlevel 1 goto :buildErr
+  call :restore
+  ) else (@echo Something is not right.&& exit /b 1)
+if exist .\RelWithDebInfo (^
+  @echo Building RelWithDebInfo
+  set build_type=RelWithDebInfo
+  call :config_build
+  if errorlevel 1 goto :buildErr
+  call :restore
+  ) else (@echo Something is not right.&& exit /b 1)
+if exist .\Release (^
+  @echo Building Release
+  set build_type=Release
+  call :config_build
+  if errorlevel 1 goto :buildErr
+  call :restore
+  ) else (@echo Something is not right.&& exit /b 1)
+if exist .\MinSizeRel (^
+  @echo Building MinSizeRel
+  set build_type=MinSizeRel
+  call :config_build
+  if errorlevel 1 goto :buildErr
+  call :restore
+  ) else (@echo Something is not right.&& exit /b 1)
+popd
 set build_type=
+goto :hint
 ::-------------------------------------------------------------
 :: Offer some helpful hints
 ::-------------------------------------------------------------
 :hint
-cd ..
 @echo To build OpenCPN for debugging at command line do this in the folder
 @echo %CD%
 @echo.
 @echo  .\buildwin\configdev.bat
+@echo  cd build
 @echo  msbuild /noLogo /m -p:Configuration=Debug;Platform=Win32 opencpn.sln
-@echo  opencpn.sln
+@echo  .\opencpn.sln
 @echo.
 @echo Now you are ready to start debugging
 @echo.
 @echo [101;93mIf you close this CMD prompt and open another be sure to run:[0m
 @echo  %CD%\buildwin\configdev.bat
 @echo [101;93mfirst, before starting Visual Studio[0m.
-cd build
 goto :EOF
 ::-------------------------------------------------------------
 :: Local subroutines
@@ -349,15 +360,16 @@ cmake -A Win32 -G "%VCstr%" ^
   -DwxWidgets_ROOT_DIR="%wxWidgets_ROOT_DIR%" ^
   -DCMAKE_CXX_FLAGS="/MP /EHsc /DWIN32" ^
   -DCMAKE_C_FLAGS="/MP" ^
-  -DOCPN_CI_BUILD=OFF ^
+  -DOCPN_CI_BUILD:BOOL=OFF ^
   -DOCPN_TARGET_TUPLE=msvc-wx32;10;x86_64 ^
-  -DOCPN_BUNDLE_WXDLLS=ON ^
-  -DOCPN_BUILD_TEST=OFF ^
-  -DCMAKE_BUILD_TYPE=%buildtype% ^
+  -DOCPN_BUNDLE_WXDLLS:BOOL=ON ^
+  -DOCPN_BUILD_TEST:BOOL=OFF ^
+  -DOCPN_BUNDLE_GSHHS:BOOL=ON ^
+  -DOCPN_BUNDLE_TCDATA:BOOL=ON ^
+  -DOCPN_BUNDLE_DOCS:BOOL=ON ^
   -DCMAKE_INSTALL_PREFIX="%CD%\%build_type%" ^
   ..
 if errorlevel 1 goto :cmakeErr
-
 msbuild /noLogo /v:m /m -p:Configuration=%build_type%;Platform=Win32 ^
 /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_%build_type%_WIN32_Debug.log ^
 INSTALL.vcxproj
@@ -372,6 +384,7 @@ exit /b 0
 @echo CMake failed to configure OpenCPN build folder.
 @echo Review the error messages and read the OpenCPN
 @echo Developer Manual for help.
+pause
 exit /b 1
 ::-------------------------------------------------------------
 :: Build failed
@@ -380,28 +393,29 @@ exit /b 1
 @echo Build using msbuild failed.
 @echo Review the error messages and read the OpenCPN
 @echo Developer Manual for help.
+pause
 exit /b 1
 ::-------------------------------------------------------------
 :: Backup user configuration
 ::-------------------------------------------------------------
 :backup
-@echo "Backing up %OD%\build\%folder%"
-if not exist "%OD%\build\%folder%" goto :breturn
-if not exist "%OD%\tmp" (mkdir "%OD%\tmp")
-if not exist "%OD%\tmp\%folder%" (mkdir "%OD%\tmp\%folder%")
+@echo "Backing up %~dp0..\build\%folder%"
+if not exist "%~dp0..\build\%folder%" goto :breturn
+if not exist "%~dp0..\tmp" (mkdir "%~dp0..\tmp")
+if not exist "%~dp0..\tmp\%folder%" (mkdir "%~dp0..\tmp\%folder%")
 @echo backing up %folder%
-xcopy /Q /Y "%OD%\build\%folder%\opencpn.ini" "%OD%\tmp\%folder%"
-xcopy /Q /Y "%OD%\build\%folder%\*.log.log" "%OD%\tmp\%folder%"
-xcopy /Q /Y "%OD%\build\%folder%\*.log" "%OD%\tmp\%folder%"
-xcopy /Q /Y "%OD%\build\%folder%\*.dat" "%OD%\tmp\%folder%"
-xcopy /Q /Y "%OD%\build\%folder%\*.csv" "%OD%\tmp\%folder%"
-xcopy /Q /Y "%OD%\build\%folder%\navobj.*" "%OD%\tmp\%folder%"
-xcopy /Q /Y "%OD%\build\%folder%\navobj.xml.?" "%OD%\tmp\%folder%"
-@echo cmake -E copy_directory "%OD%\build\%folder%\plugins" "tmp\%folder%"
-cmake -E copy_directory "%OD%\build\%folder%\plugins" "tmp\%folder%"
-if not exist "%OD%\build\%folder%\Charts" goto :breturn
-@echo cmake -E copy_directory "%OD%\build\%folder%\Charts" "tmp\%folder%"
-cmake -E copy_directory "%OD%\build\%folder%\Charts" "tmp\%folder%"
+xcopy /Q /Y "%~dp0..\build\%folder%\opencpn.ini" "%~dp0..\tmp\%folder%"
+xcopy /Q /Y "%~dp0..\build\%folder%\*.log.log" "%~dp0..\tmp\%folder%"
+xcopy /Q /Y "%~dp0..\build\%folder%\*.log" "%~dp0..\tmp\%folder%"
+xcopy /Q /Y "%~dp0..\build\%folder%\*.dat" "%~dp0..\tmp\%folder%"
+xcopy /Q /Y "%~dp0..\build\%folder%\*.csv" "%~dp0..\tmp\%folder%"
+xcopy /Q /Y "%~dp0..\build\%folder%\navobj.*" "%~dp0..\tmp\%folder%"
+xcopy /Q /Y "%~dp0..\build\%folder%\navobj.xml.?" "%~dp0..\tmp\%folder%"
+@echo cmake -E copy_directory "%~dp0..\build\%folder%\plugins" "%~dp0..\tmp\%folder%"
+cmake -E copy_directory "%~dp0..\build\%folder%\plugins" "%~dp0..\tmp\%folder%"
+if not exist "%~dp0..\build\%folder%\Charts" goto :breturn
+@echo cmake -E copy_directory "%~dp0..\build\%folder%\Charts" "%~dp0..\tmp\%folder%"
+cmake -E copy_directory "%~dp0..\build\%folder%\Charts" "%~dp0..\tmp\%folder%"
 :breturn
 @echo backup returning
 exit /b 0
@@ -409,13 +423,18 @@ exit /b 0
 :: Restore user configuration to build folder
 ::-------------------------------------------------------------
 :restore
-if not exist "%OD%\tmp\%folder%" (exit /b 0)
-@echo Restoring %folder% settings
-cmake -E copy_directory "%OD%\tmp\%folder%" "%OD%\build\%folder%"
+:: Called from withing build folder
+if not exist "%~dp0..\tmp\%build_type%" (@echo Cannot find "%~dp0..\tmp\%build_type%" && pause && exit /b 1)
+@echo Restoring %build_type% settings from "%~dp0..\tmp\%build_type%"
+cmake -E copy_directory "%~dp0..\tmp\%build_type%" "%~dp0..\build\%build_type%"
 if errorlevel 1 (
-  @echo Restore failed
+  @echo Restore %build_type% failed
+  pause
   goto ::rreturn
-  ) else (rmdir /s /q "%OD%\tmp\%folder%")
+) else (
+  @echo Restore successful
+  rmdir /s /q "%~dp0..\tmp\%build_type%"
+)
 :rreturn
 @echo restore returning
 exit /b 0
@@ -429,7 +448,7 @@ exit /b 0
   if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; ^
   Invoke-WebRequest "%URL%" -OutFile '%DEST%'; ^
   exit $LASTEXITCODE
-if errorlevel 1 (exit /b 1) else (@echo Download OK)
+if errorlevel 1 (@echo Download failed && pause && exit /b 1) else (@echo Download OK)
 exit /b 0
 ::-------------------------------------------------------------
 :: Explode SOURCE zip file to DEST folder
@@ -439,5 +458,5 @@ exit /b 0
 @echo DEST=%DEST%
 %PSH% -Command if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; ^
   Expand-Archive -Force -Path '%SOURCE%' -DestinationPath '%DEST%'
-if errorlevel 1 (exit /b 1) else (@echo Unzip OK)
+if errorlevel 1 (@echo Explode failed && pause && exit /b 1) else (@echo Unzip OK)
 exit /b 0
