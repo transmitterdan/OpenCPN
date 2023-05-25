@@ -2606,9 +2606,11 @@ if (WIN32 AND NOT UNIX)
       "${wxWidgets_LIB_DIR}/wxbase32*ud_*.dll"
     )
     install(FILES ${wxdll_debug_files} DESTINATION "." CONFIGURATIONS Debug)
-    install(FILES ${wxdll_files} DESTINATION "." CONFIGURATIONS Release)
-    install(FILES ${wxdll_files} DESTINATION "." CONFIGURATIONS RelWithDebInfo)
-    install(FILES ${wxdll_files} DESTINATION "." CONFIGURATIONS MinSizeRel)
+    install(FILES ${wxdll_files} DESTINATION "." CONFIGURATIONS Release|RelWithDebInfo|MinSizeRel)
+	list(LENGTH wxdll_files wxdll_count)
+    message(STATUS
+      "${wxdll_count} wxWidgets DLLs bundled into the installer package..."
+	)
   endif (OCPN_BUNDLE_WXDLLS)
   if (OCPN_BUNDLE_VCDLLS)
     file(GLOB vcdll_files "${CMAKE_CURRENT_SOURCE_DIR}/cache/buildwin/vc/*.dll")

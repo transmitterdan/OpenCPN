@@ -54,6 +54,10 @@ goto :main
 @echo *  Command line options:                                                   *
 @echo *      --clean            Clean build folder entirely before building      *
 @echo *      --rebuild          Synonym for --clean                              *
+@echo *      --release          Build Release configuration                      *
+@echo *      --relwithdebinfo   Build RelWithDebInfo configuration               *
+@echo *      --minsizerel       Build MinSizeRel configuration                   *
+@echo *      --debug            Build Debug configuration                        *
 @echo *      --help             Print thie message                               *
 @echo *                                                                          *
 @echo ****************************************************************************
@@ -100,21 +104,32 @@ goto :usage
 set ocpn_clean=0
 :: By default build all 4 possible configurations
 :: Edit and set to 0 any configurations you do not wish to build
-set ocpn_minsizerel=1
-set ocpn_release=1
-set ocpn_relwithdebinfo=1
-set ocpn_debug=1
+set ocpn_all=1
+set ocpn_minsizerel=0
+set ocpn_release=0
+set ocpn_relwithdebinfo=0
+set ocpn_debug=0
 :parse
 if [%1]==[--clean] (shift /1 && set ocpn_clean=1&& goto :parse)
 if [%1]==[--rebuild] (shift /1 && set ocpn_clean=1&& goto :parse)
 if [%1]==[--help] (shift /1 && goto :usage)
-if [%1]==[--all] (shift /1 && goto :parse)
+if [%1]==[--all] (shift /1 && set ocpn_all=1&& goto :parse)
+if [%1]==[--minsizerel] (shift /1 && set ocpn_all=0&& set ocpn_minsizerel=1)
+if [%1]==[--release] (shift /1 && set ocpn_all=0&& set ocpn_release=1)
+if [%1]==[--relwithdebinfo] (shift /1 && set ocpn_all=0&& set ocpn_relwithdebinfo=1)
+if [%1]==[--debug] (shift /1 && set ocpn_all=0&& set ocpn_debug=1)
 if [%1]==[] (goto :begin) else (^
   @echo Unknown option: %1
   shift /1
   goto :usage
   )
 :begin
+if [%ocpn_all%]==[1] (
+  set ocpn_minsizerel=1
+  set ocpn_release=1
+  set ocpn_relwithdebinfo=1
+  set ocpn_debug=1
+)
 ::-------------------------------------------------------------
 :: If this is the first build then initialize all build types
 ::-------------------------------------------------------------
@@ -230,22 +245,14 @@ if not exist "%CACHE_DIR%\buildwin\wxWidgets\locale" (
 )
 xcopy /e /q /y "%WXDIR%\locale\" "%CACHE_DIR%\buildwin\wxWidgets\locale"
 ::-------------------------------------------------------------
-:: Initialize the build folder
-::-------------------------------------------------------------
-::@echo cd %OCPN_DIR%\build
-::cd "%OCPN_DIR%\build"
-::-------------------------------------------------------------
-:: Initialize folders needed to run OpenCPN (must be in build folder)
-:: Restore user configurations
+:: Initialize folders needed to run OpenCPN
 ::-------------------------------------------------------------
 @echo ocpn_relwithdebinfo=%ocpn_relwithdebinfo%
 @echo ocpn_release=%ocpn_release%
 @echo ocpn_debug=%ocpn_debug%
 @echo ocpn_minsizerel=%ocpn_minsizerel%
 
-:: call "%OCPN_DIR%\buildwin\docopyAll.bat" clean
 if [%ocpn_debug%]==[1] (^
-::  call "%OCPN_DIR%\buildwin\docopyAll.bat" Debug
   if not exist "%OCPN_DIR%\build\Debug" (mkdir "%OCPN_DIR%\build\Debug")
   if not exist "%OCPN_DIR%\build\Debug\plugins" (mkdir "%OCPN_DIR%\build\Debug\plugins")
   )
@@ -286,14 +293,14 @@ set "_addpath=%_addpath%;%OCPN_DIR%\build\%gettext%\tools\bin\"
 :: @echo cd "%OCPN_DIR%\build" >> "%OCPN_DIR%\buildwin\configdev.bat"
 endlocal
 ::-------------------------------------------------------------
-:: Change to build folder
+:: Change to build folder & setup environment
 ::-------------------------------------------------------------
 cd /D "%~dp0.."
 @echo In folder %CD%
 @echo if exist .\buildwin\configdev.bat (call .\buildwin\configdev.bat) else (goto :hint)
 @echo path=%path%
 if exist .\buildwin\configdev.bat (call .\buildwin\configdev.bat) else (goto :hint)
-@echo path=%path%
+:: @echo path=%path%
 ::-------------------------------------------------------------
 :: Build Release and Debug executables
 ::-------------------------------------------------------------
@@ -305,28 +312,28 @@ if exist .\Debug (^
   call :config_build
   if errorlevel 1 goto :buildErr
   call :restore
-  ) else (@echo Something is not right.&& exit /b 1)
+  )
 if exist .\RelWithDebInfo (^
   @echo Building RelWithDebInfo
   set build_type=RelWithDebInfo
   call :config_build
   if errorlevel 1 goto :buildErr
   call :restore
-  ) else (@echo Something is not right.&& exit /b 1)
+  )
 if exist .\Release (^
   @echo Building Release
   set build_type=Release
   call :config_build
   if errorlevel 1 goto :buildErr
   call :restore
-  ) else (@echo Something is not right.&& exit /b 1)
+  )
 if exist .\MinSizeRel (^
   @echo Building MinSizeRel
   set build_type=MinSizeRel
   call :config_build
   if errorlevel 1 goto :buildErr
   call :restore
-  ) else (@echo Something is not right.&& exit /b 1)
+  )
 popd
 set build_type=
 goto :hint
