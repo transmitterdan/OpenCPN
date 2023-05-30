@@ -158,13 +158,18 @@ $ ".\opencpn" -p
 +
 
 * The 'winConfig.bat' script also has the ability to automatically clean before building.
-  The command line options are as follows:
+  The full list of command line options are as follows:
 +
 [,console]
 ----
  --clean :: cleans all files from the build folder then sets up the build system anew
  --rebuild :: synonum for --clean
  --help :: print helpful text
+ --relwithdebinfo :: build relwithdebinfo configuration
+ --debug :: build debug configuration
+ --release :: build release configuration
+ --minsizerel :: build release configuration
+ --all :: setup and build all four standard configurations (this is the default)
 ----
 +
 
