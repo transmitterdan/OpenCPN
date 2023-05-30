@@ -1021,7 +1021,7 @@ FailureEpilogue:
 #endif  // USE_LIBELF
 
 bool PluginLoader::CheckPluginCompatibility(wxString plugin_file) {
-  bool b_compat = true;
+  bool b_compat = false;
 
 #ifdef __WXMSW__
   if (!m_found_wxwidgets) {
@@ -1031,7 +1031,6 @@ bool PluginLoader::CheckPluginCompatibility(wxString plugin_file) {
     if (hProcess == NULL) {
       wxLogMessage(wxString::Format("Cannot identify running process for %s",
                                     plugin_file.c_str()));
-      b_compat = false;
     } else {
       // Find namme of wxWidgets core DLL used by the current process
       // so we can compare it to the one used by the plugin
@@ -1044,7 +1043,7 @@ bool PluginLoader::CheckPluginCompatibility(wxString plugin_file) {
                                   sizeof(szModName) / sizeof(TCHAR))) {
             m_module_name = szModName;
             if (m_module_name.Find("wxmsw") != wxNOT_FOUND) {
-              if (m_module_name.Find("core") != wxNOT_FOUND) {
+              if (m_module_name.Find("_core_") != wxNOT_FOUND) {
                 m_found_wxwidgets = true;
                 break;
               }
@@ -1061,7 +1060,6 @@ bool PluginLoader::CheckPluginCompatibility(wxString plugin_file) {
   if (!m_found_wxwidgets) {
     wxLogMessage(wxString::Format("Cannot identify wxWidgets core DLL for %s",
                                   plugin_file.c_str()));
-    b_compat = false;
   } else {
     LPCWSTR fName = plugin_file.wc_str();
     HANDLE handle = CreateFile(fName, GENERIC_READ, 0, 0, OPEN_EXISTING,
@@ -1070,7 +1068,6 @@ bool PluginLoader::CheckPluginCompatibility(wxString plugin_file) {
     PVOID virtualpointer = VirtualAlloc(NULL, size, MEM_COMMIT, PAGE_READWRITE);
     bool status = ReadFile(handle, virtualpointer, size, &byteread, NULL);
     CloseHandle(handle);
-    b_compat = false;
     PIMAGE_NT_HEADERS ntheaders =
         (PIMAGE_NT_HEADERS)(PCHAR(virtualpointer) +
                             PIMAGE_DOS_HEADER(virtualpointer)->e_lfanew);
