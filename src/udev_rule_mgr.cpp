@@ -162,8 +162,8 @@ public:
 
     auto vbox = new wxBoxSizer(wxVERTICAL);
     vbox->Add(hbox);
-    auto indent = parent->GetTextExtent("aaa").GetWidth();
-    flags = flags.Border(wxLEFT, indent);
+    //auto indent = parent->GetTextExtent("aaa").GetWidth();
+    flags = flags.Border(wxLEFT);
     vbox->Add(m_child, flags.ReserveSpaceEvenIfHidden());
 
     SetSizer(vbox);
@@ -385,8 +385,7 @@ bool CheckSerialAccess(wxWindow* parent, const std::string device) {
 
 bool CheckDongleAccess(wxWindow* parent) {
   int result = 0;
-//  if (is_dongle_permissions_wrong() && !hide_dongle_dialog) {
-  if (getenv("FLATPAK_ID")) {
+  if (is_dongle_permissions_wrong() && !hide_dongle_dialog) {
     auto dialog = new DongleRuleDialog(parent);
     result = dialog->ShowModal();
     delete dialog;
