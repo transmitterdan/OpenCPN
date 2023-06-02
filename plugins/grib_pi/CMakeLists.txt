@@ -343,6 +343,7 @@ endif (UNIX AND NOT APPLE)
 
 if (WIN32)
   install(TARGETS ${PACKAGE_NAME} RUNTIME DESTINATION "plugins")
+  INSTALL(FILES $<TARGET_PDB_FILE:${PACKAGE_NAME}> DESTINATION "plugins")
 
   set(INSTALL_DIRECTORY "plugins/${PACKAGE_NAME}")
 
@@ -362,18 +363,18 @@ if (NOT OCPN_CI_BUILD)
       POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E echo "Copying dll file"
       COMMAND ${CMAKE_COMMAND} -E echo "$<TARGET_FILE:${PACKAGE_NAME}>"
-                "${CMAKE_BINARY_DIR}/$(configuration)/plugins"
-      COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_FILE:${PACKAGE_NAME}>"
-                "${CMAKE_BINARY_DIR}/$(configuration)/plugins"
+                "${CMAKE_BINARY_DIR}/$<CONFIGURATION>/plugins/${PACKAGE_NAME}.dll"
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_FILE:${PACKAGE_NAME}>"
+                "${CMAKE_BINARY_DIR}/$<CONFIGURATION>/plugins/${PACKAGE_NAME}.dll"
     )
     add_custom_command(
       TARGET ${PACKAGE_NAME}
       POST_BUILD
       COMMAND ${CMAKE_COMMAND} -E echo "Copying pdb file"
       COMMAND ${CMAKE_COMMAND} -E echo "$<TARGET_PDB_FILE:${PACKAGE_NAME}>"
-                "${CMAKE_BINARY_DIR}/$(configuration)/plugins"
-      COMMAND ${CMAKE_COMMAND} -E copy "$<TARGET_PDB_FILE:${PACKAGE_NAME}>"
-                "${CMAKE_BINARY_DIR}/$(configuration)/plugins"
+                "${CMAKE_BINARY_DIR}/$<CONFIGURATION>/plugins/${PACKAGE_NAME}.pdb"
+      COMMAND ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_PDB_FILE:${PACKAGE_NAME}>"
+                "${CMAKE_BINARY_DIR}/$<CONFIGURATION>/plugins/${PACKAGE_NAME}.pdb"
     )
   endif (MSVC)
 endif (NOT OCPN_CI_BUILD)

@@ -152,11 +152,17 @@ if [%ocpn_clean%]==[1] (
   @echo Backup complete
   if exist "%OCPN_DIR%\build" rmdir /s /q "%OCPN_DIR%\build"
   if exist "%OCPN_DIR%\build" (
-    @echo Could not remove 'build' folder
+    @echo Could not remove "%OCPN_DIR%\build" folder
+    @echo Is Visual Studio IDE open? If so, please close it so we can try again.
     pause
-    goto :usage
+    @echo Retrying...
+    rmdir /s /q "%OCPN_DIR%\build"
   )
-  @echo Cleared %OCPN_DIR%\build
+  if exist "%OCPN_DIR%\build" (
+    @echo Could not remove "%OCPN_DIR%\build". Continuing...
+  ) else (
+    @echo Cleared %OCPN_DIR%\build OK.
+  )
   if exist "%CACHE_DIR%" (rmdir /s /q "%CACHE_DIR%" && @echo Cleared %CACHE_DIR%)
   if exist "%buildWINtmp%" (rmdir /s /q "%buildWINtmp%" && @echo Cleared %buildWINtmp%)
   timeout /T 5

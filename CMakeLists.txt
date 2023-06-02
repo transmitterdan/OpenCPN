@@ -1244,9 +1244,6 @@ target_include_directories(
 )
 
 if (MSVC AND NOT OCPN_CI_BUILD)
-  MESSAGE(STATUS "wxWidgets_LIB_DIR = ${wxWidgets_LIB_DIR}")
-  set_target_properties(${PACKAGE_NAME} PROPERTIES
-    VS_DEBUGGER_ENVIRONMENT "\"path=${wxWidgets_LIB_DIR};$(path)\"")
   MESSAGE(STATUS "PACKAGE_NAME = ${PACKAGE_NAME}")
   set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     PROPERTY VS_STARTUP_PROJECT ${PACKAGE_NAME})
@@ -2600,10 +2597,14 @@ if (WIN32 AND NOT UNIX)
     file(GLOB wxdll_files
       "${wxWidgets_LIB_DIR}/wxmsw32*u_*.dll"
       "${wxWidgets_LIB_DIR}/wxbase32*u_*.dll"
+      "${wxWidgets_LIB_DIR}/wxmsw32*u_*.pdb"
+      "${wxWidgets_LIB_DIR}/wxbase32*u_*.pdb"
     )
     file(GLOB wxdll_debug_files
       "${wxWidgets_LIB_DIR}/wxmsw32*ud_*.dll"
       "${wxWidgets_LIB_DIR}/wxbase32*ud_*.dll"
+      "${wxWidgets_LIB_DIR}/wxmsw32*ud_*.pdb"
+      "${wxWidgets_LIB_DIR}/wxbase32*ud_*.pdb"
     )
     install(FILES ${wxdll_debug_files} DESTINATION "." CONFIGURATIONS Debug)
     install(FILES ${wxdll_files} DESTINATION "." CONFIGURATIONS Release|RelWithDebInfo|MinSizeRel)
@@ -3086,16 +3087,16 @@ if (APPLE)
 endif (APPLE)
 
 include(CPack)
-if(CMAKE_BUILD_TYPE MATCHES "Debug" OR CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo")
-  if (MSVC)
+
+if (MSVC)
   add_custom_command(
-    TARGET ${PACKAGE_NAME} POST_BUILD
-    COMMAND
-    ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_PDB_FILE:${PACKAGE_NAME}>"
-	  "$<TARGET_PDB_FILE_DIR:${PACKAGE_NAME}>/${PACKAGE_NAME}-${PACKAGE_VERSION}.pdb"
-  )
-  endif (MSVC)
-endif ()
+  TARGET ${PACKAGE_NAME} POST_BUILD
+  COMMAND
+  ${CMAKE_COMMAND} -E copy_if_different "$<TARGET_PDB_FILE:${PACKAGE_NAME}>"
+    "$<TARGET_PDB_FILE_DIR:${PACKAGE_NAME}>/${PACKAGE_NAME}-${PACKAGE_VERSION}.pdb"
+)
+endif (MSVC)
+
 # uninstall target
 if (NOT TARGET uninstall)
   configure_file(
