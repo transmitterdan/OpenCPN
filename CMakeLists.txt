@@ -729,7 +729,7 @@ if (NOT QT_ANDROID)
     set(wxWidgets_EXCLUDE_COMMON_LIBRARIES TRUE)
 
     # build only for release/unicode configuration
-    set(wxWidgets_CONFIGURATION mswu)
+    # set(wxWidgets_CONFIGURATION mswu)
 
   endif (MSVC)
 
@@ -2597,21 +2597,49 @@ if (WIN32 AND NOT UNIX)
     file(GLOB wxdll_files
       "${wxWidgets_LIB_DIR}/wxmsw32*u_*.dll"
       "${wxWidgets_LIB_DIR}/wxbase32*u_*.dll"
-      "${wxWidgets_LIB_DIR}/wxmsw32*u_*.pdb"
-      "${wxWidgets_LIB_DIR}/wxbase32*u_*.pdb"
     )
     file(GLOB wxdll_debug_files
       "${wxWidgets_LIB_DIR}/wxmsw32*ud_*.dll"
       "${wxWidgets_LIB_DIR}/wxbase32*ud_*.dll"
-      "${wxWidgets_LIB_DIR}/wxmsw32*ud_*.pdb"
-      "${wxWidgets_LIB_DIR}/wxbase32*ud_*.pdb"
     )
-    install(FILES ${wxdll_debug_files} DESTINATION "." CONFIGURATIONS Debug)
-    install(FILES ${wxdll_files} DESTINATION "." CONFIGURATIONS Release|RelWithDebInfo|MinSizeRel)
-	list(LENGTH wxdll_files wxdll_count)
+    list(LENGTH wxdll_files wxdll_count)
+    if (wxdll_count LESS 5)
+      message(FATAL_ERROR "Could not find all the WX DLLs.")
+    endif (wxdll_count LESS 5)
+    list(LENGTH wxdll_debug_files wxdllud_count)
+    if (wxdllud_count GREATER 0)
+      install(FILES ${wxdll_debug_files} DESTINATION "." CONFIGURATIONS Debug)
+      install(FILES ${wxdll_files} DESTINATION "." CONFIGURATIONS Release|RelWithDebInfo|MinSizeRel)
+    ELSE (wxdllud_count GREATER 0)
+      install(FILES ${wxdll_files} DESTINATION ".")
+    ENDIF (wxdllud_count GREATER 0)
     message(STATUS
-      "${wxdll_count} wxWidgets DLLs bundled into the installer package..."
-	)
+      "${wxdll_count} wxWidgets DLLs available to be bundled into the installer package..."
+    )
+    message(STATUS
+      "${wxdllud_count} wxWidgets debug DLLs available to be bundled into the installer package..."
+    )
+
+    if (OCPN_BUNDLE_WXDLLS AND NOT OCPN_CI_BUILD)
+      file(GLOB wxpdb_files
+          "${wxWidgets_LIB_DIR}/wxmsw32*u_*.pdb"
+          "${wxWidgets_LIB_DIR}/wxbase32*u_*.pdb"
+      )
+      file(GLOB wxpdb_debug_files
+        "${wxWidgets_LIB_DIR}/wxmsw32*ud_*.pdb"
+        "${wxWidgets_LIB_DIR}/wxbase32*ud_*.pdb"
+      )
+      list(LENGTH wxpdb_files wxpdb_count)
+      list(LENGTH wxpdb_debug_files wxpdbud_count)
+      install(FILES ${wxpdb_debug_files} DESTINATION "." CONFIGURATIONS Debug)
+      install(FILES ${wxpdb_files} DESTINATION "." CONFIGURATIONS Release|RelWithDebInfo|MinSizeRel)
+      message(STATUS
+        "${wxpdb_count} wxWidgets PDBs available to be bundled into the installer package..."
+      )
+      message(STATUS
+        "${wxpdbud_count} wxWidgets debug PDBs available to be bundled into the installer package..."
+      )
+    endif (OCPN_BUNDLE_WXDLLS AND NOT OCPN_CI_BUILD)  
   endif (OCPN_BUNDLE_WXDLLS)
   if (OCPN_BUNDLE_VCDLLS)
     file(GLOB vcdll_files "${CMAKE_CURRENT_SOURCE_DIR}/cache/buildwin/vc/*.dll")
