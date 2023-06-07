@@ -79,8 +79,6 @@
 #endif
 
 #ifdef WIN32
-//#include <DbgHelp.h>
-//#pragma comment(lib, "Dbghelp.lib")
 #include <Psapi.h>
 #endif
 
