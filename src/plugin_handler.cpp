@@ -1074,7 +1074,7 @@ bool PluginHandler::uninstall(const std::string plugin_name) {
   string path = PluginHandler::fileListPath(plugin_name);
   if (!ocpn::exists(path)) {
     wxLogWarning("Cannot find installation data for %s (%s)",
-                  plugin_name.c_str(), path);
+                 plugin_name.c_str(), path);
     return false;
   }
   vector<string> plug_paths = LoadLinesFromFile(path);

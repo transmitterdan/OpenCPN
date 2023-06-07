@@ -79,8 +79,8 @@
 #endif
 
 #ifdef WIN32
-#include <DbgHelp.h>
-#pragma comment(lib, "Dbghelp.lib")
+//#include <DbgHelp.h>
+//#pragma comment(lib, "Dbghelp.lib")
 #include <Psapi.h>
 #endif
 
@@ -1247,36 +1247,6 @@ PlugInContainer* PluginLoader::LoadPlugIn(wxString plugin_file) {
   } else
     return pic;
 }
-
-#ifdef __WXMSW__
-std::vector<std::string> PluginLoader::GetDependencies(PlugInContainer *pic) {
-  std::vector<std::string> dependencies;
-
-  HMODULE hModule = pic->m_library.GetLibHandle();
-
-  if (hModule != NULL) {
-    // Get the size of the buffer required for the module's import table
-    DWORD importTableSize = 0;
-    PIMAGE_IMPORT_DESCRIPTOR pImportTable =
-        (PIMAGE_IMPORT_DESCRIPTOR)ImageDirectoryEntryToDataEx(
-            hModule, TRUE, IMAGE_DIRECTORY_ENTRY_IMPORT, &importTableSize, NULL);
-
-    if (pImportTable != NULL) {
-      // Loop through the import table and get the name of each DLL that the
-      // module depends on
-      while (pImportTable->Name != NULL) {
-        LPCSTR pszDllName = (LPCSTR)((PBYTE)hModule + pImportTable->Name);
-        dependencies.push_back(pszDllName);
-
-        ++pImportTable;
-      }
-    }
-
-  }
-
-  return dependencies;
-}
-#endif
 
 PlugInContainer* PluginLoader::LoadPlugIn(wxString plugin_file,
                                           PlugInContainer* pic) {
