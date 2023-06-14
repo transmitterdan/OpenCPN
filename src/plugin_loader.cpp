@@ -1043,6 +1043,9 @@ bool PluginLoader::CheckPluginCompatibility(wxString plugin_file) {
             if (m_module_name.Find("wxmsw") != wxNOT_FOUND) {
               if (m_module_name.Find("_core_") != wxNOT_FOUND) {
                 m_found_wxwidgets = true;
+                wxLogMessage(wxString::Format(
+                    "Found wxWidgets core DLL: %s",
+                    m_module_name.c_str()));
                 break;
               }
             }
@@ -1096,6 +1099,9 @@ bool PluginLoader::CheckPluginCompatibility(wxString plugin_file) {
         if (m_module_name.Find(libname[i]) != wxNOT_FOUND) {
           // Match found - plugin is compatible
           b_compat = true;
+          wxLogMessage(
+              wxString::Format("Compatible wxWidgets plugin library found for %s: %s",
+              plugin_file.c_str(), libname[i]));
           break;
         }
         pImportDescriptor++;  // advance to next IMAGE_IMPORT_DESCRIPTOR
