@@ -89,23 +89,19 @@ workflows:
             branches:
               only:
                 - master
-                - localWinBuild
       - build-focal:
           filters:
             branches:
               only:
                 - master
-                - localWinBuild
       - build-flatpak:
           filters:
             branches:
               only:
                 - flatpak
                 - master
-                - localWinBuild
       - build-android-armhf:
           filters:
             branches:
               only:
                 - master
-                - localWinBuild

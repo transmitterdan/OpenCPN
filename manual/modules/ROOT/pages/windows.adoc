@@ -163,7 +163,7 @@ $ ".\opencpn" -p
 [,console]
 ----
  --clean :: cleans all files from the build folder then sets up the build system anew
- --rebuild :: synonum for --clean
+ --rebuild :: rebuilds all sources
  --help :: print helpful text
  --relwithdebinfo :: build relwithdebinfo configuration
  --debug :: build debug configuration

@@ -2639,7 +2639,7 @@ if (WIN32 AND NOT UNIX)
       message(STATUS
         "${wxpdbud_count} wxWidgets debug PDBs available to be bundled into the installer package..."
       )
-    endif (OCPN_BUNDLE_WXDLLS AND NOT OCPN_CI_BUILD)  
+    endif (OCPN_BUNDLE_WXDLLS AND NOT OCPN_CI_BUILD)
   endif (OCPN_BUNDLE_WXDLLS)
   if (OCPN_BUNDLE_VCDLLS)
     file(GLOB vcdll_files "${CMAKE_CURRENT_SOURCE_DIR}/cache/buildwin/vc/*.dll")

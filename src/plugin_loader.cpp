@@ -1,4 +1,4 @@
-/***************************************************************************
+\/***************************************************************************
  *
  * Project:  OpenCPN
  * Purpose:  PlugIn Manager Object
@@ -253,7 +253,7 @@ PluginLoader* PluginLoader::getInstance() {
 
 PluginLoader::PluginLoader()
     : m_blacklist(blacklist_factory()),
-      m_default_plugin_icon(0),
+      m_default_plugin_icon(nullptr),
 #ifdef __WXMSW__
       m_found_wxwidgets(false),
 #endif
@@ -1070,6 +1070,14 @@ bool PluginLoader::CheckPluginCompatibility(const wxString& plugin_file) {
   bool b_compat = false;
 
 #ifdef __WXMSW__
+  // For Windows we identify the dll file containing the core wxWidgets functions
+  // Later we will compare this with the file containing the wxWidgets functions used
+  // by plugins.  If these file names match exactly then we assume the plugin is compatible.
+  // By using the file names we avoid having to hard code the file name into the OpenCPN sources.
+  // This makes it easier to update wxWigets versions without editing sources.
+  // NOTE: this solution may not follow symlinks but almost no one uses simlinks for wxWidgets dlls
+
+  // Only go through this process once per instance of O.
   if (!m_found_wxwidgets) {
     DWORD myPid = GetCurrentProcessId();
     HANDLE hProcess =

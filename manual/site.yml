@@ -6,7 +6,7 @@ site:
 content:
   sources:
     - url: ..
-      branches: [localWinBuild] 
+      branches: [master] 
       start_path: manual
 
 ui:   

@@ -5,12 +5,12 @@ name: Windows
 'on':
   push:
     branches:
-      - localWinBuild
+      - master
     paths-ignore:
       - 'buildandroid/**'
   pull_request:
     branches:
-      - localWinBuild
+      - master
     paths-ignore:
       - 'buildandroid/**'
 
