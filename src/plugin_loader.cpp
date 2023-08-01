@@ -1066,7 +1066,7 @@ FailureEpilogue:
 }
 #endif  // USE_LIBELF
 
-bool PluginLoader::CheckPluginCompatibility(wxString plugin_file) {
+bool PluginLoader::CheckPluginCompatibility(const wxString& plugin_file) {
   bool b_compat = false;
 
 #ifdef __WXMSW__
