@@ -52,16 +52,21 @@ goto :main
 @echo *  8. Start building and debugging in Visual Studio.                       *
 @echo *                                                                          *
 @echo *  Command line options:                                                   *
-@echo *      --clean            Clean build folder entirely before building      *
-@echo *      --rebuild          Synonym for --clean                              *
+@echo *      --clean            Remove build folder entirely before building     *
+@echo *                         MUST HAVE INTERNET CONNECTION FOR clean OPTION!  *
+@echo *      --rebuild          Rebuild all sources                             *
+@echo *                                                                          *
 @echo *      --release          Build Release configuration                      *
 @echo *      --relwithdebinfo   Build RelWithDebInfo configuration               *
 @echo *      --minsizerel       Build MinSizeRel configuration                   *
 @echo *      --debug            Build Debug configuration                        *
+@echo *                                                                          *
+@echo *      --all              Build all 4 configurations                       *
+@echo *                                                                          *
 @echo *      --help             Print thie message                               *
 @echo *                                                                          *
 @echo ****************************************************************************
-goto :EOF
+exit /b 1
 :main
 ::-------------------------------------------------------------
 :: Initialize local environment
@@ -102,6 +107,7 @@ where msbuild && goto :vsok
 goto :usage
 :vsok
 set ocpn_clean=0
+set ocpn_rebuild=0
 :: By default build all 4 possible configurations
 :: Edit and set to 0 any configurations you do not wish to build
 set ocpn_all=1
@@ -109,9 +115,10 @@ set ocpn_minsizerel=0
 set ocpn_release=0
 set ocpn_relwithdebinfo=0
 set ocpn_debug=0
+
 :parse
-if [%1]==[--clean] (shift /1 && set ocpn_clean=1&& goto :parse)
-if [%1]==[--rebuild] (shift /1 && set ocpn_clean=1&& goto :parse)
+if [%1]==[--clean] (shift /1 && set ocpn_clean=1&& set ocpn_rebuild=0&& goto :parse)
+if [%1]==[--rebuild] (shift /1 && set ocpn_rebuild=1&& set ocpn_clean=0&& goto :parse)
 if [%1]==[--help] (shift /1 && goto :usage)
 if [%1]==[--all] (shift /1 && set ocpn_all=1&& goto :parse)
 if [%1]==[--minsizerel] (shift /1 && set ocpn_all=0&& set ocpn_minsizerel=1)
@@ -137,9 +144,55 @@ if not exist "%OCPN_DIR%\build" (^
   set ocpn_clean=1
 )
 ::-------------------------------------------------------------
+:: Save user configuration data and clean build folders but
+:: do not delete downloaded tools.  Use this option if no internet
+:: connectivity available.
+::-------------------------------------------------------------
+if [%ocpn_rebuild%]==[1] (
+  @echo Beginning rebuild cleanout
+  set folder=Release
+  call :backup
+  set folder=RelWithDebInfo
+  call :backup
+  set folder=Debug
+  call :backup
+  set folder=MinSizeRel
+  call :backup
+  set folder=
+  @echo Backup complete
+  if exist "%OCPN_DIR%\build\Release" rmdir /s /q "%OCPN_DIR%\build\Release"
+  if exist "%OCPN_DIR%\build\Release" @echo Could not remove "%OCPN_DIR%\build\Release" folder
+  if exist "%OCPN_DIR%\build\RelWithDebInfo" rmdir /s /q "%OCPN_DIR%\build\RelWithDebInfo"
+  if exist "%OCPN_DIR%\build\RelWithDebInfo" @echo Could not remove "%OCPN_DIR%\build\RelWithDebInfo" folder
+  if exist "%OCPN_DIR%\build\Debug" rmdir /s /q "%OCPN_DIR%\build\Debug"
+  if exist "%OCPN_DIR%\build\Debug" @echo Could not remove "%OCPN_DIR%\build\Debug" folder
+  if exist "%OCPN_DIR%\build\MinSizeRel" rmdir /s /q "%OCPN_DIR%\build\MinSizeRel"
+  if exist "%OCPN_DIR%\build\MinSizeRel" @echo Could not remove "%OCPN_DIR%\build\MinSizeRel" folder
+  if exist "%OCPN_DIR%\build\CMakeFiles" rmdir /s /q "%OCPN_DIR%\build\CMakeFiles"
+  if exist "%OCPN_DIR%\build\CMakeFiles" @echo Could not remove "%OCPN_DIR%\build\CMakeFiles" folder
+  if exist "%OCPN_DIR%\build\.vs" rmdir /s /q "%OCPN_DIR%\build\.vs"
+  if exist "%OCPN_DIR%\build\.vs" (
+	@echo Could not remove "%OCPN_DIR%\build\.vs" folder
+	@echo Is Visual Studio IDE open? If so, please close it so we can try again.
+	pause
+	@echo Retrying...
+	rmdir /s /q "%OCPN_DIR%\build\.vs"
+    if exist "%OCPN_DIR%\build\.vs" (
+	  @echo Could not remove "%OCPN_DIR%\.vs". Continuing...
+	) else (
+	  @echo Ok, removed "%OCPN_DIR%\build\.vs"
+	)
+  )
+  @echo Finished rebuild cleanout
+)
+::-------------------------------------------------------------
 :: Save user configuration data and wipe the build folder
 ::-------------------------------------------------------------
 if [%ocpn_clean%]==[1] (
+  @echo [101;93mThe --clean option requires an internet connection.[0m
+  choice /C YN /T 10 /M "Remove entire build folder including downloaded tools? [yN]" /D N
+  if ERRORLEVEL==2  goto :usage
+:clean
   set folder=Release
   call :backup
   set folder=RelWithDebInfo
@@ -299,12 +352,10 @@ set "_addpath=%_addpath%;%OCPN_DIR%\build\%gettext%\tools\bin\"
 :: @echo cd "%OCPN_DIR%\build" >> "%OCPN_DIR%\buildwin\configdev.bat"
 endlocal
 ::-------------------------------------------------------------
-:: Change to build folder & setup environment
+:: Setup environment
 ::-------------------------------------------------------------
 cd /D "%~dp0.."
 @echo In folder %CD%
-@echo if exist .\buildwin\configdev.bat (call .\buildwin\configdev.bat) else (goto :hint)
-@echo path=%path%
 if exist .\buildwin\configdev.bat (call .\buildwin\configdev.bat) else (goto :hint)
 :: @echo path=%path%
 ::-------------------------------------------------------------
