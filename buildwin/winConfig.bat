@@ -386,7 +386,7 @@ cd %OCPN_DIR%
 if [%nsispath%]==[] (goto :addGettext)
 set "_addpath=%nsispath%\NSIS\;%nsispath%\NSIS\bin\"
 :addGettext
-if [%gettext%]==[] (goto :addPath)
+if [%gettextpath%]==[] (goto :addPath)
 set "_addpath=%_addpath%;%gettextpath%\tools\bin\"
 :addPath
 :if [%_addpath%]==[] (goto :skipAddPath)
