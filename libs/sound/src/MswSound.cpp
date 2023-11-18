@@ -54,7 +54,6 @@ void MswSound::worker(void)
     PlaySound(m_path.c_str(), NULL, SND_FILENAME);
     if  (m_onFinished) {
         m_onFinished(m_callbackData);
-        m_onFinished = 0;
     }
     m_isPlaying = false;
 }

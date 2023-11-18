@@ -57,7 +57,6 @@ void OcpnWxSound::worker(void)
     m_sound.Play(wxSOUND_SYNC);
     if  (m_onFinished) {
         m_onFinished(m_callbackData);
-        m_onFinished = 0;
     }
     m_isPlaying = false;
 }

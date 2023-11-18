@@ -99,7 +99,6 @@ void SystemCmdSound::worker(void)
     m_isPlaying = true;
     do_play(m_cmd.c_str(), m_path.c_str());
     m_onFinished(m_callbackData);
-    m_onFinished = 0;
     m_isPlaying = false;
 }
 
