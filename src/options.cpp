@@ -8325,7 +8325,10 @@ void options::OnButtonTestSound(wxCommandEvent& event) {
   auto sound = SoundFactory();
   auto cmd_sound = dynamic_cast<SystemCmdSound*>(sound);
   if (cmd_sound) cmd_sound->SetCmd(g_CmdSoundString.mb_str());
-  sound->SetFinishedCallback([sound](void*) { delete sound; });
+  sound->SetFinishedCallback([sound](void*) {
+    sound->SetFinishedCallback(0);
+    delete sound;
+  });
   sound->Load(g_sAIS_Alert_Sound_File, g_iSoundDeviceIndex);
   sound->Play();
 }
