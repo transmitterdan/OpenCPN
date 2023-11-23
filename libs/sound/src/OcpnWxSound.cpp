@@ -55,11 +55,10 @@ void OcpnWxSound::worker(void)
     wxLogDebug("wxSound::worker()");
     m_isPlaying = true;
     m_sound.Play(wxSOUND_SYNC);
-    if  (m_onFinished) {
-        m_onFinished(m_callbackData);
-        m_onFinished = 0;
-    }
     m_isPlaying = false;
+    if (m_onFinished) {
+        m_onFinished(m_callbackData);
+    }
 }
 
 

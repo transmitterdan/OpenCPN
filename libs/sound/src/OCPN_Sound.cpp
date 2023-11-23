@@ -36,6 +36,8 @@ OcpnSound::OcpnSound()
 
 OcpnSound::~OcpnSound()
 {
+    m_onFinished = 0;
+    m_callbackData = 0;
 }
 
 void OcpnSound::SetFinishedCallback(AudioDoneCallback cb, void* userData)

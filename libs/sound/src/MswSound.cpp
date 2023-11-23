@@ -52,11 +52,10 @@ void MswSound::worker(void)
     wxLogDebug("mswSound::worker()");
     m_isPlaying = true;
     PlaySound(m_path.c_str(), NULL, SND_FILENAME);
-    if  (m_onFinished) {
-        m_onFinished(m_callbackData);
-        m_onFinished = 0;
-    }
     m_isPlaying = false;
+    if (m_onFinished) {
+        m_onFinished(m_callbackData);
+    }
 }
 
 
