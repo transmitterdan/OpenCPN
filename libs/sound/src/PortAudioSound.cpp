@@ -337,6 +337,5 @@ void PortAudioSound::DoneCallback()
     if (m_onFinished) {
         m_onFinished(m_callbackData);
     }
-    m_onFinished = 0;
     unlock();
 }
