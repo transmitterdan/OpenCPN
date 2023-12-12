@@ -667,6 +667,7 @@ bool AisDecoder::HandleN2K_129041( std::shared_ptr<const Nmea2000Msg> n2k_msg ){
 
     data.AtoNName[34] = 0;
     strncpy(pTargetData->ShipName, data.AtoNName, SHIP_NAME_LEN - 1);
+    pTargetData->ShipName[sizeof(pTargetData->ShipName) - 1] = '\0';
     pTargetData->b_nameValid = true;
     pTargetData->MID = 124;  // Indicates a name from n2k
     pTargetData->Class = AIS_ATON;
@@ -739,8 +740,9 @@ bool AisDecoder::HandleN2K_129794( std::shared_ptr<const Nmea2000Msg> n2k_msg ){
 
     //Populate the target_data
     pTargetData->MMSI = mmsi;
-    Name[sizeof(Name) - 1] = 0;
     strncpy(pTargetData->ShipName, Name, SHIP_NAME_LEN - 1);
+    pTargetData->ShipName[sizeof(pTargetData->ShipName) - 1] = '\0';
+    Name[sizeof(Name) - 1] = 0;
     pTargetData->b_nameValid = true;
     pTargetData->MID = 124;  // Indicates a name from n2k
 
@@ -754,9 +756,11 @@ bool AisDecoder::HandleN2K_129794( std::shared_ptr<const Nmea2000Msg> n2k_msg ){
     pTargetData->Draft = Draught;
     pTargetData->IMO = IMOnumber;
     strncpy(pTargetData->CallSign, Callsign, CALL_SIGN_LEN - 1);
+    pTargetData->CallSign[sizeof(pTargetData->CallSign) - 1] = '\0';
     pTargetData->ShipType = (unsigned char)VesselType;
-    Destination[sizeof(Destination) - 1] = 0;
     strncpy(pTargetData->Destination, Destination, DESTINATION_LEN - 1);
+    pTargetData->Destination[sizeof(pTargetData->Destination) - 1] = '\0';
+    Destination[sizeof(Destination) - 1] = 0;
 
     if (!N2kIsNA(ETAdate) && !N2kIsNA(ETAtime)) {
       long secs = (ETAdate * 24 * 3600) + wxRound(ETAtime);
@@ -870,6 +874,7 @@ bool AisDecoder::HandleN2K_129810( std::shared_ptr<const Nmea2000Msg> n2k_msg ){
     pTargetData->DimC = Beam - PosRefStbd;
     pTargetData->DimD = PosRefStbd;
     strncpy(pTargetData->CallSign, Callsign, CALL_SIGN_LEN - 1);
+    pTargetData->CallSign[sizeof(pTargetData->CallSign) - 1] = '\0';
     pTargetData->ShipType = (unsigned char)VesselType;
 
     pSelectAIS->DeleteSelectablePoint((void *)(long)mmsi, SELTYPE_AISTARGET);
@@ -3338,6 +3343,9 @@ bool AisDecoder::Parse_VDXBitstring(AisBitstring *bstr,
             ptd->met_data.ice = bstr->GetInt(349, 2);
 
             ptd->Class = AIS_METEO;
+            ptd->COG = -1.;
+            ptd->HDG = 511;
+            ptd->SOG = -1.;
             ptd->b_NoTrack = true;
             ptd->b_show_track = false;
             ptd->b_positionDoubtful = false;
@@ -3491,6 +3499,9 @@ bool AisDecoder::Parse_VDXBitstring(AisBitstring *bstr,
 
           if (ptd->b_positionOnceValid) {
             ptd->Class = AIS_METEO;
+            ptd->COG = -1.;
+            ptd->HDG = 511;
+            ptd->SOG = -1.;
             ptd->b_NoTrack = true;
             ptd->b_show_track = false;
             ptd->b_positionDoubtful = false;

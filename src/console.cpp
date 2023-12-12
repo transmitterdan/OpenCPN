@@ -57,8 +57,8 @@
 #include <wx/init.h>
 #include <wx/string.h>
 
-#include "base_platform.h"
 #include "catalog_handler.h"
+#include "cli_platform.h"
 #include "comm_appmsg_bus.h"
 #include "comm_driver.h"
 #include "comm_navmsg_bus.h"
@@ -70,6 +70,7 @@
 #include "plugin_handler.h"
 #include "plugin_loader.h"
 #include "routeman.h"
+#include "S57ClassRegistrar.h"
 #include "select.h"
 #include "track.h"
 
@@ -117,6 +118,8 @@ float g_selection_radius_mm;
 float g_selection_radius_touch_mm;
 int g_nCOMPortCheck = 32;
 bool g_benableUDPNullHeader;
+
+S57ClassRegistrar *g_poRegistrar;
 
 std::vector<Track*> g_TrackList;
 wxString AISTargetNameFileName;

@@ -4033,6 +4033,7 @@ PluginListPanel::PluginListPanel(wxWindow* parent, wxWindowID id,
                                  const wxPoint& pos, const wxSize& size)
     : wxScrolledWindow(parent, id, pos, size, wxTAB_TRAVERSAL | wxVSCROLL),
       m_PluginSelected(0) {
+  m_is_loading.clear();
   SetSizer(new wxBoxSizer(wxVERTICAL));
   ReloadPluginPanels();
 }
@@ -4081,6 +4082,12 @@ static bool IsPluginLoaded(const std::string& name) {
 }
 
 void PluginListPanel::ReloadPluginPanels() {
+  if (m_is_loading.test_and_set()) {
+    // recursive call...
+    DEBUG_LOG << "LoadAllPlugins: recursive invocation";
+    return;
+  }
+
   auto plugins = PluginLoader::getInstance()->GetPlugInArray();
   m_PluginItems.Clear();
 
@@ -4091,7 +4098,6 @@ void PluginListPanel::ReloadPluginPanels() {
     PluginPanel* pp = dynamic_cast<PluginPanel*>(win);
     if (pp) win->Destroy();
   }
-
   GetSizer()->Clear();
 
   Hide();
@@ -4123,8 +4129,9 @@ void PluginListPanel::ReloadPluginPanels() {
   Show();
   Layout();
   Refresh(true);
-
   Scroll(0, 0);
+
+  m_is_loading.clear();
 }
 
 void PluginListPanel::AddPlugin(const PlugInData& pic) {
