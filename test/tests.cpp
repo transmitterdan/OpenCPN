@@ -64,7 +64,6 @@ bool g_bAISRolloverShowClass;
 Multiplexer* g_pMUX;
 std::vector<Track*> g_TrackList;
 int g_WplAction;
-AISTargetAlertDialog* g_pais_alert_dialog_active;
 wxString AISTargetNameFileName;
 double g_AISShowTracks_Mins;
 bool g_bAIS_CPA_Alert;
@@ -115,11 +114,6 @@ bool g_bMagneticAPB;
 
 Routeman* g_pRouteMan;
 
-
-
-namespace safe_mode {
-bool get_mode() { return false; }
-}  // namespace safe_mode
 
 wxString g_catalog_custom_url;
 wxString g_catalog_channel;

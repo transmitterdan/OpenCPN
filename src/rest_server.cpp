@@ -27,9 +27,11 @@
 #include <vector>
 
 #include <wx/event.h>
+#include <wx/filename.h>
 #include <wx/log.h>
 #include <wx/string.h>
 
+#include "config.h"
 #include "config_vars.h"
 #include "logger.h"
 #include "mongoose.h"

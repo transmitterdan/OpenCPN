@@ -39,6 +39,7 @@
 #include <algorithm>
 #include <chrono>
 #include <ctime>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <memory>
@@ -123,7 +124,6 @@ S57ClassRegistrar *g_poRegistrar;
 
 std::vector<Track*> g_TrackList;
 wxString AISTargetNameFileName;
-AISTargetAlertDialog* g_pais_alert_dialog_active;
 Route* pAISMOBRoute;
 int g_WplAction;
 Select* pSelectAIS;
@@ -175,10 +175,6 @@ static void InitRouteman() {
   static  NmeaLogDummy dummy_log;
   g_pRouteMan = new Routeman(ctx, RoutemanDlgCtx(), dummy_log);
 }
-
-namespace safe_mode {
-bool get_mode() { return false; }
-}  // namespace safe_mode
 
 static const char* USAGE = R"""(
 Usage: opencpn-cli [options] <command>

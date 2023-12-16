@@ -916,6 +916,7 @@ set(
   include/rest_server.h
   include/route.h
   include/routeman.h
+  include/safe_mode.h
   include/select.h
   include/select_item.h
   include/semantic_vers.h
@@ -998,7 +999,8 @@ set(
   include/S57ObjectDesc.h
   include/S57QueryDialog.h
   include/S57Sector.h
-  include/safe_mode.h
+  include/safe_mode_gui.h
+  include/select_item.h
   include/SendToGpsDlg.h
   include/SendToPeerDlg.h
   include/shaders.h
@@ -1095,6 +1097,7 @@ set(MODEL_SRC
   ${CMAKE_SOURCE_DIR}/src/s57featuredefns.cpp
   ${CMAKE_SOURCE_DIR}/src/s57reader.cpp
   ${CMAKE_SOURCE_DIR}/src/s57RegistrarMgr.cpp
+  ${CMAKE_SOURCE_DIR}/src/safe_mode.cpp
   ${CMAKE_SOURCE_DIR}/src/select.cpp
   ${CMAKE_SOURCE_DIR}/src/select_item.cpp
   ${CMAKE_SOURCE_DIR}/src/semantic_vers.cpp
@@ -1185,7 +1188,7 @@ set(
   ${CMAKE_SOURCE_DIR}/src/s57chart.cpp
   ${CMAKE_SOURCE_DIR}/src/s57obj.cpp
   ${CMAKE_SOURCE_DIR}/src/S57QueryDialog.cpp
-  ${CMAKE_SOURCE_DIR}/src/safe_mode.cpp
+  ${CMAKE_SOURCE_DIR}/src/safe_mode_gui.cpp
   ${CMAKE_SOURCE_DIR}/src/SencManager.cpp
   ${CMAKE_SOURCE_DIR}/src/SendToGpsDlg.cpp
   ${CMAKE_SOURCE_DIR}/src/SendToPeerDlg.cpp
@@ -3232,6 +3235,10 @@ if (NOT QT_ANDROID)
   set(SRC_CONSOLE src/console.cpp src/api_shim.cpp ${MODEL_SRC} ${UNITTEST_SRC})
 
   add_executable(opencpn-cmd ${SRC_CONSOLE})
+  if (APPLE)
+    # 10.13 compat support
+    target_link_libraries(opencpn-cmd PUBLIC BOOST_SYSTEM BOOST_FILESYSTEM)
+  endif ()
 
   if (CMAKE_VERSION VERSION_GREATER 3.4)
     if (NOT "${ENABLE_SANITIZER}" MATCHES "none")

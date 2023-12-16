@@ -35,6 +35,7 @@
 #include <wx/pen.h>
 #include <wx/string.h>
 
+#include "color_types.h"
 #include "MarkIcon.h"
 #include "nav_object_database.h"
 #include "nmea0183.h"
@@ -229,7 +230,6 @@ public:
   ~WayPointman();
   wxBitmap *GetIconBitmap(const wxString &icon_key);
   bool GetIconPrescaled(const wxString &icon_key);
-  unsigned int GetIconTexture(const wxBitmap *pmb, int &glw, int &glh);
   int GetIconIndex(const wxBitmap *pbm);
   int GetIconImageListIndex(const wxBitmap *pbm);
   int GetXIconImageListIndex(const wxBitmap *pbm);

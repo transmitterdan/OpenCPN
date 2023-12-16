@@ -138,7 +138,7 @@
 #include "s52plib.h"
 #include "s57chart.h"
 #include "S57QueryDialog.h"
-#include "safe_mode.h"
+#include "safe_mode_gui.h"
 #include "select.h"
 #include "SoundFactory.h"
 #include "styles.h"
@@ -447,7 +447,6 @@ AisInfoGui *g_pAISGUI;
 
 bool g_bAIS_CPA_Alert;
 bool g_bAIS_CPA_Alert_Audio;
-AISTargetAlertDialog *g_pais_alert_dialog_active;
 AISTargetQueryDialog *g_pais_query_dialog_active;
 int g_iSoundDeviceIndex;
 
