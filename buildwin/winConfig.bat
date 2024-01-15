@@ -215,38 +215,40 @@ if [%ocpn_rebuild%]==[1] (
 ::-------------------------------------------------------------
 :: Save user configuration data and wipe the build folder
 ::-------------------------------------------------------------
-if [%ocpn_clean%]==[1] && exist "%OCPN_DIR%\build" (
-  @echo [101;93mThe --clean option requires an internet connection.[0m
-  choice /C YN /T 10 /M "Remove entire build folder including downloaded tools? [yN]" /D N
-  if ERRORLEVEL==2  goto :usage
+if [%ocpn_clean%]==[1] (
   if exist "%OCPN_DIR%\build" (
-    set folder=Release
-    call :backup
-    set folder=RelWithDebInfo
-    call :backup
-    set folder=Debug
-    call :backup
-    set folder=MinSizeRel
-    call :backup
-    set folder=
-    @echo Backup complete
+    @echo [101;93mThe --clean option requires an internet connection.[0m
+    choice /C YN /T 10 /M "Remove entire build folder including downloaded tools? [yN]" /D N
+    if ERRORLEVEL==2  goto :usage
+    if exist "%OCPN_DIR%\build" (
+      set folder=Release
+      call :backup
+      set folder=RelWithDebInfo
+      call :backup
+      set folder=Debug
+      call :backup
+      set folder=MinSizeRel
+      call :backup
+      set folder=
+      @echo Backup complete
+    )
+    if exist "%OCPN_DIR%\build" rmdir /s /q "%OCPN_DIR%\build"
+    if exist "%OCPN_DIR%\build" (
+      @echo Could not remove "%OCPN_DIR%\build" folder
+      @echo Is Visual Studio IDE open? If so, please close it so we can try again.
+      pause
+      @echo Retrying...
+      rmdir /s /q "%OCPN_DIR%\build"
+    )
+    if exist "%OCPN_DIR%\build" (
+      @echo Could not remove "%OCPN_DIR%\build". Continuing...
+    ) else (
+      @echo Cleared %OCPN_DIR%\build OK.
+    )
+    if exist "%CACHE_DIR%" (rmdir /s /q "%CACHE_DIR%" && @echo Cleared %CACHE_DIR%)
+    if exist "%buildWINtmp%" (rmdir /s /q "%buildWINtmp%" && @echo Cleared %buildWINtmp%)
+    timeout /T 5
   )
-  if exist "%OCPN_DIR%\build" rmdir /s /q "%OCPN_DIR%\build"
-  if exist "%OCPN_DIR%\build" (
-    @echo Could not remove "%OCPN_DIR%\build" folder
-    @echo Is Visual Studio IDE open? If so, please close it so we can try again.
-    pause
-    @echo Retrying...
-    rmdir /s /q "%OCPN_DIR%\build"
-  )
-  if exist "%OCPN_DIR%\build" (
-    @echo Could not remove "%OCPN_DIR%\build". Continuing...
-  ) else (
-    @echo Cleared %OCPN_DIR%\build OK.
-  )
-  if exist "%CACHE_DIR%" (rmdir /s /q "%CACHE_DIR%" && @echo Cleared %CACHE_DIR%)
-  if exist "%buildWINtmp%" (rmdir /s /q "%buildWINtmp%" && @echo Cleared %buildWINtmp%)
-  timeout /T 5
 )
 ::-------------------------------------------------------------
 :: Create needed folders
