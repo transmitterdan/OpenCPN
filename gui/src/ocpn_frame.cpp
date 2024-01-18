@@ -132,8 +132,6 @@
 #include "androidUTIL.h"
 #endif
 
-static void UpdatePositionCalculatedSogCog();
-
 //------------------------------------------------------------------------------
 //      Fwd Declarations
 //------------------------------------------------------------------------------
@@ -163,7 +161,6 @@ extern about *g_pAboutDlgLegacy;
 extern AboutFrameImpl *g_pAboutDlg;
 
 extern double vLat, vLon;
-extern double initial_scale_ppm, initial_rotation;
 extern wxString g_locale;
 extern ColorScheme global_color_scheme;
 extern options *g_pOptions;
@@ -196,7 +193,6 @@ extern bool g_bshowToolbar;
 extern int g_maintoolbar_x;
 extern int g_maintoolbar_y;
 extern wxString g_toolbarConfig;
-extern wxString g_toolbarConfigSecondary;
 extern float g_toolbar_scalefactor;
 extern float g_compass_scalefactor;
 extern bool g_bShowMenuBar;
@@ -240,7 +236,6 @@ extern wxPrintData *g_printData;
 extern wxPageSetupData *g_pageSetupData;
 extern int g_ChartUpdatePeriod;
 extern int g_SkewCompUpdatePeriod;
-extern double g_VPRotate;
 extern bool g_bCourseUp;
 extern bool g_bLookAhead;
 extern bool g_bskew_comp;
@@ -330,24 +325,15 @@ extern int g_COGFilterSec;
 extern int g_SOGFilterSec;
 extern bool g_own_ship_sog_cog_calc;
 extern int g_own_ship_sog_cog_calc_damp_sec;
-extern wxDateTime last_own_ship_sog_cog_calc_ts;
-extern double last_own_ship_sog_cog_calc_lat, last_own_ship_sog_cog_calc_lon;
 extern bool g_bHasHwClock;
 extern bool s_bSetSystemTime;
 extern bool bGPSValid;
 extern bool bVelocityValid;
-extern int g_total_NMEAerror_messages;
-extern int gGPS_Watchdog;
-extern int gHDx_Watchdog;
-extern int gHDT_Watchdog;
-extern int gVAR_Watchdog;
-extern int gSAT_Watchdog;
 extern AisDecoder *g_pAIS;
 extern AisInfoGui *g_pAISGUI;
 extern bool g_bCPAWarn;
 
 extern bool g_bUseGLL;
-extern int g_MemFootSec;
 extern int g_MemFootMB;
 extern Multiplexer *g_pMUX;
 extern int g_memUsed;
@@ -614,6 +600,7 @@ static bool isTransparentToolbarInOpenGLOK(void) {
 //------------------------------------------------------------------------------
 
 //      Frame implementation
+// NOLINTBEGIN
 wxDEFINE_EVENT(BELLS_PLAYED_EVTYPE, wxCommandEvent);
 
 BEGIN_EVENT_TABLE(MyFrame, wxFrame)
@@ -646,6 +633,8 @@ EVT_POWER_RESUME(MyFrame::OnResume)
 
 END_EVENT_TABLE()
 
+// NOLINTEND
+
 /*
  * Direct callback from completed sound, possibly in an interrupt
  * context. Just post an event to be processed in main thread.
@@ -663,21 +652,13 @@ MyFrame::MyFrame(wxFrame *frame, const wxString &title, const wxPoint &pos,
                  const wxSize &size, long style)
     : wxFrame(frame, -1, title, pos, size, style)
       {
-  m_last_track_rotation_ts = 0;
-  m_ulLastNMEATicktime = 0;
-
   m_pStatusBar = NULL;
-  m_StatusBarFieldCount = g_Platform->GetStatusBarFieldCount();
 
   m_pMenuBar = NULL;
   g_options = NULL;
-  piano_ctx_menu = NULL;
-  m_load_errors_dlg_ctrl = std::make_unique<LoadErrorsDlgCtrl>(this);
 
   //      Redirect the initialization timer to this frame
   InitTimer.SetOwner(this, INIT_TIMER);
-  m_iInitCount = 0;
-  m_initializing = false;
 
   //      Redirect the global heartbeat timer to this frame
   FrameTimer1.SetOwner(this, FRAME_TIMER_1);
@@ -702,18 +683,12 @@ MyFrame::MyFrame(wxFrame *frame, const wxString &title, const wxPoint &pos,
 
   //      Set up some assorted member variables
   m_bTimeIsSet = false;
-  m_bDateIsSet = false;
-  nBlinkerTick = 0;
-
-  m_bdefer_resize = false;
 
   //    Clear the NMEA Filter tables
   for (int i = 0; i < MAX_COGSOG_FILTER_SECONDS; i++) {
     COGFilterTable[i] = NAN;
     SOGFilterTable[i] = NAN;
   }
-  m_last_bGPSValid = false;
-  m_last_bVelocityValid = false;
 
   gHdt = NAN;
   gHdm = NAN;
@@ -723,11 +698,7 @@ MyFrame::MyFrame(wxFrame *frame, const wxString &title, const wxPoint &pos,
 
   for (int i = 0; i < MAX_COG_AVERAGE_SECONDS; i++) COGTable[i] = NAN;
 
-  m_fixtime = -1;
-
-  m_bpersistent_quilt = false;
-
-  m_ChartUpdatePeriod = 1;  // set the default (1 sec.) period
+  // set the default (1 sec.) period
 
   //    Establish my children
   struct MuxLogCallbacks log_callbacks;
@@ -806,6 +777,9 @@ MyFrame::MyFrame(wxFrame *frame, const wxString &title, const wxPoint &pos,
   m_resizeTimer.SetOwner(this, RESIZE_TIMER);
   m_recaptureTimer.SetOwner(this, RECAPTURE_TIMER);
   m_tick_idx = 0;
+  assert(g_pRouteMan != 0 && "g_pRouteMan not available");
+  m_routes_update_listener.Init(g_pRouteMan->on_routes_update,
+                                [&](wxCommandEvent) { Refresh(); });
 
 
 #ifdef __WXOSX__
@@ -909,7 +883,7 @@ void MyFrame::RebuildChartDatabase() {
 
     delete pprog;
 
-    //  Apply the inital Group Array structure to the chart data base
+    //  Apply the inital Group Array structure to the chart database
     ChartData->ApplyGroupArray(g_pGroupArray);
   }
 }
@@ -2228,7 +2202,7 @@ void MyFrame::PositionConsole(void) {
   if (consoleHost) {
     if(consoleHost->GetCompass()){
       wxRect compass_rect = consoleHost->GetCompass()->GetRect();
-    // Compass is is normal upper right position.
+    // Compass is normal upper right position.
       if(compass_rect.y < 100)
         yOffset = compass_rect.y + compass_rect.height + 45;
     }
@@ -2669,7 +2643,7 @@ void MyFrame::OnToolLeftClick(wxCommandEvent &event) {
       }
 
       // If we didn't handle the event, allow it to bubble up to other handlers.
-      // This is required for the system menu items (Hide, etc) on OS X to work.
+      // This is required for the system menu items (Hide, etc.) on OS X to work.
       // This must only be called if we did NOT handle the event, otherwise it
       // stops the menu items from working on Windows.
       event.Skip();
@@ -2780,13 +2754,6 @@ void MyFrame::RefreshAllCanvas(bool bErase) {
       cc->Refresh(bErase);
     }
   }
-}
-
-void MyFrame::SetAISDisplayStyle(ChartCanvas *cc, int StyleIndx) {
-  cc->SetAISCanvasDisplayStyle(StyleIndx);
-
-  UpdateGlobalMenuItems();
-  ReloadAllVP();
 }
 
 void MyFrame::setStringVP(wxString VPS) {
@@ -2972,7 +2939,7 @@ void MyFrame::TrackOn(void) {
 
   g_pActiveTrack->Start();
 
-  // The main toolbar may still be NULL here and we will do nothing...
+  // The main toolbar may still be NULL here, and we will do nothing...
   SetMasterToolbarItemState(ID_TRACK, g_bTrackActive);
   if (g_MainToolbar)
     g_MainToolbar->SetToolShortHelp(ID_TRACK, _("Disable Tracking"));
@@ -3405,7 +3372,7 @@ void MyFrame::BuildMenuBar(void) {
     }
 
     UpdateGlobalMenuItems();  // update the state of the menu items (checkmarks
-                              // etc)
+                              // etc.)
   } else {
     if (m_pMenuBar) {  // remove the menu bar if it is disabled
       SetMenuBar(NULL);
@@ -3737,14 +3704,6 @@ void MyFrame::SurfaceAllCanvasToolbars(void) {
 #endif
 }
 
-void MyFrame::ToggleAllToolbars(bool b_smooth) {
-  // .. for each canvas...
-  for (unsigned int i = 0; i < g_canvasArray.GetCount(); i++) {
-    ChartCanvas *cc = g_canvasArray.Item(i);
-    if (cc) cc->ToggleToolbar(b_smooth);
-  }
-}
-
 void MyFrame::JumpToPosition(ChartCanvas *cc, double lat, double lon,
                              double scale) {
   if (lon > 180.0) lon -= 360.0;
@@ -3863,10 +3822,6 @@ int MyFrame::DoOptionsDialog() {
   g_options->SetConfigPtr(pConfig);
 
   g_options->SetInitialSettings();
-
-  bPrevQuilt = g_bQuiltEnable;
-  bPrevFullScreenQuilt = g_bFullScreenQuilt;
-  bPrevOGL = g_bopengl;
 
   prev_locale = g_locale;
 
@@ -4390,11 +4345,6 @@ bool MyFrame::ProcessOptionsDialog(int rr, ArrayOfCDI *pNewDirArray) {
   return b_need_refresh;
 }
 
-wxString MyFrame::GetGroupName(int igroup) {
-  ChartGroup *pGroup = g_pGroupArray->Item(igroup - 1);
-  return pGroup->m_group_name;
-}
-
 bool MyFrame::CheckGroup(int igroup) {
   if (igroup == 0) return true;  // "all charts" is always OK
 
@@ -4625,15 +4575,6 @@ void MyFrame::ToggleQuiltMode(ChartCanvas *cc) {
   }
 }
 
-void MyFrame::ClearRouteTool() {
-  if (g_MainToolbar->GetToolbar())
-    g_MainToolbar->GetToolbar()->ToggleTool(ID_ROUTE, false);
-
-#ifdef __OCPN__ANDROID__
-  androidSetRouteAnnunciator(false);
-#endif
-}
-
 void MyFrame::DoStackDown(ChartCanvas *cc) { DoStackDelta(cc, -1); }
 
 void MyFrame::DoStackUp(ChartCanvas *cc) { DoStackDelta(cc, 1); }
@@ -4724,7 +4665,7 @@ void MyFrame::OnInitTimer(wxTimerEvent &event) {
         g_bNeedDBUpdate = false;
       }
 
-      // Load the waypoints.. both of these routines are very slow to execute
+      // Load the waypoints. both of these routines are very slow to execute
       // which is why they have been to defered until here
       auto colour_func = [](wxString c) { return GetGlobalColor(c); };
       pWayPointMan = new WayPointman(colour_func);
@@ -5039,7 +4980,7 @@ void MyFrame::InitApiListeners() {
   m_on_raise_listener.Init(server.on_raise, [&](ObservedEvt){ Raise(); });
   m_on_quit_listener.Init(server.on_quit, [&](ObservedEvt){ FastClose(); });
   server.SetGetRestApiEndpointCb(
-    [&]{ return wxGetApp().m_RESTserver.GetEndpoint(); });
+    [&]{ return wxGetApp().m_rest_server.GetEndpoint(); });
   server.open_file_cb =
       [](const std::string& path) { return wxGetApp().OpenFile(path); };
 
@@ -5112,7 +5053,6 @@ void MyFrame::HandleBasicNavMsg(std::shared_ptr<const BasicNavDataMsg> msg) {
 //      Determined by source validity of RMC, GGA, GLL (N0183)
 //        or PGNs 129029, 129025 (N2K)
 //      Positions by sK and AIVDO are assumed valid
-  m_b_new_data = true;
   bool last_bGPSValid = bGPSValid;
   if ((msg->vflag & POS_UPDATE) == POS_UPDATE) {
     if ((msg->vflag & POS_VALID) == POS_VALID)
@@ -5802,7 +5742,6 @@ void MyFrame::OnFrameTimer1(wxTimerEvent &event) {
 #endif
 
   // Reset pending next AppMsgBus notification
-  m_b_new_data = false;
 
   if (g_unit_test_2)
     FrameTimer1.Start(TIMER_GFRAME_1 * 3, wxTIMER_CONTINUOUS);
@@ -6083,7 +6022,7 @@ void MyFrame::selectChartDisplay(int type, int family) {
   }
 
   UpdateGlobalMenuItems();  // update the state of the menu items (checkmarks
-                            // etc)
+                            // etc.)
 }
 
 //----------------------------------------------------------------------------------
@@ -6293,7 +6232,7 @@ void MyFrame::DoPrint(void) {
   MyPrintout printout(wxT("Chart Print"));
 
   //  In OperGL mode, make the bitmap capture of the screen before the print
-  //  method starts, so as to be sure the "Abort..." dialog does not appear on
+  //  method starts, as to be sure the "Abort..." dialog does not appear on
   //  the image
   if (g_bopengl) printout.GenerateGLbmp();
 
@@ -6339,11 +6278,11 @@ void MyFrame::OnEvtPlugInMessage(OCPN_MsgEvent &event) {
   wxString message_ID = event.GetID();
   wxString message_JSONText = event.GetJSONText();
 
-  //  We are free to use or ignore any or all of the PlugIn messages flying thru
-  //  this pipe tee.
+  //  We are free to use or ignore any or all of the PlugIn messages flying
+  //  through this pipe tee.
 
-  //  We can possibly use the estimated magnetic variation if WMM_pi is present
-  //  and active and we have no other source of Variation
+  //  We can possibly use the estimated magnetic variation if WMM_pi is
+  //  present, active, and we have no other source of Variation
   if (!g_bVAR_Rx) {
     if (message_ID == _T("WMM_VARIATION_BOAT")) {
       // construct the JSON root object
@@ -6582,40 +6521,6 @@ void MyFrame::OnEvtPlugInMessage(OCPN_MsgEvent &event) {
   }
 }
 
-void MyFrame::OnEvtTHREADMSG(OCPN_ThreadMessageEvent &event) {
-  wxLogMessage(wxString(event.GetSString().c_str(), wxConvUTF8));
-}
-
-
-static void UpdatePositionCalculatedSogCog() {
-  wxDateTime now = wxDateTime::Now();
-  if (last_own_ship_sog_cog_calc_ts.IsValid()) {
-    wxLongLong time_diff =
-        now.Subtract(last_own_ship_sog_cog_calc_ts).GetMilliseconds();
-    if (time_diff / 1000 >= g_own_ship_sog_cog_calc_damp_sec) {
-      double brg, dist;
-      DistanceBearingMercator(gLat, gLon, last_own_ship_sog_cog_calc_lat,
-                              last_own_ship_sog_cog_calc_lon, &brg, &dist);
-      double tSog = dist / (time_diff.ToDouble() / 3600000.);
-
-      // Guard against really fast (i.e. non-sense VDR playback speed) data
-      // updates with slow averaging constant
-      if (tSog < 100.) {
-        gCog = brg;
-        gSog = tSog;
-      }
-
-      last_own_ship_sog_cog_calc_lat = gLat;
-      last_own_ship_sog_cog_calc_lon = gLon;
-      last_own_ship_sog_cog_calc_ts = now;
-    }
-  } else {
-    last_own_ship_sog_cog_calc_lat = gLat;
-    last_own_ship_sog_cog_calc_lon = gLon;
-    last_own_ship_sog_cog_calc_ts = now;
-  }
-}
-
 void MyFrame::FilterCogSog(void) {
   if (g_bfilter_cogsog && !g_own_ship_sog_cog_calc) {
     //    Simple averaging filter for COG
@@ -6676,14 +6581,6 @@ void MyFrame::FilterCogSog(void) {
       gSog = sum;
     }
   }
-}
-
-void MyFrame::StopSockets(void) {
-  // TODO: Can be removed?
-}
-
-void MyFrame::ResumeSockets(void) {
-  // TODO: Can be removed?
 }
 
 void MyFrame::LoadHarmonics() {
@@ -7077,13 +6974,6 @@ bool MyFrame::CollapseGlobalToolbar() {
     g_bmasterToolbarFull = false;
     return true;
   } else
-    return false;
-}
-
-bool MyFrame::GetMasterToolItemShow(int toolid) {
-  if (g_bmasterToolbarFull)
-    return true;
-  else
     return false;
 }
 
@@ -8667,7 +8557,7 @@ void ParseAllENC(wxWindow *parent) {
     thread_count = wxThread::GetCPUCount();
 
   if (thread_count < 1) {
-    // obviously there's a least one CPU!
+    // obviously there's at least one CPU!
     thread_count = 1;
   }
 
