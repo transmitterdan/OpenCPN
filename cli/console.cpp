@@ -57,7 +57,9 @@
 #include <wx/fileconf.h>
 #include <wx/init.h>
 #include <wx/string.h>
+#include <wx/utils.h>
 
+#include "model/ais_state_vars.h"
 #include "model/catalog_handler.h"
 #include "model/cli_platform.h"
 #include "model/comm_appmsg_bus.h"
@@ -65,85 +67,19 @@
 #include "model/comm_navmsg_bus.h"
 #include "model/config_vars.h"
 #include "model/downloader.h"
+#include "model/multiplexer.h"
 #include "model/nmea_log.h"
 #include "model/ocpn_utils.h"
+#include "model/pincode.h"
 #include "model/plugin_handler.h"
 #include "model/plugin_loader.h"
 #include "model/routeman.h"
-#include "model/S57ClassRegistrar.h"
 #include "model/select.h"
 #include "model/track.h"
+
 #include "observable_evtvar.h"
 
-class AISTargetAlertDialog;
-class Multiplexer;
-class Select;
-
-BasePlatform* g_BasePlatform = 0;
 void* g_pi_manager = reinterpret_cast<void*>(1L);
-
-bool g_bAIS_ACK_Timeout;
-bool g_bAIS_CPA_Alert_Suppress_Moored;
-bool g_bCPAMax;
-bool g_bCPAWarn;
-bool g_bHideMoored;
-bool g_bTCPA_Max;
-double g_AckTimeout_Mins;
-double g_CPAMax_NM;
-double g_CPAWarn_NM;
-double g_ShowMoored_Kts;
-double g_TCPA_Max;
-bool g_bShowMag;
-bool g_bShowTrue;
-bool bGPSValid;
-bool g_bInlandEcdis;
-bool g_bRemoveLost;
-bool g_bMarkLost;
-bool g_bShowScaled;
-bool g_bAllowShowScaled;
-bool g_bAISRolloverShowCOG;
-bool g_bAISRolloverShowCPA;
-bool g_bAISShowTracks;
-bool g_bAISRolloverShowClass;
-bool g_bAIS_CPA_Alert;
-double g_RemoveLost_Mins;
-double g_MarkLost_Mins;
-double g_AISShowTracks_Mins;
-
-S57ClassRegistrar *g_poRegistrar;
-
-std::vector<Track*> g_TrackList;
-wxString AISTargetNameFileName;
-Route* pAISMOBRoute;
-Select* pSelectAIS;
-
-/* comm_bridge context. */
-
-Select* pSelect;
-int g_trackFilterMax;
-double g_TrackDeltaDistance;
-float g_fWaypointRangeRingsStep;
-float g_ChartScaleFactorExp;
-float g_MarkScaleFactorExp;
-wxString g_default_wp_icon;
-int g_iWaypointRangeRingsNumber;
-int g_iWaypointRangeRingsStepUnits;
-wxColour g_colourWaypointRangeRingsColour;
-bool g_bUseWptScaMin;
-bool g_bShowWptName;
-int g_iWpt_ScaMin;
-int g_LayerIdx;
-bool g_bOverruleScaMin;
-int g_nTrackPrecision;
-bool g_bIsNewLayer;
-RouteList* pRouteList;
-WayPointman* pWayPointMan;
-RoutePoint* pAnchorWatchPoint1 = 0;
-RoutePoint* pAnchorWatchPoint2 = 0;
-wxRect g_blink_rect;
-bool g_bMagneticAPB;
-
-Routeman* g_pRouteMan;
 
 class NmeaLogDummy: public NmeaLog {
   bool Active() const { return false; }
@@ -197,6 +133,15 @@ Commands:
   plugin-by-file <filename>
      Print name of a plugin containing file or "not found"
 
+  generate-key <hostname>
+     Generate and store a key for given hostname, print key on stdout.
+
+  store-key <key> <hostname>
+     store a key obtained using generate-key on remote host
+
+  print-hostname:
+     Print official hostname for generate-key and store-key.
+
 )""";
 
 static const char* const DOWNLOAD_REPO_PROTO =
@@ -206,7 +151,11 @@ static const char* const DOWNLOAD_REPO_PROTO =
 wxDEFINE_EVENT(EVT_FOO, wxCommandEvent);
 wxDEFINE_EVENT(EVT_BAR, wxCommandEvent);
 
+
+using namespace std;
+
 class CliApp : public wxAppConsole {
+
 public:
   CliApp() : wxAppConsole() {
     CheckBuildOptions(WX_BUILD_OPTIONS_SIGNATURE, "program");
@@ -220,11 +169,11 @@ public:
     parser.AddParam("<command>", wxCMD_LINE_VAL_STRING,
                     wxCMD_LINE_PARAM_OPTIONAL);
     parser.AddParam("[arg]", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL);
+    parser.AddParam("[arg]", wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL);
 
     wxLog::SetActiveTarget(new wxLogStderr);
     wxLog::SetTimestamp("");
     wxLog::SetLogLevel(wxLOG_Warning);
-
     g_BasePlatform = new BasePlatform();
     auto config_file = g_BasePlatform->GetConfigFileName();
     InitBaseConfig(new wxFileConfig("", "", config_file));
@@ -362,6 +311,71 @@ public:
     return container ? true : false;
   }
 
+  class Apikeys : public std::unordered_map<std::string, std::string> {
+  public:
+    static Apikeys Parse(const std::string& s) {
+      Apikeys apikeys;
+      auto ip_keys = ocpn::split(s.c_str(), ";");
+      for (const auto& ip_key : ip_keys) {
+        auto words = ocpn::split(ip_key.c_str(), ":");
+        if (words.size() != 2) continue;
+        if (apikeys.find(words[0]) == apikeys.end()) {
+          apikeys[words[0]] = words[1];
+        }
+      }
+      return apikeys;
+    }
+    std::string ToString() const {
+      std::stringstream ss;
+      for (const auto& it : *this) ss << it.first << ":" << it.second << ";";
+      return ss.str();
+    }
+  };
+
+  void generate_key(const std::string& hostname) {
+    TheBaseConfig()->SetPath("/Settings/RestServer");
+    wxString key_string;
+    TheBaseConfig()->Read("ServerKeys", &key_string);
+    Apikeys key_map = Apikeys::Parse(key_string.ToStdString());
+    Pincode pincode = Pincode::Create();
+    key_map[hostname] = pincode.Hash();
+    TheBaseConfig()->Write("ServerKeys", wxString(key_map.ToString()));
+    TheBaseConfig()->Flush();
+  }
+
+  void store_key(const std::string& hostname, const std::string& key) {
+    if (key == "") {
+      std::cerr << USAGE << "\n";
+      exit(1);
+    }
+    TheBaseConfig()->SetPath("/Settings/RestServer");
+    wxString key_string;
+    TheBaseConfig()->Read("ServerKeys", &key_string);
+    Apikeys key_map = Apikeys::Parse(key_string.ToStdString());
+    int numkey;
+    try {
+      numkey = std::stoi(key);
+    } catch(...) {
+      std::cerr << "Cannot parse key:"  << key << "\n";
+      exit(1);
+    }
+    Pincode pincode(numkey);
+    key_map[hostname] = pincode.Hash();
+    TheBaseConfig()->Write("ServerKeys", wxString(key_map.ToString()));
+    TheBaseConfig()->Flush();
+  }
+
+  void print_hostname() {
+    wxInitializer initializer;
+    auto hostname = ::wxGetHostName().ToStdString();
+    if (hostname.empty()) hostname = wxGetUserName().ToStdString();
+    //   A Portable need a unique mDNS data hostname to share routes.
+    // FIXME (leamas) portable handling here...
+    // FIXME (leamas) copy-pasted from ocpn_app.cpp. Refactor.
+    // if (g_bportable)  hostname = std::string("Portable-") + hostname;
+    std::cout << hostname << "\n";
+  }
+
   void check_param_count(const wxCmdLineParser& parser, size_t count) {
     if (parser.GetParamCount() < count) {
       std::cerr << USAGE << "\n";
@@ -439,6 +453,16 @@ public:
     } else if (command == "plugin-by-file") {
       check_param_count(parser, 2);
       plugin_by_file(parser.GetParam(1).ToStdString());
+    } else if (command == "generate-key") {
+      check_param_count(parser, 1);
+      generate_key(parser.GetParam(1).ToStdString());
+    } else if (command == "store-key") {
+      check_param_count(parser, 3);
+      store_key(parser.GetParam(1).ToStdString(),
+                parser.GetParam(2).ToStdString());
+    } else if (command == "print-hostname") {
+      check_param_count(parser, 0);
+      print_hostname();
     } else {
       std::cerr << USAGE << "\n";
       exit(2);

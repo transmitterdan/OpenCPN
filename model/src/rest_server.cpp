@@ -33,19 +33,20 @@
 #include <wx/string.h>
 
 #include "config.h"
+
 #include "model/config_vars.h"
 #include "model/logger.h"
 #include "model/nav_object_database.h"
 #include "model/ocpn_utils.h"
+#include "model/pincode.h"
 #include "model/rest_server.h"
 #include "model/routeman.h"
+
 #include "mongoose.h"
 #include "observable_evt.h"
 
 /** Event from IO thread to main */
 wxDEFINE_EVENT(REST_IO_EVT, ObservedEvt);
-
-extern Routeman* g_pRouteMan;
 
 using namespace std::chrono_literals;
 

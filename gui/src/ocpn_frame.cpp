@@ -56,6 +56,7 @@
 #include <wx/tokenzr.h>
 
 #include "model/ais_decoder.h"
+#include "model/ais_state_vars.h"
 #include "model/ais_target_data.h"
 #include "model/cmdline.h"
 #include "model/comm_drv_factory.h"  //FIXME(dave) this one goes away
@@ -132,8 +133,6 @@
 #include "androidUTIL.h"
 #endif
 
-static void UpdatePositionCalculatedSogCog();
-
 //------------------------------------------------------------------------------
 //      Fwd Declarations
 //------------------------------------------------------------------------------
@@ -163,7 +162,6 @@ extern about *g_pAboutDlgLegacy;
 extern AboutFrameImpl *g_pAboutDlg;
 
 extern double vLat, vLon;
-extern double initial_scale_ppm, initial_rotation;
 extern wxString g_locale;
 extern ColorScheme global_color_scheme;
 extern options *g_pOptions;
@@ -189,14 +187,12 @@ extern bool g_b_legacy_input_filter_behaviour;
 extern bool g_bTrackActive;
 extern ocpnStyle::StyleManager *g_StyleManager;
 extern bool g_bmasterToolbarFull;
-extern bool g_bInlandEcdis;
 extern int g_nAutoHideToolbar;
 extern bool g_bAutoHideToolbar;
 extern bool g_bshowToolbar;
 extern int g_maintoolbar_x;
 extern int g_maintoolbar_y;
 extern wxString g_toolbarConfig;
-extern wxString g_toolbarConfigSecondary;
 extern float g_toolbar_scalefactor;
 extern float g_compass_scalefactor;
 extern bool g_bShowMenuBar;
@@ -205,7 +201,6 @@ extern bool g_bShowCompassWin;
 extern bool g_benable_rotate;
 extern int g_GUIScaleFactor;
 extern int g_ChartScaleFactor;
-extern float g_ChartScaleFactorExp;
 extern int g_last_ChartScaleFactor;
 extern int g_ShipScaleFactor;
 extern float g_ShipScaleFactorExp;
@@ -221,11 +216,7 @@ extern wxString g_default_wp_icon;
 extern std::vector<std::string> TideCurrentDataSet;
 extern wxString g_TCData_Dir;
 extern TCMgr *ptcmgr;
-extern bool g_bShowTrue;
-extern bool g_bShowMag;
 extern char nmea_tick_chars[];
-extern RoutePoint *pAnchorWatchPoint1;
-extern RoutePoint *pAnchorWatchPoint2;
 extern double AnchorPointMinDist;
 extern bool AnchorAlertOn1, AnchorAlertOn2;
 extern wxString g_AW1GUID;
@@ -240,12 +231,10 @@ extern wxPrintData *g_printData;
 extern wxPageSetupData *g_pageSetupData;
 extern int g_ChartUpdatePeriod;
 extern int g_SkewCompUpdatePeriod;
-extern double g_VPRotate;
 extern bool g_bCourseUp;
 extern bool g_bLookAhead;
 extern bool g_bskew_comp;
 extern bool g_bPauseTest;
-extern wxRect g_blink_rect;
 extern bool g_bSleep;
 extern bool g_bPlayShipsBells;
 extern wxDateTime g_loglast_time;
@@ -269,7 +258,6 @@ extern ChartGroupArray *g_pGroupArray;
 extern bool g_bEnableZoomToCursor;
 extern double g_display_size_mm;
 extern double g_config_display_size_mm;
-extern int g_nTrackPrecision;
 extern wxString ChartListFileName;
 extern bool g_bFullscreenToolbar;
 extern arrayofCanvasPtr g_canvasArray;
@@ -281,19 +269,10 @@ extern unsigned int g_canvasConfig;
 extern bool g_bFullScreenQuilt;
 extern bool g_bQuiltEnable;
 extern wxString *pInit_Chart_Dir;
-extern bool g_bAIS_CPA_Alert;
-extern bool g_bAIS_CPA_Alert_Audio;
-extern bool g_bAISShowTracks;
-extern bool g_bAllowShowScaled;
-extern bool g_bHideMoored;
-extern bool g_bShowScaled;
 extern bool g_bShowAIS;
 extern bool g_bShowOutlines;
 extern bool g_bTempShowMenuBar;
 extern bool g_bShowStatusBar;
-extern int g_track_rotate_time;
-extern int g_track_rotate_time_type;
-extern bool g_bTrackCarryOver;
 extern bool g_FlushNavobjChanges;
 extern int g_FlushNavobjChangesTimeout;
 extern bool g_bShowChartBar;
@@ -312,7 +291,6 @@ extern wxString g_AisTargetList_perspective;
 extern bool b_inCloseWindow;
 extern bool b_inCompressAllCharts;
 extern long g_maintoolbar_orient;
-extern int g_ais_query_dialog_x, g_ais_query_dialog_y;
 extern wxAuiDefaultDockArt *g_pauidockart;
 extern int g_click_stop;
 extern wxString g_CmdSoundString;
@@ -329,24 +307,14 @@ extern int g_COGFilterSec;
 extern int g_SOGFilterSec;
 extern bool g_own_ship_sog_cog_calc;
 extern int g_own_ship_sog_cog_calc_damp_sec;
-extern wxDateTime last_own_ship_sog_cog_calc_ts;
-extern double last_own_ship_sog_cog_calc_lat, last_own_ship_sog_cog_calc_lon;
 extern bool g_bHasHwClock;
 extern bool s_bSetSystemTime;
-extern bool bGPSValid;
 extern bool bVelocityValid;
-extern int g_total_NMEAerror_messages;
-extern int gGPS_Watchdog;
 extern int gHDx_Watchdog;
-extern int gHDT_Watchdog;
-extern int gVAR_Watchdog;
-extern int gSAT_Watchdog;
 extern AisDecoder *g_pAIS;
 extern AisInfoGui *g_pAISGUI;
-extern bool g_bCPAWarn;
 
 extern bool g_bUseGLL;
-extern int g_MemFootSec;
 extern int g_MemFootMB;
 extern Multiplexer *g_pMUX;
 extern int g_memUsed;
@@ -910,7 +878,7 @@ void MyFrame::RebuildChartDatabase() {
 
     delete pprog;
 
-    //  Apply the inital Group Array structure to the chart data base
+    //  Apply the inital Group Array structure to the chart database
     ChartData->ApplyGroupArray(g_pGroupArray);
   }
 }
@@ -2229,7 +2197,7 @@ void MyFrame::PositionConsole(void) {
   if (consoleHost) {
     if(consoleHost->GetCompass()){
       wxRect compass_rect = consoleHost->GetCompass()->GetRect();
-    // Compass is is normal upper right position.
+    // Compass is normal upper right position.
       if(compass_rect.y < 100)
         yOffset = compass_rect.y + compass_rect.height + 45;
     }
@@ -2670,7 +2638,7 @@ void MyFrame::OnToolLeftClick(wxCommandEvent &event) {
       }
 
       // If we didn't handle the event, allow it to bubble up to other handlers.
-      // This is required for the system menu items (Hide, etc) on OS X to work.
+      // This is required for the system menu items (Hide, etc.) on OS X to work.
       // This must only be called if we did NOT handle the event, otherwise it
       // stops the menu items from working on Windows.
       event.Skip();
@@ -2966,7 +2934,7 @@ void MyFrame::TrackOn(void) {
 
   g_pActiveTrack->Start();
 
-  // The main toolbar may still be NULL here and we will do nothing...
+  // The main toolbar may still be NULL here, and we will do nothing...
   SetMasterToolbarItemState(ID_TRACK, g_bTrackActive);
   if (g_MainToolbar)
     g_MainToolbar->SetToolShortHelp(ID_TRACK, _("Disable Tracking"));
@@ -3399,7 +3367,7 @@ void MyFrame::BuildMenuBar(void) {
     }
 
     UpdateGlobalMenuItems();  // update the state of the menu items (checkmarks
-                              // etc)
+                              // etc.)
   } else {
     if (m_pMenuBar) {  // remove the menu bar if it is disabled
       SetMenuBar(NULL);
@@ -4692,7 +4660,7 @@ void MyFrame::OnInitTimer(wxTimerEvent &event) {
         g_bNeedDBUpdate = false;
       }
 
-      // Load the waypoints.. both of these routines are very slow to execute
+      // Load the waypoints. Both of these routines are very slow to execute
       // which is why they have been to defered until here
       auto colour_func = [](wxString c) { return GetGlobalColor(c); };
       pWayPointMan = new WayPointman(colour_func);
@@ -6049,7 +6017,7 @@ void MyFrame::selectChartDisplay(int type, int family) {
   }
 
   UpdateGlobalMenuItems();  // update the state of the menu items (checkmarks
-                            // etc)
+                            // etc.)
 }
 
 //----------------------------------------------------------------------------------
@@ -6259,7 +6227,7 @@ void MyFrame::DoPrint(void) {
   MyPrintout printout(wxT("Chart Print"));
 
   //  In OperGL mode, make the bitmap capture of the screen before the print
-  //  method starts, so as to be sure the "Abort..." dialog does not appear on
+  //  method starts as to be sure the "Abort..." dialog does not appear on
   //  the image
   if (g_bopengl) printout.GenerateGLbmp();
 
@@ -6305,11 +6273,11 @@ void MyFrame::OnEvtPlugInMessage(OCPN_MsgEvent &event) {
   wxString message_ID = event.GetID();
   wxString message_JSONText = event.GetJSONText();
 
-  //  We are free to use or ignore any or all of the PlugIn messages flying thru
-  //  this pipe tee.
+  //  We are free to use or ignore any or all of the PlugIn messages flying
+  //  through this pipe tee.
 
-  //  We can possibly use the estimated magnetic variation if WMM_pi is present
-  //  and active and we have no other source of Variation
+  //  We can possibly use the estimated magnetic variation if WMM_pi is
+  //  present, active, and we have no other source of Variation
   if (!g_bVAR_Rx) {
     if (message_ID == _T("WMM_VARIATION_BOAT")) {
       // construct the JSON root object
@@ -6649,8 +6617,6 @@ void MyFrame::LoadHarmonics() {
     if (b_newdataset) ptcmgr->LoadDataSources(TideCurrentDataSet);
   }
 }
-
-Route *pAISMOBRoute;
 
 void MyFrame::ActivateAISMOBRoute(const AisTargetData *ptarget) {
   if (!ptarget) return;
@@ -8584,7 +8550,7 @@ void ParseAllENC(wxWindow *parent) {
     thread_count = wxThread::GetCPUCount();
 
   if (thread_count < 1) {
-    // obviously there's a least one CPU!
+    // obviously there's at least one CPU!
     thread_count = 1;
   }
 
