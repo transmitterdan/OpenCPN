@@ -240,10 +240,9 @@ void ChartSymbols::ProcessLookups(pugi::xml_node &node) {
       else if (!strcmp(lookupNode.name(), "attrib-code")) {
         int nc = strlen(nodeText);
         if (nc >= 6) {  //  ignore spurious short fields
-          char *attVal = (char *)calloc(nc + 2, sizeof(char));
-          memcpy(attVal, nodeText, nc);
-
-          if (attVal[6] == '\0') attVal[6] = ' ';
+          std::string attVal = std::string(nodeText);
+          if(attVal.length() == 6)
+            attVal += ' ';
           lookup.attributeCodeArray.push_back(attVal);
         }
       }
@@ -476,7 +475,7 @@ void ChartSymbols::ProcessSymbols(pugi::xml_node &node) {
 
 void ChartSymbols::BuildLookup(Lookup &lookup) {
   LUPrec *LUP = (LUPrec *)calloc(1, sizeof(LUPrec));
-  plib->pAlloc->Add(LUP);
+  //plib->pAlloc->Add(LUP);
 
   LUP->RCID = lookup.RCID;
   LUP->nSequence = lookup.id;
@@ -490,7 +489,7 @@ void ChartSymbols::BuildLookup(Lookup &lookup) {
 
   LUP->ATTArray = lookup.attributeCodeArray;
 
-  LUP->INST = new wxString(lookup.instruction);
+  LUP->INST = lookup.instruction;
   LUP->LUCM = lookup.comment;
 
   // Add LUP to array
@@ -503,7 +502,7 @@ void ChartSymbols::BuildLookup(Lookup &lookup) {
   wxArrayOfLUPrec *pLUPARRAYtyped = plib->SelectLUPARRAY(LUP->TNAM);
 
   while (index < pLUPARRAYtyped->GetCount()) {
-    LUPrec *pLUPCandidate = pLUPARRAYtyped->Item(index);
+    auto pLUPCandidate = pLUPARRAYtyped->Item(index);
     if (LUP->RCID == pLUPCandidate->RCID) {
       pLUPARRAYtyped->RemoveAt(index);
       plib->DestroyLUP(pLUPCandidate);  // empties the LUP
@@ -511,7 +510,6 @@ void ChartSymbols::BuildLookup(Lookup &lookup) {
     }
     index++;
   }
-
   pLUPARRAYtyped->Add(LUP);
 }
 
