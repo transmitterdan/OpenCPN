@@ -199,16 +199,16 @@ if [%ocpn_rebuild%]==[1] (
   if exist "%OCPN_DIR%\build\CMakeCache.txt" @echo Could not remove "%OCPN_DIR%\build\CMakeCache.txt"
   if exist "%OCPN_DIR%\build\.vs" rmdir /s /q "%OCPN_DIR%\build\.vs"
   if exist "%OCPN_DIR%\build\.vs" (
-	@echo Could not remove "%OCPN_DIR%\build\.vs" folder
-	@echo Is Visual Studio IDE open? If so, please close it so we can try again.
-	pause
-	@echo Retrying...
-	rmdir /s /q "%OCPN_DIR%\build\.vs"
+    @echo Could not remove "%OCPN_DIR%\build\.vs" folder
+    @echo Is Visual Studio IDE open? If so, please close it so we can try again.
+    pause
+    @echo Retrying...
+    rmdir /s /q "%OCPN_DIR%\build\.vs"
     if exist "%OCPN_DIR%\build\.vs" (
-	  @echo Could not remove "%OCPN_DIR%\.vs". Continuing...
-	) else (
-	  @echo Ok, removed "%OCPN_DIR%\build\.vs"
-	)
+      @echo Could not remove "%OCPN_DIR%\.vs". Continuing...
+    ) else (
+      @echo Ok, removed "%OCPN_DIR%\build\.vs"
+    )
   )
   @echo Finished rebuild cleanout
 )
@@ -256,6 +256,7 @@ if [%ocpn_clean%]==[1] (
 if not exist "%OCPN_DIR%\build" (mkdir "%OCPN_DIR%\build")
 if not exist "%CACHE_DIR%" (mkdir "%CACHE_DIR%")
 if not exist "%CACHE_DIR%\buildwin" (mkdir "%CACHE_DIR%\buildwin")
+if not exist "%CACHE_DIR%\buildwin\include" (mkdir "%CACHE_DIR%\buildwin\include")
 if not exist "%buildWINtmp%" (mkdir "%buildWINtmp%")
 
 ::-------------------------------------------------------------
@@ -284,38 +285,48 @@ call :download
 set "SOURCE=%DEST%"
 set "DEST=%buildWINtmp%"
 call :explode
-if errorlevel 1 (@echo [101;93mNOT OK[0m) else (
+if errorlevel 1 (echo [101;93mNOT OK[0m) else (
   xcopy /e /q /y "%buildWINtmp%\OCPNWindowsCoreBuildSupport-0.3\buildwin" "%CACHE_DIR%\buildwin"
-  if errorlevel 1 (@echo [101;93mNOT OK[0m) else (echo OK)
+  if errorlevel 1 (echo [101;93mNOT OK[0m) else (echo OK)
+)
 :skipbuildwin
 ::-------------------------------------------------------------
 :: Download wxWidgets sources
 ::-------------------------------------------------------------
-if exist "%wxDIR%\build\msw\wx_vc%VCver%.sln" (goto :skipwxDL)
+@echo Checking if wxWidgets exists
+
+if exist "%wxDIR%" (
+  if exist "%wxDIR%\build" (
+    if exist "%wxDIR%\build\msw" (
+      if exist "%wxDIR%\build\msw\wx_vc%VCver%.sln" (goto :skipwxDL)
+    )
+  )
+)
+
 @echo Downloading wxWidgets sources
 mkdir "%wxDIR%"
 set "URL=https://github.com/wxWidgets/wxWidgets/releases/download/v%wxVER%/wxWidgets-%wxVER%.zip"
 set "DEST=%wxDIR%\wxWidgets-%wxVER%.zip"
 call :download
-if errorlevel 1 (@echo [101;93mNOT OK[0m) else (echo OK)
+if errorlevel 1 (echo [101;93mNOT OK[0m) else (echo OK)
 
 @echo exploding wxWidgets
 set "SOURCE=%wxDIR%\wxWidgets-%wxVER%.zip"
 set "DEST=%wxDIR%"
 call :explode
-if errorlevel 1 (@echo [101;93mNOT OK[0m) else (echo OK)
+if errorlevel 1 (echo [101;93mNOT OK[0m) else (echo OK)
 
 @echo Downloading Windows WebView2 kit
 set "URL=https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2"
 set "DEST=%wxDIR%\webview2.zip"
 call :download
-if errorlevel 1 (@echo [101;93mNOT OK[0m) else (echo OK)
+if errorlevel 1 (echo [101;93mNOT OK[0m) else (echo OK)
 
 @echo Exploding WebView2
 set "SOURCE=%wxDIR%\webview2.zip"
 set "DEST=%wxDIR%\build\3rdparty\webview2"
 call :explode
-if errorlevel 1 (@echo [101;93mNOT OK[0m) else (echo OK)
+if errorlevel 1 (echo [101;93mNOT OK[0m) else (echo OK)
 
 ::-------------------------------------------------------------
 :: Build wxWidgets from sources
@@ -335,14 +346,21 @@ msbuild -noLogo -verbosity:minimal -maxCpuCount ^
   "%wxDIR%\build\msw\wx_vc%VCver%.sln"
 
 :skipwxDL
+echo At :skipwxDL
+
 if not exist "%CACHE_DIR%\buildwin\wxWidgets" (
+    echo mkdir "%CACHE_DIR%\buildwin\wxWidgets"
     mkdir "%CACHE_DIR%\buildwin\wxWidgets"
 )
+echo xcopy /e /q /y "%WXDIR%\lib\vc_dll\" "%CACHE_DIR%\buildwin\wxWidgets"
 xcopy /e /q /y "%WXDIR%\lib\vc_dll\" "%CACHE_DIR%\buildwin\wxWidgets"
 if not exist "%CACHE_DIR%\buildwin\wxWidgets\locale" (
+  echo   mkdir "%CACHE_DIR%\buildwin\wxWidgets\locale"
   mkdir "%CACHE_DIR%\buildwin\wxWidgets\locale"
 )
+echo xcopy /e /q /y "%WXDIR%\locale\" "%CACHE_DIR%\buildwin\wxWidgets\locale"
 xcopy /e /q /y "%WXDIR%\locale\" "%CACHE_DIR%\buildwin\wxWidgets\locale"
+
 ::-------------------------------------------------------------
 :: Initialize folders needed to run OpenCPN
 ::-------------------------------------------------------------
@@ -370,23 +388,27 @@ if [%ocpn_minsizerel%]==[1] (^
 ::-------------------------------------------------------------
 :: Download and initialize build dependencies
 ::-------------------------------------------------------------
+@echo CACHE_DIR=%CACHE_DIR%
 set "DEST=%CACHE_DIR%\buildwin"
+@echo DEST=%DEST%
+
 if exist "%WindowsSdkDir%\lib\%WindowsSdkLibVersion%\um\x86\iphlpapi.lib" (
-  @echo xcopy /d /y "%WindowsSdkDir%\lib\%WindowsSdkLibVersion%\um\x86\iphlpapi.lib" "%DEST%"
-  @echo xcopy /d /y "%WindowsSdkDir%\include\%WindowsSdkLibVersion%\um\iphlpapi.h" "%DEST%\include"
-  xcopy /d /y "%WindowsSdkDir%\lib\%WindowsSdkLibVersion%\um\x86\iphlpapi.lib" "%DEST%"
-  xcopy /d /y "%WindowsSdkDir%\include\%WindowsSdkLibVersion%\um\iphlpapi.h" "%DEST%\include"
+  @echo copy /y "%WindowsSdkDir%\lib\%WindowsSdkLibVersion%\um\x86\iphlpapi.lib" "%DEST%"
+  @echo copy /y "%WindowsSdkDir%\include\%WindowsSdkLibVersion%\um\iphlpapi.h" "%DEST%\include\iphlpapi.lib"
+  copy /y "%WindowsSdkDir%\lib\%WindowsSdkLibVersion%\um\x86\iphlpapi.lib" "%DEST%"
+  copy /y "%WindowsSdkDir%\include\%WindowsSdkLibVersion%\um\iphlpapi.h" "%DEST%\include\iphlpapi.lib"
 ) else (
   @echo [101;93mCould not find local copy of iphlpapi library so will try to download one.[0m
 )
 :: If we could not find local copy of iphlpapi library attempt download
+
 set "DEST=%CACHE_DIR%\buildwin\iphlpapi.lib"
+@echo DEST=%DEST%
 if not exist "%DEST%" (
-  set "DEST=%DEST%"
   set "opencpn_support_base=https://dl.cloudsmith.io/public/alec-leamas"
   set "URL=%opencpn_support_base%/opencpn-support/raw/files/iphlpapi.lib"
   call :download
-  if errorlevel 1 (@echo [101;93mDownload failed.[0m) else (@echo Download OK)
+  if errorlevel 1 (echo [101;93mDownload failed.[0m) else (echo Download OK)
 )
 
 cd %OCPN_DIR%\build
@@ -406,6 +428,7 @@ for /D %%D in (Gettext*) do (set "gettextpath=%%~fD")
 for /D %%D in (NSIS-Package*) do (set "nsispath=%%~fD")
 @echo gettext=%gettextpath%
 @echo nsis=%nsispath%
+
 cd %OCPN_DIR%
 ::-------------------------------------------------------------
 :: Finalize local environment helper script
@@ -617,7 +640,7 @@ if exist %DEST% (
   if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; ^
   Invoke-WebRequest "%URL%" -OutFile '%DEST%'; ^
   exit $LASTEXITCODE
-if errorlevel 1 (@echo Download failed && pause && exit /b 1) else (@echo Download OK)
+if errorlevel 1 (echo Download failed && pause && exit /b 1) else (echo Download OK)
 exit /b 0
 ::-------------------------------------------------------------
 :: Explode SOURCE zip file to DEST folder
@@ -627,5 +650,5 @@ exit /b 0
 @echo DEST=%DEST%
 %PSH% -Command if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; ^
   Expand-Archive -Force -Path '%SOURCE%' -DestinationPath '%DEST%'
-if errorlevel 1 (@echo Explode failed && pause && exit /b 1) else (@echo Unzip OK)
+if errorlevel 1 (echo Explode failed && pause && exit /b 1) else (echo Unzip OK)
 exit /b 0
