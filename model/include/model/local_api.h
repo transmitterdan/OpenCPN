@@ -66,7 +66,7 @@ public:
   static LocalServerApi& GetInstance();
 
   /** Release Instance */
-  static void LocalServerApi::ReleaseInstance();
+  static void ReleaseInstance();
 
   /** Notified on the Raise command. */
   EventVar on_raise;
