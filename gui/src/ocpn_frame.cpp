@@ -172,7 +172,7 @@ extern options *g_pOptions;
 extern options *g_options;
 
 #ifdef ocpnUSE_GL
-GLenum g_texture_rectangle_format;
+GLenum g_texture_rectangle_format = 0;
 #endif
 
 #if wxUSE_XLOCALE || !wxCHECK_VERSION(3, 0, 0)
@@ -2174,7 +2174,7 @@ void MyFrame::ODoSetSize(void) {
     // hide the toolbar in order to correctly set its rounded-rectangle shape It
     // will be shown again before exit of this method.
     double deltay = g_nframewin_y - GetSize().y;
-    if ((fabs(deltay) > (g_Platform->getDisplaySize().y / 5)))
+    if ((fabs(deltay) > (g_Platform->getDisplaySize().y * 0.2)))
       g_MainToolbar->Hide();
 
     g_MainToolbar->RestoreRelativePosition(g_maintoolbar_x, g_maintoolbar_y);
@@ -2737,7 +2737,7 @@ bool MyFrame::SetGlobalToolbarViz(bool viz) {
   return viz_now;
 }
 
-void MyFrame::ScheduleSettingsDialog() {
+void MyFrame::ScheduleSettingsDialog() const {
   wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED);
   evt.SetId(ID_SETTINGS /*ID_MENU_SETTINGS_BASIC*/);
   GetEventHandler()->AddPendingEvent(evt);
@@ -3941,7 +3941,7 @@ int MyFrame::DoOptionsDialog() {
   //  Capture the full path names and VPScale of charts currently shown in all
   //  canvases
   wxArrayString pathArray;
-  double restoreScale[4];
+  double restoreScale[4]{};
 
   // ..For each canvas...
   for (unsigned int i = 0; i < g_canvasArray.GetCount(); i++) {
@@ -5228,7 +5228,7 @@ void MyFrame::UpdateStatusBar() {
 
   if (NULL != GetStatusBar()) {
     if (1/*pos_valid*/) {
-      char tick_buf[2];
+      char tick_buf[2]{};
       tick_buf[0] = nmea_tick_chars[m_tick_idx];
       tick_buf[1] = 0;
 
@@ -5466,7 +5466,7 @@ void MyFrame::OnFrameTimer1(wxTimerEvent &event) {
 
   //    Build and send a Position Fix event to PlugIns
   if (g_pi_manager) {
-    GenericPosDatEx GPSData;
+    GenericPosDatEx GPSData{};
     GPSData.kLat = gLat;
     GPSData.kLon = gLon;
     GPSData.kCog = gCog;
@@ -6176,7 +6176,7 @@ bool GetMemoryStatus(int *mem_total, int *mem_used) {
   }
 
   if (mem_total) {
-    MEMORYSTATUSEX statex;
+    MEMORYSTATUSEX statex{};
 
     statex.dwLength = sizeof(statex);
 
@@ -6623,9 +6623,9 @@ void MyFrame::LoadHarmonics() {
     bool b_newdataset = false;
 
     //      Test both ways
-    for (auto a : ptcmgr->GetDataSet()) {
+    for (auto &a : ptcmgr->GetDataSet()) {
       bool b_foundi = false;
-      for (auto b : TideCurrentDataSet) {
+      for (auto &b : TideCurrentDataSet) {
         if (a == b) {
           b_foundi = true;
           break;  // j loop
@@ -6637,9 +6637,9 @@ void MyFrame::LoadHarmonics() {
       }
     }
 
-    for (auto a : TideCurrentDataSet) {
+    for (auto &a : TideCurrentDataSet) {
       bool b_foundi = false;
-      for (auto b : ptcmgr->GetDataSet()) {
+      for (auto &b : ptcmgr->GetDataSet()) {
         if (a == b) {
           b_foundi = true;
           break;  // j loop
@@ -7473,7 +7473,7 @@ void InitializeUserColors(void) {
       }
 
     } else {
-      char name[21];
+      char name[21]{};
       int j = 0;
       while (buf[j] != ';' && j < 20) {
         name[j] = buf[j];
@@ -7581,8 +7581,8 @@ void SaveSystemColors() {
 }
 
 void RestoreSystemColors() {
-  int element[NCOLORS];
-  int rgbcolor[NCOLORS];
+  int element[NCOLORS]{};
+  int rgbcolor[NCOLORS]{};
   int i = 0;
 
   MSW_COLOR_SPEC *pcspec = &color_spec[0];
@@ -7601,8 +7601,8 @@ void RestoreSystemColors() {
 
 void SetSystemColors(ColorScheme cs) {  //---------------
 #ifdef __WXMSW__
-  int element[NCOLORS];
-  int rgbcolor[NCOLORS];
+  int element[NCOLORS]{};
+  int rgbcolor[NCOLORS]{};
   int i = 0;
   if ((GLOBAL_COLOR_SCHEME_DUSK == cs) || (GLOBAL_COLOR_SCHEME_NIGHT == cs)) {
     MSW_COLOR_SPEC *pcspec = &color_spec[0];
@@ -8638,7 +8638,7 @@ void ParseAllENC(wxWindow *parent) {
     int index = ChartData->FinddbIndex(filename);
     if (index < 0) continue;
     const ChartTableEntry &cte = ChartData->GetChartTableEntry(index);
-    Extent ext;
+    Extent ext{};
     ext.NLAT = cte.GetLatMax();
     ext.SLAT = cte.GetLatMin();
     ext.WLON = cte.GetLonMin();

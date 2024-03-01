@@ -158,14 +158,13 @@ public:
 
   void InitializeTables(void);
   void DeleteGlobals(void);
-  int FindColorTable(const wxString &tableName);
-  S52color *GetColor(const char *colorName, int fromTable);
-  wxColor GetwxColor(const wxString &colorName, int fromTable);
-  wxColor GetwxColor(const char *colorName, int fromTable);
+  int FindColorTable(const wxString &tableName) const;
+  S52color *GetColor(const char *colorName, int fromTable) const;
+  wxColor GetwxColor(const wxString &colorName, int fromTable) const;
   wxString HashKey(const char *symbolName);
   wxImage GetImage(const char *symbolName);
   unsigned int GetGLTextureRect(wxRect &rect, const char *symbolName);
-  wxSize GLTextureSize();
+  wxSize GLTextureSize() const;
   void SetTextureFormat( int format){ m_texture_rectangle_format = format; }
   int LoadRasterFileForColorTable(int table_nr, bool flush,
                                   const ChartCtx& ctx);

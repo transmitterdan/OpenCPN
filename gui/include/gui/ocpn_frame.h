@@ -310,7 +310,7 @@ public:
   wxTimer BellsTimer;
 
   //      PlugIn support
-  int GetNextToolbarToolId() { return m_next_available_plugin_tool_id; }
+  int GetNextToolbarToolId() const { return m_next_available_plugin_tool_id; }
   void RequestNewToolbarArgEvent(wxCommandEvent &WXUNUSED(event)) {
     return RequestNewMasterToolbar();
   }
@@ -342,7 +342,7 @@ public:
 
   void NotifyChildrenResize(void);
   void UpdateCanvasConfigDescriptors();
-  void ScheduleSettingsDialog();
+  void ScheduleSettingsDialog() const;
   static void RebuildChartDatabase();
   void PositionIENCToolbar();
 

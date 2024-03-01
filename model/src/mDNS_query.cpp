@@ -28,7 +28,9 @@
 #include <thread>
 
 #ifdef _WIN32
+#if !defined(_CRT_SECURE_NO_WARNINGS)
 #define _CRT_SECURE_NO_WARNINGS 1
+#endif
 #endif
 
 #include <stdio.h>

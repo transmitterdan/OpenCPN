@@ -101,7 +101,7 @@ void ChartSymbols::ProcessColorTables(pugi::xml_node &node) {
 
         if (!strcmp(colorNode.name(), "color")) {
           wxString key;
-          S52color color;
+          S52color color{};
 
           for (pugi::xml_attribute attr = colorNode.first_attribute(); attr;
                attr = attr.next_attribute()) {
@@ -812,26 +812,21 @@ int ChartSymbols::LoadRasterFileForColorTable(int tableNo, bool flush,
 }
 
 
-S52color *ChartSymbols::GetColor(const char *colorName, int fromTable) {
+S52color *ChartSymbols::GetColor(const char *colorName, int fromTable) const {
   colTable *colortable;
   wxString key(colorName, wxConvUTF8, 5);
   colortable = (colTable *)m_colorTables.Item(fromTable);
   return &(colortable->colors[key]);
 }
 
-wxColor ChartSymbols::GetwxColor(const wxString &colorName, int fromTable) {
+wxColor ChartSymbols::GetwxColor(const wxString &colorName, int fromTable) const {
   colTable *colortable;
   colortable = (colTable *)m_colorTables.Item(fromTable);
   wxColor c = colortable->wxColors[colorName];
   return c;
 }
 
-wxColor ChartSymbols::GetwxColor(const char *colorName, int fromTable) {
-  wxString key(colorName, wxConvUTF8, 5);
-  return GetwxColor(key, fromTable);
-}
-
-int ChartSymbols::FindColorTable(const wxString &tableName) {
+int ChartSymbols::FindColorTable(const wxString &tableName) const {
   for (unsigned int i = 0; i < m_colorTables.GetCount(); i++) {
     colTable *ct = (colTable *)m_colorTables.Item(i);
     if (tableName.IsSameAs(*ct->tableName)) {
@@ -842,7 +837,7 @@ int ChartSymbols::FindColorTable(const wxString &tableName) {
 }
 
 wxString ChartSymbols::HashKey(const char *symbolName) {
-  char key[9];
+  char key[9]{};
   key[8] = 0;
   strncpy(key, symbolName, 8);
   return wxString(key, wxConvUTF8);
@@ -863,4 +858,4 @@ unsigned int ChartSymbols::GetGLTextureRect(wxRect &rect,
   return rasterSymbolsTexture;
 }
 
-wxSize ChartSymbols::GLTextureSize() { return rasterSymbolsTextureSize; }
+wxSize ChartSymbols::GLTextureSize() const { return rasterSymbolsTextureSize; }

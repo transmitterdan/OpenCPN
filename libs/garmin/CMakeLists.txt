@@ -26,7 +26,7 @@ set( SRC
     jeeps/gpsusbcommon.c
     jeeps/garmin_gps.h
     jeeps/gpsapp.h
-    jeeps/gpsdatum.h
+    # jeeps/gpsdatum.h
     jeeps/gpsfmt.h
     jeeps/gpsmath.h
     jeeps/gpsport.h
