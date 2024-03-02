@@ -13,10 +13,7 @@
         ".",
         "/usr/include",
         "include",
-        "/usr/include/wx-3.1",
-        "/usr/local/include/wx-3.1",
-        "/usr/include/wx-3.0",
-        "/usr/local/include/wx-3.0",
+        "/usr/local/include",
         "build/include",
         "libs/nmea0183/src",
         "libs/gdal/include",
@@ -25,5 +22,11 @@
         "libs/wxcurl/include",
         "libs/wxJSON/include"
     ],
-    "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json"
+    "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json",
+    "cmake.configureSettings": {
+        "OCPN_USE_CHART_LIST": "ON",
+        "OCPN_BUNDLE_GSHHS":   "ON",
+        "OCPN_BUNDLE_TCDATA":  "ON",
+        "OCPN_BUILD_TESTS":    "ON"
+    }
 }
