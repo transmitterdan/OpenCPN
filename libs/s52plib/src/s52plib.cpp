@@ -33,7 +33,7 @@
 
 #include <math.h>
 #include <stdlib.h>
-
+#include <mutex>
 
 #ifdef __OCPN__ANDROID__
 // Handle occasional SIG on Android
@@ -109,6 +109,16 @@ extern "C" wxString *GetpSharedDataLocation();
 #ifdef __OCPN__ANDROID__
 #include "qdebug.h"
 #endif
+
+std::mutex glMutex;
+std::unique_lock<std::mutex> glLock(glMutex, std::defer_lock);
+#define glLocalDrawArrays(mode, first, count)                      \
+  do {                                                             \
+    wxASSERT_MSG(!glLock.owns_lock(),                              \
+                 wxT("glLocalDrawArrays: glLock already locked")); \
+    std::lock_guard<decltype(glLock)> g(glLock);                   \
+    glDrawArrays(mode, first, count);                              \
+  } while (0)
 
 float g_scaminScale;
 
@@ -2047,7 +2057,7 @@ bool s52plib::RenderText(wxDC *pdc, S52_TextC *ptext, int x, int y,
           glUniformMatrix4fv(matloc, 1, GL_FALSE, (const GLfloat *)Q);
 
           // Perform the actual drawing.
-          glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+          glLocalDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
           // Restore the per-object transform to Identity Matrix
           mat4x4 IM;
@@ -3150,7 +3160,7 @@ bool s52plib::RenderRasterSymbol(ObjRazRules *rzRules, Rule *prule, wxPoint &r,
         pCtexture_2D_shader_program[0]->SetUniformMatrix4fv( "TransformMatrix", (GLfloat *)Q);
 
         // Perform the actual drawing.
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        glLocalDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
         // Restore the per-object transform to Identity Matrix
         mat4x4 IM;
@@ -3580,7 +3590,7 @@ bool s52plib::RenderSoundingSymbol(ObjRazRules *rzRules, Rule *prule,
       pCtexture_2D_Color_shader_program[0]->SetUniformMatrix4fv( "TransformMatrix", (GLfloat *)Q);
 
       // Perform the actual drawing.
-      glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+      glLocalDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
       // Restore the per-object transform to Identity Matrix
       mat4x4 IM;
@@ -3811,7 +3821,7 @@ int s52plib::RenderGLLS(ObjRazRules *rzRules, Rules *rules) {
 
       if (b_drawit) {
         // render the segment
-        glDrawArrays(GL_LINE_STRIP, seg_vbo_offset / (2 * sizeof(float)) , point_count);
+        glLocalDrawArrays(GL_LINE_STRIP, seg_vbo_offset / (2 * sizeof(float)) , point_count);
       }
     }
     ls_list = ls_list->next;
@@ -4206,7 +4216,7 @@ int s52plib::RenderLSLegacy(ObjRazRules *rzRules, Rules *rules) {
                 fBuf[2] = x1;
                 fBuf[3] = y1;
 
-                glDrawArrays(GL_LINES, 0, 2);
+                glLocalDrawArrays(GL_LINES, 0, 2);
 #endif
 
               }
@@ -4382,7 +4392,7 @@ int s52plib::RenderLSPlugIn(ObjRazRules *rzRules, Rules *rules) {
                 glVertexAttribPointer(pos, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float),
                                       pts);
 
-                glDrawArrays(GL_LINES, 0, 2);
+                glLocalDrawArrays(GL_LINES, 0, 2);
 
               }
 #endif
@@ -4614,7 +4624,7 @@ int s52plib::RenderLS_Dash_GLSL(ObjRazRules *rzRules, Rules *rules) {
                 glEnableVertexAttribArray(mPosAttrib);
 
                 // Perform the actual drawing.
-                glDrawArrays(GL_LINES, 0, 2);
+                glLocalDrawArrays(GL_LINES, 0, 2);
               }
             }
           }
@@ -5478,7 +5488,7 @@ void s52plib::draw_lc_poly(wxDC *pdc, wxColor &color, int width, wxPoint *ptp,
                                 pts);
           glEnableVertexAttribArray(pos);
 
-          glDrawArrays(GL_LINES, 0, 2);
+          glLocalDrawArrays(GL_LINES, 0, 2);
 
           shader->UnBind();
 
@@ -5545,7 +5555,7 @@ void s52plib::draw_lc_poly(wxDC *pdc, wxColor &color, int width, wxPoint *ptp,
                                 pts);
           glEnableVertexAttribArray(pos);
 
-          glDrawArrays(GL_LINES, 0, 2);
+          glLocalDrawArrays(GL_LINES, 0, 2);
           glDisableVertexAttribArray(pos);
           shader->UnBind();
 
@@ -5928,7 +5938,7 @@ int s52plib::RenderCARC_GLSL(ObjRazRules *rzRules, Rules *rules) {
   glUniformMatrix4fv(matloc, 1, GL_FALSE, (const GLfloat *)I);
 
   // Perform the actual drawing.
-  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+  glLocalDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
   // Now draw color ring
   //  Circle color
@@ -5944,7 +5954,7 @@ int s52plib::RenderCARC_GLSL(ObjRazRules *rzRules, Rules *rules) {
   glUniform1f(ringWidthloc, arcw);
 
    // Perform the actual drawing.
-  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+  glLocalDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 
   // Restore the per-object transform to Identity Matrix
@@ -8307,7 +8317,7 @@ int s52plib::RenderToGLAC_GLSL(ObjRazRules *rzRules, Rules *rules) {
         box = p_tp->tri_box;
 
       if (!BBView.IntersectOut(box)) {
-        glDrawArrays(p_tp->type, VBO_offset_index, p_tp->nVert);
+        glLocalDrawArrays(p_tp->type, VBO_offset_index, p_tp->nVert);
       }
 
       VBO_offset_index += p_tp->nVert;
@@ -8376,7 +8386,6 @@ int s52plib::RenderToGLAP(ObjRazRules *rzRules, Rules *rules) {
 int s52plib::RenderToGLAP_GLSL(ObjRazRules *rzRules, Rules *rules) {
   if (!ObjectRenderCheckPosReduced(rzRules))
     return false;
-
   //    Get the pattern definition
   if ((rules->razRule->pixelPtr == NULL) ||
       (rules->razRule->parm1 != m_colortable_index) ||
@@ -8647,9 +8656,9 @@ int s52plib::RenderToGLAP_GLSL(ObjRazRules *rzRules, Rules *rules) {
           glVertexAttribPointer(pos, 2, array_gl_type, GL_FALSE,
                                 0 /*2*sizeof(array_gl_type)*/,
                                 (GLvoid *)(vbo_offset));
-          glDrawArrays(p_tp->type, 0, p_tp->nVert);
+          glLocalDrawArrays(p_tp->type, 0, p_tp->nVert);
         } else {
-          glDrawArrays(p_tp->type, vbo_offset / (2 * array_data_size),
+          glLocalDrawArrays(p_tp->type, vbo_offset / (2 * array_data_size),
                        p_tp->nVert);
         }
       }
@@ -8680,7 +8689,6 @@ int s52plib::RenderToGLAP_GLSL(ObjRazRules *rzRules, Rules *rules) {
   }  // if pPolyTessGeo
 
   glDisable(GL_TEXTURE_2D);
-
   return 1;
 }
 #endif
@@ -10223,7 +10231,7 @@ void s52plib::DrawDashLine(wxPen &pen, wxCoord x1, wxCoord y1, wxCoord x2,
       fBuf[2] = xb;
       fBuf[3] = yb;
 
-      glDrawArrays(GL_LINES, 0, 2);
+      glLocalDrawArrays(GL_LINES, 0, 2);
 
       xa = xa + (lspace + ldraw) * cosa;
       ya = ya + (lspace + ldraw) * sina;
@@ -10235,7 +10243,7 @@ void s52plib::DrawDashLine(wxPen &pen, wxCoord x1, wxCoord y1, wxCoord x2,
     fBuf[2] = x2;
     fBuf[3] = y2;
 
-    glDrawArrays(GL_LINES, 0, 2);
+    glLocalDrawArrays(GL_LINES, 0, 2);
   }
 
   shader->UnBind();
@@ -10566,7 +10574,7 @@ void RenderFromHPGL::Line(wxPoint from, wxPoint to) {
     glVertexAttribPointer(pos, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), pts);
     glEnableVertexAttribArray(pos);
 
-    glDrawArrays(GL_LINES, 0, 2);
+    glLocalDrawArrays(GL_LINES, 0, 2);
 
     shader->UnBind();
   }
@@ -10668,7 +10676,7 @@ void RenderFromHPGL::Circle(wxPoint center, int radius, bool filled) {
     glUniform1f(borderWidthloc, line_width);
 
     // Perform the actual drawing.
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    glLocalDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
     //      Enable anti-aliased lines, at best quality
     glDisable(GL_BLEND);
@@ -10931,7 +10939,7 @@ void RenderFromHPGL::DrawPolygon(int n, wxPoint points[], wxCoord xoffset,
       shader->SetUniform4fv("color", bcolorv);
 
       // Perform the actual drawing.
-      glDrawArrays(GL_LINE_LOOP, 0, n);
+      glLocalDrawArrays(GL_LINE_LOOP, 0, n);
 
       //  Fill color
       bcolorv[0] = brush->GetColour().Red() / float(256);
@@ -10951,9 +10959,9 @@ void RenderFromHPGL::DrawPolygon(int n, wxPoint points[], wxCoord xoffset,
         workBuf[6] = x1;
         workBuf[7] = y1;
 
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        glLocalDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
       } else if (n == 3) {
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glLocalDrawArrays(GL_TRIANGLES, 0, 3);
       }
 
       shader->UnBind();
@@ -11056,7 +11064,7 @@ void xs52_endCallbackD_GLSL(void *data) {
 
   shader->SetUniform4fv("color", colorv);
 
-  glDrawArrays(plib->s_odc_tess_mode, 0, plib->s_odc_nvertex);
+  glLocalDrawArrays(plib->s_odc_tess_mode, 0, plib->s_odc_nvertex);
   shader->UnBind();
 }
 
