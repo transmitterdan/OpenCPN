@@ -316,7 +316,7 @@ if "%gitcmd%"=="" (
   call :explode
   if errorlevel 1 (echo [101;93mNOT OK[0m ) else (echo Explode wxWidgets OK )
 ) else (
-  @echo "%gitcmd%" clone https://github.com/wxWidgets/wxWidgets --recurse-submodules "%wxDIR%"
+  @echo "%gitcmd%" clone --depth=1 https://github.com/wxWidgets/wxWidgets --recurse-submodules "%wxDIR%"
   "%gitcmd%" clone https://github.com/wxWidgets/wxWidgets --recurse-submodules "%wxDIR%"
   if errorlevel 1 (echo [101;93mNOT OK[0m ) else (echo Download %DEST% OK )
   pushd %wxDIR%
