@@ -651,7 +651,6 @@ exit /b 0
 @echo DEST=%DEST%
 %PSH% -Command if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Expand-Archive -Force -Path '%SOURCE%' -DestinationPath '%DEST%'; exit $LASTEXITCODE
 if errorlevel 1 (echo Explode failed && exit /b 1) else (echo Unzip OK)
-if errorlevel 1 (@echo Explode failed && pause && exit /b 1) else (@echo Unzip OK)
 exit /b 0
 ::
 :: THE END
