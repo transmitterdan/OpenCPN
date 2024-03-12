@@ -69,6 +69,8 @@ goto :main
 @echo *      --all              Build all 4 configurations  (default)            *
 @echo *                                                                          *
 @echo *      --help             Print this message                               *
+@echo *      --Y                Don't ask questions (for calling from script)    *
+@echo *      --wxver n.n.n      Download specific version wxWidgets zip file.    *
 @echo *                                                                          *
 @echo ****************************************************************************
 exit /b 1
@@ -117,9 +119,9 @@ goto :usage
 for /f "delims=" %%G in ('where /f git') do (
   set gitfldr=!%%~dpG!
   set gitcmd=!%%~fG!
-  if exist !gitcmd! (echo Git found @ !gitcmd!) else (set gitcmd=&& echo Git not found&& pause)
+  if exist !gitcmd! (echo Git found @ !gitcmd!) else (set gitcmd=&& echo Git not found)
   set patchcmd=!gitfldr!..\usr\bin\patch.exe
-  if exist !patchcmd! (echo Patch found @ !patchcmd!) else (set patchcmd=&& echo Patch not found&& paus)
+  if exist !patchcmd! (echo Patch found @ !patchcmd!) else (set patchcmd=&& echo Patch not found)
 )
 set ocpn_clean=0
 set ocpn_rebuild=0
@@ -130,6 +132,7 @@ set ocpn_minsizerel=0
 set ocpn_release=0
 set ocpn_relwithdebinfo=0
 set ocpn_debug=0
+set quiet=N
 :: If this is a rebuild then build existing configurations
 if exist "%OCPN_DIR%\build\Debug" (
   set ocpn_all=0
@@ -157,6 +160,7 @@ if [%1]==[--release] (shift /1 && set ocpn_all=0&& set ocpn_release=1&& goto :pa
 if [%1]==[--relwithdebinfo] (shift /1 && set ocpn_all=0&& set ocpn_relwithdebinfo=1&& goto :parse)
 if [%1]==[--debug] (shift /1 && set ocpn_all=0&& set ocpn_debug=1&& goto :parse)
 if [%1]==[--wxver] (shift /1 && set wxVER=%1 && shift /1 && goto :parse)
+if [%1]==[--Y] (shift /1 && set "quiet=Y" && shift /1 && goto :parse)
 if [%1]==[] (goto :begin) else (
   echo Unknown option: %1
   shift /1
@@ -209,6 +213,7 @@ if [%ocpn_rebuild%]==[1] (
   if exist "%OCPN_DIR%\build\.vs" rmdir /s /q "%OCPN_DIR%\build\.vs"
   if exist "%OCPN_DIR%\build\.vs" (
     @echo Could not remove "%OCPN_DIR%\build\.vs" folder
+    if [%quiet%]==[Y] (exit /b 1)
     @echo Is Visual Studio IDE open? If so, please close it so we can try again.
     pause
     @echo Retrying...
@@ -226,9 +231,11 @@ if [%ocpn_rebuild%]==[1] (
 ::-------------------------------------------------------------
 if [%ocpn_clean%]==[1] (
   if exist "%OCPN_DIR%\build" (
-    @echo [101;93mThe --clean option requires an internet connection.[0m
-    choice /C YN /T 10 /M "Remove entire build folder including downloaded tools? [yN]" /D N
-    if ERRORLEVEL==2  goto :usage
+    if [%quiet%]==[N] (
+      @echo [101;93mThe --clean option requires an internet connection.[0m
+      choice /C YN /T 10 /M "Remove entire build folder including downloaded tools? [yN]" /D N
+      if ERRORLEVEL==2  goto :usage
+    )
     if exist "%OCPN_DIR%\build" (
       set folder=Release
       call :backup
@@ -245,7 +252,9 @@ if [%ocpn_clean%]==[1] (
     if exist "%OCPN_DIR%\build" (
       @echo Could not remove "%OCPN_DIR%\build" folder
       @echo Is Visual Studio IDE open? If so, please close it so we can try again.
-      pause
+      if [%quiet%]==[N] (
+        pause
+      )
       @echo Retrying...
       rmdir /s /q "%OCPN_DIR%\build"
     )
@@ -256,7 +265,9 @@ if [%ocpn_clean%]==[1] (
     )
     if exist "%CACHE_DIR%" (rmdir /s /q "%CACHE_DIR%" && echo Cleared %CACHE_DIR%)
     if exist "%buildWINtmp%" (rmdir /s /q "%buildWINtmp%" && echo Cleared %buildWINtmp%)
-    timeout /T 5
+    if [%quiet%]==[N] (
+      timeout /T 5
+    )
   )
 )
 ::-------------------------------------------------------------
@@ -561,7 +572,6 @@ exit /b 0
 @echo CMake failed to configure OpenCPN build folder.
 @echo Review the error messages and read the OpenCPN
 @echo Developer Manual for help.
-pause
 exit /b 1
 ::-------------------------------------------------------------
 :: Build failed
@@ -570,7 +580,6 @@ exit /b 1
 @echo Build using msbuild failed.
 @echo Review the error messages and read the OpenCPN
 @echo Developer Manual for help.
-pause
 exit /b 1
 ::-------------------------------------------------------------
 :: Backup user configuration
@@ -610,7 +619,6 @@ if not exist "%~dp0..\tmp\%build_type%" (
 cmake -E copy_directory "%~dp0..\tmp\%build_type%" "%~dp0..\build\%build_type%"
 if errorlevel 1 (
   @echo Restore %build_type% failed
-  pause
   goto ::rreturn
 ) else (
   @echo Restore successful
@@ -633,7 +641,7 @@ if exist %DEST% (
   if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; ^
   Invoke-WebRequest "%URL%" -OutFile '%DEST%'; ^
   exit $LASTEXITCODE
-if errorlevel 1 (echo Download failed && pause && exit /b 1) else (echo Download OK)
+if errorlevel 1 (echo Download failed && exit /b 1) else (echo Download OK)
 exit /b 0
 ::-------------------------------------------------------------
 :: Explode SOURCE zip file to DEST folder
@@ -642,7 +650,7 @@ exit /b 0
 @echo SOURCE=%SOURCE%
 @echo DEST=%DEST%
 %PSH% -Command if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Expand-Archive -Force -Path '%SOURCE%' -DestinationPath '%DEST%'; exit $LASTEXITCODE
-if errorlevel 1 (echo Explode failed &&  pause && exit /b 1) else (echo Unzip OK)
+if errorlevel 1 (echo Explode failed && exit /b 1) else (echo Unzip OK)
 exit /b 0
 ::
 :: THE END
