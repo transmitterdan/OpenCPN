@@ -355,22 +355,46 @@ msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
   -property:"Configuration=DLL Debug";Platform=Win32 ^
   -property:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix=_vc14x ^
   -logger:FileLogger,Microsoft.Build.Engine;logfile="%CACHE_DIR%\buildwin\wxWidgets\MSBuild_DEBUG_WIN32.log"
+if errorlevel 1 (
+  echo [101;93mNOT OK[0m
+  goto :buildErr
+) else (
+  echo wxWidgets Debug build OK
+)
 
 msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
   -noLogo -verbosity:normal -maxCpuCount ^
   -property:"Configuration=DLL Release";Platform=Win32 ^
   -property:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix=_vc14x ^
   -logger:FileLogger,Microsoft.Build.Engine;logfile="%CACHE_DIR%\buildwin\wxWidgets\MSBuild_RELEASE_WIN32.log"
+if errorlevel 1 (
+  echo [101;93mNOT OK[0m
+  goto :buildErr
+) else (
+  echo wxWidgets Debug build OK
+)
 
 :skipwxDL
 if not exist "%CACHE_DIR%\buildwin\wxWidgets" (
     mkdir "%CACHE_DIR%\buildwin\wxWidgets"
 )
 xcopy /e /q /y "%WXDIR%\lib\vc_dll\" "%CACHE_DIR%\buildwin\wxWidgets"
+if errorlevel 1 (
+  echo [101;93mNOT OK[0m
+  goto :buildErr
+) else (
+  echo wxWidgets Debug build OK
+)
 if not exist "%CACHE_DIR%\buildwin\wxWidgets\locale" (
   mkdir "%CACHE_DIR%\buildwin\wxWidgets\locale"
 )
 xcopy /e /q /y "%WXDIR%\locale\" "%CACHE_DIR%\buildwin\wxWidgets\locale"
+if errorlevel 1 (
+  echo [101;93mNOT OK[0m
+  goto :buildErr
+) else (
+  echo wxWidgets Debug build OK
+)
 ::-------------------------------------------------------------
 :: Initialize folders needed to run OpenCPN
 ::-------------------------------------------------------------
