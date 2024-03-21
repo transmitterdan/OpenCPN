@@ -350,51 +350,50 @@ if errorlevel 1 (echo [101;93mNOT OK[0m ) else (echo Explode WebView2 OK )
 ::-------------------------------------------------------------
 @echo Building wxWidgets
 
+:skipwxDL
+if exist "%wxDIR%\.git" (
+  pushd "%wxDIR%"
+  git submodule update
+  git fetch --all --recurse-submodules
+  git checkout "%wxMajor%" --recurse-submodules
+  popd
+)
+if not exist "%CACHE_DIR%\buildwin\wxWidgets" mkdir "%CACHE_DIR%\buildwin\wxWidgets"
 msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
   -noLogo -verbosity:normal -maxCpuCount ^
   -property:"Configuration=DLL Debug";Platform=Win32 ^
   -property:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix=_vc14x ^
+  -property:CL="/arch:SSE" ^
   -logger:FileLogger,Microsoft.Build.Engine;logfile="%CACHE_DIR%\buildwin\wxWidgets\MSBuild_DEBUG_WIN32.log"
-if errorlevel 1 (
-  echo [101;93mNOT OK[0m
-  goto :buildErr
-) else (
-  echo wxWidgets Debug build OK
-)
-
+if errorlevel 1 (echo wxWidgets Debug build [101;93mNOT OK[0m&&goto :buildErr)
+echo wxWidgets Debug build OK
 msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
   -noLogo -verbosity:normal -maxCpuCount ^
   -property:"Configuration=DLL Release";Platform=Win32 ^
   -property:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix=_vc14x ^
+  -property:CL="/arch:SSE" ^
   -logger:FileLogger,Microsoft.Build.Engine;logfile="%CACHE_DIR%\buildwin\wxWidgets\MSBuild_RELEASE_WIN32.log"
-if errorlevel 1 (
-  echo [101;93mNOT OK[0m
-  goto :buildErr
-) else (
-  echo wxWidgets Release build OK
-)
+if errorlevel 1 (echo wxWidgets Release build [101;93mNOT OK[0m&&goto :buildErr)
+echo wxWidgets Release build OK
 
-:skipwxDL
-if not exist "%CACHE_DIR%\buildwin\wxWidgets" (
-    mkdir "%CACHE_DIR%\buildwin\wxWidgets"
+for /f "tokens=*" %%p in ('dir "%WXDIR%\lib\vc_dll\wxmsw32*.dll" /b') do (
+    ::@echo  copy_if_different "%WXDIR%\lib\vc_dll\%%p" "%CACHE_DIR%\buildwin\wxWidgets\%%~np%%~xp"
+    cmake -E copy_if_different "%WXDIR%\lib\vc_dll\%%p" "%CACHE_DIR%\buildwin\wxWidgets\%%~np%%~xp"
+	if errorlevel 1 (echo wxWidgets is broken and [101;93mNOT OK[0m&&goto :buildErr)
 )
-xcopy /e /q /y "%WXDIR%\lib\vc_dll\" "%CACHE_DIR%\buildwin\wxWidgets"
-if errorlevel 1 (
-  echo [101;93mNOT OK[0m
-  goto :buildErr
-) else (
-  echo wxWidgets Debug build OK
+for /f "tokens=*" %%p in ('dir "%WXDIR%\lib\vc_dll\wxmsw32*.pdb" /b') do (
+    ::@echo  copy_if_different "%WXDIR%\lib\vc_dll\%%p" "%CACHE_DIR%\buildwin\wxWidgets\%%~np%%~xp"
+    cmake -E copy_if_different "%WXDIR%\lib\vc_dll\%%p" "%CACHE_DIR%\buildwin\wxWidgets\%%~np%%~xp"
+	if errorlevel 1 (echo wxWidgets is broken and [101;93mNOT OK[0m&&goto :buildErr)
 )
+if errorlevel 1 (echo [101;93mNOT OK[0m&&goto :buildErr)
+echo wxWidgets Debug build OK
+
 if not exist "%CACHE_DIR%\buildwin\wxWidgets\locale" (
   mkdir "%CACHE_DIR%\buildwin\wxWidgets\locale"
 )
-xcopy /e /q /y "%WXDIR%\locale\" "%CACHE_DIR%\buildwin\wxWidgets\locale"
-if errorlevel 1 (
-  echo [101;93mNOT OK[0m
-  goto :buildErr
-) else (
-  echo wxWidgets Debug build OK
-)
+cmake -E copy_directory_if_different "%WXDIR%\locale" "%CACHE_DIR%\buildwin\wxWidgets\locale"
+if errorlevel 1 (echo locale copy [101;93mNOT OK[0m&&goto :buildErr)
 ::-------------------------------------------------------------
 :: Initialize folders needed to run OpenCPN
 ::-------------------------------------------------------------
