@@ -371,7 +371,7 @@ if errorlevel 1 (
   echo [101;93mNOT OK[0m
   goto :buildErr
 ) else (
-  echo wxWidgets Debug build OK
+  echo wxWidgets Release build OK
 )
 
 :skipwxDL
