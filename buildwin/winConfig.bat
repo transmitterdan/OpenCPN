@@ -43,7 +43,7 @@ goto :main
 @echo *  2. Install git for Windows                                              *
 @echo *              https://git-scm.com/download/win                            *
 @echo *  3. Open 'x86 Native Tools Command Prompt for Visual Studio 2022'        *
-@echo *  4. Create folder where you want to work with OpenCPN sources            *
+@echo *  4. Create/move to folder where you want to work with OpenCPN sources    *
 @echo *        Example: mkdir \Users\myname\source\repos                         *
 @echo *                 cd \Users\myname\source\repos                            *
 @echo *  5. Clone Opencpn                                                        *
@@ -51,27 +51,51 @@ goto :main
 @echo *                 cd \Users\myname\source\repos\opencpn                    *
 @echo *                 git checkout master                                      *
 @echo *  6. Set up local build environment by executing this script              *
-@echo *        Example: .\buildwin\winConfig.bat                                 *
+@echo *        Example: .\buildwin\winConfig.bat --debug --relwithdebinfo        *
 @echo *  7. Open solution file                                                   *
 @echo *       (type the solution file name at VS command prompt)                 *
 @echo *        Example: .\build\opencpn.sln                                      *
 @echo *  8. Start building and debugging in Visual Studio.                       *
 @echo *                                                                          *
-@echo *  Command line options:                                                   *
-@echo *      --clean            Remove build folder entirely before building     *
-@echo *                         MUST HAVE INTERNET CONNECTION FOR clean OPTION   *
-@echo *      --rebuild          Rebuild all sources                              *
-@echo *                                                                          *
+@echo *  Command line options (the first time):                                  *
 @echo *      --release          Build Release configuration                      *
 @echo *      --relwithdebinfo   Build RelWithDebInfo configuration               *
 @echo *      --minsizerel       Build MinSizeRel configuration                   *
 @echo *      --debug            Build Debug configuration                        *
-@echo *                                                                          *
 @echo *      --all              Build all 4 configurations  (default)            *
+@echo *     ***************************************************************      *
+@echo *     * By default, the first time you run this script all 4 types  *      *
+@echo *     * of builds are created. If you don't want that, select the   *      *
+@echo *     * build types you want on the command line.                   *      *
+@echo *     ***************************************************************      *
+@echo *      --wxver n.n[.n]    Download specific version of wxWidgets sources.  *
 @echo *                                                                          *
+@echo ****************************************************************************
+@echo *  Later, you can use these options to rebuild or clean up the build       *
+@echo *  folder.                                                                 *
+@echo *                                                                          *
+@echo *      --clean            Remove build folder entirely before building     *
+@echo *                         MUST HAVE INTERNET CONNECTION FOR clean OPTION   *
+@echo *      --rebuild          Rebuild all sources                              *
 @echo *      --help             Print this message                               *
-@echo *      --Y                Don't ask questions (for calling from script)    *
-@echo *      --wxver n.n[.n]    Download specific version wxWidgets zip file.    *
+@echo *      --Y                Non-interactive mode (for calling from script)   *
+@echo *                                                                          *
+@echo ****************************************************************************
+@echo *  Typical workflows:                                                      *
+@echo *  1) Run this script for the first time to build the desired              *
+@echo *     configuration:                                                       *
+@echo *     C:\repos\OpenCPN> .\buildwin\winConfig --relwithdebinfo --debug.     *
+@echo *  2) Launch Visual Studio:                                                *
+@echo *     C:\repos\OpenCPN> .\build\opencpn.sln                                *
+@echo *                                                                          *
+@echo *  Later you may wish to catch up with the github repository like this:    *
+@echo *  1) C:\repos\OpenCPN> git pull upstream master                           *
+@echo *  2) C:\repos\OpenCPN> .\buildwin\winConfig                               *
+@echo *  3) C:\repos\OpenCPN> .\build\opencpn.sln                                *
+@echo *                                                                          *
+@echo *  Or, you can do all that within Visual Studio using its built-in git     *
+@echo *  integration. Sync with upstream then build from the IDE. Either way     *
+@echo *  will produce the same result.                                           *
 @echo *                                                                          *
 @echo ****************************************************************************
 exit /b 1
@@ -237,7 +261,7 @@ if [%ocpn_clean%]==[1] (
       choice /C YN /T 10 /M "Remove entire build folder including downloaded tools? [yN]" /D N
       if ERRORLEVEL==2  goto :usage
     )
-	time /T
+    time /T
     if exist "%OCPN_DIR%\build" (
       set folder=Release
       call :backup
@@ -388,12 +412,12 @@ echo wxWidgets Release build OK
 for /f "tokens=*" %%p in ('dir "%WXDIR%\lib\vc_dll\wxmsw32*.dll" /b') do (
     ::@echo  copy_if_different "%WXDIR%\lib\vc_dll\%%p" "%CACHE_DIR%\buildwin\wxWidgets\%%~np%%~xp"
     cmake -E copy_if_different "%WXDIR%\lib\vc_dll\%%p" "%CACHE_DIR%\buildwin\wxWidgets\%%~np%%~xp"
-	if errorlevel 1 (echo wxWidgets is broken and [101;93mNOT OK[0m&&goto :buildErr)
+    if errorlevel 1 (echo wxWidgets is broken and [101;93mNOT OK[0m&&goto :buildErr)
 )
 for /f "tokens=*" %%p in ('dir "%WXDIR%\lib\vc_dll\wxmsw32*.pdb" /b') do (
     ::@echo  copy_if_different "%WXDIR%\lib\vc_dll\%%p" "%CACHE_DIR%\buildwin\wxWidgets\%%~np%%~xp"
     cmake -E copy_if_different "%WXDIR%\lib\vc_dll\%%p" "%CACHE_DIR%\buildwin\wxWidgets\%%~np%%~xp"
-	if errorlevel 1 (echo wxWidgets is broken and [101;93mNOT OK[0m&&goto :buildErr)
+    if errorlevel 1 (echo wxWidgets is broken and [101;93mNOT OK[0m&&goto :buildErr)
 )
 if errorlevel 1 (echo [101;93mNOT OK[0m&&goto :buildErr)
 echo wxWidgets Debug build OK

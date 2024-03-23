@@ -463,8 +463,6 @@ if (EXISTS /etc/debian_version AND NOT DEFINED CMAKE_INSTALL_LIBDIR)
 endif ()
 include(GNUInstallDirs)
 
-set(PREFIX_BIN ${CMAKE_INSTALL_BINDIR})
-set(PREFIX_INCLUDE ${CMAKE_INSTALL_INCLUDEDIR})
 set(PREFIX_DATA ${CMAKE_INSTALL_DATADIR})
 set(PREFIX_PKGDATA ${CMAKE_INSTALL_DATADIR}/${PACKAGE_NAME})
 set(PREFIX_LIB "${CMAKE_INSTALL_FULL_LIBDIR}")
@@ -651,11 +649,7 @@ if (NOT QT_ANDROID)
     find_package(wxWidgets COMPONENTS ${wxWidgets_FIND_COMPONENTS})
   endif ()
   if (NOT wxWidgets_FOUND)
-    message(
-      FATAL_ERROR
-        "Cannot find wxWidgets, giving up. On linux you might want to try"
-        " using -DOCPN_FORCE_GTK3."
-    )
+    message(FATAL_ERROR "Cannot find wxWidgets, giving up.")
   endif ()
   if (MSYS)
     # Convert msys to windows paths, and handle the missing /usr
@@ -1865,7 +1859,7 @@ if (APPLE)
             ${DOC_FILES}
             ${CONFIG_FILES}
   )
-  install(TARGETS ${PACKAGE_NAME} BUNDLE DESTINATION ${PREFIX_BIN})
+  install(TARGETS ${PACKAGE_NAME} BUNDLE DESTINATION ${CMAKE_INSTALL_BINDIR})
 
   target_link_libraries(${PACKAGE_NAME} PRIVATE ${wxWidgets_LIBRARIES})
   set_target_properties(
@@ -1928,7 +1922,7 @@ if (NOT APPLE)
     install(TARGETS ${PACKAGE_NAME} RUNTIME DESTINATION ".")
   endif ()
   if (LINUX)
-    install(TARGETS ${PACKAGE_NAME} RUNTIME DESTINATION ${PREFIX_BIN})
+    install(TARGETS ${PACKAGE_NAME} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
     install(FILES LINUX_DEVICES.md DESTINATION ${PREFIX_DATA}/${PACKAGE_NAME})
   endif ()
 
