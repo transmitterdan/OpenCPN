@@ -1,4 +1,5 @@
 @echo off
+call :StartTimer
 setlocal enabledelayedexpansion
 goto :main
 :: ***************************************************************************
@@ -329,10 +330,12 @@ if "%gitcmd%"=="" (
   call :explode
   if errorlevel 1 (echo [101;93mNOT OK[0m ) else (echo Explode wxWidgets OK )
 ) else (
-  @echo "%gitcmd%" clone --depth=1 --branch "%wxMajor%" https://github.com/wxWidgets/wxWidgets --recurse-submodules "%wxDIR%"
+  @echo "%gitcmd%" clone --depth 1 --branch "%wxMajor%" https://github.com/wxWidgets/wxWidgets --recurse-submodules "%wxDIR%"
   "%gitcmd%" clone --depth=1 --branch "%wxMajor%" https://github.com/wxWidgets/wxWidgets --recurse-submodules "%wxDIR%"
   if errorlevel 1 (echo [101;93mNOT OK[0m ) else (echo Download %DEST% OK )
 )
+:skipwxDL
+if exist "%wxDIR%\webview2.zip" goto :wxBuild
 @echo Downloading Windows WebView2 kit
 set "URL=https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2"
 set "DEST=%wxDIR%\webview2.zip"
@@ -345,22 +348,25 @@ set "DEST=%wxDIR%\build\3rdparty\webview2"
 call :explode
 if errorlevel 1 (echo [101;93mNOT OK[0m ) else (echo Explode WebView2 OK )
 
+:wxBuild
 ::-------------------------------------------------------------
 :: Build wxWidgets from sources
 ::-------------------------------------------------------------
 @echo Building wxWidgets
 
-:skipwxDL
 if exist "%wxDIR%\.git" (
   pushd "%wxDIR%"
   git submodule update
-  git fetch --all --recurse-submodules
   git checkout "%wxMajor%" --recurse-submodules
+  git pull --recurse-submodules
   popd
 )
 if not exist "%CACHE_DIR%\buildwin\wxWidgets" mkdir "%CACHE_DIR%\buildwin\wxWidgets"
 msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
   -noLogo -verbosity:normal -maxCpuCount ^
+  -property:UseMultiToolTask=true ^
+  -property:EnableClServerMode=true ^
+  -property:BuildPassReferences=true ^
   -property:"Configuration=DLL Debug";Platform=Win32 ^
   -property:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix=_vc14x ^
   -property:CL="/arch:SSE" ^
@@ -369,6 +375,9 @@ if errorlevel 1 (echo wxWidgets Debug build [101;93mNOT OK[0m&&goto :buildErr)
 echo wxWidgets Debug build OK
 msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
   -noLogo -verbosity:normal -maxCpuCount ^
+  -property:UseMultiToolTask=true^
+  -property:EnableClServerMode=true ^
+  -property:BuildPassReferences=true ^
   -property:"Configuration=DLL Release";Platform=Win32 ^
   -property:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix=_vc14x ^
   -property:CL="/arch:SSE" ^
@@ -535,6 +544,8 @@ goto :hint
 @echo  %CD%\buildwin\configdev.bat
 @echo [101;93mfirst, before starting Visual Studio[0m.
 time /T
+call :StopTimer
+call :DisplayTimerResult
 goto :EOF
 ::-------------------------------------------------------------
 :: Local subroutines
@@ -582,7 +593,10 @@ if errorlevel 1 (
     ..
   if errorlevel 1 goto :cmakeErr
 )
-msbuild /noLogo /v:m /m -p:Configuration=%build_type%;Platform=Win32 ^
+msbuild /noLogo /m -p:Configuration=%build_type%;Platform=Win32 ^
+  -property:UseMultiToolTask=true ^
+  -property:EnableClServerMode=true ^
+  -property:BuildPassReferences=true ^
   /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_%build_type%_WIN32_Debug.log ^
   INSTALL.vcxproj
 if errorlevel 1 goto :buildErr
@@ -676,6 +690,36 @@ exit /b 0
 %PSH% -Command if ($PSVersionTable.PSVersion.Major -lt 6) { $ProgressPreference = 'SilentlyContinue' }; Expand-Archive -Force -Path '%SOURCE%' -DestinationPath '%DEST%'; exit $LASTEXITCODE
 if errorlevel 1 (echo Explode failed && exit /b 1) else (echo Unzip OK)
 exit /b 0
+::-------------------------------------------------------------
+:: Execution time measuring functions
+::-------------------------------------------------------------
+:StartTimer
+:: Store start time
+set winConfigStartTIME=%TIME%
+for /f "usebackq tokens=1-4 delims=:., " %%f in (`echo %winConfigStartTIME: =0%`) do set /a Start100S=1%%f*360000+1%%g*6000+1%%h*100+1%%i-36610100
+goto :EOF
+
+:StopTimer
+:: Get the end time
+set winConfigStopTIME=%TIME%
+for /f "usebackq tokens=1-4 delims=:., " %%f in (`echo %winConfigStopTIME: =0%`) do set /a Stop100S=1%%f*360000+1%%g*6000+1%%h*100+1%%i-36610100
+:: Test midnight rollover. If so, add 1 day=8640000 1/100ths secs
+if %Stop100S% LSS %Start100S% set /a Stop100S+=8640000
+set /a winConfigTookTime=%Stop100S%-%Start100S%
+set winConfigTookTimePadded=0%winConfigTookTime%
+goto :EOF
+
+:DisplayTimerResult
+:: Show timer start/stop/delta
+if not "%winConfigStartTime%"=="" echo Started: %winConfigStartTime%
+if not "%winConfigStopTime%"=="" echo Stopped: %winConfigStopTime%
+if not "%winConfigTookTime%"=="" echo Elapsed: %winConfigTookTime:~0,-2%.%winConfigTookTimePadded:~-2% seconds
+set winConfigStartTime=
+set winConfigStopTime=
+set winConfigTookTime=
+set winConfigTookTimePadded=
+goto :EOF
+
 ::
 :: THE END
 ::
