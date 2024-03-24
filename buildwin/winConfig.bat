@@ -35,24 +35,32 @@ goto :main
 :usage
 @echo ****************************************************************************
 @echo *  This script can be used to create a local build environment for OpenCPN.*
-@echo *  These are the prequisites before you can effectively use this script.   *
+@echo *                                                                          *
+@echo *  There are some prequisites before you can effectively use this script.  *
 @echo *                                                                          *
 @echo *  1. Install Visual Studio 2022 Community Edition.                        *
 @echo *              https://visualstudio.microsoft.com/downloads/               *
+@echo *                                                                          *
 @echo *  2. Install git for Windows                                              *
 @echo *              https://git-scm.com/download/win                            *
+@echo *                                                                          *
 @echo *  3. Open 'x86 Native Tools Command Prompt for Visual Studio 2022'        *
+@echo *                                                                          *
 @echo *  4. Create/move to folder where you want to work with OpenCPN sources    *
 @echo *        Example: mkdir \Users\myname\source\repos                         *
 @echo *                 cd \Users\myname\source\repos                            *
+@echo *                                                                          *
 @echo *  5. Clone Opencpn                                                        *
-@echo *        Example: clone https://github.com/OpenCPN/OpenCPN -b master       *
+@echo *        Example: clone https://github.com/OpenCPN/OpenCPN                 *
 @echo *                 cd \Users\myname\source\repos\opencpn                    *
+@echo *                                                                          *
 @echo *  6. Setup local build environment by executing this script               *
 @echo *        Example: .\buildwin\winConfig.bat --debug --relwithdebinfo        *
+@echo *                                                                          *
 @echo *  7. Open solution file                                                   *
 @echo *       (type the solution file name at VS command prompt)                 *
 @echo *        Example: .\build\opencpn.sln                                      *
+@echo *                                                                          *
 @echo *  8. Start building and debugging in Visual Studio.                       *
 @echo *                                                                          *
 @echo *  Command line options (the first time):                                  *
@@ -71,7 +79,7 @@ goto :main
 @echo *                                                                          *
 @echo ****************************************************************************
 @echo *  Later, you can use these options to rebuild or clean up the build       *
-@echo *  folder.                                                                 *
+@echo *  folder:                                                                 *
 @echo *                                                                          *
 @echo *      --clean            Remove build folder entirely before building     *
 @echo *                         MUST HAVE INTERNET CONNECTION FOR clean OPTION   *
@@ -80,7 +88,8 @@ goto :main
 @echo *      --Y                Non-interactive mode (for calling from a script) *
 @echo *     ***************************************************************      *
 @echo *     * By default, after the first time, when you run this script  *      *
-@echo *     * again it will build the originally selected configurations. *      *
+@echo *     * with no arguments, it will msbuild the originally selected  *      *
+@echo *     * configurations.                                             *      *
 @echo *     ***************************************************************      *
 @echo *                                                                          *
 @echo ****************************************************************************
@@ -113,6 +122,7 @@ set "OD=%~dp0.."
 cd %OD%
 set "OCPN_Dir=%CD%"
 SET "CACHE_DIR=%OCPN_DIR%\cache"
+set "wxWidgetsURL=https://github.com/wxWidgets/wxWidgets"
 set "wxDIR=%OCPN_DIR%\..\ocpn_wxWidgets"
 set "wxWidgets_ROOT_DIR=%wxDIR%"
 set "wxWidgets_LIB_DIR=%wxDIR%\lib\vc_dll"
@@ -359,9 +369,11 @@ if "%gitcmd%"=="" (
   call :explode
   if errorlevel 1 (echo [101;93mNOT OK[0m ) else (echo Explode wxWidgets OK )
 ) else (
-  @echo "%gitcmd%" clone --depth 1 --branch "%wxMajor%" https://github.com/wxWidgets/wxWidgets --recurse-submodules "%wxDIR%"
-  "%gitcmd%" clone --depth=1 --branch "%wxMajor%" https://github.com/wxWidgets/wxWidgets --recurse-submodules "%wxDIR%"
-  if errorlevel 1 (echo [101;93mNOT OK[0m ) else (echo Download %DEST% OK )
+  @echo "%gitcmd%" clone --jobs 2 --depth 1 --recurse-submodules --shallow-submodules ^
+         --branch %wxMajor% "%wxWidgetsURL%" "%wxDIR%"
+  "%gitcmd%" clone --jobs 2 --depth 1 --recurse-submodules --shallow-submodules ^
+   --branch %wxMajor% "%wxWidgetsURL%" "%wxDIR%"
+  if errorlevel 1 (echo Git clone [101;93mNOT OK[0m&&exit /b 1 )
 )
 :skipwxDL
 if exist "%wxDIR%\webview2.zip" goto :wxBuild
