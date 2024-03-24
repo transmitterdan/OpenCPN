@@ -550,44 +550,54 @@ if exist .\buildwin\configdev.bat (call .\buildwin\configdev.bat) else (goto :hi
 ::-------------------------------------------------------------
 pushd build
 @echo In folder %CD%
-set configOnly=1
-set build_type=Debug
-call :config_build
-set build_type=RelWithDebInfo
-call :config_build
-set build_type=Release
-call :config_build
-set build_type=MinSizeRel
-call :config_build
-set configOnly=
 if exist .\Debug (
   @echo Building Debug
   set build_type=Debug
   call :config_build
   if errorlevel 1 goto :buildErr
   call :restore
-  )
+) else (
+  set configOnly=1
+  set build_type=Debug
+  call :config_build
+  call :restore
+)
 if exist .\RelWithDebInfo (
   @echo Building RelWithDebInfo
   set build_type=RelWithDebInfo
   call :config_build
   if errorlevel 1 goto :buildErr
   call :restore
-  )
+) else (
+  set configOnly=1
+  set build_type=RelWithDebInfo
+  call :config_build
+  call :restore
+)
 if exist .\Release (
   @echo Building Release
   set build_type=Release
   call :config_build
   if errorlevel 1 goto :buildErr
   call :restore
-  )
+) else (
+  set configOnly=1
+  set build_type=Release
+  call :config_build
+  call :restore
+)
 if exist .\MinSizeRel (
   @echo Building MinSizeRel
   set build_type=MinSizeRel
   call :config_build
   if errorlevel 1 goto :buildErr
   call :restore
-  )
+) else (
+  set configOnly=1
+  set build_type=MinSizeRel
+  call :config_build
+  call :restore
+)
 popd
 set build_type=
 goto :hint
@@ -725,6 +735,7 @@ if not exist "%~dp0..\tmp\%build_type%" (
 cmake -E copy_directory "%~dp0..\tmp\%build_type%" "%~dp0..\build\%build_type%"
 if errorlevel 1 (
   @echo Restore %build_type% failed
+  pause
   goto ::rreturn
 ) else (
   @echo Restore successful
