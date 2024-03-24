@@ -550,6 +550,16 @@ if exist .\buildwin\configdev.bat (call .\buildwin\configdev.bat) else (goto :hi
 ::-------------------------------------------------------------
 pushd build
 @echo In folder %CD%
+set configOnly=1
+set build_type=Debug
+call :config_build
+set build_type=RelWithDebInfo
+call :config_build
+set build_type=Release
+call :config_build
+set build_type=MinSizeRel
+call :config_build
+set configOnly=
 if exist .\Debug (
   @echo Building Debug
   set build_type=Debug
@@ -648,6 +658,7 @@ if errorlevel 1 (
     ..
   if errorlevel 1 goto :cmakeErr
 )
+if [%configOnly%]==1 (goto :EOF)
 if [%ocpn_rebuild%]==[1] (set buildTarget=Rebuild) else (set buildTarget=Build)
 msbuild /noLogo /m -p:Configuration=%build_type%;Platform=Win32 -t:%buildTarget% ^
   -property:UseMultiToolTask=true ^
