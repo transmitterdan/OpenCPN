@@ -35,8 +35,7 @@ goto :main
 :usage
 @echo ****************************************************************************
 @echo *  This script can be used to create a local build environment for OpenCPN.*
-@echo *  Here are some basic steps that are known to work.  There are            *
-@echo *  probably other ways to do this, but this is the way that works for me.  *
+@echo *  These are the prequisites before you can effectively use this script.   *
 @echo *                                                                          *
 @echo *  1. Install Visual Studio 2022 Community Edition.                        *
 @echo *              https://visualstudio.microsoft.com/downloads/               *
@@ -47,10 +46,9 @@ goto :main
 @echo *        Example: mkdir \Users\myname\source\repos                         *
 @echo *                 cd \Users\myname\source\repos                            *
 @echo *  5. Clone Opencpn                                                        *
-@echo *        Example: clone https://github.com/opencpn/opencpn                 *
+@echo *        Example: clone https://github.com/OpenCPN/OpenCPN -b master       *
 @echo *                 cd \Users\myname\source\repos\opencpn                    *
-@echo *                 git checkout master                                      *
-@echo *  6. Set up local build environment by executing this script              *
+@echo *  6. Setup local build environment by executing this script               *
 @echo *        Example: .\buildwin\winConfig.bat --debug --relwithdebinfo        *
 @echo *  7. Open solution file                                                   *
 @echo *       (type the solution file name at VS command prompt)                 *
@@ -64,9 +62,10 @@ goto :main
 @echo *      --debug            Build Debug configuration                        *
 @echo *      --all              Build all 4 configurations  (default)            *
 @echo *     ***************************************************************      *
-@echo *     * By default, the first time you run this script all 4 types  *      *
-@echo *     * of builds are created. If you don't want that, select the   *      *
-@echo *     * build types you want on the command line.                   *      *
+@echo *     * By default, the first time you run this script all 4        *      *
+@echo *     * configuration types of builds are created. If you don't     *      *
+@echo *     * want that, select the build types you need using above      *      *
+@echo *     * options.                                                    *      *
 @echo *     ***************************************************************      *
 @echo *      --wxver n.n[.n]    Download specific version of wxWidgets sources.  *
 @echo *                                                                          *
@@ -78,10 +77,14 @@ goto :main
 @echo *                         MUST HAVE INTERNET CONNECTION FOR clean OPTION   *
 @echo *      --rebuild          Rebuild all sources                              *
 @echo *      --help             Print this message                               *
-@echo *      --Y                Non-interactive mode (for calling from script)   *
+@echo *      --Y                Non-interactive mode (for calling from a script) *
+@echo *     ***************************************************************      *
+@echo *     * By default, after the first time, when you run this script  *      *
+@echo *     * again it will build the originally selected configurations. *      *
+@echo *     ***************************************************************      *
 @echo *                                                                          *
 @echo ****************************************************************************
-@echo *  Typical workflows:                                                      *
+@echo *  Typical workflow:                                                       *
 @echo *  1) Run this script for the first time to build the desired              *
 @echo *     configuration:                                                       *
 @echo *     C:\repos\OpenCPN> .\buildwin\winConfig --relwithdebinfo --debug.     *
@@ -89,12 +92,14 @@ goto :main
 @echo *     C:\repos\OpenCPN> .\build\opencpn.sln                                *
 @echo *                                                                          *
 @echo *  Later you may wish to catch up with the github repository like this:    *
-@echo *  1) C:\repos\OpenCPN> git pull upstream master                           *
-@echo *  2) C:\repos\OpenCPN> .\buildwin\winConfig                               *
-@echo *  3) C:\repos\OpenCPN> .\build\opencpn.sln                                *
+@echo *  C:\repos> git clone https://github.com/OpenCPN/OpenCPN                  *
+@echo *  C:\repos> cd OpenCPN                                                    *
+@echo *  C:\repos\OpenCPN> git pull upstream master                              *
+@echo *  C:\repos\OpenCPN> .\buildwin\winConfig                                  *
+@echo *  C:\repos\OpenCPN> .\build\opencpn.sln                                   *
 @echo *                                                                          *
-@echo *  Or, you can do all that within Visual Studio using its built-in git     *
-@echo *  integration. Sync with upstream then build from the IDE. Either way     *
+@echo *  Or, you can do the same steps within Visual Studio using its built-in   *
+@echo *  git integration. Sync with upstream then build from the IDE. Either way *
 @echo *  will produce the same result.                                           *
 @echo *                                                                          *
 @echo ****************************************************************************
@@ -104,7 +109,7 @@ exit /b 1
 :: Initialize local environment
 ::-------------------------------------------------------------
 set "OD=%~dp0.."
-@echo OD=%OD%
+:: @echo OD=%OD%
 cd %OD%
 set "OCPN_Dir=%CD%"
 SET "CACHE_DIR=%OCPN_DIR%\cache"
@@ -137,16 +142,16 @@ SET "buildWINtmp=%CACHE_DIR%\buildwintemp"
 set PSH=powershell
 where pwsh > NUL 2> NUL && set PSH=pwsh
 where %PSH% > NUL 2> NUL || echo PowerShell is not installed && exit /b 1
-where msbuild && goto :vsok
+where msbuild > NUL 2> NUL && goto :vsok
 @echo Please run this from "x86 Native Tools Command Prompt for VS2022
 goto :usage
 :vsok
 for /f "delims=" %%G in ('where /f git') do (
   set gitfldr=!%%~dpG!
   set gitcmd=!%%~fG!
-  if exist !gitcmd! (echo Git found @ !gitcmd!) else (set gitcmd=&& echo Git not found)
+  if not exist !gitcmd! (set gitcmd=&&echo [101;93mWarning[0m: git not found)
   set patchcmd=!gitfldr!..\usr\bin\patch.exe
-  if exist !patchcmd! (echo Patch found @ !patchcmd!) else (set patchcmd=&& echo Patch not found)
+  if not exist !patchcmd! (set patchcmd=&& echo Patch not found)
 )
 set ocpn_clean=0
 set ocpn_rebuild=0
@@ -158,7 +163,7 @@ set ocpn_release=0
 set ocpn_relwithdebinfo=0
 set ocpn_debug=0
 set quiet=N
-:: If this is a rebuild then build existing configurations
+:: If this is a rerun then build existing configurations
 if exist "%OCPN_DIR%\build\Debug" (
   set ocpn_all=0
   set ocpn_debug=1
