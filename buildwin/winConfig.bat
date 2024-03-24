@@ -658,7 +658,7 @@ if errorlevel 1 (
     ..
   if errorlevel 1 goto :cmakeErr
 )
-if [%configOnly%]==1 (goto :EOF)
+if [%configOnly%]==[1] (goto :EOF)
 if [%ocpn_rebuild%]==[1] (set buildTarget=Rebuild) else (set buildTarget=Build)
 msbuild /noLogo /m -p:Configuration=%build_type%;Platform=Win32 -t:%buildTarget% ^
   -property:UseMultiToolTask=true ^
