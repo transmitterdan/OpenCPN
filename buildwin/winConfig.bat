@@ -250,6 +250,20 @@ if [%ocpn_rebuild%]==[1] (
   if exist "%OCPN_DIR%\build\CMakeFiles" echo Could not remove "%OCPN_DIR%\build\CMakeFiles" folder
   if exist "%OCPN_DIR%\build\CMakeCache.txt" del "%OCPN_DIR%\build\CMakeCache.txt"
   if exist "%OCPN_DIR%\build\CMakeCache.txt" echo Could not remove "%OCPN_DIR%\build\CMakeCache.txt"
+  if exist "%OCPN_DIR%\build\ocpn.dir" rmdir /s /q "%OCPN_DIR%\build\ocpn.dir"
+  if exist "%OCPN_DIR%\build\ocpn.dir" echo Could not remove "%OCPN_DIR%\build\ocpn.dir"
+  if exist "%OCPN_DIR%\build\plugins" rmdir /s /q "%OCPN_DIR%\build\plugins"
+  if exist "%OCPN_DIR%\build\plugins" echo Could not remove "%OCPN_DIR%\build\plugins"
+  if exist "%OCPN_DIR%\build\cli" rmdir /s /q "%OCPN_DIR%\build\cli"
+  if exist "%OCPN_DIR%\build\cli" echo Could not remove "%OCPN_DIR%\build\cli"
+  if exist "%OCPN_DIR%\build\lib" rmdir /s /q "%OCPN_DIR%\build\lib"
+  if exist "%OCPN_DIR%\build\lib" echo Could not remove "%OCPN_DIR%\build\lib"
+  if exist "%OCPN_DIR%\build\libs" rmdir /s /q "%OCPN_DIR%\build\libs"
+  if exist "%OCPN_DIR%\build\libs" echo Could not remove "%OCPN_DIR%\build\libs"
+  if exist "%OCPN_DIR%\build\glutil" rmdir /s /q "%OCPN_DIR%\build\glutil"
+  if exist "%OCPN_DIR%\build\glutil" echo Could not remove "%OCPN_DIR%\build\glutil"
+  if exist "%OCPN_DIR%\build\model" rmdir /s /q "%OCPN_DIR%\build\model"
+  if exist "%OCPN_DIR%\build\model" echo Could not remove "%OCPN_DIR%\build\model"
   if exist "%OCPN_DIR%\build\.vs" rmdir /s /q "%OCPN_DIR%\build\.vs"
   if exist "%OCPN_DIR%\build\.vs" (
     @echo Could not remove "%OCPN_DIR%\build\.vs" folder
@@ -634,7 +648,7 @@ if errorlevel 1 (
     ..
   if errorlevel 1 goto :cmakeErr
 )
-if %ocpn_rebuild%==1 (set buildTarget=Rebuild) else (set buildTarget=Build)
+if [%ocpn_rebuild%]==[1] (set buildTarget=Rebuild) else (set buildTarget=Build)
 msbuild /noLogo /m -p:Configuration=%build_type%;Platform=Win32 -t:%buildTarget% ^
   -property:UseMultiToolTask=true ^
   -property:EnableClServerMode=true ^
