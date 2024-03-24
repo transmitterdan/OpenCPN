@@ -634,13 +634,15 @@ if errorlevel 1 (
     ..
   if errorlevel 1 goto :cmakeErr
 )
-msbuild /noLogo /m -p:Configuration=%build_type%;Platform=Win32 ^
+if %ocpn_rebuild%==1 (set buildTarget=Rebuild) else (set buildTarget=Build)
+msbuild /noLogo /m -p:Configuration=%build_type%;Platform=Win32 -t:%buildTarget% ^
   -property:UseMultiToolTask=true ^
   -property:EnableClServerMode=true ^
   -property:BuildPassReferences=true ^
   /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_%build_type%_WIN32_Debug.log ^
   INSTALL.vcxproj
 if errorlevel 1 goto :buildErr
+set buildTarget=
 @echo OpenCPN %build_type% build successful!
 @echo.
 exit /b 0
