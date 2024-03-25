@@ -492,6 +492,7 @@ if exist "%WindowsSdkDir%\lib\%WindowsSdkLibVersion%\um\x86\iphlpapi.lib" (
   xcopy /d /y "%WindowsSdkDir%\lib\%WindowsSdkLibVersion%\um\x86\iphlpapi.lib" "%DEST%"
   @echo xcopy /d /y "%WindowsSdkDir%\include\%WindowsSdkLibVersion%\um\iphlpapi.h" "%DEST%\include"
   xcopy /d /y "%WindowsSdkDir%\include\%WindowsSdkLibVersion%\um\iphlpapi.h" "%DEST%\include"
+  pause
 ) else (
   @echo [101;93mCould not find local copy of iphlpapi library so will try to download one.[0m
 )
@@ -553,50 +554,61 @@ pushd build
 if exist .\Debug (
   @echo Building Debug
   set build_type=Debug
-  call :config_build
+  call :ocpnConfig
+  if errorlevel 1 goto :buildErr
+  set buildTarget=Build
+  call :ocpnBuild
   if errorlevel 1 goto :buildErr
   call :restore
 ) else (
-  set configOnly=1
   set build_type=Debug
-  call :config_build
-  call :restore
+  call :ocpnConfig
+  if errorlevel 1 goto :buildErr
 )
+
 if exist .\RelWithDebInfo (
   @echo Building RelWithDebInfo
   set build_type=RelWithDebInfo
-  call :config_build
+  call :ocpnConfig
+  if errorlevel 1 goto :buildErr
+  set buildTarget=Build
+  call :ocpnBuild
   if errorlevel 1 goto :buildErr
   call :restore
 ) else (
-  set configOnly=1
   set build_type=RelWithDebInfo
-  call :config_build
-  call :restore
+  call :ocpnConfig
+  if errorlevel 1 goto :buildErr
 )
+
 if exist .\Release (
   @echo Building Release
   set build_type=Release
-  call :config_build
+  call :ocpnConfig
+  if errorlevel 1 goto :buildErr
+  set buildTarget=Build
+  call :ocpnBuild
   if errorlevel 1 goto :buildErr
   call :restore
 ) else (
-  set configOnly=1
   set build_type=Release
-  call :config_build
-  call :restore
+  call :ocpnConfig
+  if errorlevel 1 goto :buildErr
 )
+
 if exist .\MinSizeRel (
   @echo Building MinSizeRel
   set build_type=MinSizeRel
-  call :config_build
+  call :ocpnConfig
+  if errorlevel 1 goto :buildErr
+  set buildTarget=Build
+  call :ocpnBuild
   if errorlevel 1 goto :buildErr
   call :restore
 ) else (
-  set configOnly=1
   set build_type=MinSizeRel
-  call :config_build
-  call :restore
+  call :ocpnConfig
+  if errorlevel 1 goto :buildErr
 )
 popd
 set build_type=
@@ -608,7 +620,9 @@ goto :hint
 @echo To build OpenCPN for debugging at command line do this in the folder
 @echo %CD%
 @echo.
+set build_type=
 @echo  .\buildwin\configdev.bat
+::-------------------------------------------------------------
 @echo  cd build
 @echo  msbuild /noLogo /m -p:Configuration=Debug;Platform=Win32 opencpn.sln
 @echo  .\opencpn.sln
@@ -628,7 +642,7 @@ goto :EOF
 ::-------------------------------------------------------------
 :: Config and build
 ::-------------------------------------------------------------
-:config_build
+:ocpnConfig
 cmake -A Win32 -G "%VCstr%" ^
   -DCMAKE_GENERATOR_PLATFORM=Win32 ^
   -DCMAKE_BUILD_TYPE=%build_type% ^
@@ -668,8 +682,9 @@ if errorlevel 1 (
     ..
   if errorlevel 1 goto :cmakeErr
 )
-if [%configOnly%]==[1] (goto :EOF)
-if [%ocpn_rebuild%]==[1] (set buildTarget=Rebuild) else (set buildTarget=Build)
+exit /b 0
+:ocpnBuild
+@echo buildTarget=%buildTarget%
 msbuild /noLogo /m -p:Configuration=%build_type%;Platform=Win32 -t:%buildTarget% ^
   -property:UseMultiToolTask=true ^
   -property:EnableClServerMode=true ^
@@ -735,7 +750,6 @@ if not exist "%~dp0..\tmp\%build_type%" (
 cmake -E copy_directory "%~dp0..\tmp\%build_type%" "%~dp0..\build\%build_type%"
 if errorlevel 1 (
   @echo Restore %build_type% failed
-  pause
   goto ::rreturn
 ) else (
   @echo Restore successful
