@@ -509,12 +509,14 @@ where /Q xgettext.exe && goto :skipgettext
 %buildWINtmp%\nuget install Gettext.Tools
 where /Q /R . xgettext.exe && echo Found Gettext.Tools && goto :skipgettext
 echo Error: Could not install GetText tools.
+cd %OCPN_DIR%
 goto :usage
 :skipgettext
 where /Q makensisw.exe && goto :skipnsis
 %buildWINtmp%\nuget install NSIS-Package
 where /Q /R . makensisw.exe && echo Found NSIS-Package && goto :skipnsis
 @echo Error: Could not install NSIS installer.
+cd %OCPN_DIR%
 goto :usage
 :skipnsis
 for /D %%D in (Gettext*) do (set "gettextpath=%%~fD")
@@ -554,60 +556,96 @@ if exist .\Debug (
   @echo Building Debug
   set build_type=Debug
   call :ocpnConfig
-  if errorlevel 1 goto :buildErr
+  if errorlevel 1 (
+    popd
+    goto :buildErr
+  )
   set buildTarget=Build
   call :ocpnBuild
-  if errorlevel 1 goto :buildErr
+  if errorlevel 1 (
+    popd
+    goto :buildErr
+  )
   call :restore
 ) else (
   set build_type=Debug
   call :ocpnConfig
-  if errorlevel 1 goto :buildErr
+  if errorlevel 1 (
+    popd
+    goto :buildErr
+  )
 )
 
 if exist .\RelWithDebInfo (
   @echo Building RelWithDebInfo
   set build_type=RelWithDebInfo
   call :ocpnConfig
-  if errorlevel 1 goto :buildErr
+  if errorlevel 1 (
+    popd
+    goto :buildErr
+  )
   set buildTarget=Build
   call :ocpnBuild
-  if errorlevel 1 goto :buildErr
+  if errorlevel 1 (
+    popd
+    goto :buildErr
+  )
   call :restore
 ) else (
   set build_type=RelWithDebInfo
   call :ocpnConfig
-  if errorlevel 1 goto :buildErr
+  if errorlevel 1 (
+    popd
+    goto :buildErr
+  )
 )
 
 if exist .\Release (
   @echo Building Release
   set build_type=Release
   call :ocpnConfig
-  if errorlevel 1 goto :buildErr
+  if errorlevel 1 (
+    popd
+    goto :buildErr
+  )
   set buildTarget=Build
   call :ocpnBuild
-  if errorlevel 1 goto :buildErr
+  if errorlevel 1 (
+    popd
+    goto :buildErr
+  )
   call :restore
 ) else (
   set build_type=Release
   call :ocpnConfig
-  if errorlevel 1 goto :buildErr
+  if errorlevel 1 (
+    popd
+    goto :buildErr
+  )
 )
 
 if exist .\MinSizeRel (
   @echo Building MinSizeRel
   set build_type=MinSizeRel
   call :ocpnConfig
-  if errorlevel 1 goto :buildErr
+  if errorlevel 1 (
+    popd
+    goto :buildErr
+  )
   set buildTarget=Build
   call :ocpnBuild
-  if errorlevel 1 goto :buildErr
+  if errorlevel 1 (
+    popd
+    goto :buildErr
+  )
   call :restore
 ) else (
   set build_type=MinSizeRel
   call :ocpnConfig
-  if errorlevel 1 goto :buildErr
+  if errorlevel 1 (
+    popd
+    goto :buildErr
+  )
 )
 popd
 set build_type=
