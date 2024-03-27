@@ -509,6 +509,7 @@ where /Q xgettext.exe && goto :skipgettext
 %buildWINtmp%\nuget install Gettext.Tools
 where /Q /R . xgettext.exe && echo Found Gettext.Tools && goto :skipgettext
 echo Error: Could not install GetText tools.
+if [%quiet%]==[N] pause
 cd %OCPN_DIR%
 goto :usage
 :skipgettext
@@ -558,46 +559,31 @@ if exist .\Debug (
   call :ocpnConfig
   if errorlevel 1 (
     popd
-    goto :buildErr
+    exit /b 1
   )
   set buildTarget=Build
   call :ocpnBuild
   if errorlevel 1 (
     popd
-    goto :buildErr
+    exit /b 1
   )
   call :restore
-) else (
-  set build_type=Debug
-  call :ocpnConfig
-  if errorlevel 1 (
-    popd
-    goto :buildErr
-  )
 )
-
 if exist .\RelWithDebInfo (
   @echo Building RelWithDebInfo
   set build_type=RelWithDebInfo
   call :ocpnConfig
   if errorlevel 1 (
     popd
-    goto :buildErr
+    exit /b 1
   )
   set buildTarget=Build
   call :ocpnBuild
   if errorlevel 1 (
     popd
-    goto :buildErr
+    exit /b 1
   )
   call :restore
-) else (
-  set build_type=RelWithDebInfo
-  call :ocpnConfig
-  if errorlevel 1 (
-    popd
-    goto :buildErr
-  )
 )
 
 if exist .\Release (
@@ -606,22 +592,15 @@ if exist .\Release (
   call :ocpnConfig
   if errorlevel 1 (
     popd
-    goto :buildErr
+    exit /b 1
   )
   set buildTarget=Build
   call :ocpnBuild
   if errorlevel 1 (
     popd
-    goto :buildErr
+    exit /b 1
   )
   call :restore
-) else (
-  set build_type=Release
-  call :ocpnConfig
-  if errorlevel 1 (
-    popd
-    goto :buildErr
-  )
 )
 
 if exist .\MinSizeRel (
@@ -630,22 +609,15 @@ if exist .\MinSizeRel (
   call :ocpnConfig
   if errorlevel 1 (
     popd
-    goto :buildErr
+    exit /b 1
   )
   set buildTarget=Build
   call :ocpnBuild
   if errorlevel 1 (
     popd
-    goto :buildErr
+    exit /b 1
   )
   call :restore
-) else (
-  set build_type=MinSizeRel
-  call :ocpnConfig
-  if errorlevel 1 (
-    popd
-    goto :buildErr
-  )
 )
 popd
 set build_type=
@@ -722,7 +694,7 @@ if errorlevel 1 (
 exit /b 0
 :ocpnBuild
 @echo buildTarget=%buildTarget%
-msbuild /noLogo /m -p:Configuration=%build_type%;Platform=Win32 -t:%buildTarget% ^
+msbuild /noLogo /m -p:Configuration=%build_type%;Platform=Win32 -target:%buildTarget% ^
   -property:UseMultiToolTask=true ^
   -property:EnableClServerMode=true ^
   -property:BuildPassReferences=true ^
