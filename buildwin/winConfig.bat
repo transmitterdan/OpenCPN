@@ -152,14 +152,14 @@ SET "buildWINtmp=%CACHE_DIR%\buildwintemp"
 set PSH=powershell
 where pwsh > NUL 2> NUL && set PSH=pwsh
 where %PSH% > NUL 2> NUL || echo PowerShell is not installed && exit /b 1
-where msbuild > NUL 2> NUL && goto :vsok
+where msbuild.exe > NUL 2> NUL && goto :vsok
 @echo Please run this from "x86 Native Tools Command Prompt for VS2022
 goto :usage
 :vsok
-for /f "delims=" %%G in ('where /f git') do (
+for /f "delims=" %%G in ('where /f git.exe') do (
   set gitfldr=!%%~dpG!
   set gitcmd=!%%~fG!
-  if not exist !gitcmd! (set gitcmd=&&echo [101;93mWarning[0m: git not found)
+  if not exist "!gitcmd!" (set gitcmd=&&echo [101;93mWarning[0m: git not found)
   set patchcmd=!gitfldr!..\usr\bin\patch.exe
   if not exist !patchcmd! (set patchcmd=&& echo Patch not found)
 )
@@ -337,7 +337,7 @@ if not exist "%buildWINtmp%" (mkdir "%buildWINtmp%")
 ::-------------------------------------------------------------
 :: Install nuget
 ::-------------------------------------------------------------
-where /Q /R %buildWINtmp% nuget.exe && goto :skipnuget
+where /Q /R %buildWINtmp% nuget.exe && "%buildWINtmp%\nuget.exe" >nul && goto :skipnuget
 @echo Downloading nuget
 set "URL=https://dist.nuget.org/win-x86-commandline/latest/nuget.exe"
 set "DEST=%buildWINtmp%\nuget.exe"
@@ -370,7 +370,7 @@ if errorlevel 1 (echo [101;93mNOT OK[0m ) else (
 ::-------------------------------------------------------------
 if exist "%wxDIR%\build\msw\wx_vc%VCver%.sln" (goto :skipwxDL)
 @echo Downloading wxWidgets sources
-if "%gitcmd%"=="" (
+if "[%gitcmd%]"=="[]" (
   mkdir "%wxDIR%"
   set "URL=https://github.com/wxWidgets/wxWidgets/releases/download/v%wxVER%/wxWidgets-%wxVER%.zip"
   set "DEST=%wxDIR%\wxWidgets-%wxVER%.zip"
@@ -410,11 +410,13 @@ if errorlevel 1 (echo [101;93mNOT OK[0m ) else (echo Explode WebView2 OK )
 @echo Building wxWidgets
 
 if exist "%wxDIR%\.git" (
-  pushd "%wxDIR%"
-  git submodule update
-  git checkout "%wxMajor%" --recurse-submodules
-  git pull --recurse-submodules
-  popd
+  if not "[%gitcmd%]"=="[]" (
+    pushd "%wxDIR%"
+    "%gitcmd%" submodule update
+    "%gitcmd%" checkout "%wxMajor%" --recurse-submodules
+    "%gitcmd%" pull --recurse-submodules
+    popd
+  )
 )
 if not exist "%CACHE_DIR%\buildwin\wxWidgets" mkdir "%CACHE_DIR%\buildwin\wxWidgets"
 msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
@@ -813,9 +815,9 @@ goto :EOF
 
 :DisplayTimerResult
 :: Show timer start/stop/delta
-if not "%winConfigStartTime%"=="" echo Started: %winConfigStartTime%
-if not "%winConfigStopTime%"=="" echo Stopped: %winConfigStopTime%
-if not "%winConfigTookTime%"=="" echo Elapsed: %winConfigTookTime:~0,-2%.%winConfigTookTimePadded:~-2% seconds
+if not "[%winConfigStartTime%]"=="[]" echo Started: %winConfigStartTime%
+if not "[%winConfigStopTime%]"=="[]" echo Stopped: %winConfigStopTime%
+if not "[%winConfigTookTime%]"=="[]" echo Elapsed: %winConfigTookTime:~0,-2%.%winConfigTookTimePadded:~-2% seconds
 set winConfigStartTime=
 set winConfigStopTime=
 set winConfigTookTime=
