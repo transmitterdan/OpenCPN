@@ -163,6 +163,12 @@ for /f "delims=" %%G in ('where /f git.exe') do (
   set patchcmd=!gitfldr!..\usr\bin\patch.exe
   if not exist !patchcmd! (set patchcmd=&& echo Patch not found)
 )
+:: Check if network is available
+set netok=0
+if not "[%gitcmd%]"=="[]" (
+  git fetch --dry-run >nul && set netok=1
+)
+
 set ocpn_clean=0
 set ocpn_rebuild=0
 :: By default build all 4 possible configurations the first time
@@ -284,9 +290,10 @@ if [%ocpn_rebuild%]==[1] (
 :: Save user configuration data and wipe the build folder
 ::-------------------------------------------------------------
 if [%ocpn_clean%]==[1] (
-  if exist "%OCPN_DIR%\build" (
+  if %netok%==0 (
     if [%quiet%]==[N] (
       @echo [101;93mThe --clean option requires an internet connection.[0m
+	  @echo The internet connection appears to be down. Proceed with caution.
       choice /C YN /T 10 /M "Remove entire build folder including downloaded tools? [yN]" /D N
       if ERRORLEVEL==2  goto :usage
     )
