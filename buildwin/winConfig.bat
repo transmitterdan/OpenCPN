@@ -459,9 +459,6 @@ for /f "tokens=*" %%p in ('dir "%WXDIR%\lib\vc_dll\wxmsw32*.pdb" /b') do (
     cmake -E copy_if_different "%WXDIR%\lib\vc_dll\%%p" "%CACHE_DIR%\buildwin\wxWidgets\%%~np%%~xp"
     if errorlevel 1 (echo wxWidgets is broken and [101;93mNOT OK[0m&&goto :buildErr)
 )
-if errorlevel 1 (echo [101;93mNOT OK[0m&&goto :buildErr)
-echo wxWidgets Debug build OK
-
 if not exist "%CACHE_DIR%\buildwin\wxWidgets\locale" (
   mkdir "%CACHE_DIR%\buildwin\wxWidgets\locale"
 )
