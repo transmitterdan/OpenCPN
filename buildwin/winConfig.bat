@@ -388,7 +388,7 @@ if "[%gitcmd%]"=="[]" (
   if errorlevel 1 (echo Git clone [101;93mNOT OK[0m&&exit /b 1 )
 )
 :skipwxDL
-if exist "%wxDIR%\webview2.zip" goto :wxBuild
+if exist "%wxDIR%\build\3rdparty\webview2" goto :wxBuild
 @echo Downloading Windows WebView2 kit
 set "URL=https://www.nuget.org/api/v2/package/Microsoft.Web.WebView2"
 set "DEST=%wxDIR%\webview2.zip"
@@ -405,8 +405,6 @@ if errorlevel 1 (echo [101;93mNOT OK[0m ) else (echo Explode WebView2 OK )
 ::-------------------------------------------------------------
 :: Build wxWidgets from sources
 ::-------------------------------------------------------------
-@echo Building wxWidgets
-
 if exist "%wxDIR%\.git" (
   if not "[%gitcmd%]"=="[]" (
     pushd "%wxDIR%"
@@ -417,8 +415,9 @@ if exist "%wxDIR%\.git" (
   )
 )
 if not exist "%CACHE_DIR%\buildwin\wxWidgets" mkdir "%CACHE_DIR%\buildwin\wxWidgets"
+@echo Building wxWidgets
 msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
-  -noLogo -verbosity:normal -maxCpuCount ^
+  -noLogo -verbosity:minimal -maxCpuCount ^
   -property:UseMultiToolTask=true ^
   -property:EnableClServerMode=true ^
   -property:BuildPassReferences=true ^
@@ -429,7 +428,7 @@ msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
 if errorlevel 1 (echo wxWidgets Debug build [101;93mNOT OK[0m&&goto :buildErr)
 echo wxWidgets Debug build OK
 msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
-  -noLogo -verbosity:normal -maxCpuCount ^
+  -noLogo -verbosity:minimal -maxCpuCount ^
   -property:UseMultiToolTask=true^
   -property:EnableClServerMode=true ^
   -property:BuildPassReferences=true ^
@@ -465,23 +464,15 @@ if errorlevel 1 (echo locale copy [101;93mNOT OK[0m&&goto :buildErr)
 
 if [%ocpn_debug%]==[1] (
   if not exist "%OCPN_DIR%\build\.Debug" (mkdir "%OCPN_DIR%\build\.Debug")
-  if not exist "%OCPN_DIR%\build\Debug" (mkdir "%OCPN_DIR%\build\Debug")
-  if not exist "%OCPN_DIR%\build\Debug\plugins" (mkdir "%OCPN_DIR%\build\Debug\plugins")
   )
 if [%ocpn_release%]==[1] (
   if not exist "%OCPN_DIR%\build\.Release" (mkdir "%OCPN_DIR%\build\.Release")
-  if not exist "%OCPN_DIR%\build\Release" (mkdir "%OCPN_DIR%\build\Release")
-  if not exist "%OCPN_DIR%\build\Release\plugins" (mkdir "%OCPN_DIR%\build\Release\plugins")
   )
 if [%ocpn_relwithdebinfo%]==[1] (
   if not exist "%OCPN_DIR%\build\.RelWithDebInfo" (mkdir "%OCPN_DIR%\build\.RelWithDebInfo")
-  if not exist "%OCPN_DIR%\build\RelWithDebInfo" (mkdir "%OCPN_DIR%\build\RelWithDebInfo")
-  if not exist "%OCPN_DIR%\build\RelWithDebInfo\plugins" (mkdir "%OCPN_DIR%\build\RelWithDebInfo\plugins")
   )
 if [%ocpn_minsizerel%]==[1] (
   if not exist "%OCPN_DIR%\build\.MinSizeRel" (mkdir "%OCPN_DIR%\build\.MinSizeRel")
-  if not exist "%OCPN_DIR%\build\MinSizeRel" (mkdir "%OCPN_DIR%\build\MinSizeRel")
-  if not exist "%OCPN_DIR%\build\MinSizeRel\plugins" (mkdir "%OCPN_DIR%\build\MinSizeRel\plugins")
 )
 ::-------------------------------------------------------------
 :: Download and initialize build dependencies
@@ -717,6 +708,7 @@ exit /b 0
 :ocpnBuild
 @echo buildTarget=%buildTarget%
 msbuild /noLogo /m -p:Configuration=%build_type%;Platform=Win32 -target:%buildTarget% ^
+  -noLogo -verbosity:minimal -maxCpuCount ^
   -property:UseMultiToolTask=true ^
   -property:EnableClServerMode=true ^
   -property:BuildPassReferences=true ^
@@ -760,6 +752,7 @@ xcopy /Q /Y "%~dp0..\build\%folder%\*.csv" "%~dp0..\tmp\%folder%"
 xcopy /Q /Y "%~dp0..\build\%folder%\navobj.*" "%~dp0..\tmp\%folder%"
 xcopy /Q /Y "%~dp0..\build\%folder%\navobj.xml.?" "%~dp0..\tmp\%folder%"
 if exist "%~dp0..\build\%folder%\plugins" (
+  :: Convert old winConfig build structure to latest version
   if not exist "%~dp0..\build\.%folder%" (
     mkdir "%~dp0..\build\.%folder%"
     attrib +H "%~dp0..\build\.%folder%"
