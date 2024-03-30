@@ -180,19 +180,19 @@ set ocpn_relwithdebinfo=0
 set ocpn_debug=0
 set quiet=N
 :: If this is a rerun then build existing configurations
-if exist "%OCPN_DIR%\build\Debug" (
+if exist "%OCPN_DIR%\build\.Debug" (
   set ocpn_all=0
   set ocpn_debug=1
 )
-if exist "%OCPN_DIR%\build\Release" (
+if exist "%OCPN_DIR%\build\.Release" (
   set ocpn_all=0
   set ocpn_release=1
 )
-if exist "%OCPN_DIR%\build\relwithdebinfo" (
+if exist "%OCPN_DIR%\build\.RelWithDebInfo" (
   set ocpn_all=0
   set ocpn_relwithdebinfo=1
 )
-if exist "%OCPN_DIR%\build\minsizerel" (
+if exist "%OCPN_DIR%\build\.MinSizeRel" (
   set ocpn_all=0
   set ocpn_minsizerel=1
 )
@@ -464,18 +464,22 @@ if errorlevel 1 (echo locale copy [101;93mNOT OK[0m&&goto :buildErr)
 @echo ocpn_minsizerel=%ocpn_minsizerel%
 
 if [%ocpn_debug%]==[1] (
+  if not exist "%OCPN_DIR%\build\.Debug" (mkdir "%OCPN_DIR%\build\.Debug")
   if not exist "%OCPN_DIR%\build\Debug" (mkdir "%OCPN_DIR%\build\Debug")
   if not exist "%OCPN_DIR%\build\Debug\plugins" (mkdir "%OCPN_DIR%\build\Debug\plugins")
   )
 if [%ocpn_release%]==[1] (
+  if not exist "%OCPN_DIR%\build\.Release" (mkdir "%OCPN_DIR%\build\.Release")
   if not exist "%OCPN_DIR%\build\Release" (mkdir "%OCPN_DIR%\build\Release")
   if not exist "%OCPN_DIR%\build\Release\plugins" (mkdir "%OCPN_DIR%\build\Release\plugins")
   )
 if [%ocpn_relwithdebinfo%]==[1] (
+  if not exist "%OCPN_DIR%\build\.RelWithDebInfo" (mkdir "%OCPN_DIR%\build\.RelWithDebInfo")
   if not exist "%OCPN_DIR%\build\RelWithDebInfo" (mkdir "%OCPN_DIR%\build\RelWithDebInfo")
   if not exist "%OCPN_DIR%\build\RelWithDebInfo\plugins" (mkdir "%OCPN_DIR%\build\RelWithDebInfo\plugins")
   )
 if [%ocpn_minsizerel%]==[1] (
+  if not exist "%OCPN_DIR%\build\.MinSizeRel" (mkdir "%OCPN_DIR%\build\.MinSizeRel")
   if not exist "%OCPN_DIR%\build\MinSizeRel" (mkdir "%OCPN_DIR%\build\MinSizeRel")
   if not exist "%OCPN_DIR%\build\MinSizeRel\plugins" (mkdir "%OCPN_DIR%\build\MinSizeRel\plugins")
 )
@@ -552,7 +556,7 @@ if exist .\buildwin\configdev.bat (call .\buildwin\configdev.bat) else (goto :hi
 ::-------------------------------------------------------------
 pushd build
 @echo In folder %CD%
-if exist .\Debug (
+if exist .\.Debug (
   @echo Building Debug
   set build_type=Debug
   call :ocpnConfig
@@ -568,7 +572,7 @@ if exist .\Debug (
   )
   call :restore
 )
-if exist .\RelWithDebInfo (
+if exist .\.RelWithDebInfo (
   @echo Building RelWithDebInfo
   set build_type=RelWithDebInfo
   call :ocpnConfig
@@ -585,7 +589,7 @@ if exist .\RelWithDebInfo (
   call :restore
 )
 
-if exist .\Release (
+if exist .\.Release (
   @echo Building Release
   set build_type=Release
   call :ocpnConfig
@@ -602,7 +606,7 @@ if exist .\Release (
   call :restore
 )
 
-if exist .\MinSizeRel (
+if exist .\.MinSizeRel (
   @echo Building MinSizeRel
   set build_type=MinSizeRel
   call :ocpnConfig
@@ -755,8 +759,14 @@ xcopy /Q /Y "%~dp0..\build\%folder%\*.dat" "%~dp0..\tmp\%folder%"
 xcopy /Q /Y "%~dp0..\build\%folder%\*.csv" "%~dp0..\tmp\%folder%"
 xcopy /Q /Y "%~dp0..\build\%folder%\navobj.*" "%~dp0..\tmp\%folder%"
 xcopy /Q /Y "%~dp0..\build\%folder%\navobj.xml.?" "%~dp0..\tmp\%folder%"
-@echo cmake -E copy_directory "%~dp0..\build\%folder%\plugins" "%~dp0..\tmp\%folder%"
-cmake -E copy_directory "%~dp0..\build\%folder%\plugins" "%~dp0..\tmp\%folder%"
+if exist "%~dp0..\build\%folder%\plugins" (
+  if not exist "%~dp0..\build\.%folder%" (
+    mkdir "%~dp0..\build\.%folder%"
+    attrib +H "%~dp0..\build\.%folder%"
+  )
+  @echo cmake -E copy_directory "%~dp0..\build\%folder%\plugins" "%~dp0..\tmp\%folder%"
+  cmake -E copy_directory "%~dp0..\build\%folder%\plugins" "%~dp0..\tmp\%folder%"
+)
 if not exist "%~dp0..\build\%folder%\Charts" goto :breturn
 @echo cmake -E copy_directory "%~dp0..\build\%folder%\Charts" "%~dp0..\tmp\%folder%"
 cmake -E copy_directory "%~dp0..\build\%folder%\Charts" "%~dp0..\tmp\%folder%"
