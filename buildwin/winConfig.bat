@@ -167,10 +167,11 @@ for /f "delims=" %%G in ('where /f git.exe') do (
 set netok=0
 if not "[%gitcmd%]"=="[]" (
   @echo Checking network connection...
+  echo %cd%
   git fetch --dry-run >nul 2>&1 && set netok=1
-  if [%netok%]==[1] echo Network ok
-  if [%netok%]==[0] echo Network not working
 )
+if [%netok%]==[1] echo Network ok
+if [%netok%]==[0] echo Network not working
 
 set ocpn_clean=0
 set ocpn_rebuild=0
@@ -291,7 +292,6 @@ if [%ocpn_clean%]==[1] (
       if ERRORLEVEL==2  goto :usage
     )
   )
-  time /T
   if exist "%OCPN_DIR%\build" (
     set folder=Release
     call :backup
@@ -637,7 +637,6 @@ set build_type=
 @echo [101;93mIf you close this CMD prompt and open another be sure to run:[0m
 @echo  %CD%\buildwin\configdev.bat
 @echo [101;93mfirst, before starting Visual Studio[0m.
-time /T
 call :StopTimer
 call :DisplayTimerResult
 goto :EOF
