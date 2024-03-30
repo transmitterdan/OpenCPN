@@ -244,47 +244,38 @@ if [%ocpn_rebuild%]==[1] (
     set folder=
     echo Backup complete
   )
-  if exist "%OCPN_DIR%\build\Release" rmdir /s /q "%OCPN_DIR%\build\Release"
-  if exist "%OCPN_DIR%\build\Release" echo Could not remove "%OCPN_DIR%\build\Release" folder
-  if exist "%OCPN_DIR%\build\RelWithDebInfo" rmdir /s /q "%OCPN_DIR%\build\RelWithDebInfo"
-  if exist "%OCPN_DIR%\build\RelWithDebInfo" echo Could not remove "%OCPN_DIR%\build\RelWithDebInfo" folder
-  if exist "%OCPN_DIR%\build\Debug" rmdir /s /q "%OCPN_DIR%\build\Debug"
-  if exist "%OCPN_DIR%\build\Debug" echo Could not remove "%OCPN_DIR%\build\Debug" folder
-  if exist "%OCPN_DIR%\build\MinSizeRel" rmdir /s /q "%OCPN_DIR%\build\MinSizeRel"
-  if exist "%OCPN_DIR%\build\MinSizeRel" echo Could not remove "%OCPN_DIR%\build\MinSizeRel" folder
-  if exist "%OCPN_DIR%\build\CMakeFiles" rmdir /s /q "%OCPN_DIR%\build\CMakeFiles"
-  if exist "%OCPN_DIR%\build\CMakeFiles" echo Could not remove "%OCPN_DIR%\build\CMakeFiles" folder
+  set "target=%OCPN_DIR%\build\.vs" & call :removeTarget
   if exist "%OCPN_DIR%\build\CMakeCache.txt" del "%OCPN_DIR%\build\CMakeCache.txt"
-  if exist "%OCPN_DIR%\build\CMakeCache.txt" echo Could not remove "%OCPN_DIR%\build\CMakeCache.txt"
-  if exist "%OCPN_DIR%\build\ocpn.dir" rmdir /s /q "%OCPN_DIR%\build\ocpn.dir"
-  if exist "%OCPN_DIR%\build\ocpn.dir" echo Could not remove "%OCPN_DIR%\build\ocpn.dir"
-  if exist "%OCPN_DIR%\build\plugins" rmdir /s /q "%OCPN_DIR%\build\plugins"
-  if exist "%OCPN_DIR%\build\plugins" echo Could not remove "%OCPN_DIR%\build\plugins"
-  if exist "%OCPN_DIR%\build\cli" rmdir /s /q "%OCPN_DIR%\build\cli"
-  if exist "%OCPN_DIR%\build\cli" echo Could not remove "%OCPN_DIR%\build\cli"
-  if exist "%OCPN_DIR%\build\lib" rmdir /s /q "%OCPN_DIR%\build\lib"
-  if exist "%OCPN_DIR%\build\lib" echo Could not remove "%OCPN_DIR%\build\lib"
-  if exist "%OCPN_DIR%\build\libs" rmdir /s /q "%OCPN_DIR%\build\libs"
-  if exist "%OCPN_DIR%\build\libs" echo Could not remove "%OCPN_DIR%\build\libs"
-  if exist "%OCPN_DIR%\build\glutil" rmdir /s /q "%OCPN_DIR%\build\glutil"
-  if exist "%OCPN_DIR%\build\glutil" echo Could not remove "%OCPN_DIR%\build\glutil"
-  if exist "%OCPN_DIR%\build\model" rmdir /s /q "%OCPN_DIR%\build\model"
-  if exist "%OCPN_DIR%\build\model" echo Could not remove "%OCPN_DIR%\build\model"
-  if exist "%OCPN_DIR%\build\.vs" rmdir /s /q "%OCPN_DIR%\build\.vs"
-  if exist "%OCPN_DIR%\build\.vs" (
-    @echo Could not remove "%OCPN_DIR%\build\.vs" folder
-    if [%quiet%]==[Y] (exit /b 1)
-    @echo Is Visual Studio IDE open? If so, please close it so we can try again.
-    pause
-    @echo Retrying...
-    rmdir /s /q "%OCPN_DIR%\build\.vs"
-    if exist "%OCPN_DIR%\build\.vs" (
-      @echo Could not remove "%OCPN_DIR%\.vs". Continuing...
-    ) else (
-      @echo Ok, removed "%OCPN_DIR%\build\.vs"
-    )
-  )
+  set "target=%OCPN_DIR%\build\Release" & call :removeTarget
+  set "target=%OCPN_DIR%\build\RelWithDebInfo" & call :removeTarget
+  set "target=%OCPN_DIR%\build\Debug" & call :removeTarget
+  set "target=%OCPN_DIR%\build\MinSizeRel" & call :removeTarget
+  set "target=%OCPN_DIR%\build\CMakeFiles" & call :removeTarget
+  set "target=%OCPN_DIR%\build\ocpn.dir" & call :removeTarget
+  set "target=%OCPN_DIR%\build\plugins" & call :removeTarget
+  set "target=%OCPN_DIR%\build\cli" & call :removeTarget
+  set "target=%OCPN_DIR%\build\lib" & call :removeTarget
+  set "target=%OCPN_DIR%\build\libs" & call :removeTarget
+  set "target=%OCPN_DIR%\build\glutil" & call :removeTarget
+  set "target=%OCPN_DIR%\build\model" & call :removeTarget
+  set "target=%OCPN_DIR%\build\include" & call :removeTarget
+  set "target=%OCPN_DIR%\build\opencpn.dir" & call :removeTarget
+  set "target=%OCPN_DIR%\build\Resources" & call :removeTarget
+  set "target=%OCPN_DIR%\build\Win32" & call :removeTarget
+  set "target=%OCPN_DIR%\build\_deps" & call :removeTarget
+  where /Q /R "%OCPN_DIR%\build" *.cmake && del /Q "%OCPN_DIR%\build\*.cmake"
+  where /Q /R "%OCPN_DIR%\build" *.txt && del /Q "%OCPN_DIR%\build\*.txt"
+  where /Q /R "%OCPN_DIR%\build" *.in && del /Q "%OCPN_DIR%\build\*.in"
+  where /Q /R "%OCPN_DIR%\build" *.xml && del /Q "%OCPN_DIR%\build\*.xml"
+  where /Q /R "%OCPN_DIR%\build" *.rc && del /Q "%OCPN_DIR%\build\*.rc"
+  where /Q /R "%OCPN_DIR%\build" *.user && del /Q "%OCPN_DIR%\build\*.user"
+  where /Q /R "%OCPN_DIR%\build" *.sln && del /Q "%OCPN_DIR%\build\*.sln"
+  where /Q /R "%OCPN_DIR%\build" *.mo && del /Q "%OCPN_DIR%\build\*.mo"
+  where /Q /R "%OCPN_DIR%\build" *.vcxproj && del /Q "%OCPN_DIR%\build\*.vcxproj"
+  where /Q /R "%OCPN_DIR%\build" *.filters && del /Q "%OCPN_DIR%\build\*.filters"
+  where /Q /R "%OCPN_DIR%\build" *.log && del /Q "%OCPN_DIR%\build\*.log"
   @echo Finished rebuild cleanout
+  pause
 )
 ::-------------------------------------------------------------
 :: Save user configuration data and wipe the build folder
@@ -494,10 +485,12 @@ if [%ocpn_minsizerel%]==[1] (
 set "DEST=%CACHE_DIR%\buildwin"
 if exist "%WindowsSdkDir%\lib\%WindowsSdkLibVersion%\um\x86\iphlpapi.lib" (
   if not exist "%DEST%\include" mkdir "%DEST%\include"
-  @echo xcopy /d /y "%WindowsSdkDir%\lib\%WindowsSdkLibVersion%\um\x86\iphlpapi.lib" "%DEST%"
-  xcopy /d /y "%WindowsSdkDir%\lib\%WindowsSdkLibVersion%\um\x86\iphlpapi.lib" "%DEST%"
-  @echo xcopy /d /y "%WindowsSdkDir%\include\%WindowsSdkLibVersion%\um\iphlpapi.h" "%DEST%\include"
-  xcopy /d /y "%WindowsSdkDir%\include\%WindowsSdkLibVersion%\um\iphlpapi.h" "%DEST%\include"
+  if not exist "%DEST%\iphlpapi.lib" (
+    @echo xcopy /d /y "%WindowsSdkDir%\lib\%WindowsSdkLibVersion%\um\x86\iphlpapi.lib" "%DEST%"
+    xcopy /d /y "%WindowsSdkDir%\lib\%WindowsSdkLibVersion%\um\x86\iphlpapi.lib" "%DEST%"
+    @echo xcopy /d /y "%WindowsSdkDir%\include\%WindowsSdkLibVersion%\um\iphlpapi.h" "%DEST%\include"
+    xcopy /d /y "%WindowsSdkDir%\include\%WindowsSdkLibVersion%\um\iphlpapi.h" "%DEST%\include"
+  )
 ) else (
   @echo [101;93mCould not find local copy of iphlpapi library so will try to download one.[0m
 )
@@ -654,6 +647,25 @@ goto :EOF
 ::-------------------------------------------------------------
 :: Local subroutines
 ::-------------------------------------------------------------
+:removeTarget
+if exist "%target%" echo Removing "%target%"
+if exist "%target%" rmdir /s /q "%target%"
+if exist "%target%" (
+  @echo Could not remove "%target%" folder
+  if [%quiet%]==[Y] (exit /b 1)
+  @echo Is Visual Studio IDE open? If so, please close it so we can try again.
+  pause
+  @echo Retrying...
+  rmdir /s /q "%target%"
+  if exist "%target%" (
+    @echo Could not remove "%target%". Continuing...
+    exit /b 1
+  ) else (
+    @echo Ok, removed "%target%"
+    exit /b 0
+  )
+)
+exit /b 0
 ::-------------------------------------------------------------
 :: Config and build
 ::-------------------------------------------------------------
