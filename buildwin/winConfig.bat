@@ -166,7 +166,10 @@ for /f "delims=" %%G in ('where /f git.exe') do (
 :: Check if network is available
 set netok=0
 if not "[%gitcmd%]"=="[]" (
-  git fetch --dry-run >nul && set netok=1
+  @echo Checking network connection...
+  git fetch --dry-run >nul 2>&1 && set netok=1
+  if [%netok%]==[1] echo Network ok
+  if [%netok%]==[0] echo Network not working
 )
 
 set ocpn_clean=0
