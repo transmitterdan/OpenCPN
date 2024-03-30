@@ -275,53 +275,52 @@ if [%ocpn_rebuild%]==[1] (
   where /Q /R "%OCPN_DIR%\build" *.filters && del /Q "%OCPN_DIR%\build\*.filters"
   where /Q /R "%OCPN_DIR%\build" *.log && del /Q "%OCPN_DIR%\build\*.log"
   @echo Finished rebuild cleanout
-  pause
 )
 ::-------------------------------------------------------------
 :: Save user configuration data and wipe the build folder
 ::-------------------------------------------------------------
 if [%ocpn_clean%]==[1] (
   if %netok%==0 (
-    if [%quiet%]==[N] (
+    if not [%quiet%]==[Y] (
       @echo [101;93mThe --clean option requires an internet connection.[0m
-	  @echo The internet connection appears to be down. Proceed with caution.
+	    @echo The internet connection appears to be down. Proceed with caution.
       choice /C YN /T 10 /M "Remove entire build folder including downloaded tools? [yN]" /D N
       if ERRORLEVEL==2  goto :usage
     )
-    time /T
-    if exist "%OCPN_DIR%\build" (
-      set folder=Release
-      call :backup
-      set folder=RelWithDebInfo
-      call :backup
-      set folder=Debug
-      call :backup
-      set folder=MinSizeRel
-      call :backup
-      set folder=
-      @echo Backup complete
+  )
+  time /T
+  if exist "%OCPN_DIR%\build" (
+    set folder=Release
+    call :backup
+    set folder=RelWithDebInfo
+    call :backup
+    set folder=Debug
+    call :backup
+    set folder=MinSizeRel
+    call :backup
+    set folder=
+    @echo Backup complete
+  )
+  if exist "%OCPN_DIR%\build" rmdir /s /q "%OCPN_DIR%\build"
+  if exist "%OCPN_DIR%\build" (
+    @echo Could not remove "%OCPN_DIR%\build" folder
+    @echo Is Visual Studio IDE open? If so, please close it so we can try again.
+    if not [%quiet%]==[Y] (
+      pause
     )
-    if exist "%OCPN_DIR%\build" rmdir /s /q "%OCPN_DIR%\build"
-    if exist "%OCPN_DIR%\build" (
-      @echo Could not remove "%OCPN_DIR%\build" folder
-      @echo Is Visual Studio IDE open? If so, please close it so we can try again.
-      if [%quiet%]==[N] (
-        pause
-      )
-      @echo Retrying...
-      rmdir /s /q "%OCPN_DIR%\build"
-    )
-    if exist "%OCPN_DIR%\build" (
-      @echo Could not remove "%OCPN_DIR%\build". Continuing...
-    ) else (
-      @echo Cleared %OCPN_DIR%\build OK.
-    )
-    if exist "%CACHE_DIR%" (rmdir /s /q "%CACHE_DIR%" && echo Cleared %CACHE_DIR%)
-    if exist "%wxDIR%" (rmdir /s /q "%wxDIR%" && echo Cleared %wxDIR%)
-    if exist "%buildWINtmp%" (rmdir /s /q "%buildWINtmp%" && echo Cleared %buildWINtmp%)
-    if [%quiet%]==[N] (
-      timeout /T 5
-    )
+    @echo Retrying...
+    rmdir /s /q "%OCPN_DIR%\build"
+  )
+  if exist "%OCPN_DIR%\build" (
+    @echo Could not remove "%OCPN_DIR%\build". Continuing...
+  ) else (
+    @echo Cleared %OCPN_DIR%\build OK.
+  )
+  if exist "%CACHE_DIR%" (rmdir /s /q "%CACHE_DIR%" && echo Cleared %CACHE_DIR%)
+  if exist "%wxDIR%" (rmdir /s /q "%wxDIR%" && echo Cleared %wxDIR%)
+  if exist "%buildWINtmp%" (rmdir /s /q "%buildWINtmp%" && echo Cleared %buildWINtmp%)
+  if not [%quiet%]==[Y] (
+    timeout /T 5
   )
 )
 ::-------------------------------------------------------------
@@ -503,7 +502,7 @@ where /Q xgettext.exe && goto :skipgettext
 %buildWINtmp%\nuget install Gettext.Tools
 where /Q /R . xgettext.exe && echo Found Gettext.Tools && goto :skipgettext
 echo Error: Could not install GetText tools.
-if [%quiet%]==[N] pause
+if not [%quiet%]==[Y] pause
 cd %OCPN_DIR%
 goto :usage
 :skipgettext
