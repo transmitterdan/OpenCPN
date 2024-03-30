@@ -69,6 +69,8 @@ goto :main
 @echo *      --minsizerel       Build MinSizeRel configuration                   *
 @echo *      --debug            Build Debug configuration                        *
 @echo *      --all              Build all 4 configurations  (default)            *
+@echo *      --help             Print this message                               *
+@echo *      --Y                Non-interactive mode (for calling from a script) *
 @echo *     ***************************************************************      *
 @echo *     * By default, the first time you run this script all 4        *      *
 @echo *     * configuration types of builds are created. If you don't     *      *
@@ -84,8 +86,6 @@ goto :main
 @echo *      --clean            Remove build folder entirely before building     *
 @echo *                         MUST HAVE INTERNET CONNECTION FOR clean OPTION   *
 @echo *      --rebuild          Rebuild all sources                              *
-@echo *      --help             Print this message                               *
-@echo *      --Y                Non-interactive mode (for calling from a script) *
 @echo *     ***************************************************************      *
 @echo *     * By default, after the first time, when you run this script  *      *
 @echo *     * with no arguments, it will msbuild the originally selected  *      *
