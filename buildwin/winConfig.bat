@@ -724,7 +724,6 @@ if errorlevel 1 (
 exit /b 0
 :ocpnBuild
 @echo buildTarget=%buildTarget%
-pause
 msbuild ^
   -property:Configuration=%build_type%;Platform=Win32 ^
   -target:%buildTarget% ^
