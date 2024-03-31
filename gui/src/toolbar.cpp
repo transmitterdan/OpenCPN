@@ -1416,12 +1416,12 @@ void ocpnToolBarSimple::OnToolTipTimerEvent(wxTimerEvent &event) {
         m_pToolTipWin->Move(
             0, 0);  // workaround for gtk autocentre dialog behavior
 
-        wxPoint screenPosition = gFrame->ClientToScreen(pos_in_toolbar);
-        wxPoint framePosition = gFrame->ScreenToClient(screenPosition);
+        wxPoint screenPosition = gFrame->GetPrimaryCanvas()->ClientToScreen(pos_in_toolbar);
+        //wxPoint framePosition = gFrame->ScreenToClient(screenPosition);
         wxSize tipSize = m_pToolTipWin->GetRenderedSize();
 
-        if ((framePosition.x + tipSize.x) > gFrame->GetSize().x)
-          screenPosition.x -= (tipSize.x + m_last_ro_tool->m_width + 4);
+        //if ((framePosition.x + tipSize.x) > gFrame->GetSize().x)
+          //screenPosition.x -= (tipSize.x + m_last_ro_tool->m_width + 4);
 
         m_pToolTipWin->SetPosition(screenPosition);
         m_pToolTipWin->SetBitmap();
@@ -2279,6 +2279,7 @@ void ocpnToolBarSimple::SetToolBitmaps(int id, wxBitmap *bmp,
       tool->SetNormalBitmap(*bmp);
       tool->bitmapOK = true;
     }
+    InvalidateBitmaps();
   }
 }
 
@@ -2291,6 +2292,7 @@ void ocpnToolBarSimple::SetToolBitmapsSVG(int id, wxString fileSVGNormal,
     tool->pluginRolloverIconSVG = fileSVGRollover;
     tool->pluginToggledIconSVG = fileSVGToggled;
     tool->bitmapOK = false;
+    InvalidateBitmaps();
   }
 }
 
