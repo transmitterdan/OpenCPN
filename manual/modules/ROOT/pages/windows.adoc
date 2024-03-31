@@ -73,9 +73,10 @@ $ cd opencpn
 $ .\buildwin\winConfig.bat
 $ .\build\opencpn.sln
 ----
-This takes about 30 minutes on a 12-processor Windows 11 computer. When Visual Studio opens,
-select the desired build configuration (Debug, Release, etc.) and you
-are ready to edit and build. Click the "Debug" button to build and run OpenCPN in the VS debugger.
+This one-time procedure takes about 30 minutes on a 12-processor Windows 11 computer.
+When Visual Studio opens, select the desired build configuration (Debug, Release, etc.) and you
+are ready to edit and build. Click the "Local Windows Debugger" button in Visual Studio to
+build and run OpenCPN in the VS debugger.
 
 Here are more details with explanations of each step.
 
@@ -112,7 +113,7 @@ $ .\buildwin\winConfig.bat
 $ .\build\opencpn.sln
 ----
 Now you can browse the code, run & debug OpenCPN from Visual Studio.  Select
-  the desired build configuration (Debug, Release, etc.) and click the Debug button.
+  the desired build configuration (Debug, Release, etc.) and click the "Local Windows Debugger" button.
 
 After you close Visual Studio and the command prompt you can return to Visual Studio
   using just 2 commands. From an _x86 Native Tools Command Prompt_ run:
@@ -205,8 +206,10 @@ configuration later with the --clean option accompanied by the desired configura
 * Remember, do not try to build a configuration you did not create initially with this script. The results
 will not run or be useful in any meaningful way.  This is why it defaults to all 4 configuration types.
 
+*Example usage:*
+
 * Useful msbuild command line examples follow. Type these commands after running
-  '.\buildwin\configdev.bat' from the root opencpn git managed folder.*
+  '.\buildwin\configdev.bat' from the root opencpn git managed folder.
 ** Clean and build debug OpenCPN project
 +
 [,console]
@@ -220,7 +223,7 @@ $ msbuild /m -t:Rebuild -p:Configuration=Debug opencpn.sln
 [,console]
 ----
 $ cd build
-$ cmake -DCMAKE_INSTALL_PREFIX:STRING="C:\Program Files (x86)\OpenCPN" ..
+$ cmake -DCMAKE_INSTALL_PREFIX:STRING="C:/Program Files (x86)/OpenCPN" ..
 $ msbuild /v:m /m -p:Configuration=Release PACKAGE.vcxproj
 $ cd ..
 $ .\buildwin\winconfig
@@ -258,14 +261,14 @@ $ cd build
 $ msbuild /m -t:Rebuild -p:Configuration=Debug plugins\chartdldr_pi\chartdldr_pi.vcxproj
 ----
 +
-* You can use still use CMake if you like.
+* You can also use CMake if you like.
 ** This example will clean and build a Release installer package.
  When finished, restores the environment back to local building mode.
 +
 [,console]
 ----
 $ cd build
-$ cmake -DCMAKE_INSTALL_PREFIX:STRING="C:\Program Files (x86)\OpenCPN" ..
+$ cmake -DCMAKE_INSTALL_PREFIX:STRING="C:/Program Files (x86)/OpenCPN" ..
 $ cmake --build . --config Release --clean-first --target Package
 $ cd ..
 $ .\buildwin\winconfig
@@ -277,7 +280,7 @@ $ .\buildwin\winconfig
 [,console]
 ----
 $ cd build
-$ cmake -DCMAKE_INSTALL_PREFIX:STRING="C:\Program Files (x86)\OpenCPN" ..
+$ cmake -DCMAKE_INSTALL_PREFIX:STRING="C:/Program Files (x86)/OpenCPN" ..
 $ cmake --build . --clean-first --config Debug --target Package
 $ cd ..
 $ .\buildwin\winconfig
