@@ -1,4 +1,5 @@
 = Compiling on Windows
+:hide-uri-scheme:
 
 == 5.8.0+ Fast Track
 
@@ -133,10 +134,7 @@ for your plugin in the tarball.
 ** Open OpenCPN in debug mode using Visual Studio.
 ** To step into your plugin set a breakpoint in plugin_loader.cpp at the point where it inits the plugins:
 +
-[,console]
-----
-pic->m_cap_flag = pic->m_pplugin->Init();
-----
+link:https://github.com/OpenCPN/OpenCPN/blob/b9e67db4b31cc1e75f22bc98d25925996974cb3b/model/src/plugin_loader.cpp#L757[`+pic->m_cap_flag = pic->m_pplugin->Init();+`]
 ** Import your plugin tarball using the plugin manager. When you step into your plugin you will see
 the source code and can set other breakpoints anywhere in your plugin.
 
