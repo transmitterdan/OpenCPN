@@ -64,7 +64,7 @@ The steps here describe an alternative to the "Fast Track" scenario above.  It i
 Quick start:
 
 From the Windows Desktop open _x86 Native Tools Command Prompt for VS 2022_ (or 2019). Then
- enter these 4 commands:
+enter these 4 commands:
 [,console]
 ----
 $ git clone https://github.com/opencpn/opencpn
@@ -72,8 +72,9 @@ $ cd opencpn
 $ .\buildwin\winConfig.bat
 $ .\build\opencpn.sln
 ----
-When Visual Studio opens, select the desired build configuration (Debug, Release, etc.) and you
-are ready to edit and build. Click the Debug button to build and open OpenCPN in the VS debugger.
+This takes about 30 minutes on a 12-processor Windows 11 computer. When Visual Studio opens,
+select the desired build configuration (Debug, Release, etc.) and you
+are ready to edit and build. Click the "Debug" button to build and run OpenCPN in the VS debugger.
 
 Here are more details with explanations of each step.
 
@@ -123,15 +124,21 @@ $ .\build\opencpn.sln
 
 * Managed plugins are only supplied as Release builds. Thus, if you want to
   debug OpenCPN when any managed plugins are installed, you must debug OpenCPN in
-  Release or RelWithDebInfo mode.
+  Release or RelWithDebInfo configurations.
 * If you build your own plugin in Debug configuration, then
   you can debug both OpenCPN and your plugin at the same time using the same Visual Studio
-  Debug session. A simple workflow is this:
-** Build your plugin in debug configuration and create the tarball.
+  Debug session. One possible plugin debug workflow is:
+** Build your plugin in debug configuration and create the tarball. Remember to include the .pdb file
+for your plugin in the tarball.
 ** Open OpenCPN in debug mode using Visual Studio.
-** Import your plugin tarball using the plugin manager.
-** To step into your plugin set a breakpoint in plugin_loader.cpp at the point where it inits the plugin:
- "pic->m_cap_flag = pic->m_pplugin->Init();"
+** To step into your plugin set a breakpoint in plugin_loader.cpp at the point where it inits the plugins:
++
+[,console]
+----
+pic->m_cap_flag = pic->m_pplugin->Init();
+----
+** Import your plugin tarball using the plugin manager. When you step into your plugin you will see
+the source code and can set other breakpoints anywhere in your plugin.
 
 * You can use msbuild as the command line builder instead of CMake.  The reasons for doing so are:
 ** msbuild is faster than CMake or CMake w/Ninja
@@ -171,24 +178,38 @@ $ .\opencpn -p
 +
 [,console]
 ----
- --release          Build Release configuration
- --relwithdebinfo   Build RelWithDebInfo configuration
- --minsizerel       Build MinSizeRel configuration
- --debug            Build Debug configuration
- --all              Build all 4 configurations  (default)
+ --release          Initialize Release configuration
+ --relwithdebinfo   Initialise RelWithDebInfo configuration
+ --minsizerel       Initialize MinSizeRel configuration
+ --debug            Initialize Debug configuration
+ --all              Initialize all 4 configurations  (default)
  --help             Print help text
  --Y                Non-interactive mode (for calling from a script)
  --clean            Delete and reinitialize the build folder
  --rebuild          Rebuild all sources
 ----
 
-*Note: After the first time you use this script it remembers which build configurations
+*Notes on options:*
+
+* After the first time you initialize a configuration the script remembers which build configurations
  were selected and only builds those.  You can add additional configurations later
- simply by running the script again with the desired configuration switch.
+ simply by running the script again with just the desired configuration switch(s).
+
+* The exception is the --clean option.  It purposely does not remember which configurations
+were previously selected. Therefore, if you do not accompany --clean with selection of configuration
+options, it will initialize all 4 configurations. This feature allows one to chose a different set of configurations
+than the first time. So --clean is basically the same as a first time run except it
+will save the runtime data for all existing configs and restore when a particular configuration
+(debug, release, etc.) is initialized. The --clean option can be used to up or down size the build
+tree to just the configurations you are interested in at the moment. You can always restore a
+configuration later with the --clean option accompanied by the desired configuration switches.
+
+* Remember, do not try to build a configuration you did not create initially with this script. The results
+will not run or be useful in any meaningful way.  This is why it defaults to all 4 configuration types.
 
 * Useful msbuild command line examples follow. Type these commands after running
-  '.\buildwin\configdev.bat' from the root opencpn git managed folder.
-** Clean and build entire OpenCPN project to create debug build
+  '.\buildwin\configdev.bat' from the root opencpn git managed folder.*
+** Clean and build debug OpenCPN project
 +
 [,console]
 ----

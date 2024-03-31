@@ -417,9 +417,9 @@ if exist "%wxDIR%\.git" (
   )
 )
 if not exist "%CACHE_DIR%\buildwin\wxWidgets" mkdir "%CACHE_DIR%\buildwin\wxWidgets"
-@echo Building wxWidgets
+@echo Building wxWidgets Debug library...this will take a few minutes...
 msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
-  -noLogo -verbosity:minimal -maxCpuCount ^
+  -noLogo -verbosity:quiet -maxCpuCount ^
   -property:UseMultiToolTask=true ^
   -property:EnableClServerMode=true ^
   -property:BuildPassReferences=true ^
@@ -427,10 +427,14 @@ msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
   -property:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix=_vc14x ^
   -property:CL="/arch:SSE" ^
   -logger:FileLogger,Microsoft.Build.Engine;logfile="%CACHE_DIR%\buildwin\wxWidgets\MSBuild_DEBUG_WIN32.log"
-if errorlevel 1 (echo wxWidgets Debug build [101;93mNOT OK[0m&&goto :buildErr)
+if errorlevel 1 (
+  echo wxWidgets Debug build [101;93mNOT OK[0m
+  goto :buildErr
+)
 echo wxWidgets Debug build OK
+@echo Building wxWidgets Release library...this will take a few minutes...
 msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
-  -noLogo -verbosity:minimal -maxCpuCount ^
+  -noLogo -verbosity:quiet -maxCpuCount ^
   -property:UseMultiToolTask=true^
   -property:EnableClServerMode=true ^
   -property:BuildPassReferences=true ^
@@ -438,24 +442,36 @@ msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
   -property:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix=_vc14x ^
   -property:CL="/arch:SSE" ^
   -logger:FileLogger,Microsoft.Build.Engine;logfile="%CACHE_DIR%\buildwin\wxWidgets\MSBuild_RELEASE_WIN32.log"
-if errorlevel 1 (echo wxWidgets Release build [101;93mNOT OK[0m&&goto :buildErr)
+if errorlevel 1 (
+  echo wxWidgets Release build [101;93mNOT OK[0m
+  goto :buildErr
+)
 echo wxWidgets Release build OK
 
 for /f "tokens=*" %%p in ('dir "%WXDIR%\lib\vc_dll\wxmsw32*.dll" /b') do (
-    ::@echo  copy_if_different "%WXDIR%\lib\vc_dll\%%p" "%CACHE_DIR%\buildwin\wxWidgets\%%~np%%~xp"
-    cmake -E copy_if_different "%WXDIR%\lib\vc_dll\%%p" "%CACHE_DIR%\buildwin\wxWidgets\%%~np%%~xp"
-    if errorlevel 1 (echo wxWidgets is broken and [101;93mNOT OK[0m&&goto :buildErr)
+  ::@echo  copy_if_different "%WXDIR%\lib\vc_dll\%%p" "%CACHE_DIR%\buildwin\wxWidgets\%%~np%%~xp"
+  cmake -E copy_if_different "%WXDIR%\lib\vc_dll\%%p" "%CACHE_DIR%\buildwin\wxWidgets\%%~np%%~xp"
+  if errorlevel 1 (
+    echo wxWidgets is broken and [101;93mNOT OK[0m
+    goto :buildErr
+  )
 )
 for /f "tokens=*" %%p in ('dir "%WXDIR%\lib\vc_dll\wxmsw32*.pdb" /b') do (
-    ::@echo  copy_if_different "%WXDIR%\lib\vc_dll\%%p" "%CACHE_DIR%\buildwin\wxWidgets\%%~np%%~xp"
-    cmake -E copy_if_different "%WXDIR%\lib\vc_dll\%%p" "%CACHE_DIR%\buildwin\wxWidgets\%%~np%%~xp"
-    if errorlevel 1 (echo wxWidgets is broken and [101;93mNOT OK[0m&&goto :buildErr)
+  ::@echo  copy_if_different "%WXDIR%\lib\vc_dll\%%p" "%CACHE_DIR%\buildwin\wxWidgets\%%~np%%~xp"
+  cmake -E copy_if_different "%WXDIR%\lib\vc_dll\%%p" "%CACHE_DIR%\buildwin\wxWidgets\%%~np%%~xp"
+  if errorlevel 1 (
+    echo wxWidgets is broken and [101;93mNOT OK[0m
+    goto :buildErr
+  )
 )
 if not exist "%CACHE_DIR%\buildwin\wxWidgets\locale" (
   mkdir "%CACHE_DIR%\buildwin\wxWidgets\locale"
 )
 cmake -E copy_directory_if_different "%WXDIR%\locale" "%CACHE_DIR%\buildwin\wxWidgets\locale"
-if errorlevel 1 (echo locale copy [101;93mNOT OK[0m&&goto :buildErr)
+if errorlevel 1 (
+  echo locale copy [101;93mNOT OK[0m
+  goto :buildErr
+)
 ::-------------------------------------------------------------
 :: Initialize folders needed to run OpenCPN
 ::-------------------------------------------------------------
@@ -708,8 +724,13 @@ if errorlevel 1 (
 exit /b 0
 :ocpnBuild
 @echo buildTarget=%buildTarget%
-msbuild /noLogo /m -p:Configuration=%build_type%;Platform=Win32 -target:%buildTarget% ^
-  -noLogo -verbosity:minimal -maxCpuCount ^
+pause
+msbuild ^
+  -property:Configuration=%build_type%;Platform=Win32 ^
+  -target:%buildTarget% ^
+  -noLogo ^
+  -verbosity:minimal ^
+  -maxCpuCount ^
   -property:UseMultiToolTask=true ^
   -property:EnableClServerMode=true ^
   -property:BuildPassReferences=true ^
