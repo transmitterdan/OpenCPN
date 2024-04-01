@@ -117,9 +117,7 @@ exit /b 1
 ::-------------------------------------------------------------
 :: Initialize local environment
 ::-------------------------------------------------------------
-set "OD=%~dp0.."
-:: @echo OD=%OD%
-cd %OD%
+cd %~dp0..
 set "OCPN_Dir=%CD%"
 SET "CACHE_DIR=%OCPN_DIR%\cache"
 set "wxWidgetsURL=https://github.com/wxWidgets/wxWidgets"
@@ -555,17 +553,11 @@ endlocal
 ::-------------------------------------------------------------
 :: Setup environment
 ::-------------------------------------------------------------
-set "OD=%~dp0.."
-cd /D "%OD%"
-@echo In folder %CD%
-if exist .\buildwin\configdev.bat (call .\buildwin\configdev.bat) else (goto :hint)
-:: @echo path=%path%
+if exist "%~dp0..\buildwin\configdev.bat" (call "%~dp0..\buildwin\configdev.bat") else (goto :hint)
 ::-------------------------------------------------------------
 :: Build Release and Debug executables
 ::-------------------------------------------------------------
-pushd build
-@echo In folder %CD%
-if exist .\.Debug (
+if exist "%~dp0..\.Debug" (
   @echo Building Debug
   set build_type=Debug
   call :ocpnConfig
@@ -581,7 +573,7 @@ if exist .\.Debug (
   )
   call :restore
 )
-if exist .\.RelWithDebInfo (
+if exist "%~dp0..\build\.RelWithDebInfo" (
   @echo Building RelWithDebInfo
   set build_type=RelWithDebInfo
   call :ocpnConfig
@@ -598,7 +590,7 @@ if exist .\.RelWithDebInfo (
   call :restore
 )
 
-if exist .\.Release (
+if exist "%~dp0..\build\.Release" (
   @echo Building Release
   set build_type=Release
   call :ocpnConfig
@@ -615,7 +607,7 @@ if exist .\.Release (
   call :restore
 )
 
-if exist .\.MinSizeRel (
+if exist "%~dp0..\build\.MinSizeRel" (
   @echo Building MinSizeRel
   set build_type=MinSizeRel
   call :ocpnConfig
@@ -639,7 +631,7 @@ goto :hint
 ::-------------------------------------------------------------
 :hint
 @echo To build OpenCPN for debugging at command line do this in the folder
-@echo %CD%
+@echo OpenCPN
 @echo.
 set build_type=
 @echo  .\buildwin\configdev.bat
@@ -682,7 +674,8 @@ exit /b 0
 :: Config and build
 ::-------------------------------------------------------------
 :ocpnConfig
-cmake -A Win32 -G "%VCstr%" ^
+:: cmake [options] -S <path-to-source> -B <path-to-build>
+cmake -A Win32 -G "%VCstr%" -S "%~dp0.." -B "%~dp0..\build" ^
   -DCMAKE_GENERATOR_PLATFORM=Win32 ^
   -DCMAKE_BUILD_TYPE=%build_type% ^
   -DwxWidgets_LIB_DIR="%wxWidgets_LIB_DIR%" ^
@@ -698,10 +691,9 @@ cmake -A Win32 -G "%VCstr%" ^
   -DOCPN_ENABLE_SYSTEM_CMD_SOUND:BOOL=OFF ^
   -DOCPN_ENABLE_PORTAUDIO:BOOL=OFF ^
   -DOCPN_BUILD_TEST:BOOL=OFF ^
-  -DCMAKE_INSTALL_PREFIX="%CD%\%build_type%" ^
-  ..
+  -DCMAKE_INSTALL_PREFIX="%~dp0..\build\%build_type%"
 if errorlevel 1 (
-  cmake -A Win32 -G "%VCstr%" --debug-find ^
+  cmake -A Win32 -G "%VCstr%" -S "%~dp0.." -B "%~dp0..\build" --debug-find ^
     -DCMAKE_GENERATOR_PLATFORM=Win32 ^
     -DCMAKE_BUILD_TYPE=%build_type% ^
     -DwxWidgets_LIB_DIR="%wxWidgets_LIB_DIR%" ^
@@ -717,8 +709,7 @@ if errorlevel 1 (
     -DOCPN_ENABLE_SYSTEM_CMD_SOUND:BOOL=OFF ^
     -DOCPN_ENABLE_PORTAUDIO:BOOL=OFF ^
     -DOCPN_BUILD_TEST:BOOL=OFF ^
-    -DCMAKE_INSTALL_PREFIX="%CD%\%build_type%" ^
-    ..
+    -DCMAKE_INSTALL_PREFIX="%~dp0..\build\%build_type%"
   if errorlevel 1 goto :cmakeErr
 )
 exit /b 0
@@ -734,7 +725,7 @@ msbuild ^
   -property:EnableClServerMode=true ^
   -property:BuildPassReferences=true ^
   /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_%build_type%_WIN32_Debug.log ^
-  INSTALL.vcxproj
+  "%~dp0..\build\INSTALL.vcxproj"
 if errorlevel 1 goto :buildErr
 set buildTarget=
 @echo OpenCPN %build_type% build successful!
