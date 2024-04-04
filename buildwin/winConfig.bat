@@ -365,6 +365,8 @@ if errorlevel 1 (echo [101;93mNOT OK[0m ) else (
   if errorlevel 1 ( echo [101;93mNOT OK[0m ) else ( echo xcopy OK )
 )
 :skipbuildwin
+:: Remove old wxWidgets build folder if present
+if exist "%CACHE_DIR%\buildwxWidgets" (rmdir /s /q "%CACHE_DIR%\buildwxWidgets" && echo buildwxWidgets cleared)
 ::-------------------------------------------------------------
 :: Download wxWidgets sources
 ::-------------------------------------------------------------
@@ -416,8 +418,7 @@ if exist "%wxDIR%\.git" (
     popd
   )
 )
-if not exist "%CACHE_DIR%\buildwin\wxWidgets" mkdir "%CACHE_DIR%\buildwin\wxWidgets"
-@echo Building wxWidgets Debug library...this will take a few minutes...
+@echo Building wxWidgets Debug library...this may take a few minutes...
 msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
   -noLogo -verbosity:quiet -maxCpuCount ^
   -property:UseMultiToolTask=true ^
@@ -426,13 +427,13 @@ msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
   -property:"Configuration=DLL Debug";Platform=Win32 ^
   -property:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix=_vc14x ^
   -property:CL="/arch:SSE" ^
-  -logger:FileLogger,Microsoft.Build.Engine;logfile="%CACHE_DIR%\buildwin\wxWidgets\MSBuild_DEBUG_WIN32.log"
+  -logger:FileLogger,Microsoft.Build.Engine;logfile="%wxDIR%\lib\vc_dll\MSBuild_DEBUG_WIN32.log"
 if errorlevel 1 (
   echo wxWidgets Debug build [101;93mNOT OK[0m
   goto :buildErr
 )
 echo wxWidgets Debug build OK
-@echo Building wxWidgets Release library...this will take a few minutes...
+@echo Building wxWidgets Release library...this may take a few minutes...
 msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
   -noLogo -verbosity:quiet -maxCpuCount ^
   -property:UseMultiToolTask=true^
@@ -441,7 +442,7 @@ msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
   -property:"Configuration=DLL Release";Platform=Win32 ^
   -property:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix=_vc14x ^
   -property:CL="/arch:SSE" ^
-  -logger:FileLogger,Microsoft.Build.Engine;logfile="%CACHE_DIR%\buildwin\wxWidgets\MSBuild_RELEASE_WIN32.log"
+  -logger:FileLogger,Microsoft.Build.Engine;logfile="%wxDIR%\lib\vc_dll\MSBuild_RELEASE_WIN32.log"
 if errorlevel 1 (
   echo wxWidgets Release build [101;93mNOT OK[0m
   goto :buildErr
