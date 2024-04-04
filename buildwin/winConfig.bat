@@ -559,7 +559,7 @@ if exist "%~dp0..\buildwin\configdev.bat" (call "%~dp0..\buildwin\configdev.bat"
 ::-------------------------------------------------------------
 :: Build Release and Debug executables
 ::-------------------------------------------------------------
-if exist "%~dp0..\.Debug" (
+if exist "%~dp0..\build\.Debug" (
   @echo Building Debug
   set build_type=Debug
   call :ocpnConfig
