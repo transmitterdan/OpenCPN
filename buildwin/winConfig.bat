@@ -419,6 +419,7 @@ if exist "%wxDIR%\.git" (
   )
 )
 @echo Building wxWidgets Debug library...this may take a few minutes...
+if not exist "%wxDIR%\lib\vc_dll" mkdir "%wxDIR%\lib\vc_dll"
 msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
   -noLogo -verbosity:quiet -maxCpuCount ^
   -property:UseMultiToolTask=true ^
