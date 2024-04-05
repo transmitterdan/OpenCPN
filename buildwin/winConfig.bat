@@ -32,9 +32,15 @@ goto :main
 ::  - Add support for auto rebuilding. To rebuild just run winConfig.bat with
 ::    no arguments
 ::
+:: Revision 3> 2024/04/05 Dan Dickey
+::  - If possible, download wxWidgets from github repository so we always have
+::    the latest source.  wsWidgets does not always create source .zip bundle
+::    for minor patches but the github repository is always up to date.
+::  - Various improvements to wxWidgets download and build speed.
+::  - Make improvements to error handleing and persistent configuration settings
 :usage
 @echo ****************************************************************************
-@echo *  This script can be used to create a local build environment for OpenCPN.*
+@echo *  This script can be used to create a local win32 build environment.      *
 @echo *                                                                          *
 @echo *  There are some prequisites before you can effectively use this script.  *
 @echo *                                                                          *
@@ -69,15 +75,15 @@ goto :main
 @echo *      --minsizerel       Build MinSizeRel configuration                   *
 @echo *      --debug            Build Debug configuration                        *
 @echo *      --all              Build all 4 configurations  (default)            *
-@echo *      --help             Print this message                               *
-@echo *      --Y                Non-interactive mode (for calling from a script) *
 @echo *     ***************************************************************      *
 @echo *     * By default, the first time you run this script all 4        *      *
 @echo *     * configuration types of builds are created. If you don't     *      *
 @echo *     * want that, select the build types you need using above      *      *
 @echo *     * options.                                                    *      *
 @echo *     ***************************************************************      *
+@echo *      --Y                Non-interactive mode (for calling from a script) *
 @echo *      --wxver n.n[.n]    Download specific version of wxWidgets sources.  *
+@echo *      --help             Print this message                               *
 @echo *                                                                          *
 @echo ****************************************************************************
 @echo *  Later, you can use these options to rebuild or clean up the build       *
@@ -85,6 +91,9 @@ goto :main
 @echo *                                                                          *
 @echo *      --clean            Remove build folder entirely before building     *
 @echo *                         MUST HAVE INTERNET CONNECTION FOR clean OPTION   *
+@echo *                         By default --clean builds all 4 configurations.  *
+@echo *                         You can include the build config options same as *
+@echo *                         a first-time build.                              *
 @echo *      --rebuild          Rebuild all sources                              *
 @echo *     ***************************************************************      *
 @echo *     * By default, after the first time, when you run this script  *      *
@@ -94,14 +103,14 @@ goto :main
 @echo *                                                                          *
 @echo ****************************************************************************
 @echo *  Typical workflow:                                                       *
-@echo *  1) Run this script for the first time to build the desired              *
-@echo *     configuration:                                                       *
-@echo *     C:\repos\OpenCPN> .\buildwin\winConfig --relwithdebinfo --debug.     *
-@echo *  2) Launch Visual Studio:                                                *
+@echo *  1) C:\repos> git clone https://github.com/OpenCPN/OpenCPN               *
+@echo *     C:\repos> cd opencpn                                                 *
+@echo *  2) Run this script for the first time to build the desired configs      *
+@echo *     C:\repos\OpenCPN> .\buildwin\winConfig --relwithdebinfo --debug      *
+@echo *  3) Launch Visual Studio:                                                *
 @echo *     C:\repos\OpenCPN> .\build\opencpn.sln                                *
 @echo *                                                                          *
 @echo *  Later you may wish to catch up with the github repository like this:    *
-@echo *  C:\repos> git clone https://github.com/OpenCPN/OpenCPN                  *
 @echo *  C:\repos> cd OpenCPN                                                    *
 @echo *  C:\repos\OpenCPN> git pull upstream master                              *
 @echo *  C:\repos\OpenCPN> .\buildwin\winConfig                                  *
