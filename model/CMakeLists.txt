@@ -207,6 +207,8 @@ endif ()
 if (LINUX)
   list(APPEND HDRS ${MODEL_HDR_DIR}/comm_drv_n2k_socketcan.h )
   list(APPEND SRC ${MODEL_SRC_DIR}/comm_drv_n2k_socketcan.cpp)
+  list(APPEND HDRS ${MODEL_HDR_DIR}/linux_devices.h)
+  list(APPEND SRC ${MODEL_SRC_DIR}/linux_devices.cpp)
 endif ()
 
 if (LINUX AND NOT QT_ANDROID)
@@ -291,6 +293,12 @@ if (UNIX AND NOT APPLE)
   endif ()
 endif ()
 
+find_package(LIBUSB)
+if (LIBUSB_FOUND)
+  target_link_libraries(_OCPN_MODEL INTERFACE ocpn::libusb)
+  add_compile_definitions(_OCPN_MODEL INTERFACE HAVE_LIBUSB_10)
+endif ()
+
 if (LINUX)
   target_link_libraries(_OCPN_MODEL INTERFACE ocpn::gtk)
   target_link_libraries(_OCPN_MODEL INTERFACE ${X11_LIBRARIES} ${X11_Xrandr_LIB})
@@ -319,6 +327,7 @@ target_link_libraries(
     ocpn::sound
     ocpn::wxjson
     ocpn::filesystem
+    ocpn::wxservdisc
     pico_sha2
 )
 

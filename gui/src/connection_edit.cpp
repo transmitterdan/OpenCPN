@@ -44,6 +44,7 @@
 #include <serial/serial.h>
 #include <sys/ioctl.h>
 #include <sys/socket.h>
+#include "dnet.h"
 #endif
 
 #ifdef __ANDROID__
@@ -52,6 +53,7 @@
 #endif
 
 #include "model/comm_drv_factory.h"
+#include "model/comm_drv_signalk_net.h"
 #include "model/config_vars.h"
 #include "model/ser_ports.h"
 #include "model/sys_events.h"
@@ -84,15 +86,37 @@ static wxString StringArrayToString(wxArrayString arr) {
 
 // Check available SocketCAN interfaces
 
+#if defined(__linux__) && !defined(__ANDROID__)
+static intf_t   *intf;
+std::vector<std::string> can_if_candidates;
+static int print_intf(const struct intf_entry *entry, void *arg)
+{
+  std::string iface = entry->intf_name;
+  if (entry->intf_type == 1 && iface.find("can") != std::string::npos) {
+    can_if_candidates.push_back(entry->intf_name);
+  }
+  return 0;
+}
+#endif
+
 static wxArrayString GetAvailableSocketCANInterfaces() {
   wxArrayString rv;
 
 #if defined(__linux__) && !defined(__ANDROID__)
-  wxString candidates[] = {"can0",   "can1",   "can2",  "can3",
-                           "slcan0", "slcan1", "vcan0", "vcan1"};
-  size_t ncandidates = sizeof(candidates) / sizeof(wxString);
+  struct intf_entry *entry;
 
-  for (size_t i = 0; i < ncandidates; i++) {
+  can_if_candidates.clear();
+
+  if ((intf = intf_open()) == NULL) {
+    wxLogWarning("Error opening interface list");
+  }
+
+  if (intf_loop(intf, print_intf, NULL) < 0) {
+    wxLogWarning("Error looping over interface list");
+  }
+  intf_close(intf);
+
+  for (const auto & iface : can_if_candidates) {
     int sock = socket(PF_CAN, SOCK_RAW, CAN_RAW);
     if (sock < 0) {
       continue;
@@ -100,7 +124,7 @@ static wxArrayString GetAvailableSocketCANInterfaces() {
 
     // Get the interface index
     struct ifreq if_request;
-    strcpy(if_request.ifr_name, candidates[i].c_str());
+    strcpy(if_request.ifr_name, iface.c_str());
     if (ioctl(sock, SIOCGIFINDEX, &if_request) < 0) {
       continue;
     }
@@ -113,7 +137,7 @@ static wxArrayString GetAvailableSocketCANInterfaces() {
       continue;
     }
     if (if_request.ifr_flags & IFF_UP) {
-      rv.Add(candidates[i]);
+      rv.Add(iface);
     } else {
       continue;
     }
@@ -702,9 +726,10 @@ void ConnectionEditDialog::Init() {
   m_cbCheckSKDiscover->SetToolTip(
       _("If checked, signal K server will be discovered automatically"));
   fgSizer5->Add(m_cbCheckSKDiscover, 0, wxALL, 2);
+  m_cbCheckSKDiscover->Hide(); // Hide it as the functionality is disabled and likely to be completely removed
 
   // signal K "Discover now" button
-  m_ButtonSKDiscover = new wxButton(m_scrolledwin, wxID_ANY, _("Discover now..."),
+  m_ButtonSKDiscover = new wxButton(m_scrolledwin, wxID_ANY, _("Discover local server"),
                                     wxDefaultPosition, wxDefaultSize, 0);
   m_ButtonSKDiscover->Hide();
   fgSizer5->Add(m_ButtonSKDiscover, 0, wxALL, 2);
@@ -1178,7 +1203,7 @@ void ConnectionEditDialog::SetDSFormOptionVizStates(void) {
   ShowInFilter();
   ShowOutFilter();
 
-  m_cbCheckSKDiscover->Show();
+  m_cbCheckSKDiscover->Hide(); // The functionality is disabled and probably to be completely removed in the future
   m_stAuthToken->Show();
   m_tAuthToken->Show();
   m_ButtonSKDiscover->Show();
@@ -1642,7 +1667,6 @@ void ConnectionEditDialog::OnSelectDatasource(wxListEvent& event) {
 }
 
 void ConnectionEditDialog::OnDiscoverButton(wxCommandEvent& event) {
-#if 0  // FIXME (dave)
   wxString ip;
   int port;
   std::string serviceIdent =
@@ -1650,8 +1674,8 @@ void ConnectionEditDialog::OnDiscoverButton(wxCommandEvent& event) {
 
   g_Platform->ShowBusySpinner();
 
-  if (SignalKDataStream::DiscoverSKServer(serviceIdent, ip, port,
-                                          1))  // 1 second scan
+  if (CommDriverSignalKNet::DiscoverSKServer(serviceIdent, ip, port,
+                                             3))  // 3 second scan
   {
     m_tNetAddress->SetValue(ip);
     m_tNetPort->SetValue(wxString::Format(wxT("%i"), port));
@@ -1660,8 +1684,6 @@ void ConnectionEditDialog::OnDiscoverButton(wxCommandEvent& event) {
     UpdateDiscoverStatus(_("Signal K server not found."));
   }
   g_Platform->HideBusySpinner();
-#endif
-  event.Skip();
 }
 
 void ConnectionEditDialog::UpdateDiscoverStatus(wxString stat) {
@@ -2171,6 +2193,10 @@ void ConnectionEditDialog::ConnectControls(){
       wxEVT_COMMAND_BUTTON_CLICKED,
       wxCommandEventHandler(ConnectionEditDialog::OnBtnOStcs), NULL, this);
 
+//Signal K server discovery
+  m_ButtonSKDiscover->Connect(
+      wxEVT_COMMAND_BUTTON_CLICKED,
+      wxCommandEventHandler(ConnectionEditDialog::OnDiscoverButton), NULL, this);
 
 #if 0
     m_tNetAddress->Connect(
@@ -2212,9 +2238,6 @@ void ConnectionEditDialog::ConnectControls(){
   m_cbCheckSKDiscover->Connect(
       wxEVT_COMMAND_CHECKBOX_CLICKED,
       wxCommandEventHandler(ConnectionEditDialog::OnConnValChange), NULL, this);
-  m_ButtonSKDiscover->Connect(
-      wxEVT_COMMAND_BUTTON_CLICKED,
-      wxCommandEventHandler(ConnectionEditDialog::OnDiscoverButton), NULL, this);
 
     m_rbOAccept->Connect(wxEVT_COMMAND_RADIOBUTTON_SELECTED,
                        wxCommandEventHandler(ConnectionEditDialog::OnRbOutput),

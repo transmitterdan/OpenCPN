@@ -4636,7 +4636,7 @@ public:
                     wxString *pSoundFile
                   );
 
-    ~OCPNSoundPanel() {};
+    ~OCPNSoundPanel() { delete m_sound; }
 
     void OnButtonSelectSound(wxCommandEvent& event);
     void OnButtonSPTestSound(wxCommandEvent& event);
@@ -4653,11 +4653,13 @@ public:
 
     wxButton* SelSound;
     wxButton* TestSound;
+    OcpnSound *m_sound;
 
     /** Notified with a OCPN_Sound* pointer when sound has completed. */
     EventVar m_on_sp_sound_done;
 
     ObsListener m_sound_sp_done_listener;
+    bool m_soundPlaying;
 
     DECLARE_EVENT_TABLE()
 };
@@ -4678,7 +4680,8 @@ OCPNSoundPanel::OCPNSoundPanel( wxWindow *parent, wxWindowID id, const wxPoint &
               wxString checkLegend,
               wxString selectLegend,
               wxString *pSoundFile)
-:wxPanel(parent, id, pos, size, wxBORDER_NONE)
+:wxPanel(parent, id, pos, size, wxBORDER_NONE),
+      m_soundPlaying(false)
 {
   wxFont* pif = FontMgr::Get().GetFont(_T("Dialog"));
   SetFont( *pif );
@@ -4686,6 +4689,8 @@ OCPNSoundPanel::OCPNSoundPanel( wxWindow *parent, wxWindowID id, const wxPoint &
   m_pSoundFile = pSoundFile;
   if(pSoundFile)
     m_sound_file = *pSoundFile;
+
+  m_sound = SoundFactory();
 
   int border_size = 4;
   int group_item_spacing = 2;
@@ -4745,9 +4750,8 @@ OCPNSoundPanel::OCPNSoundPanel( wxWindow *parent, wxWindowID id, const wxPoint &
         wxDefaultPosition, m_small_button_size, 0);
   soundSizer1->Add(TestSound, 0, wxALL | wxALIGN_RIGHT,
                      group_item_spacing);
-  auto sound_action = [] (ObservedEvt ev) {
-    auto sound = static_cast<OcpnSound*>(ev.GetClientData());
-    delete sound;
+  auto sound_action = [this] (ObservedEvt ev) {
+    m_soundPlaying = false;
   };
   m_sound_sp_done_listener.Init(m_on_sp_sound_done, sound_action);
 
@@ -4819,24 +4823,48 @@ void OCPNSoundPanel::OnButtonSelectSound(wxCommandEvent& event) {
 }
 
 void OCPNSoundPanel::OnButtonSPTestSound(wxCommandEvent& event) {
-  auto sound = SoundFactory();
-  auto cmd_sound = dynamic_cast<SystemCmdSound*>(sound);
-  if (cmd_sound) cmd_sound->SetCmd(g_CmdSoundString.mb_str());
-  sound->SetFinishedCallback(
-          [&](void* snd) { m_on_sp_sound_done.Notify(snd); });
-  sound->Load(m_sound_file, g_iSoundDeviceIndex);
-  sound->Play();
+  if (!m_soundPlaying) {
+    m_sound->SetFinishedCallback(
+        [&](void* snd) { m_on_sp_sound_done.Notify(snd); });
+    if (m_sound->Load(m_sound_file, g_iSoundDeviceIndex)) {
+      m_soundPlaying = true;
+      m_sound->Play();
+    }
+  }
 }
 
 
 
 
-void options::OnUXAudioEnableButtonClick(wxCommandEvent &event) {
+void options::OnUXAudioEnableButtonClickAIS(wxCommandEvent &event) {
   if (event.IsChecked())
     m_pCheck_AlertAudio->SetValue( true );
+  else {
+    if (!m_soundPanelSART->GetCheckBox()->GetValue()
+        && !m_soundPanelDSC->GetCheckBox()->GetValue())
+      m_pCheck_AlertAudio->SetValue( false );
+  }
 }
 
+void options::OnUXAudioEnableButtonClickSART(wxCommandEvent &event) {
+  if (event.IsChecked())
+    m_pCheck_AlertAudio->SetValue( true );
+  else {
+    if (!m_soundPanelAIS->GetCheckBox()->GetValue()
+        && !m_soundPanelDSC->GetCheckBox()->GetValue())
+      m_pCheck_AlertAudio->SetValue( false );
+  }
+}
 
+void options::OnUXAudioEnableButtonClickDSC(wxCommandEvent &event) {
+  if (event.IsChecked())
+    m_pCheck_AlertAudio->SetValue( true );
+  else {
+    if (!m_soundPanelAIS->GetCheckBox()->GetValue()
+        && !m_soundPanelSART->GetCheckBox()->GetValue())
+      m_pCheck_AlertAudio->SetValue( false );
+  }
+}
 
 void options::CreatePanel_Sounds(size_t parent, int border_size,
                                  int group_item_spacing) {
@@ -4869,7 +4897,7 @@ void options::CreatePanel_Sounds(size_t parent, int border_size,
 
     m_soundPanelAIS->GetCheckBox()->Connect(
         wxEVT_COMMAND_CHECKBOX_CLICKED,
-        wxCommandEventHandler(options::OnUXAudioEnableButtonClick), NULL,
+        wxCommandEventHandler(options::OnUXAudioEnableButtonClickAIS), NULL,
         this);
 
     // SART Alert
@@ -4884,7 +4912,7 @@ void options::CreatePanel_Sounds(size_t parent, int border_size,
 
     m_soundPanelSART->GetCheckBox()->Connect(
         wxEVT_COMMAND_CHECKBOX_CLICKED,
-        wxCommandEventHandler(options::OnUXAudioEnableButtonClick), NULL,
+        wxCommandEventHandler(options::OnUXAudioEnableButtonClickSART), NULL,
         this);
 
     // DSC Call
@@ -4899,7 +4927,7 @@ void options::CreatePanel_Sounds(size_t parent, int border_size,
 
     m_soundPanelDSC->GetCheckBox()->Connect(
         wxEVT_COMMAND_CHECKBOX_CLICKED,
-        wxCommandEventHandler(options::OnUXAudioEnableButtonClick), NULL,
+        wxCommandEventHandler(options::OnUXAudioEnableButtonClickDSC), NULL,
         this);
 
     //  Sound Device Configuration
