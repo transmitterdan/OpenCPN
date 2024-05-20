@@ -1,6 +1,29 @@
 @echo off
 call :StartTimer
+:: If not running in VS Command Prompt try to find VS and set up the environment
+if [%VisualStudioVersion%]==[] (
+  @echo Searching for Visual Studio
+  for /f "delims=" %%G in ('where /r "%ProgramFiles%" /f VsDevCmd.bat') do (
+    set "vsenv=%%G"
+    goto setenv
+  )
+
+  for /f "delims=" %%G in ('where /r "\Program Files (x86)" /f VsDevCmd.bat') do (
+    set "vsenv=%%G"
+    goto setenv
+  )
+)
+goto go
+:setenv
+@echo call %vsenv%
+call %vsenv%
+set vsenv=
+:go
 setlocal enabledelayedexpansion
+if [%VisualStudioVersion%]==[] (
+  @echo Please install Visual Studio 2022 or 2019
+  exit /b 1
+)
 goto :main
 :: ***************************************************************************
 :: *
@@ -136,7 +159,7 @@ set "wxWidgets_ROOT_DIR=%wxDIR%"
 set "wxWidgets_LIB_DIR=%wxDIR%\lib\vc_dll"
 set "wxMajor=3.2"
 set "wxMinor=4"
-set "wxVER=%wxMajor%.%wxMinor%"
+set "wxVER=%wxMajor%"
 if [%VisualStudioVersion%]==[16.0] (
   set VCver=16
   set "VCstr=Visual Studio 16"
@@ -144,6 +167,10 @@ if [%VisualStudioVersion%]==[16.0] (
 if [%VisualStudioVersion%]==[17.0] (
   set VCver=17
   set "VCstr=Visual Studio 17"
+)
+if [%VisualStudioVersion%]==[18.0] (
+  set VCver=18
+  set "VCstr=Visual Studio 18"
 )
 ::-------------------------------------------------------------
 :: Initialize local helper script that can reinitialize environment
@@ -161,16 +188,29 @@ set PSH=powershell
 where pwsh > NUL 2> NUL && set PSH=pwsh
 where %PSH% > NUL 2> NUL || echo PowerShell is not installed && goto :fail
 where msbuild.exe > NUL 2> NUL && goto :vsok
-@echo Please run this from "x86 Native Tools Command Prompt for VS2022
+@echo Please run this from "x86 Native Tools Command Prompt for VS2022 or VS2019
 goto :usage
 :vsok
+@echo Searching for Git
 for /f "delims=" %%G in ('where /f git.exe') do (
   set gitfldr=!%%~dpG!
   set gitcmd=!%%~fG!
-  if not exist "!gitcmd!" (set gitcmd=&&echo [101;93mWarning[0m: git not found)
-  set patchcmd=!gitfldr!..\usr\bin\patch.exe
-  if not exist !patchcmd! (set patchcmd=&& echo Patch not found)
 )
+if exist "%gitfldr%" (
+  set "patchcmd=%gitfldr%..\usr\bin\patch.exe"
+)
+if not exist "%gitcmd%" (set gitcmd=git& echo [101;93mWarning[0m: git not found)
+if not exist "%patchcmd%" (set patchcmd=patch& echo [101;93mWarning[0m: patch not found)
+@echo gitcmd=%gitcmd%
+@echo patchcmd=%patchcmd%
+
+REM for /f "delims=" %%G in ('where /f git.exe') do (
+  REM set gitfldr=!%%~dpG!
+  REM set gitcmd=!%%~fG!
+  REM if not exist "!gitcmd!" (set gitcmd=&& echo [101;93mWarning[0m: git not found)
+  REM set "patchcmd=!gitfldr!..\usr\bin\patch.exe"
+  REM if not exist "!patchcmd!" (set patchcmd=&& echo Patch not found)
+REM )
 :: By default build all 4 possible configurations the first time
 :: Edit and set to 1 at least one configuration
 set ocpn_all=1
@@ -205,7 +245,7 @@ if [%1]==[--minsizerel] (shift /1 && set ocpn_all=0&& set ocpn_minsizerel=1&& go
 if [%1]==[--release] (shift /1 && set ocpn_all=0&& set ocpn_release=1&& goto :parse)
 if [%1]==[--relwithdebinfo] (shift /1 && set ocpn_all=0&& set ocpn_relwithdebinfo=1&& goto :parse)
 if [%1]==[--debug] (shift /1 && set ocpn_all=0&& set ocpn_debug=1&& goto :parse)
-if [%1]==[--wxver] (shift /1 && set wxVER=%1 && shift /1 && goto :parse)
+if [%1]==[--wxver] (shift /1 && set wxVER=%2&& shift /1 && goto :parse)
 if [%1]==[--Y] (shift /1 && set "quiet=Y" && shift /1 && goto :parse)
 if [%1]==[] (goto :begin) else (
   echo Unknown option: %1
@@ -381,10 +421,12 @@ if exist "%CACHE_DIR%\buildwxWidgets" (rmdir /s /q "%CACHE_DIR%\buildwxWidgets" 
 :: Download wxWidgets sources
 ::-------------------------------------------------------------
 if exist "%wxDIR%\build\msw\wx_vc%VCver%.sln" (goto :skipwxDL)
+@echo Could not find "%wxDIR%\build\msw\wx_vc%VCver%.sln"
 @echo Downloading wxWidgets sources
 if "[%gitcmd%]"=="[]" (
-  mkdir "%wxDIR%"
-  set "URL=https://github.com/wxWidgets/wxWidgets/releases/download/v%wxVER%/wxWidgets-%wxVER%.zip"
+  if not exist "%wxDIR%" (mkdir "%wxDIR%")
+  set "URL=https://github.com/wxWidgets/wxWidgets/releases/download/v3.2.4/wxWidgets-3.2.4.zip"
+  :: set "URL=https://github.com/wxWidgets/wxWidgets/releases/download/v%wxVER%/wxWidgets-%wxVER%.zip"
   set "DEST=%wxDIR%\wxWidgets-%wxVER%.zip"
   call :download
   if errorlevel 1 (echo [101;93mNOT OK[0m ) else (echo Download %DEST% OK )
@@ -395,10 +437,10 @@ if "[%gitcmd%]"=="[]" (
   call :explode
   if errorlevel 1 (echo [101;93mNOT OK[0m ) else (echo Explode wxWidgets OK )
 ) else (
-  @echo "%gitcmd%" clone --jobs 2 --depth 1 --recurse-submodules --shallow-submodules ^
-         --branch %wxMajor% "%wxWidgetsURL%" "%wxDIR%"
+  @echo %gitcmd% clone --jobs 2 --depth 1 --recurse-submodules --shallow-submodules ^
+         --branch %wxVer% "%wxWidgetsURL%" "%wxDIR%"
   "%gitcmd%" clone --jobs 2 --depth 1 --recurse-submodules --shallow-submodules ^
-   --branch %wxMajor% "%wxWidgetsURL%" "%wxDIR%"
+   --branch %wxVer% "%wxWidgetsURL%" "%wxDIR%"
   if errorlevel 1 (echo Git clone [101;93mNOT OK[0m&&goto :fail )
 )
 :skipwxDL
@@ -423,7 +465,7 @@ if exist "%wxDIR%\.git" (
   if not "[%gitcmd%]"=="[]" (
     pushd "%wxDIR%"
     "%gitcmd%" submodule update
-    "%gitcmd%" checkout "%wxMajor%" --recurse-submodules
+    "%gitcmd%" checkout "%wxVer%" --recurse-submodules
     "%gitcmd%" pull --recurse-submodules
     popd
   )
@@ -577,20 +619,6 @@ if exist "%~dp0..\buildwin\configdev.bat" (call "%~dp0..\buildwin\configdev.bat"
 ::-------------------------------------------------------------
 :: Build Release and Debug executables
 ::-------------------------------------------------------------
-if exist "%~dp0..\build\.Debug" (
-  @echo Building Debug
-  set build_type=Debug
-  call :ocpnConfig
-  if errorlevel 1 (
-    goto :fail
-  )
-  set buildTarget=Build
-  call :ocpnBuild
-  if errorlevel 1 (
-    goto :fail
-  )
-  call :restore
-)
 if exist "%~dp0..\build\.RelWithDebInfo" (
   @echo Building RelWithDebInfo
   set build_type=RelWithDebInfo
@@ -624,6 +652,20 @@ if exist "%~dp0..\build\.Release" (
 if exist "%~dp0..\build\.MinSizeRel" (
   @echo Building MinSizeRel
   set build_type=MinSizeRel
+  call :ocpnConfig
+  if errorlevel 1 (
+    goto :fail
+  )
+  set buildTarget=Build
+  call :ocpnBuild
+  if errorlevel 1 (
+    goto :fail
+  )
+  call :restore
+)
+if exist "%~dp0..\build\.Debug" (
+  @echo Building Debug
+  set build_type=Debug
   call :ocpnConfig
   if errorlevel 1 (
     goto :fail
@@ -730,6 +772,7 @@ msbuild ^
   -property:UseMultiToolTask=true ^
   -property:EnableClServerMode=true ^
   -property:BuildPassReferences=true ^
+  -property:CL="/arch:SSE" ^
   /l:FileLogger,Microsoft.Build.Engine;logfile=%CD%\MSBuild_%build_type%_WIN32_Debug.log ^
   "%~dp0..\build\INSTALL.vcxproj"
 if errorlevel 1 goto :buildErr
@@ -751,17 +794,17 @@ set wxVerb=
 @echo CMake failed to configure OpenCPN build folder.
 @echo Review the error messages and read the OpenCPN
 @echo Developer Manual for help.
-goto :fail
+exit /b 1
 ::-------------------------------------------------------------
 :: Build failed
 ::-------------------------------------------------------------
 :buildErr
-set build_type=
-set wxVerb=
-@echo Build using msbuild failed.
+@echo Build type '%build_type%' using msbuild failed.
 @echo Review the error messages and read the OpenCPN
 @echo Developer Manual for help.
-goto :fail
+set build_type=
+set wxVerb=
+exit /b 1
 ::-------------------------------------------------------------
 :: Backup user configuration
 ::-------------------------------------------------------------
