@@ -2998,10 +2998,14 @@ void ChartCanvas::OnKeyDown(wxKeyEvent &event) {
           parent_frame->ToggleTestPause();
           break;
         case 'R':
-            g_bNavAidRadarRingsShown = !g_bNavAidRadarRingsShown;
-            if (g_bNavAidRadarRingsShown && g_iNavAidRadarRingsNumberVisible == 0)
-                g_iNavAidRadarRingsNumberVisible = 1;
-            break;
+          g_bNavAidRadarRingsShown = !g_bNavAidRadarRingsShown;
+          if (g_bNavAidRadarRingsShown &&
+              g_iNavAidRadarRingsNumberVisible == 0)
+            g_iNavAidRadarRingsNumberVisible = 1;
+          else if (!g_bNavAidRadarRingsShown &&
+               g_iNavAidRadarRingsNumberVisible == 1)
+            g_iNavAidRadarRingsNumberVisible = 0;
+          break;
         case 'S':
           SetShowENCDepth(!m_encShowDepth);
           ReloadVP();
@@ -5725,9 +5729,14 @@ void ChartCanvas::ShipIndicatorsDraw(ocpnDC &dc, int img_height,
   // Draw radar rings if activated
   if (g_bNavAidRadarRingsShown && g_iNavAidRadarRingsNumberVisible > 0) {
     double factor = 1.00;
-    if (g_pNavAidRadarRingsStepUnits == 1)  // nautical miles
+    if (g_pNavAidRadarRingsStepUnits == 1)  // kilometers
       factor = 1 / 1.852;
-
+    else if  (g_pNavAidRadarRingsStepUnits == 2){  // minutes (time)
+      if (std::isnan(gSog))
+        factor = 0.0;
+      else
+        factor = gSog/60;
+    }
     factor *= g_fNavAidRadarRingsStep;
 
     double tlat, tlon;
@@ -10613,19 +10622,19 @@ void ChartCanvas::RenderShipToActive(ocpnDC &dc, bool Use_Opengl) {
 
 #ifdef ocpnUSE_GL
     else {
-      glLineWidth(wxMax(g_GLMinSymbolLineWidth, width));
-      dc.SetGLStipple();
 
 #ifdef USE_ANDROID_GLES2
       dc.DrawLine(pa.m_x, pa.m_y, pb.m_x, pb.m_y);
 #else
-      glColor3ub(color.Red(), color.Green(), color.Blue());
-      glBegin(GL_LINES);
-      glVertex2f(pa.m_x, pa.m_y);
-      glVertex2f(pb.m_x, pb.m_y);
-      glEnd();
+      if (style != wxPENSTYLE_SOLID) {
+        if (glChartCanvas::dash_map.find(style) !=
+            glChartCanvas::dash_map.end()) {
+          mypen->SetDashes(2, &glChartCanvas::dash_map[style][0]);
+          dc.SetPen(*mypen);
+        }
+      }
+      dc.DrawLine(pa.m_x, pa.m_y, pb.m_x, pb.m_y);
 #endif
-      glDisable(GL_LINE_STIPPLE);
 
       RouteGui(*rt).RenderSegmentArrowsGL(dc, (int)pa.m_x, (int)pa.m_y, (int)pb.m_x,
                                 (int)pb.m_y, GetVP());
@@ -12921,7 +12930,7 @@ void ShowAISTargetQueryDialog(wxWindow *win, int mmsi) {
     int pos_y = g_ais_query_dialog_y;
 
     if (g_pais_query_dialog_active) {
-      delete g_pais_query_dialog_active;
+      g_pais_query_dialog_active->Destroy();
       g_pais_query_dialog_active = new AISTargetQueryDialog();
     } else {
       g_pais_query_dialog_active = new AISTargetQueryDialog();

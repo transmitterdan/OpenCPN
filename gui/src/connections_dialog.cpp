@@ -167,7 +167,7 @@ void ConnectionsDialog::Init() {
 
   m_cbAPBMagnetic =
       new wxCheckBox(m_container, wxID_ANY,
-                     _("Use magnetic bearings in output sentence ECAPB"),
+                     _("Use magnetic bearings in output sentence APB"),
                      wxDefaultPosition, wxDefaultSize, 0);
   m_cbAPBMagnetic->SetValue(g_bMagneticAPB);
   bSizer161->Add(m_cbAPBMagnetic, 0, wxALL, cb_space);
@@ -212,11 +212,11 @@ void ConnectionsDialog::Init() {
   bSizer18 = new wxBoxSizer(wxHORIZONTAL);
   m_sbSizerLB->Add(bSizer18, 0, wxEXPAND, 5);
 
-  m_buttonAdd = new wxButton(m_container, wxID_ANY, _("Add Connection"),
+  m_buttonAdd = new wxButton(m_container, wxID_ANY, _("Add Connection..."),
                              wxDefaultPosition, wxDefaultSize, 0);
   bSizer18->Add(m_buttonAdd, 0, wxALL, 5);
 
-  m_buttonEdit = new wxButton(m_container, wxID_ANY, _("Edit Connection"),
+  m_buttonEdit = new wxButton(m_container, wxID_ANY, _("Edit Connection..."),
                               wxDefaultPosition, wxDefaultSize, 0);
   m_buttonEdit->Enable(FALSE);
   bSizer18->Add(m_buttonEdit, 0, wxALL, 5);
@@ -414,7 +414,7 @@ void ConnectionsDialog::OnAddDatasourceClick(wxCommandEvent& event) {
     TheConnectionParams()->Item(i)->m_optionsPanel->SetSelected(false);
 
   ConnectionEditDialog dialog(m_parent, this);
-  dialog.SetSize(m_parent->GetSize());  // fill the entire "settings" dialog space
+  dialog.SetSize(wxSize(m_parent->GetSize().x, m_parent->GetSize().y * 8/10));
   dialog.SetPropsLabel(_("Configure new connection"));
   dialog.SetDefaultConnectionParams();
 
@@ -474,7 +474,7 @@ void ConnectionsDialog::OnEditDatasourceClick(wxCommandEvent& event) {
 
     if ((index >= 0) && (cp)) {
       ConnectionEditDialog dialog(m_parent, this);
-      dialog.SetSize(m_parent->GetSize());  // fill the entire "settings" dialog space
+      dialog.SetSize(wxSize(m_parent->GetSize().x, m_parent->GetSize().y * 8/10));
       dialog.SetPropsLabel(_("Edit Selected Connection"));
       // Preload the dialog contents
       dialog.PreloadControls(cp);
@@ -542,12 +542,29 @@ void ConnectionsDialog::ApplySettings() {
 
 void ConnectionsDialog::UpdateDatastreams() {
   // Recreate datastreams that are new, or have been edited
+  std::vector<std::string>enabled_conns;
+
   for (size_t i = 0; i < TheConnectionParams()->Count(); i++) {
     ConnectionParams* cp = TheConnectionParams()->Item(i);
 
-    if (cp->b_IsSetup) continue;
+    // Connection already setup?
+    if (cp->b_IsSetup){
+      if(cp->bEnabled){
+        enabled_conns.push_back(cp->GetStrippedDSPort());
+      }
+      continue;
+    }
 
-    // Connection is new, or edited, or disabled
+    // Check to see if this connection port has been
+    // already enabled in this loop.
+    // If so, then leave this connection alone.
+    // This will handle multiple connections with same port,
+    // but possibly different filters
+    // Also protect against some user config errors
+    if ( std::find(enabled_conns.begin(), enabled_conns.end(),
+                  cp->GetStrippedDSPort()) != enabled_conns.end()) {
+      continue;
+    }
 
     // Terminate and remove any existing driver, if present in registry
     StopAndRemoveCommDriver(cp->GetStrippedDSPort(), cp->GetCommProtocol());
@@ -565,9 +582,9 @@ void ConnectionsDialog::UpdateDatastreams() {
     // Make any new or re-enabled drivers
     MakeCommDriver(cp);
     cp->b_IsSetup = TRUE;
+    enabled_conns.push_back(cp->GetStrippedDSPort());
   }
 }
-
 
 void ConnectionsDialog::OnPriorityDialog(wxCommandEvent& event) {
   PriorityDlg* pdlg = new PriorityDlg(m_parent);

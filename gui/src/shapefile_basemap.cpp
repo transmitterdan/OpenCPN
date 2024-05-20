@@ -41,6 +41,7 @@
 #endif
 
 extern OCPNPlatform* g_Platform;
+extern wxString gWorldShapefileLocation;
 
 #ifdef ocpnUSE_GL
 
@@ -191,8 +192,13 @@ ShapeBaseChart &ShapeBaseChartSet::SelectBaseMap(const size_t &scale) {
 
 void ShapeBaseChartSet::Reset() {
   //      Establish the Shapefile basemap location
-  wxString basemap_dir = g_Platform->GetSharedDataDir();
-  basemap_dir.Append("basemap_shp");
+  wxString basemap_dir;
+  if (gWorldShapefileLocation.empty()) {
+    basemap_dir = g_Platform->GetSharedDataDir();
+    basemap_dir.Append("basemap_shp");
+  } else {
+    basemap_dir = gWorldShapefileLocation;
+  }
 
   LoadBasemaps(basemap_dir.ToStdString());
 }
@@ -200,9 +206,11 @@ void ShapeBaseChartSet::LoadBasemaps(const std::string &dir) {
   _loaded = false;
   _basemap_map.clear();
 
+  wxColor land_color = wxColor(170, 175, 80);
+
   if (fs::exists(ShapeBaseChart::ConstructPath(dir, "crude_10x10"))) {
     auto c = ShapeBaseChart(ShapeBaseChart::ConstructPath(dir, "crude_10x10"), 300000000,
-               *wxBLUE);
+                            land_color);
     c._dmod= 10;
     _basemap_map.insert(std::make_pair(Quality::crude, c));
   }
@@ -210,25 +218,25 @@ void ShapeBaseChartSet::LoadBasemaps(const std::string &dir) {
   if (fs::exists(ShapeBaseChart::ConstructPath(dir, "low"))) {
     _basemap_map.insert(std::make_pair(
         Quality::low, ShapeBaseChart(ShapeBaseChart::ConstructPath(dir, "low"),
-                                     15000000, *wxBLACK)));
+                                     15000000, land_color)));
   }
   if (fs::exists(ShapeBaseChart::ConstructPath(dir, "medium"))) {
     _basemap_map.insert(std::make_pair(
         Quality::medium,
         ShapeBaseChart(ShapeBaseChart::ConstructPath(dir, "medium"), 1000000,
-                       *wxGREEN)));
+                       land_color)));
   }
   if (fs::exists(ShapeBaseChart::ConstructPath(dir, "high"))) {
     _basemap_map.insert(std::make_pair(
         Quality::high,
         ShapeBaseChart(ShapeBaseChart::ConstructPath(dir, "high"), 300000,
-                       *wxCYAN)));
+                       land_color)));
   }
   if (fs::exists(ShapeBaseChart::ConstructPath(dir, "full"))) {
     _basemap_map.insert(std::make_pair(
         Quality::full,
-        ShapeBaseChart(ShapeBaseChart::ConstructPath(dir, "full"), 100000,
-                       *wxLIGHT_GREY)));
+        ShapeBaseChart(ShapeBaseChart::ConstructPath(dir, "full"), 50000,
+                       land_color)));
   }
   _loaded = true;
   //if(_basemap_map.size())
