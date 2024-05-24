@@ -192,25 +192,22 @@ where msbuild.exe > NUL 2> NUL && goto :vsok
 goto :usage
 :vsok
 @echo Searching for Git
-for /f "delims=" %%G in ('where /f git.exe') do (
-  set gitfldr=!%%~dpG!
-  set gitcmd=!%%~fG!
+for /f "delims=" %%G in ('where /f git') do (
+  set "gitdrv=%%~dG"
+  set "gitfldr=%%~pG"
+  set "gitcmd=%%~G"
 )
 if exist "%gitfldr%" (
-  set "patchcmd=%gitfldr%..\usr\bin\patch.exe"
+  set "patchfldr=%gitdrv%%gitfldr%.."
 )
-if not exist "%gitcmd%" (set gitcmd=git& echo [101;93mWarning[0m: git not found)
-if not exist "%patchcmd%" (set patchcmd=patch& echo [101;93mWarning[0m: patch not found)
+for /f "delims=" %%G in ('where /f /r "%patchfldr%" patch') do (
+  set patchcmd=%%~G
+)
+if not exist "%gitcmd%" (set gitcmd=& echo [101;93mWarning[0m: git not found)
+if not exist "%patchcmd%" (set patchcmd=& echo [101;93mWarning[0m: patch not found)
 @echo gitcmd=%gitcmd%
 @echo patchcmd=%patchcmd%
 
-REM for /f "delims=" %%G in ('where /f git.exe') do (
-  REM set gitfldr=!%%~dpG!
-  REM set gitcmd=!%%~fG!
-  REM if not exist "!gitcmd!" (set gitcmd=&& echo [101;93mWarning[0m: git not found)
-  REM set "patchcmd=!gitfldr!..\usr\bin\patch.exe"
-  REM if not exist "!patchcmd!" (set patchcmd=&& echo Patch not found)
-REM )
 :: By default build all 4 possible configurations the first time
 :: Edit and set to 1 at least one configuration
 set ocpn_all=1
@@ -609,7 +606,6 @@ set "_addpath=%_addpath%;%gettextpath%\tools\bin\"
 if "[%_addpath%]"=="[]" (goto :skipAddPath)
 @echo path^|find /i "%_addpath%"    ^>nul ^|^| set "path=%path%;%_addpath%" >> "%OCPN_DIR%\buildwin\configdev.bat"
 @echo goto :EOF>> "%OCPN_DIR%\buildwin\configdev.bat"
-set _addpath=
 :skipAddPath
 endlocal
 ::-------------------------------------------------------------
