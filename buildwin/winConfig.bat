@@ -192,25 +192,22 @@ where msbuild.exe > NUL 2> NUL && goto :vsok
 goto :usage
 :vsok
 @echo Searching for Git
-for /f "delims=" %%G in ('where /f git.exe') do (
-  set gitfldr=!%%~dpG!
-  set gitcmd=!%%~fG!
+for /f "delims=" %%G in ('where /f git') do (
+  set "gitdrv=%%~dG"
+  set "gitfldr=%%~pG"
+  set "gitcmd=%%~G"
 )
 if exist "%gitfldr%" (
-  set "patchcmd=%gitfldr%..\usr\bin\patch.exe"
+  set "patchfldr=%gitdrv%%gitfldr%.."
 )
-if not exist "%gitcmd%" (set gitcmd=git& echo [101;93mWarning[0m: git not found)
-if not exist "%patchcmd%" (set patchcmd=patch& echo [101;93mWarning[0m: patch not found)
+for /f "delims=" %%G in ('where /f /r "%patchfldr%" patch') do (
+  set patchcmd=%%~G
+)
+if not exist "%gitcmd%" (set gitcmd=& echo [101;93mWarning[0m: git not found)
+if not exist "%patchcmd%" (set patchcmd=& echo [101;93mWarning[0m: patch not found)
 @echo gitcmd=%gitcmd%
 @echo patchcmd=%patchcmd%
 
-REM for /f "delims=" %%G in ('where /f git.exe') do (
-  REM set gitfldr=!%%~dpG!
-  REM set gitcmd=!%%~fG!
-  REM if not exist "!gitcmd!" (set gitcmd=&& echo [101;93mWarning[0m: git not found)
-  REM set "patchcmd=!gitfldr!..\usr\bin\patch.exe"
-  REM if not exist "!patchcmd!" (set patchcmd=&& echo Patch not found)
-REM )
 :: By default build all 4 possible configurations the first time
 :: Edit and set to 1 at least one configuration
 set ocpn_all=1
@@ -593,23 +590,22 @@ goto :usage
 :skipnsis
 for /D %%D in (Gettext*) do (set "gettextpath=%%~fD")
 for /D %%D in (NSIS-Package*) do (set "nsispath=%%~fD")
-@echo gettext=%gettextpath%
-@echo nsis=%nsispath%
+@echo gettextpath=%gettextpath%
+@echo nsispath=%nsispath%
 popd
 ::-------------------------------------------------------------
 :: Finalize local environment helper script
 ::-------------------------------------------------------------
 @echo Finishing %OCPN_DIR%\buildwin\configdev.bat
-if [%nsispath%]==[] (goto :addGettext)
+if "[%nsispath%]"==[] (goto :addGettext)
 set "_addpath=%nsispath%\NSIS\;%nsispath%\NSIS\bin\"
 :addGettext
-if [%gettextpath%]==[] (goto :addPath)
+if "[%gettextpath%]"==[] (goto :addPath)
 set "_addpath=%_addpath%;%gettextpath%\tools\bin\"
 :addPath
-:if [%_addpath%]==[] (goto :skipAddPath)
+if "[%_addpath%]"=="[]" (goto :skipAddPath)
 @echo path^|find /i "%_addpath%"    ^>nul ^|^| set "path=%path%;%_addpath%" >> "%OCPN_DIR%\buildwin\configdev.bat"
 @echo goto :EOF>> "%OCPN_DIR%\buildwin\configdev.bat"
-set _addpath=
 :skipAddPath
 endlocal
 ::-------------------------------------------------------------
@@ -682,6 +678,7 @@ if exist "%~dp0..\build\.Debug" (
 ::-------------------------------------------------------------
 :hint
 set build_type=
+set buildTarget=
 set wxVerb=
 @echo To build OpenCPN for debugging at command line do this in the folder
 @echo OpenCPN
@@ -762,7 +759,7 @@ if errorlevel 1 (
 )
 exit /b 0
 :ocpnBuild
-@echo buildTarget=%buildTarget%
+@echo build_type=%build_type%
 msbuild ^
   -property:Configuration=%build_type%;Platform=Win32 ^
   -target:%buildTarget% ^
@@ -790,6 +787,7 @@ exit /b 0
 ::-------------------------------------------------------------
 :cmakeErr
 set build_type=
+set buildTarget=
 set wxVerb=
 @echo CMake failed to configure OpenCPN build folder.
 @echo Review the error messages and read the OpenCPN
@@ -803,6 +801,7 @@ exit /b 1
 @echo Review the error messages and read the OpenCPN
 @echo Developer Manual for help.
 set build_type=
+set buildTarget=
 set wxVerb=
 exit /b 1
 ::-------------------------------------------------------------
