@@ -409,9 +409,26 @@ set "DEST=%buildWINtmp%"
 call :explode
 if errorlevel 1 (echo [101;93mNOT OK[0m ) else (
   xcopy /e /q /y "%buildWINtmp%\OCPNWindowsCoreBuildSupport-0.3\buildwin" "%CACHE_DIR%\buildwin"
-  if errorlevel 1 ( echo [101;93mNOT OK[0m ) else ( echo xcopy OK )
+  if errorlevel 1 (
+    @echo [101;93mNOT OK[0m
+    pause
+  ) else (
+    @echo xcopy OK
+  )
 )
 :skipbuildwin
+if exist "%VCToolsRedistDir%\x86\Microsoft.VC143.CRT\msvcp140.dll" (
+  @echo Updating VC runtime ...
+  if not exist "%CACHE_DIR%\buildwin" mkdir "%CACHE_DIR%\buildwin"
+  if not exist "%CACHE_DIR%\buildwin\vc" mkdir "%CACHE_DIR%\buildwin\vc"
+  xcopy /q /d /y "%VCToolsRedistDir%\x86\Microsoft.VC143.CRT\*.*" "%CACHE_DIR%\buildwin\vc"
+  if errorlevel 1 (
+    @echo [101;93mNOT OK[0m
+    pause
+  ) else (
+    echo OK
+  )
+)
 :: Remove old wxWidgets build folder if present
 if exist "%CACHE_DIR%\buildwxWidgets" (rmdir /s /q "%CACHE_DIR%\buildwxWidgets" && echo buildwxWidgets cleared)
 ::-------------------------------------------------------------
@@ -645,9 +662,9 @@ if exist "%~dp0..\build\.Release" (
   call :restore
 )
 
-if exist "%~dp0..\build\.MinSizeRel" (
-  @echo Building MinSizeRel
-  set build_type=MinSizeRel
+if exist "%~dp0..\build\.Debug" (
+  @echo Building Debug
+  set build_type=Debug
   call :ocpnConfig
   if errorlevel 1 (
     goto :fail
@@ -659,9 +676,10 @@ if exist "%~dp0..\build\.MinSizeRel" (
   )
   call :restore
 )
-if exist "%~dp0..\build\.Debug" (
-  @echo Building Debug
-  set build_type=Debug
+
+if exist "%~dp0..\build\.MinSizeRel" (
+  @echo Building MinSizeRel
+  set build_type=MinSizeRel
   call :ocpnConfig
   if errorlevel 1 (
     goto :fail
