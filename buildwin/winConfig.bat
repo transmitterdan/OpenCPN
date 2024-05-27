@@ -499,7 +499,6 @@ msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
   -property:BuildPassReferences=true ^
   -property:"Configuration=DLL Debug";Platform=Win32 ^
   -property:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix=_vc14x ^
-  -property:CL="/arch:SSE" ^
   -logger:FileLogger,Microsoft.Build.Engine;logfile="%wxDIR%\lib\vc_dll\MSBuild_DEBUG_WIN32.log"
 if errorlevel 1 (
   echo wxWidgets Debug build [101;93mNOT OK[0m
@@ -513,7 +512,6 @@ msbuild "%wxDIR%\build\msw\wx_vc%VCver%.sln" ^
   -property:BuildPassReferences=true ^
   -property:"Configuration=DLL Release";Platform=Win32 ^
   -property:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix=_vc14x ^
-  -property:CL="/arch:SSE" ^
   -logger:FileLogger,Microsoft.Build.Engine;logfile="%wxDIR%\lib\vc_dll\MSBuild_RELEASE_WIN32.log"
 if errorlevel 1 (
   echo wxWidgets Release build [101;93mNOT OK[0m
