@@ -184,17 +184,16 @@ where msbuild.exe > NUL 2> NUL && goto :vsok
 goto :usage
 :vsok
 @echo Searching for Git
-winget install Git.Git
 for /f "delims=" %%G in ('where /f git') do (
   set "gitdrv=%%~dG"
   set "gitfldr=%%~pG"
   set "gitcmd=%%~G"
 )
-@echo Searching for git utilities in %gitfldr%..
+@echo Searching for git utilities in %gitfldr%../..
 @echo Searching for patch
-for /f "delims=" %%P in ('where /f /r "%gitdrv%%gitfldr%.." patch') do (set patchcmd=%%~P)
+for /f "delims=" %%P in ('where /f /r "%gitdrv%%gitfldr%..\.." patch') do (set patchcmd=%%~P)
 @echo Searching for bash
-for /f "delims=" %%B in ('where /f /r "%gitdrv%%gitfldr%.." bash') do (set bashcmd=%%~B)
+for /f "delims=" %%B in ('where /f /r "%gitdrv%%gitfldr%..\.." bash') do (set bashcmd=%%~B)
 @echo Finished searching
 @echo gitcmd=%gitcmd%
 @echo patchcmd=%patchcmd%
