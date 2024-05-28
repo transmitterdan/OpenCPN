@@ -1,6 +1,7 @@
 @echo off
 call :StartTimer
 :: If not running in VS Command Prompt try to find VS and set up the environment
+@echo VisualStudioVersion=%VisualStudioVersion%
 if [%VisualStudioVersion%]==[] (
   @echo Searching for Visual Studio
   for /f "delims=" %%G in ('where /r "%ProgramFiles%" /f VsDevCmd.bat') do (
