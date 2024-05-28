@@ -184,6 +184,7 @@ where msbuild.exe > NUL 2> NUL && goto :vsok
 goto :usage
 :vsok
 @echo Searching for Git
+winget install Git.Git
 for /f "delims=" %%G in ('where /f git') do (
   set "gitdrv=%%~dG"
   set "gitfldr=%%~pG"
