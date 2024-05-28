@@ -173,14 +173,6 @@ if [%VisualStudioVersion%]==[18.0] (
   set "VCstr=Visual Studio 18"
 )
 ::-------------------------------------------------------------
-:: Initialize local helper script that can reinitialize environment
-::-------------------------------------------------------------
-@echo set "wxDIR=%wxDIR%" > "%OCPN_Dir%\buildwin\configdev.bat"
-@echo set "wxWidgets_ROOT_DIR=%wxWidgets_ROOT_DIR%" >> "%OCPN_DIR%\buildwin\configdev.bat"
-@echo set "wxWidgets_LIB_DIR=%wxWidgets_LIB_DIR%" >> "%OCPN_DIR%\buildwin\configdev.bat"
-@echo set "VCver=%VCver%" >> "%OCPN_DIR%\buildwin\configdev.bat"
-@echo set "VCstr=%VCstr%" >> "%OCPN_DIR%\buildwin\configdev.bat"
-::-------------------------------------------------------------
 :: Initialize local variables
 ::-------------------------------------------------------------
 SET "buildWINtmp=%CACHE_DIR%\buildwintemp"
@@ -197,17 +189,29 @@ for /f "delims=" %%G in ('where /f git') do (
   set "gitfldr=%%~pG"
   set "gitcmd=%%~G"
 )
-if exist "%gitfldr%" (
-  set "patchfldr=%gitdrv%%gitfldr%.."
-)
-for /f "delims=" %%G in ('where /f /r "%patchfldr%" patch') do (
-  set patchcmd=%%~G
-)
-if not exist "%gitcmd%" (set gitcmd=& echo [101;93mWarning[0m: git not found)
-if not exist "%patchcmd%" (set patchcmd=& echo [101;93mWarning[0m: patch not found)
+@echo Searching for git utilities in %gitfldr%..
+@echo Searching for patch
+for /f "delims=" %%P in ('where /f /r "%gitdrv%%gitfldr%.." patch') do (set patchcmd=%%~P)
+@echo Searching for bash
+for /f "delims=" %%B in ('where /f /r "%gitdrv%%gitfldr%.." bash') do (set bashcmd=%%~B)
+@echo Finished searching
 @echo gitcmd=%gitcmd%
 @echo patchcmd=%patchcmd%
-
+@echo bashcmd=%bashcmd%
+if not exist "%gitcmd%" (set gitcmd=& echo [101;93mWarning[0m: git not found)
+if not exist "%patchcmd%" (set patchcmd=& echo [101;93mWarning[0m: patch not found)
+if not exist "%bashcmd%" (set bashcmd=& echo [101;93mWarning[0m: bash not found)
+::-------------------------------------------------------------
+:: Initialize local helper script that can reinitialize environment
+::-------------------------------------------------------------
+@echo set "wxDIR=%wxDIR%" > "%OCPN_Dir%\buildwin\configdev.bat"
+@echo set "wxWidgets_ROOT_DIR=%wxWidgets_ROOT_DIR%" >> "%OCPN_DIR%\buildwin\configdev.bat"
+@echo set "wxWidgets_LIB_DIR=%wxWidgets_LIB_DIR%" >> "%OCPN_DIR%\buildwin\configdev.bat"
+@echo set "VCver=%VCver%" >> "%OCPN_DIR%\buildwin\configdev.bat"
+@echo set "VCstr=%VCstr%" >> "%OCPN_DIR%\buildwin\configdev.bat"
+@echo set "gitcmd=%gitcmd%" >> "%OCPN_DIR%\buildwin\configdev.bat"
+@echo set "bashcmd=%bashcmd%" >> "%OCPN_DIR%\buildwin\configdev.bat"
+@echo set "patchcmd=%patchcmd%" >> "%OCPN_DIR%\buildwin\configdev.bat"
 :: By default build all 4 possible configurations the first time
 :: Edit and set to 1 at least one configuration
 set ocpn_all=1
@@ -658,6 +662,12 @@ if exist "%~dp0..\build\.Release" (
     goto :fail
   )
   call :restore
+  :: Compress pdb and mark with git hash
+  @echo on
+  "%bashcmd%" -c ^
+    "tar czf opencpn+%GITHUB_SHA:~0,8%.pdb.tar.gz %CONFIGURATION%/opencpn.pdb"
+  @echo off
+
 )
 
 if exist "%~dp0..\build\.Debug" (
