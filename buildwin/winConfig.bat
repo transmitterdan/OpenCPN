@@ -190,7 +190,7 @@ for /f "delims=" %%G in ('where /f git') do (
   set "gitfldr=%%~pG"
   set "gitcmd=%%~G"
 )
-@echo Searching for git utilities in %gitfldr%../..
+@echo Searching for git utilities in %gitfldr%..\..
 @echo Searching for patch
 for /f "delims=" %%P in ('where /f /r "%gitdrv%%gitfldr%..\.." patch') do (set patchcmd=%%~P)
 @echo Searching for bash
