@@ -1583,6 +1583,10 @@ ChartBaseBSB::ChartBaseBSB() {
 
   m_b_cdebug = 0;
 
+  sdata = NULL;
+  m_cacheSize = 0;
+  m_cacheHits = 0;
+
 #ifdef OCPN_USE_CONFIG
   wxFileConfig *pfc = (wxFileConfig *)pConfig;
   pfc->SetPath(_T ( "/Settings" ));
@@ -1623,6 +1627,7 @@ ChartBaseBSB::~ChartBaseBSB() {
   delete pPixCache;
 
   for (int i = 0; i < N_BSB_COLORS; i++) delete pPalettes[i];
+  free_sdata();
 }
 
 void ChartBaseBSB::FreeLineCacheRows(int start, int end) {
@@ -3442,7 +3447,7 @@ bool ChartBaseBSB::GetAndScaleData(unsigned char *ppn, size_t data_size,
       //    Allocate a working buffer based on scale factor
       int blur_factor = wxMax(2, Factor);
       int wb_size = (source.width) * (blur_factor * 2) * BPP / 8;
-      s_data = (unsigned char *)malloc(wb_size);  // work buffer
+      s_data = (unsigned char *)malloc_sdata(wb_size);  // work buffer
       unsigned char *pixel;
       int y_offset;
 
@@ -3618,9 +3623,6 @@ bool ChartBaseBSB::GetAndScaleData(unsigned char *ppn, size_t data_size,
           i, j, dest_stride, target_line_start, target_data_x, y_offset);
       wxLogMessage(msg);
 
-      free(s_data);
-      return true;
-
     }
 
     else
@@ -3642,8 +3644,8 @@ bool ChartBaseBSB::GetAndScaleData(unsigned char *ppn, size_t data_size,
       //    Although we must adjust (increase) temporary allocation for negative
       //    source.x and for vernier
       int sx = wxMax(source.x, 0);
-      s_data = (unsigned char *)malloc((sx + source.width + 2) *
-                                       (source.height + 2) * BPP / 8);
+      s_data = (unsigned char *)malloc_sdata((sx + source.width + 2) *
+                                             (source.height + 2) * BPP / 8);
 
       wxRect vsource = source;
       vsource.height += 2;  // get more bits to allow for vernier
@@ -3692,9 +3694,31 @@ bool ChartBaseBSB::GetAndScaleData(unsigned char *ppn, size_t data_size,
 #endif
   }
 
-  free(s_data);
-
   return true;
+}
+
+void *ChartBaseBSB::malloc_sdata(size_t sz) {
+  std::lock_guard<std::mutex> lock(sdata_mutex);
+  if (sz > m_cacheSize) {
+    m_cacheHits++;
+    if (m_cacheSize) free(sdata);
+    // Allocate a little extra to reduce heap fragmentation
+    m_cacheSize = sz + 1024 * 1024;
+    sdata = malloc(m_cacheSize);
+    if (sdata == NULL) {
+      m_cacheSize = 0;
+      wxFAIL_MSG("malloc failed");
+    }
+  }
+  return sdata;
+}
+
+void ChartBaseBSB::free_sdata(void) {
+  std::lock_guard<std::mutex> lock(sdata_mutex);
+  if (m_cacheSize) free(sdata);
+  sdata = NULL;
+  m_cacheSize = 0;
+  m_cacheHits = 0;
 }
 
 bool ChartBaseBSB::GetChartBits(wxRect &source, unsigned char *pPix,
