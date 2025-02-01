@@ -348,6 +348,22 @@ protected:
 
   wxCriticalSection m_critSect;
   wxULongLong m_filesize;
+
+private:
+  // Allocates memory for sdata, ensuring that the allocated size
+  // is at least as large as the requested size. If the requested size is larger
+  // than the current cache size, it frees the existing sdata memory and
+  // allocates new memory. The function returns a pointer to the allocated
+  // memory.
+  void *malloc_sdata(int sz);
+
+  // Called by the destructor to free the sdata memory.
+  // Functions that allocated memory using malloc_sdata should not call this
+  // function.
+  void free_sdata(void);
+
+  int m_cacheSize;
+  void *sdata;
 };
 
 /**
