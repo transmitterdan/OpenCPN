@@ -1584,6 +1584,7 @@ ChartBaseBSB::ChartBaseBSB() {
   m_b_cdebug = 0;
 
   m_cacheSize = 0;
+  m_cacheHits = 0;
 
 #ifdef OCPN_USE_CONFIG
   wxFileConfig *pfc = (wxFileConfig *)pConfig;
@@ -3697,6 +3698,7 @@ bool ChartBaseBSB::GetAndScaleData(unsigned char *ppn, size_t data_size,
 
 void *ChartBaseBSB::malloc_sdata(int sz) {
   if (sz > m_cacheSize) {
+    m_cacheHits++;
     if (m_cacheSize) free(sdata);
     // Allocate a little extra to reduce heap fragmentation
     m_cacheSize = sz + 1024 * 1024;
@@ -3710,6 +3712,7 @@ void ChartBaseBSB::free_sdata(void) {
   if (m_cacheSize) free(sdata);
   sdata = NULL;
   m_cacheSize = 0;
+  m_cacheHits = 0;
 }
 
 bool ChartBaseBSB::GetChartBits(wxRect &source, unsigned char *pPix,

@@ -363,6 +363,7 @@ private:
   void free_sdata(void);
 
   int m_cacheSize;
+  int m_cacheHits;
   void *sdata;
 };
 
