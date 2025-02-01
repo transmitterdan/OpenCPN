@@ -3698,8 +3698,10 @@ bool ChartBaseBSB::GetAndScaleData(unsigned char *ppn, size_t data_size,
 void *ChartBaseBSB::malloc_sdata(int sz) {
   if (sz > m_cacheSize) {
     if (m_cacheSize) free(sdata);
-    sdata = malloc(sz);
-    m_cacheSize = sz;
+    // Allocate a little extra to reduce heap fragmentation
+    m_cacheSize = sz + 1024 * 1024;
+    sdata = malloc(m_cacheSize);
+    wxASSERT_MSG(sdata, "malloc failed");
   }
   return sdata;
 }
