@@ -578,9 +578,8 @@ if exist "%wxDIR%\.git" (
   if not "[%gitcmd%]"=="[]" (
     pushd "%wxDIR%"
     "%gitcmd%" submodule update
-    "%gitcmd%" fetch --recurse-submodules
-    "%gitcmd%" checkout "%wxVer%" --recurse-submodules --force
-    :: "%gitcmd%" pull --recurse-submodules
+    "%gitcmd%" checkout "%wxVer%" --recurse-submodules
+    "%gitcmd%" pull --recurse-submodules
     popd
   )
 )
