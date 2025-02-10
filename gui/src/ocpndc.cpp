@@ -113,11 +113,12 @@ ocpnDC::ocpnDC(wxDC &pdc)
 #if wxUSE_GRAPHICS_CONTEXT
   pgc = NULL;
   auto pmdc = dynamic_cast<wxMemoryDC *>(dc);
-  if (pmdc)
+  if (pmdc && pmdc->GetSelectedBitmap().IsOk())
     pgc = wxGraphicsContext::Create(*pmdc);
   else {
     auto pcdc = dynamic_cast<wxClientDC *>(dc);
-    if (pcdc) pgc = wxGraphicsContext::Create(*pcdc);
+    if (pcdc && pcdc->GetAsBitmap().IsOk())
+      pgc = wxGraphicsContext::Create(*pcdc);
   }
 #endif
 
