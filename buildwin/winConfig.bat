@@ -349,9 +349,10 @@ if [%ocpn_rebuild%]==[1] (
 set netok=0
 if not ["%gitcmd%"]==[] (
   @echo Checking network connection...
-  echo %cd%
+  @echo %cd%
   "%gitcmd%" fetch --dry-run >nul 2>&1 && set netok=1
 )
+@echo netok=%netok%
 if [%ocpn_clean%]==[1] (
   if [%netok%]==[1] echo Network ok
   if [%netok%]==[0] echo Network not working
