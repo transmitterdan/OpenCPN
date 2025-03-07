@@ -4471,6 +4471,8 @@ bool MyFrame::UpdateChartDatabaseInplace(ArrayOfCDI &DirArray, bool b_force,
   wxLogMessage(_T("Starting chart database Update..."));
   wxString gshhg_chart_loc = gWorldMapLocation;
   gWorldMapLocation = wxEmptyString;
+  // The Update() function may set gWorldMapLocation if at least one of the
+  // directories contains GSHHS files.
   ChartData->Update(DirArray, b_force, pprog);
   ChartData->SaveBinary(ChartListFileName);
   wxLogMessage(_T("Finished chart database Update"));
@@ -4489,6 +4491,8 @@ bool MyFrame::UpdateChartDatabaseInplace(ArrayOfCDI &DirArray, bool b_force,
       ChartCanvas *cc = g_canvasArray.Item(i);
       if (cc) cc->ResetWorldBackgroundChart();
     }
+    // Reset the GSHHS singleton which is used to detect land crossing.
+    gshhsCrossesLandReset();
   }
 
   delete pprog;
@@ -5106,6 +5110,18 @@ void MyFrame::HandleBasicNavMsg(std::shared_ptr<const BasicNavDataMsg> msg) {
   }
 
   if ((msg->vflag & HDT_UPDATE) == HDT_UPDATE) {
+#if 0
+// Lowpass filter, 10 samples
+static double hdt_avg;
+    double hdt_norm = gHdt;
+    if(gHdt > 180) hdt_norm -= 360;
+
+    hdt_avg *= 0.9;
+    hdt_avg +=  hdt_norm * 0.1;
+    gHdt = hdt_avg;
+    if( gHdt < 0) gHdt += 360.;
+#endif
+
     if (!std::isnan(gHdt)) {
       // Prepare to estimate the gHdt from prior ground truth measurements
       uint64_t hdt_time_gt_last = hdt_time_gt;
@@ -5708,7 +5724,8 @@ void MyFrame::OnFrameTimer1(wxTimerEvent &event) {
       if (!bGPSValid) cc->SetOwnShipState(SHIP_INVALID);
 
       if ((bGPSValid != m_last_bGPSValid) ||
-          (bVelocityValid != m_last_bVelocityValid)) {
+          (bVelocityValid != m_last_bVelocityValid) ||
+          (!isnan(gHdt) && (gHdt != m_last_hdt))) {
         if (!g_bopengl) cc->UpdateShips();
 
         bnew_view = true;  // force a full Refresh()
@@ -5718,6 +5735,7 @@ void MyFrame::OnFrameTimer1(wxTimerEvent &event) {
 
   m_last_bGPSValid = bGPSValid;
   m_last_bVelocityValid = bVelocityValid;
+  m_last_hdt = gHdt;
 
   //    If any PlugIn requested dynamic overlay callbacks, force a full canvas
   //    refresh thus, ensuring at least 1 Hz. callback.
@@ -6870,9 +6888,11 @@ void MyFrame::applySettingsString(wxString settings) {
 
   if (previous_expert != g_bUIexpert) b_newToolbar = true;
 
-  if (rr & TOOLBAR_CHANGED) b_newToolbar = true;
+  if (rr & TOOLBAR_CHANGED) {
+    b_newToolbar = true;
+  }
 
-    //  We do this is one case only to remove an orphan recovery window
+  //  We do this is one case only to remove an orphan recovery window
 #ifdef __ANDROID__
   if (previous_expert && !g_bUIexpert) {
     androidForceFullRepaint();
