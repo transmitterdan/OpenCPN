@@ -113,6 +113,7 @@ goto :main
 @echo *     ***************************************************************      *
 @echo *      --Y                Non-interactive mode (for calling from a script) *
 @echo *      --wxver vn.n[.n]   Download specific version of wxWidgets sources.  *
+@echo *      --wxurl URL        Optional URL of wxWidgets repository.            *
 @echo *      --help             Print this message                               *
 @echo *                                                                          *
 @echo ****************************************************************************
@@ -270,6 +271,7 @@ if [%1]==[--release] (shift /1 && set ocpn_all=0&& set ocpn_release=1&& goto :pa
 if [%1]==[--relwithdebinfo] (shift /1 && set ocpn_all=0&& set ocpn_relwithdebinfo=1&& goto :parse)
 if [%1]==[--debug] (shift /1 && set ocpn_all=0&& set ocpn_debug=1&& goto :parse)
 if [%1]==[--wxver] (shift /1 && set wxVER=%2&& shift /1 && goto :parse)
+if [%1]==[--wxurl] (shift /1 && set wxWidgetsURL=%2&& shift /1 && goto :parse)
 if [%1]==[--Y] (shift /1 && set "quiet=Y" && goto :parse)
 if [%1]==[--package] (shift /1 && set ocpn_package=1&& goto :parse)
 if [%1]==[] (goto :begin) else (
