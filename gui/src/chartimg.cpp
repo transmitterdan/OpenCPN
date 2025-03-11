@@ -3697,6 +3697,8 @@ bool ChartBaseBSB::GetAndScaleData(unsigned char *ppn, size_t data_size,
   return true;
 }
 
+// Speed optimized memory management for sdata
+// Reduces heap fragmentation by reusing the same memory block
 void *ChartBaseBSB::malloc_sdata(size_t sz) {
   std::lock_guard<std::mutex> lock(sdata_mutex);
   if (sz > m_cacheSize) {
@@ -3707,8 +3709,9 @@ void *ChartBaseBSB::malloc_sdata(size_t sz) {
     sdata = malloc(m_cacheSize);
     if (sdata == NULL) {
       m_cacheSize = 0;
-      wxFAIL_MSG("malloc failed");
-    }
+      wxLogError("malloc failed");
+    } else
+      wxLogMessage("malloc_sdata: %d bytes", m_cacheSize);
   }
   return sdata;
 }
