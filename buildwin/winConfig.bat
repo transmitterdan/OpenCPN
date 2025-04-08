@@ -581,7 +581,6 @@ if exist "%wxDIR%\.git" (
     "%gitcmd%" submodule update
     "%gitcmd%" fetch --recurse-submodules
     "%gitcmd%" checkout "%wxVer%" --recurse-submodules --force
-    :: "%gitcmd%" pull --recurse-submodules
     popd
   )
 )
