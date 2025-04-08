@@ -623,9 +623,8 @@ void OCPNPlatform::Initialize_3(void) {
   // or fresh install
 
 #ifdef ocpnUSE_GL
-  if ((g_bFirstRun || g_bUpgradeInProcess || bAndroid) && bcapable) {
-    g_bopengl = true;
-
+  if (bcapable && (g_bFirstRun || bAndroid)) g_bopengl = true;
+  if (g_bopengl) {
     // Set up visually nice options
     g_GLOptions.m_bUseAcceleratedPanning = true;
     g_GLOptions.m_bTextureCompression = true;
@@ -1558,7 +1557,7 @@ wxString OCPNPlatform::GetSupplementalLicenseString() {
 //      Per-Platform file/directory support
 //--------------------------------------------------------------------------
 
-static wxString ExpandPaths(wxString paths, OCPNPlatform *platform);
+// static wxString ExpandPaths(wxString paths, OCPNPlatform *platform);
 
 int OCPNPlatform::DoFileSelectorDialog(wxWindow *parent, wxString *file_spec,
                                        wxString Title, wxString initDir,
