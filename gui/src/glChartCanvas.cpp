@@ -3004,7 +3004,7 @@ void glChartCanvas::DrawRegion(ViewPort &vp, const LLRegion &region) {
 
   for (std::list<double *>::iterator i = combine_work_data.begin();
        i != combine_work_data.end(); i++)
-    delete[] * i;
+    delete[] *i;
   combine_work_data.clear();
 }
 
@@ -3822,7 +3822,7 @@ void glChartCanvas::DrawGLTidesInBBox(ocpnDC &dc, LLBBox &BBox) {
           RenderTextures(dc, coords, uv, 4, m_pParentCanvas->GetpVP());
         }
       }  // type 'T"
-    }    // loop
+    }  // loop
 
 #endif
 
