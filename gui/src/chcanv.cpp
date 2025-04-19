@@ -313,6 +313,7 @@ extern bool g_bDeferredInitDone;
 extern wxString g_CmdSoundString;
 
 ShapeBaseChartSet gShapeBasemap;
+extern bool g_CanvasHideNotificationIcon;
 
 //  TODO why are these static?
 
@@ -5133,6 +5134,10 @@ bool ChartCanvas::PanCanvas(double dx, double dy) {
     }
 
     if (new_ref_dbIndex == -1) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+      // The compiler sees a -1 index being used. Does not happen, though.
+
       // for whatever reason, no reference chart is known
       // Probably panned out of the coverage region
       // If any charts are anywhere on-screen, choose the smallest
@@ -5155,6 +5160,7 @@ bool ChartCanvas::PanCanvas(double dx, double dy) {
                      VPoint.rotation);
         ReloadVP();
       }
+#pragma GCC diagnostic pop
     }
   }
 
@@ -11926,16 +11932,17 @@ void ChartCanvas::OnPaint(wxPaintEvent &event) {
 
     if (m_Compass) m_Compass->Paint(scratch_dc);
 
-    auto &noteman = NotificationManager::GetInstance();
-    if (noteman.GetNotificationCount()) {
-      m_notification_button->SetIconSeverity(noteman.GetMaxSeverity());
-      if (m_notification_button->UpdateStatus()) Refresh();
-      m_notification_button->Show(true);
-      m_notification_button->Paint(scratch_dc);
-    } else {
-      m_notification_button->Show(false);
+    if (!g_CanvasHideNotificationIcon) {
+      auto &noteman = NotificationManager::GetInstance();
+      if (noteman.GetNotificationCount()) {
+        m_notification_button->SetIconSeverity(noteman.GetMaxSeverity());
+        if (m_notification_button->UpdateStatus()) Refresh();
+        m_notification_button->Show(true);
+        m_notification_button->Paint(scratch_dc);
+      } else {
+        m_notification_button->Show(false);
+      }
     }
-
     RenderAlertMessage(mscratch_dc, GetVP());
   }
 

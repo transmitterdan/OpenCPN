@@ -27,12 +27,14 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <wx/dir.h>
 
 #include "model/base_platform.h"
 #include "model/navutil_base.h"
 #include "model/notification.h"
 #include "model/notification_manager.h"
 #include "wx/filename.h"
+#include "model/datetime.h"
 
 extern BasePlatform* g_BasePlatform;
 
@@ -62,6 +64,24 @@ void NotificationManager::OnTimer(wxTimerEvent& event) {
   }
 }
 
+void NotificationManager::ScrubNotificationDirectory(int days_to_retain) {
+  wxString note_directory = g_BasePlatform->GetPrivateDataDir() +
+                            wxFileName::GetPathSeparator() + "notifications" +
+                            wxFileName::GetPathSeparator();
+  if (!wxDirExists(note_directory)) return;
+
+  wxDateTime now = wxDateTime::Now();
+  wxArrayString file_list;
+  wxDir::GetAllFiles(note_directory, &file_list);
+  for (size_t i = 0; i < file_list.GetCount(); i++) {
+    wxFileName fn(file_list[i]);
+    wxTimeSpan age = now.Subtract(fn.GetModificationTime());
+    if (age.IsLongerThan(wxTimeSpan(days_to_retain * 24))) {
+      wxRemoveFile(file_list[i]);
+    }
+  }
+}
+
 void NotificationManager::PersistNotificationAsFile(
     const std::shared_ptr<Notification> _notification) {
   wxString note_directory = g_BasePlatform->GetPrivateDataDir() +
@@ -77,8 +97,16 @@ void NotificationManager::PersistNotificationAsFile(
   wxString file_name = wxString(_notification.get()->GetGuid().c_str());
   file_name.Prepend(severity_prefix);
   file_name.Prepend(note_directory);
+  file_name += ".txt";
+
+  wxDateTime act_time = wxDateTime(_notification->GetActivateTime());
+  wxString stime = wxString::Format(
+      "%s", ocpn::toUsrDateTimeFormat(
+                act_time, DateTimeFormatOptions().SetFormatString(
+                              "$short_date  $24_hour_minutes_seconds")));
 
   std::stringstream ss;
+  ss << stime.ToStdString() << std::endl;
   ss << _notification->GetMessage() << std::endl;
 
   std::ofstream outputFile(file_name.ToStdString().c_str(), std::ios::out);
