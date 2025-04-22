@@ -3,9 +3,6 @@
 #include <fstream>
 #include <sstream>
 
-#include "data_monitor.h"
-#include "data_monitor_src.h"
-
 #include <wx/app.h>
 #include <wx/button.h>
 #include <wx/choice.h>
@@ -28,12 +25,13 @@
 #include "androidUTIL.h"
 #endif
 
+#include "model/data_monitor_src.h"
 #include "model/filters_on_disk.h"
 #include "model/navmsg_filter.h"
 #include "model/nmea_log.h"
 #include "model/gui.h"
 
-#include "data_monitor_src.h"
+#include "data_monitor.h"
 #include "svg_icons.h"
 #include "tty_scroll.h"
 #include "filter_dlg.h"
@@ -757,7 +755,8 @@ void DataLogger::Add(const Logline& ll) {
 
 DataMonitor::DataMonitor(wxWindow* parent)
     : wxFrame(parent, wxID_ANY, "Data Monitor", wxDefaultPosition,
-              wxDefaultSize, wxDEFAULT_FRAME_STYLE, kDataMonitorWindowName),
+              wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxFRAME_FLOAT_ON_PARENT,
+              kDataMonitorWindowName),
       m_monitor_src([&](const std::shared_ptr<const NavMsg>& navmsg) {
         auto msg = std::dynamic_pointer_cast<const Nmea0183Msg>(navmsg);
         TtyPanel::AddIfExists(navmsg);

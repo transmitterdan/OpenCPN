@@ -90,9 +90,39 @@ static std::string CharToString(char c) {
 }
 
 std::string Nmea2000Msg::to_string() const {
-  std::string s;
-  for (auto c : payload) s.append(CharToString(c));
-  return PGN.to_string() + " " + s;
+  // Arrange to "pretty-print" the N2K message payload
+
+  // extract PGN from payload
+  uint64_t pgn = 0;
+  unsigned char* c = (unsigned char*)&pgn;
+  *c++ = payload.at(3);
+  *c++ = payload.at(4);
+  *c++ = payload.at(5);
+
+  std::string st;
+  size_t data_start = 12;
+  if (payload.at(0) == 0x94) data_start = 7;
+  size_t i = 0;
+  while (i < payload.size() - 1) {
+    if (i > data_start) {
+      for (int j = 0; j < 8; j++) {
+        st.append(CharToString(payload[i]));
+        st.append(" ");
+        i++;
+        if (i >= payload.size() - 1) {
+          break;
+        }
+      }
+      st.append(" ");
+    } else
+      i++;
+  }
+
+  std::stringstream ss1;
+  std::string spgn = "    ";
+  if (PGN.pgn == 1) spgn = "ALL ";
+  ss1 << "n2000-" << spgn << "PGN: " << pgn << " [ " << st << " ]";
+  return ss1.str();
 }
 
 std::string Nmea2000Msg::to_vdr() const {

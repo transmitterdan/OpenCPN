@@ -73,6 +73,7 @@ set(
   ${MODEL_HDR_DIR}/conn_params.h
   ${MODEL_HDR_DIR}/conn_states.h
   ${MODEL_HDR_DIR}/cutil.h
+  ${MODEL_HDR_DIR}/data_monitor_src.h
   ${MODEL_HDR_DIR}/datetime.h
   ${MODEL_HDR_DIR}/downloader.h
   ${MODEL_HDR_DIR}/ds_porttype.h
@@ -82,7 +83,6 @@ set(
   ${MODEL_HDR_DIR}/geodesic.h
   ${MODEL_HDR_DIR}/georef.h
   ${MODEL_HDR_DIR}/gpx_document.h
-  ${MODEL_HDR_DIR}/gui.h
   ${MODEL_HDR_DIR}/hyperlink.h
   ${MODEL_HDR_DIR}/idents.h
   ${MODEL_HDR_DIR}/instance_check.h
@@ -181,6 +181,7 @@ set(SRC
   ${MODEL_SRC_DIR}/conn_params.cpp
   ${MODEL_SRC_DIR}/conn_states.cpp
   ${MODEL_SRC_DIR}/cutil.cpp
+  ${MODEL_SRC_DIR}/data_monitor_src.cpp
   ${MODEL_SRC_DIR}/datetime.cpp
   ${MODEL_SRC_DIR}/downloader.cpp
   ${MODEL_SRC_DIR}/ds_porttype.cpp
@@ -189,7 +190,6 @@ set(SRC
   ${MODEL_SRC_DIR}/geodesic.cpp
   ${MODEL_SRC_DIR}/georef.cpp
   ${MODEL_SRC_DIR}/gpx_document.cpp
-  ${MODEL_SRC_DIR}/gui.cpp
   ${MODEL_SRC_DIR}/hyperlink.cpp
   ${MODEL_SRC_DIR}/instance_handler.cpp
   ${MODEL_SRC_DIR}/ipc_api.cpp
