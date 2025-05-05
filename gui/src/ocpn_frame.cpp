@@ -73,6 +73,7 @@
 #include "model/local_api.h"
 #include "model/logger.h"
 #include "model/multiplexer.h"
+#include "model/navobj_db.h"
 #include "model/nav_object_database.h"
 #include "model/navutil_base.h"
 #include "model/notification_manager.h"
@@ -324,6 +325,7 @@ extern bool g_config_display_size_manual;
 extern bool g_PrintingInProgress;
 extern bool g_disable_main_toolbar;
 extern bool g_btenhertz;
+extern bool g_declutter_anchorage;
 
 #ifdef __WXMSW__
 // System color control support
@@ -1733,27 +1735,30 @@ void MyFrame::OnCloseWindow(wxCloseEvent &event) {
     if (!watching_anchor && (g_bCruising) && (gSog < 0.5) &&
         (uptime.IsLongerThan(wxTimeSpan(0, 30, 0, 0))))  // pjotrc 2010.02.15
     {
-      //    First, delete any single anchorage waypoint closer than 0.25 NM from
-      //    this point This will prevent clutter and database congestion....
+      //    First, if enabled, delete any single anchorage waypoints closer
+      //    than 0.25 NM from this point
+      //    This will prevent screen clutter and database congestion.
+      if (g_declutter_anchorage) {
+        wxRoutePointListNode *node =
+            pWayPointMan->GetWaypointList()->GetFirst();
+        while (node) {
+          RoutePoint *pr = node->GetData();
+          if (pr->GetName().StartsWith(_T("Anchorage"))) {
+            double a = gLat - pr->m_lat;
+            double b = gLon - pr->m_lon;
+            double l = sqrt((a * a) + (b * b));
 
-      wxRoutePointListNode *node = pWayPointMan->GetWaypointList()->GetFirst();
-      while (node) {
-        RoutePoint *pr = node->GetData();
-        if (pr->GetName().StartsWith(_T("Anchorage"))) {
-          double a = gLat - pr->m_lat;
-          double b = gLon - pr->m_lon;
-          double l = sqrt((a * a) + (b * b));
-
-          // caveat: this is accurate only on the Equator
-          if ((l * 60. * 1852.) < (.25 * 1852.)) {
-            pConfig->DeleteWayPoint(pr);
-            pSelect->DeleteSelectablePoint(pr, SELTYPE_ROUTEPOINT);
-            delete pr;
-            break;
+            // caveat: this is accurate only on the Equator
+            if ((l * 60. * 1852.) < (.25 * 1852.)) {
+              pConfig->DeleteWayPoint(pr);
+              pSelect->DeleteSelectablePoint(pr, SELTYPE_ROUTEPOINT);
+              delete pr;
+              break;
+            }
           }
-        }
 
-        node = node->GetNext();
+          node = node->GetNext();
+        }
       }
 
       wxString name = now.Format();
@@ -1779,6 +1784,8 @@ void MyFrame::OnCloseWindow(wxCloseEvent &event) {
   pConfig->UpdateNavObj();
 
   pConfig->m_pNavObjectChangesSet->reset();
+
+  NavObj_dB::GetInstance().Close();
 
   // Remove any leftover Routes and Waypoints from config file as they were
   // saved to navobj before
@@ -3145,7 +3152,7 @@ void MyFrame::TrackOn(void) {
 
   g_TrackList.push_back(g_pActiveTrack);
   if (pConfig) pConfig->AddNewTrack(g_pActiveTrack);
-
+  NavObj_dB::GetInstance().AddNewTrack(g_pActiveTrack);
   g_pActiveTrack->Start();
 
   // The main toolbar may still be NULL here, and we will do nothing...
@@ -3196,12 +3203,14 @@ Track *MyFrame::TrackOff(bool do_add_point) {
     g_pActiveTrack->Stop(do_add_point);
 
     if (g_pActiveTrack->GetnPoints() < 2) {
+      NavObj_dB::GetInstance().DeleteTrack(g_pActiveTrack);
       RoutemanGui(*g_pRouteMan).DeleteTrack(g_pActiveTrack);
       return_val = NULL;
     } else {
       if (g_bTrackDaily) {
         Track *pExtendTrack = g_pActiveTrack->DoExtendDaily();
         if (pExtendTrack) {
+          NavObj_dB::GetInstance().DeleteTrack(g_pActiveTrack);
           RoutemanGui(*g_pRouteMan).DeleteTrack(g_pActiveTrack);
           return_val = pExtendTrack;
         }
@@ -4699,6 +4708,8 @@ void MyFrame::OnInitTimer(wxTimerEvent &event) {
       }
 
       pConfig->LoadNavObjects();
+      NavObj_dB::GetInstance().LoadNavObjects();
+
       //    Re-enable anchor watches if set in config file
       if (!g_AW1GUID.IsEmpty()) {
         pAnchorWatchPoint1 = pWayPointMan->FindRoutePointByGUID(g_AW1GUID);
