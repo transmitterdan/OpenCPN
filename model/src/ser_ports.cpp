@@ -33,10 +33,14 @@
 #include <cassert>
 #include <iostream>
 
+#if defined(__GCC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
 #include <regex>
+#if defined(__GCC__)
 #pragma GCC diagnostic pop
+#endif
 
 #include <string>
 #include <unordered_set>

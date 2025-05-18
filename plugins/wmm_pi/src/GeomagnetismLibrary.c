@@ -2894,8 +2894,10 @@ int MAG_PcupHigh(double *Pcup, double *dPcup, double x, int nMax)
     pm2 = pm1;
     pm1 = plm;
   }
+#if defined(__GCC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
   // Compiler sees  PreSqr as not initialized. However, it is.
   pmm = PreSqr[2] * scalef;
   rescalem = 1.0 / scalef;
@@ -2928,7 +2930,9 @@ int MAG_PcupHigh(double *Pcup, double *dPcup, double x, int nMax)
       pm2 = pm1;
       pm1 = plm;
     }
+#if defined(__GCC__)
 #pragma GCC diagnostic pop
+#endif
   }
 
   /* Calculate Pcup(nMax,nMax)*/

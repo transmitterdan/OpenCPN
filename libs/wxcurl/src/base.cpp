@@ -158,10 +158,12 @@ extern "C"
     /* reads from a string */
     size_t wxcurl_string_read(void* ptr, size_t size, size_t nmemb, void* pcharbuf)
     {
+#if defined(__GCC__)
 #pragma GCC diagnostic push
 #if defined(__GNUC__) && __GNUC__ >= 8
 #pragma GCC diagnostic ignored "-Wstringop-truncation"
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
 #endif
         size_t iRealSize = size * nmemb;
         size_t iRetVal = 0;
@@ -188,7 +190,9 @@ extern "C"
         }
 
         return iRetVal;
+#if defined(__GCC__)
 #pragma GCC diagnostic pop
+#endif
     }
 
     /* reads from a stream */
@@ -434,9 +438,11 @@ wxCurlBase::~wxCurlBase()
 typedef int (*func_T)(void);
 bool wxCurlBase::SetOpt(CURLoption option, ...)
 {
+#if defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wvarargs"
-    va_list arg;
+#endif
+  va_list arg;
 
     func_T param_func = (func_T)0;
     long param_long = 0;
@@ -473,7 +479,9 @@ bool wxCurlBase::SetOpt(CURLoption option, ...)
 
     DumpErrorIfNeed(res);
     return (res == CURLE_OK);
+#if defined(__clang__)
 #pragma clang diagnostic pop
+#endif
 }
 
 bool wxCurlBase::SetStringOpt(CURLoption option, const wxCharBuffer &str)
@@ -493,9 +501,11 @@ bool wxCurlBase::SetStringOpt(CURLoption option, const wxCharBuffer &str)
 
 bool wxCurlBase::GetInfo(CURLINFO info, ...) const
 {
+#if defined(__clang__)
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wvarargs"
-    va_list arg;
+#endif
+  va_list arg;
     void* pParam;
 
     va_start(arg, info);
@@ -508,7 +518,9 @@ bool wxCurlBase::GetInfo(CURLINFO info, ...) const
     DumpErrorIfNeed(res);
     va_end(arg);
     return (res == CURLE_OK);
+#if defined(__clang__)
 #pragma clang diagnostic pop
+#endif
 }
 
 bool wxCurlBase::Perform()

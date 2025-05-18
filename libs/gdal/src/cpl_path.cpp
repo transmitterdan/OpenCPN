@@ -140,10 +140,12 @@ static int CPLFindFilenameStart( const char * pszFilename )
 const char *CPLGetPath( const char *pszFilename )
 
 {
+#if defined(__GCC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
 #pragma GCC diagnostic ignored "-Wrestrict"
-// Overflow seen by compiler is guarded by assert.
+#endif
+  // Overflow seen by compiler is guarded by assert.
 
     int         iFileStart = CPLFindFilenameStart(pszFilename);
 
@@ -164,7 +166,9 @@ const char *CPLGetPath( const char *pszFilename )
         szStaticResult[iFileStart-1] = '\0';
 
     return szStaticResult;
+#if defined(__GCC__)
 #pragma GCC diagnostic pop
+#endif
 }
 
 /************************************************************************/
@@ -196,9 +200,11 @@ const char *CPLGetPath( const char *pszFilename )
 const char *CPLGetDirname( const char *pszFilename )
 
 {
+#if defined(__GCC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wstringop-overflow"
 #pragma GCC diagnostic ignored "-Wrestrict"
+#endif
     // Overflow seen by compiler is guarded by assert.
     int         iFileStart = CPLFindFilenameStart(pszFilename);
 
@@ -219,7 +225,9 @@ const char *CPLGetDirname( const char *pszFilename )
         szStaticResult[iFileStart-1] = '\0';
 
     return szStaticResult;
+#if defined(__GCC__)
 #pragma GCC diagnostic pop
+#endif
 }
 
 /************************************************************************/

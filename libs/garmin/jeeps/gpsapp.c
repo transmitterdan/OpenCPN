@@ -1935,15 +1935,19 @@ void GPS_D120_Get(int cat_num, char *s)
 	 * If the unit returned no string, the user has not configured one,
 	 * so mimic the behaviour of the 276/296.
 	 */
+#if defined(__GCC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-truncation"
-	if (*s) {
+#endif
+  if (*s) {
 		strncpy(gps_categories[cat_num], s, sizeof (gps_categories[0]));
 	} else {
 		snprintf(gps_categories[cat_num], sizeof (gps_categories[0]),
 			"Category %d", cat_num+1);
 	}
+#if defined(__GCC__)
 #pragma GCC pop
+#endif
 }
 
 

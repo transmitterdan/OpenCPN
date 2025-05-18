@@ -7241,8 +7241,10 @@ void bit_pack(NV_U_BYTE buffer[], NV_U_INT32 start, NV_U_INT32 numbits,
   /*  If the value covers more than 1 byte, store it.                     */
 
   else {
+#if defined(__GCC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
     // Compiler is confused about bit manipulated index, but it looks ok.
 
     /*  Here we mask out data prior to the start bit of the first byte. */
@@ -7279,7 +7281,9 @@ void bit_pack(NV_U_BYTE buffer[], NV_U_INT32 start, NV_U_INT32 numbits,
     /*  bits in the value so that it will fit in the last byte.         */
 
     buffer[start_byte] |= (value << (8 - end_bit));
+#if defined(__GCC__)
 #pragma GCC diagnostic pop
+#endif
   }
 }
 

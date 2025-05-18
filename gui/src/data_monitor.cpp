@@ -33,8 +33,12 @@
 #include "tty_scroll.h"
 #include "filter_dlg.h"
 
+#if defined(__clang__)
 #pragma clang diagnostic push
+#endif
+#if defined(__CLION_IDE__)
 #pragma ide diagnostic ignored "UnreachableCode"
+#endif
 
 // Make _() return std::string instead of wxString;
 #undef _
@@ -929,4 +933,6 @@ void DataMonitor::OnFilterApply(const std::string& name) {
   filter_choice->OnApply(name);
 }
 
+#if defined(__clang__)
 #pragma clang diagnostic pop
+#endif

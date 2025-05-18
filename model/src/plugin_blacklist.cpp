@@ -232,9 +232,11 @@ public:
     return m_blocks[filename].status != plug_status::unloadable;
   }
 
+#if defined(__GCC__)
 // gcc 12 bogus regex warning
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
   std::string get_message(plug_status status, const plug_data& data) {
     if (status == plug_status::unloadable) {
       std::string msg(_("Plugin library %s can not be loaded"));
@@ -252,7 +254,9 @@ public:
     else
       return format_message(found->second.message, data);
   }
+#if defined(__GCC__)
 #pragma GCC diagnostic pop
+#endif
 };
 
 std::unique_ptr<AbstractBlacklist> blacklist_factory() {
