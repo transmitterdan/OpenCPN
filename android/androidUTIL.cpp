@@ -52,6 +52,7 @@
 #include "model/logger.h"
 #include "model/multiplexer.h"
 #include "model/nav_object_database.h"
+#include "model/navobj_db.h"
 #include "model/own_ship.h"
 #include "model/plugin_loader.h"
 #include "model/routeman.h"
@@ -934,12 +935,6 @@ void androidUtilHandler::OnScheduledEvent(wxCommandEvent &event) {
         //  Persist the config file, especially to capture the viewport
         //  location,scale etc.
         pConfig->UpdateSettings();
-
-        //  There may be unsaved objects at this point, and a navobj.xml.changes
-        //  restore file.
-        //  We commit the navobj deltas
-        //  No need to flush or recreate a new empty "changes" file
-        pConfig->UpdateNavObjOnly();
       }
 
       break;
@@ -4406,7 +4401,7 @@ int doAndroidPersistState() {
 
           // caveat: this is accurate only on the Equator
           if ((l * 60. * 1852.) < (.25 * 1852.)) {
-            pConfig->DeleteWayPoint(pr);
+            NavObj_dB::GetInstance().DeleteRoutePoint(pr);
             pSelect->DeleteSelectablePoint(pr, SELTYPE_ROUTEPOINT);
             delete pr;
             break;
@@ -4423,7 +4418,7 @@ int doAndroidPersistState() {
       pWP->m_bShowName = false;
       pWP->m_bIsolatedMark = true;
 
-      pConfig->AddNewWayPoint(pWP, -1);  // use auto next num
+      NavObj_dB::GetInstance().InsertRoutePoint(pWP);
     }
   }
 
@@ -4453,14 +4448,6 @@ int doAndroidPersistState() {
   }
 
   pConfig->UpdateSettings();
-  pConfig->UpdateNavObj();
-
-  pConfig->m_pNavObjectChangesSet->reset();
-
-  // Remove any leftover Routes and Waypoints from config file as they were
-  // saved to navobj before
-  pConfig->DeleteGroup(_T ( "/Routes" ));
-  pConfig->DeleteGroup(_T ( "/Marks" ));
   pConfig->Flush();
 
   delete pConfig;  // All done
