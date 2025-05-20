@@ -1149,6 +1149,12 @@ void RouteManagerDialog::SetColorScheme() { DimeControl(this); }
 void RouteManagerDialog::OnShowAllRteCBClicked(wxCommandEvent &event) {
   bool viz = m_cbShowAllRte->GetValue();
   long item = -1;
+  int item_count = m_pRouteListCtrl->GetItemCount();
+  bool busy = false;
+  if (item_count > 50) {
+    busy = true;
+    ::wxBeginBusyCursor();
+  }
   for (;;) {
     item = m_pRouteListCtrl->GetNextItem(item, wxLIST_NEXT_ALL,
                                          wxLIST_STATE_DONTCARE);
@@ -1161,17 +1167,25 @@ void RouteManagerDialog::OnShowAllRteCBClicked(wxCommandEvent &event) {
 
     m_pRouteListCtrl->SetItemImage(item, !viz);  // visible
 
-    NavObj_dB::GetInstance().UpdateRoute(pR);
+    NavObj_dB::GetInstance().UpdateRouteViz(pR);
   }
 
-  UpdateWptListCtrlViz();
+  if (busy) ::wxEndBusyCursor();
 
+  UpdateWptListCtrlViz();
   gFrame->RefreshAllCanvas();
 }
 
 void RouteManagerDialog::OnShowAllWpCBClicked(wxCommandEvent &event) {
   bool viz = m_cbShowAllWP->GetValue();
   long item = -1;
+  int item_count = m_pWptListCtrl->GetItemCount();
+  bool busy = false;
+  if (item_count > 100) {
+    busy = true;
+    ::wxBeginBusyCursor();
+  }
+
   for (;;) {
     item = m_pWptListCtrl->GetNextItem(item, wxLIST_NEXT_ALL,
                                        wxLIST_STATE_DONTCARE);
@@ -1185,8 +1199,10 @@ void RouteManagerDialog::OnShowAllWpCBClicked(wxCommandEvent &event) {
       pRP->SetVisible(true);
 
     m_pWptListCtrl->SetItemImage(item, RoutePointGui(*pRP).GetIconImageIndex());
-    NavObj_dB::GetInstance().UpdateRoutePoint(pRP);
+    NavObj_dB::GetInstance().UpdateDBRoutePointViz(pRP);
   }
+
+  if (busy) ::wxEndBusyCursor();
 
   gFrame->RefreshAllCanvas();
 }
@@ -2711,10 +2727,14 @@ void RouteManagerDialog::OnWptDeleteClick(wxCommandEvent &event) {
               OCPNMessageBox(this,
                              _("The waypoint you want to delete is used in a "
                                "route, do you really want to delete it?"),
-                             _("OpenCPN Alert"), wxYES_NO))
+                             _("OpenCPN Alert"), wxYES_NO)) {
+            NavObj_dB::GetInstance().DeleteRoutePoint(wp);
             pWayPointMan->DestroyWaypoint(wp);
-        } else
+          }
+        } else {
+          NavObj_dB::GetInstance().DeleteRoutePoint(wp);
           pWayPointMan->DestroyWaypoint(wp);
+        }
       }
     }
 
