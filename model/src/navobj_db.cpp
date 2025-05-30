@@ -688,6 +688,10 @@ bool NavObj_dB::ImportLegacyRoutes() {
     g_pRouteMan->DeleteRoute(route);
   }
 
+  //  There may have been some points left as isolated orphans
+  //  Delete them too.
+  pWayPointMan->DeleteAllWaypoints(true);
+
   return true;
 }
 
@@ -1754,7 +1758,7 @@ bool NavObj_dB::LoadAllPoints() {
     time_t etd = sqlite3_column_int(stmtp, col++);
     std::string type =
         reinterpret_cast<const char*>(sqlite3_column_text(stmtp, col++));
-    std::string time =
+    std::string point_time_string =
         reinterpret_cast<const char*>(sqlite3_column_text(stmtp, col++));
     double arrival_radius = sqlite3_column_double(stmtp, col++);
 
@@ -1799,6 +1803,11 @@ bool NavObj_dB::LoadAllPoints() {
       point->SetShared(shared == 1);
       point->m_bIsolatedMark = (isolated == 1);
 
+      if (point_time_string.size()) {
+        wxString sdt(point_time_string.c_str());
+        point->m_timestring = sdt;
+        ParseGPXDateTime(point->m_CreateTimeX, sdt);
+      }
       // Add it here
       pWayPointMan->AddRoutePoint(point);
       pSelect->AddSelectableRoutePoint(point->m_lat, point->m_lon, point);
@@ -1890,6 +1899,7 @@ bool NavObj_dB::DeleteRoutePoint(RoutePoint* point) {
 }
 
 bool NavObj_dB::UpdateRoutePoint(RoutePoint* point) {
+  if (m_importing) return false;
   if (!RoutePointExists(m_db, point->m_GUID.ToStdString())) return false;
   UpdateDBRoutePointAttributes(point);
   return true;
