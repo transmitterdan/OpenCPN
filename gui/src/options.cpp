@@ -1761,6 +1761,8 @@ void options::Init(void) {
   m_pagePlugins = -1;
   m_pageConnections = -1;
 
+  pEnableTenHertz = nullptr;
+
   auto loader = PluginLoader::GetInstance();
   b_haveWMM = loader && loader->IsPlugInAvailable(_T("WMM"));
   b_oldhaveWMM = b_haveWMM;
@@ -4151,10 +4153,13 @@ void options::CreatePanel_Display(size_t parent, int border_size,
     pEnableZoomToCursor->SetValue(FALSE);
     boxCtrls->Add(pEnableZoomToCursor, verticleInputFlags);
 
+    pEnableTenHertz = nullptr;
+#ifndef ANDROID
     pEnableTenHertz = new wxCheckBox(pDisplayPanel, ID_TENHZCHECKBOX,
                                      _("Enable Ten Hz screen update"));
     pEnableTenHertz->SetValue(FALSE);
     boxCtrls->Add(pEnableTenHertz, verticleInputFlags);
+#endif
 
     if (!g_useMUI) {
       // spacer
@@ -6199,6 +6204,9 @@ void options::SetColorScheme(ColorScheme cs) {
   }
 
 #endif
+
+  //  Some panels need specific color change method
+  comm_dialog->SetColorScheme(cs);
 }
 
 void options::OnAISRolloverClick(wxCommandEvent& event) {
@@ -6425,7 +6433,7 @@ void options::SetInitialSettings(void) {
   pSogCogFromLLDampInterval->SetValue(g_own_ship_sog_cog_calc_damp_sec);
 
   if (pEnableZoomToCursor) pEnableZoomToCursor->SetValue(g_bEnableZoomToCursor);
-  pEnableTenHertz->SetValue(g_btenhertz);
+  if (pEnableTenHertz) pEnableTenHertz->SetValue(g_btenhertz);
 
   if (pPreserveScale) pPreserveScale->SetValue(g_bPreserveScaleOnX);
   pPlayShipsBells->SetValue(g_bPlayShipsBells);
@@ -7418,7 +7426,7 @@ void options::ApplyChanges(wxCommandEvent& event) {
   if (pEnableZoomToCursor)
     g_bEnableZoomToCursor = pEnableZoomToCursor->GetValue();
 
-  g_btenhertz = pEnableTenHertz->GetValue();
+  if (pEnableTenHertz) g_btenhertz = pEnableTenHertz->GetValue();
 
 #ifdef __ANDROID__
   g_bEnableZoomToCursor = false;
@@ -7749,19 +7757,16 @@ void options::ApplyChanges(wxCommandEvent& event) {
   if (g_canvasConfig != m_screenConfig) m_returnChanges |= CONFIG_CHANGED;
   g_canvasConfig = m_screenConfig;
 
-  // if (event.GetId() == ID_APPLY)
-  {
-    gFrame->ProcessOptionsDialog(m_returnChanges, m_pWorkDirList);
-    m_CurrentDirList =
-        *m_pWorkDirList;  // Perform a deep copy back to main database.
+  gFrame->ProcessOptionsDialog(m_returnChanges, m_pWorkDirList);
+  m_CurrentDirList =
+      *m_pWorkDirList;  // Perform a deep copy back to main database.
 
-    //  We can clear a few flag bits on "Apply", so they won't be recognised at
-    //  the "Close" click. Their actions have already been accomplished once...
-    // m_returnChanges &= ~(CHANGE_CHARTS | FORCE_UPDATE | SCAN_UPDATE);
-    // k_charts = 0;
+  //  We can clear a few flag bits on "Apply", so they won't be recognised at
+  //  the "Close" click. Their actions have already been accomplished once...
+  m_returnChanges &= ~(CHANGE_CHARTS | FORCE_UPDATE | SCAN_UPDATE);
+  k_charts = 0;
 
-    gFrame->RefreshAllCanvas();
-  }
+  gFrame->RefreshAllCanvas();
 
   // Some layout changes requiring a new options instance?
   if (m_bneedNew) m_returnChanges |= NEED_NEW_OPTIONS;
@@ -8512,6 +8517,12 @@ void options::DoOnPageChange(size_t page) {
   if (1 == i) {  // 2 is the index of "Charts" page
     k_charts = VISIT_CHARTS;
     UpdateChartDirList();
+  }
+
+  else if (m_pageConnections == i) {
+    // Only required on some Windows hosts, but should not hurt. See #4570
+    wxWindow* w = m_pListbook->GetCurrentPage();
+    comm_dialog->OnResize(w ? w->GetClientSize() : wxSize());
   }
 
   else if (m_pageUI == i) {  // 5 is the index of "User Interface" page

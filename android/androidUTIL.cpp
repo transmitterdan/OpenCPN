@@ -97,6 +97,8 @@
 
 #include "android_jvm.h"
 
+#include "lunasvg.h"
+
 const wxString AndroidSuppLicense = wxT(
     "<br><br>The software included in this product contains copyrighted "
     "software that is licensed under the GPL.")
@@ -4282,6 +4284,34 @@ wxBitmap loadAndroidSVG(const wxString filename, unsigned int width,
   } else {
     return wxBitmap(width, height);
   }
+}
+
+wxBitmap loadAndroidSVG(const char *svg, unsigned int width,
+                        unsigned int height) {
+  auto doc = lunasvg::Document::loadFromData(svg);
+  doc->loadFromData(svg);
+  lunasvg::Bitmap bitmap = doc->renderToBitmap(width, height, 0xFFFFFFFF);
+  uint8_t *data = bitmap.data();
+  uint8_t *p_data = data;
+  uint8_t *idata = (uint8_t *)malloc(3 * width * height);
+  uint8_t *p_idata = idata;
+
+  for (unsigned int i = 0; i < height; i++) {
+    for (unsigned int j = 0; j < width; j++) {
+      auto b = *p_data++;
+      auto g = *p_data++;
+      auto r = *p_data++;
+      auto a = *p_data++;
+
+      *p_idata++ = r;
+      *p_idata++ = g;
+      *p_idata++ = b;
+    }
+  }
+
+  auto image = wxImage(width, height);
+  image.SetData(idata);
+  return wxBitmap(image);
 }
 
 void androidTestCPP() { callActivityMethod_vs("callFromCpp"); }

@@ -3838,6 +3838,9 @@ void ChartCanvas::SetColorScheme(ColorScheme cs) {
   if (pWorldBackgroundChart) pWorldBackgroundChart->SetColorScheme(cs);
 
   if (m_NotificationsList) m_NotificationsList->SetColorScheme();
+  if (m_notification_button) {
+    m_notification_button->SetColorScheme(cs);
+  }
 
 #ifdef ocpnUSE_GL
   if (g_bopengl && m_glcc) {
@@ -4234,9 +4237,18 @@ void ChartCanvas::OnRolloverPopupTimerEvent(wxTimerEvent &event) {
             }
           }
 
-          if (g_bShowTrackPointTime && strlen(segShow_point_b->GetTimeString()))
-            s << _T("\n") << _("Segment Created: ")
-              << segShow_point_b->GetTimeString();
+          if (g_bShowTrackPointTime &&
+              strlen(segShow_point_b->GetTimeString())) {
+            wxString stamp = segShow_point_b->GetTimeString();
+            wxDateTime timestamp = segShow_point_b->GetCreateTime();
+            if (timestamp.IsValid()) {
+              // Format track rollover timestamp to OCPN global TZ setting
+              DateTimeFormatOptions opts =
+                  DateTimeFormatOptions().SetTimezone("");
+              stamp = ocpn::toUsrDateTimeFormat(timestamp.FromUTC(), opts);
+            }
+            s << _T("\n") << _("Segment Created: ") << stamp;
+          }
 
           s << _T("\n");
           if (g_bShowTrue)
