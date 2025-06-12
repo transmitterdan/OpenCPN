@@ -1973,6 +1973,9 @@ void options::CreatePanel_NMEA(size_t parent, int border_size,
     comm_dialog->OnResize(w ? w->GetClientSize() : wxSize());
     ev.Skip();
   });
+#ifdef __ANDROID__
+  comm_dialog->GetHandle()->setStyleSheet(getAdjustedDialogStyleSheet());
+#endif
 }
 
 void options::CreatePanel_Ownship(size_t parent, int border_size,
@@ -8251,6 +8254,12 @@ void options::OnCancelClick(wxCommandEvent& event) {
   pConfig->SetPath("/Settings");
   pConfig->Write("OptionsSizeX", lastWindowSize.x);
   pConfig->Write("OptionsSizeY", lastWindowSize.y);
+
+#ifdef __ANDROID__
+  androidEnableBackButton(true);
+  androidEnableRotation();
+  androidEnableOptionItems(true);
+#endif
 
   Hide();
 }

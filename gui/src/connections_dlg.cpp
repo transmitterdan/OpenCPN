@@ -123,8 +123,8 @@ private:
       wxImage image = proto.ConvertToImage();
       unsigned char* data = image.GetData();
       unsigned char* p_idata = data;
-      for (unsigned int i = 0; i < m_size; i++) {
-        for (unsigned int j = 0; j < m_size; j++) {
+      for (int i = 0; i < image.GetSize().y; i++) {
+        for (int j = 0; j < image.GetSize().x; j++) {
           unsigned char v = *p_idata;
           v = 255 - v;
           *p_idata++ = v;
@@ -289,6 +289,7 @@ private:
     wxWindow* options = wxWindow::FindWindowByName("Options");
     assert(options && "Null Options window!");
     dialog.SetSize(wxSize(options->GetSize().x, options->GetSize().y * 8 / 10));
+    DimeControl(&dialog);
     auto rv = dialog.ShowModal();
     if (rv == wxID_OK) {
       if (ConnectionParams* cp = dialog.GetParamsFromControls()) {
@@ -332,7 +333,8 @@ public:
       SetColLabelSize(wxWindow::GetCharHeight() * 2);
     }
     static const std::array<wxString, 7> headers = {
-        "", _("Protocol"), _("In/Out"), _("Data port"), _("Status"), "", ""};
+        "", _("Protocol") + "  ", _("In/Out"), _("Data port"), _("Status"), "",
+        ""};
     int ic = 0;
     for (auto hdr = headers.begin(); hdr != headers.end(); hdr++, ic++) {
       SetColLabelValue(static_cast<int>(hdr - headers.begin()), *hdr);
@@ -759,9 +761,14 @@ public:
     auto sizer = new wxStaticBoxSizer(wxVERTICAL, this, _("General"));
     SetSizer(sizer);
     auto flags = wxSizerFlags().Border();
-    sizer->Add(new UploadOptionsChoice(this), flags);
+    m_upload_options = new UploadOptionsChoice(this);
+    sizer->Add(m_upload_options, flags);
     sizer->Add(new PrioritiesBtn(this), flags);
     wxWindow::SetMaxSize(max_size);
+  }
+  void SetColorScheme(ColorScheme cs) {
+    DimeControl(m_upload_options);
+    Refresh();
   }
 
 private:
@@ -784,6 +791,7 @@ private:
       wxArrayString wx_choices;
       for (auto& c : choices) wx_choices.Add(c);
       Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wx_choices);
+      DimeControl(this);
       UploadOptionsChoice::Cancel();
     }
 
@@ -820,6 +828,8 @@ private:
         _("Use Garmin GRMN (Host) mode for uploads"),
         _("Format uploads for Furuno GP4X")};
   };
+
+  UploadOptionsChoice* m_upload_options;
 };
 
 /** The "Show advanced" text + right/down triangle and handler. */
@@ -995,9 +1005,11 @@ public:
     vbox->Add(0, wxWindow::GetCharHeight());  // Expanding spacer
     auto panel_flags =
         wxSizerFlags().Border(wxLEFT | wxDOWN | wxRIGHT).Expand();
+    m_general_panel = new GeneralPanel(this, panel_max_size);
     vbox->Add(new GeneralPanel(this, panel_max_size), panel_flags);
 
     auto advanced_panel = new AdvancedPanel(this, panel_max_size);
+    m_advanced_panel = advanced_panel;
     auto on_toggle = [&, advanced_panel, vbox](bool show) {
       advanced_panel->Show(show);
       vbox->SetSizeHints(this);
@@ -1022,13 +1034,18 @@ public:
     m_conn_grid = conn_grid;
   }
 
-  void SetColorScheme(ColorScheme cs) { m_conn_grid->SetColorScheme(cs); }
+  void SetColorScheme(ColorScheme cs) {
+    m_conn_grid->SetColorScheme(cs);
+    m_general_panel->SetColorScheme(cs);
+  }
 
 private:
   const std::vector<ConnectionParams*>& m_connections;
   EventVar& m_evt_add_connection;
   ObsListener m_add_connection_lstnr;
   Connections* m_conn_grid;
+  GeneralPanel* m_general_panel;
+  AdvancedPanel* m_advanced_panel;
 };
 
 /** Top scroll window, adds scrollbars to TopPanel. */

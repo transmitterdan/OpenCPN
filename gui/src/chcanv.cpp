@@ -7518,20 +7518,7 @@ void ChartCanvas::HandleNotificationMouseClick() {
     m_NotificationsList = new NotificationsList(this);
 
     // calculate best size for Notification list
-
-    wxPoint ClientUpperRight = ClientToScreen(wxPoint(GetSize().x, 0));
-    wxPoint list_bottom = ClientToScreen(wxPoint(0, GetSize().y / 2));
-    int size_y = list_bottom.y - (ClientUpperRight.y + 5);
-    size_y -= GetCharHeight();
-    size_y = wxMax(size_y, 200);  // ensure always big enough to see
-
-    m_NotificationsList->SetSize(wxSize(GetCharWidth() * 80, size_y));
-
-    wxPoint m_currentNLPos = ClientToScreen(wxPoint(
-        GetSize().x / 2, m_notification_button->GetRect().y +
-                             m_notification_button->GetRect().height + 5));
-
-    m_NotificationsList->Move(m_currentNLPos);
+    m_NotificationsList->RecalculateSize();
     m_NotificationsList->Hide();
   }
 
@@ -13853,10 +13840,10 @@ void ChartCanvas::UpdateGPSCompassStatusBox(bool b_force_new) {
     m_Compass->UpdateStatus(b_force_new | b_update);
 
   wxPoint note_point =
-      wxPoint(compass_rect.x - compass_rect.width, compass_rect.y);
+      wxPoint(parent_size.x - 20 * wxWindow::GetCharWidth(), compass_rect.y);
   m_notification_button->Move(note_point);
-
   m_notification_button->UpdateStatus();
+
   if (b_force_new | b_update) Refresh();
 }
 
