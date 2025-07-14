@@ -111,7 +111,7 @@ void Multiplexer::LogInputMessage(const std::shared_ptr<const NavMsg> &msg,
                                   const wxString error_msg) {
   if (m_log_callbacks.log_is_active()) {
     NavmsgStatus ns;
-    ns.direction = NavmsgStatus::Direction::kReceived;
+    ns.direction = NavmsgStatus::Direction::kHandled;
     if (is_error) {
       ns.status = NavmsgStatus::State::kChecksumError;
     } else {
@@ -206,6 +206,7 @@ void Multiplexer::HandleN0183(std::shared_ptr<const Nmea0183Msg> n0183_msg) {
 
   // Perform multiplexer output functions
   for (auto &driver : drivers) {
+    if (!driver) continue;
     if (driver->bus == NavAddr::Bus::N0183) {
       ConnectionParams params;
       auto drv_serial = dynamic_cast<CommDriverN0183Serial *>(driver.get());

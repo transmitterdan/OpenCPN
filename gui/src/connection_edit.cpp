@@ -162,8 +162,10 @@ static void LoadSerialPorts(wxComboBox* box) {
   for (size_t i = 0; i < ports->GetCount(); i++)
     sorted_ports.insert((*ports)[i].ToStdString());
 
+  auto value = box->GetValue();
   box->Clear();
   for (auto& p : sorted_ports) box->Append(p);
+  if (!value.empty()) box->SetValue(value);
 }
 
 //------------------------------------------------------------------------------
@@ -1174,9 +1176,16 @@ void ConnectionEditDialog::SetDSFormOptionVizStates(void) {
     bool n0183ctlenabled =
         (DataProtocol)m_choiceSerialProtocol->GetSelection() ==
         DataProtocol::PROTO_NMEA0183;
+    bool n2kctlenabled = (DataProtocol)m_choiceSerialProtocol->GetSelection() ==
+                         DataProtocol::PROTO_NMEA2000;
     if (!n0183ctlenabled) {
-      m_cbInput->Hide();
-      m_cbOutput->Hide();
+      if (n2kctlenabled) {
+        m_cbInput->Show();
+        m_cbOutput->Show();
+      } else {
+        m_cbInput->Hide();
+        m_cbOutput->Hide();
+      }
       ShowOutFilter(false);
       ShowInFilter(false);
       m_stPrecision->Hide();
@@ -1319,7 +1328,7 @@ void ConnectionEditDialog::SetDSFormOptionVizStates(void) {
 
 void ConnectionEditDialog::SetDSFormRWStates(void) {
   if (m_rbTypeSerial->GetValue()) {
-    m_cbInput->Enable(FALSE);
+    m_cbInput->Enable(TRUE);
     m_cbOutput->Enable(TRUE);
     ShowInFilter();
     ShowOutFilter(m_cbOutput->IsChecked());
