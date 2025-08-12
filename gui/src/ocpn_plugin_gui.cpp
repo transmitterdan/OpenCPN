@@ -452,21 +452,13 @@ void PushNMEABuffer(wxString buf) {
   std::string full_sentence = buf.ToStdString();
 
   if ((full_sentence[0] == '$') || (full_sentence[0] == '!')) {  // Sanity check
-    std::string identifier;
     // We notify based on full message, including the Talker ID
-    identifier = full_sentence.substr(1, 5);
+    std::string id = full_sentence.substr(1, 5);
 
-    // notify message listener and also "ALL" N0183 messages, to support plugin
-    // API using original talker id
+    // notify message listener
     auto address = std::make_shared<NavAddr0183>("virtual");
-    auto msg =
-        std::make_shared<const Nmea0183Msg>(identifier, full_sentence, address);
-    auto msg_all = std::make_shared<const Nmea0183Msg>(*msg, "ALL");
-
-    auto& msgbus = NavMsgBus::GetInstance();
-
-    msgbus.Notify(std::move(msg));
-    msgbus.Notify(std::move(msg_all));
+    auto msg = std::make_shared<const Nmea0183Msg>(id, full_sentence, address);
+    NavMsgBus::GetInstance().Notify(std::move(msg));
   }
 }
 
@@ -3429,4 +3421,168 @@ void SetBoatPosition(double zlat, double zlon) {
   gLat = zlat;
   gLon = zlon;
   gFrame->UpdateStatusBar();
+}
+
+void RouteInsertWaypoint(wxString route_guid, double zlat, double zlon) {
+  Route* route = g_pRouteMan->FindRouteByGUID(route_guid);
+  if (!route) return;
+
+  if (route->m_bIsInLayer) return;
+  bool rename = false;
+  // TODO
+  //  route->InsertPointAfter(m_pFoundRoutePoint, zlat, zlon,
+  //                                     rename);
+
+  pSelect->DeleteAllSelectableRoutePoints(route);
+  pSelect->DeleteAllSelectableRouteSegments(route);
+  pSelect->AddAllSelectableRouteSegments(route);
+  pSelect->AddAllSelectableRoutePoints(route);
+
+  NavObj_dB::GetInstance().UpdateRoute(route);
+}
+
+void RouteAppendWaypoint(int canvas_index, wxString route_guid) {
+  Route* route = g_pRouteMan->FindRouteByGUID(route_guid);
+  if (!route) return;
+
+  ChartCanvas* parent =
+      static_cast<ChartCanvas*>(GetCanvasByIndex(canvas_index));
+  if (!parent) return;
+
+  parent->m_pMouseRoute = route;
+  parent->m_routeState = route->GetnPoints() + 1;
+  parent->m_pMouseRoute->m_lastMousePointIndex = route->GetnPoints();
+  parent->m_pMouseRoute->SetHiLite(50);
+
+  auto pLast = route->GetLastPoint();
+
+  parent->m_prev_rlat = pLast->m_lat;
+  parent->m_prev_rlon = pLast->m_lon;
+  parent->m_prev_pMousePoint = pLast;
+
+  parent->m_bAppendingRoute = true;
+}
+
+void FinishRoute(int canvas_index) {
+  ChartCanvas* parent =
+      static_cast<ChartCanvas*>(GetCanvasByIndex(canvas_index));
+  if (!parent) return;
+
+  parent->FinishRoute();
+}
+
+bool IsRouteBeingCreated(int canvas_index) {
+  ChartCanvas* parent =
+      static_cast<ChartCanvas*>(GetCanvasByIndex(canvas_index));
+  if (!parent) return false;
+  return !(parent->m_pMouseRoute == NULL);
+}
+
+bool AreRouteWaypointNamesVisible(wxString route_guid) {
+  Route* route = g_pRouteMan->FindRouteByGUID(route_guid);
+  if (!route) return false;
+  return route->AreWaypointNamesVisible();
+}
+
+void ShowRouteWaypointNames(wxString route_guid, bool show) {
+  Route* route = g_pRouteMan->FindRouteByGUID(route_guid);
+  if (!route) return;
+  route->ShowWaypointNames(show);
+}
+
+void NavigateToWaypoint(wxString waypoint_guid) {
+  RoutePoint* prp = pWayPointMan->FindRoutePointByGUID(waypoint_guid);
+  if (!prp) return;
+
+  RoutePoint* pWP_src = new RoutePoint(gLat, gLon, g_default_wp_icon,
+                                       wxEmptyString, wxEmptyString);
+  pSelect->AddSelectableRoutePoint(gLat, gLon, pWP_src);
+
+  Route* temp_route = new Route();
+  pRouteList->Append(temp_route);
+
+  temp_route->AddPoint(pWP_src);
+  temp_route->AddPoint(prp);
+  prp->SetShared(true);
+
+  pSelect->AddSelectableRouteSegment(gLat, gLon, prp->m_lat, prp->m_lon,
+                                     pWP_src, prp, temp_route);
+
+  wxString name = prp->GetName();
+  if (name.IsEmpty()) name = _("(Unnamed Waypoint)");
+  wxString rteName = _("Go to ");
+  rteName.Append(name);
+  temp_route->m_RouteNameString = rteName;
+  temp_route->m_RouteStartString = _("Here");
+  temp_route->m_RouteEndString = name;
+  temp_route->m_bDeleteOnArrival = true;
+
+  if (g_pRouteMan->GetpActiveRoute()) g_pRouteMan->DeactivateRoute();
+  g_pRouteMan->ActivateRoute(temp_route, prp);
+}
+
+// AIS related
+bool IsAISTrackVisible(wxString ais_mmsi) {
+  long mmsi = 0;
+  ais_mmsi.ToLong(&mmsi);
+  auto myptarget = g_pAIS->Get_Target_Data_From_MMSI(mmsi);
+  if (myptarget)
+    return myptarget->b_show_track;
+  else
+    return false;
+}
+
+void AISToggleShowTrack(wxString ais_mmsi) {
+  long mmsi = 0;
+  ais_mmsi.ToLong(&mmsi);
+  auto myptarget = g_pAIS->Get_Target_Data_From_MMSI(mmsi);
+  if (myptarget) myptarget->ToggleShowTrack();
+}
+
+bool IsAIS_CPAVisible(wxString ais_mmsi) {
+  long mmsi = 0;
+  ais_mmsi.ToLong(&mmsi);
+  auto myptarget = g_pAIS->Get_Target_Data_From_MMSI(mmsi);
+  if (myptarget)
+    return myptarget->b_show_AIS_CPA;
+  else
+    return false;
+}
+
+void AISToggleShowCPA(wxString ais_mmsi) {
+  long mmsi = 0;
+  ais_mmsi.ToLong(&mmsi);
+  auto myptarget = g_pAIS->Get_Target_Data_From_MMSI(mmsi);
+  if (myptarget) myptarget->Toggle_AIS_CPA();
+}
+
+void ShowAISTargetQueryDialog(int canvas_index, wxString ais_mmsi) {
+  ChartCanvas* parent =
+      static_cast<ChartCanvas*>(GetCanvasByIndex(canvas_index));
+  if (!parent) return;
+
+  long mmsi = 0;
+  ais_mmsi.ToLong(&mmsi);
+  ShowAISTargetQueryDialog(parent, mmsi);
+}
+
+void ShowAISTargetList(int canvas_index) {
+  ChartCanvas* parent =
+      static_cast<ChartCanvas*>(GetCanvasByIndex(canvas_index));
+  if (!parent) return;
+  parent->ShowAISTargetList();
+}
+
+bool IsMeasureActive(int canvas_index) {
+  ChartCanvas* parent =
+      static_cast<ChartCanvas*>(GetCanvasByIndex(canvas_index));
+  if (!parent) return false;
+  return parent->m_bMeasure_Active;
+}
+
+void CancelMeasure(int canvas_index) {
+  ChartCanvas* parent =
+      static_cast<ChartCanvas*>(GetCanvasByIndex(canvas_index));
+  if (!parent) return;
+  parent->CancelMeasureRoute();
 }
