@@ -64,7 +64,7 @@
 #include "routeman_gui.h"
 #include "s52plib.h"
 #include "SoundFactory.h"
-#include "svg_utils.h"
+#include "model/svg_utils.h"
 #include "SystemCmdSound.h"
 #include "toolbar.h"
 #include "waypointman_gui.h"
@@ -126,6 +126,8 @@ extern wxString g_default_wp_icon;
 extern bool g_bhide_route_console;
 extern bool g_bhide_context_menus;
 extern int g_maxzoomin;
+extern bool g_bhide_depth_units;
+extern bool g_bhide_overzoom_flag;
 
 WX_DEFINE_ARRAY_PTR(ChartCanvas*, arrayofCanvasPtr);
 extern arrayofCanvasPtr g_canvasArray;
@@ -3434,9 +3436,7 @@ void RouteInsertWaypoint(int canvas_index, wxString route_guid, double zlat,
 
   if (route->m_bIsInLayer) return;
 
-  wxPoint2DDouble pa;
-  parent->GetDoubleCanvasPointPix(zlat, zlon, &pa);
-  int seltype = parent->PrepareContextSelections(pa.m_x, pa.m_y);
+  int seltype = parent->PrepareContextSelections(zlat, zlon);
   if ((seltype & SELTYPE_ROUTESEGMENT) != SELTYPE_ROUTESEGMENT) return;
 
   bool rename = false;
@@ -3595,3 +3595,7 @@ void CancelMeasure(int canvas_index) {
   if (!parent) return;
   parent->CancelMeasureRoute();
 }
+
+void SetDepthUnitVisible(bool bviz) { g_bhide_depth_units = !bviz; }
+
+void SetOverzoomFlagVisible(bool bviz) { g_bhide_overzoom_flag = !bviz; }
