@@ -1,9 +1,12 @@
-/******************************************************************************
+/***************************************************************************
  *
  * Project:  OpenCPN
+ * Purpose:  NMEA0183 Support Classes
+ * Author:   Samuel R. Blackburn, David S. Register, Hakan Svensson
  *
  ***************************************************************************
- *   Copyright (C) 2010 by David S. Register                               *
+ *   Copyright (C) 2010 by Samuel R. Blackburn.                            *
+ *   2025 by David S Register, Hakan Svensson                              *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,31 +23,43 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
  ***************************************************************************
+ *
+ *   S Blackburn's original source license:                                *
+ *         "You can use it any way you like."                              *
+ *   More recent (2010) license statement:                                 *
+ *         "It is BSD license, do with it what you will"                   *
  */
+#if ! defined( THS_CLASS_HEADER )
+#define THS_CLASS_HEADER
 
-#include "Layer.h"
+class THS : public RESPONSE
+{
 
-#include <algorithm>
+   public:
 
-extern bool g_bShowLayers;
-extern LayerList *pLayerList;
+      THS();
+     ~THS();
 
-Layer::Layer(void) {
-  m_bIsVisibleOnChart = g_bShowLayers;
-  m_bIsVisibleOnListing = false;
-  m_bHasVisibleNames = wxCHK_UNDETERMINED;
-  m_NoOfItems = 0;
-  m_LayerType = _T("");
-  m_LayerName = _T("");
-  m_LayerFileName = _T("");
-  m_LayerDescription = _T("");
-  m_CreateTime = wxDateTime::Now();
-}
+      /*
+      ** Data
+      */
 
-Layer::~Layer(void) {
-  //  Remove this layer from the global layer list
-  if (pLayerList) {
-    auto found = std::find(pLayerList->begin(), pLayerList->end(), this);
-    if (found != pLayerList->end()) pLayerList->erase(found);
-  }
-}
+      double TrueHeading;
+	    wxString ModeInd;
+
+      /*
+      ** Methods
+      */
+
+      virtual void Empty( void );
+      virtual bool Parse( const SENTENCE& sentence );
+      virtual bool Write( SENTENCE& sentence );
+
+      /*
+      ** Operators
+      */
+
+      virtual const THS& operator = ( const THS& source );
+};
+
+#endif // THS_CLASS_HEADER

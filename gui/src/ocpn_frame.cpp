@@ -1,10 +1,4 @@
-/***************************************************************************
- *
- * Project:  OpenCPN
- * Purpose:  OpenCPN Main wxWidgets Program
- * Author:   David Register
- *
- ***************************************************************************
+/**************************************************************************
  *   Copyright (C) 2010 by David S. Register                               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,10 +12,14 @@
  *   GNU General Public License for more details.                          *
  *                                                                         *
  *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
+ *   along with this program; if not, see <https://www.gnu.org/licenses/   *
  **************************************************************************/
+
+/*
+ * \file
+ *
+ * OpenCPN top window
+ */
 #include "config.h"
 
 #ifdef __MINGW32__
@@ -59,6 +57,7 @@
 #include "model/ais_decoder.h"
 #include "model/ais_state_vars.h"
 #include "model/ais_target_data.h"
+#include "model/autopilot_output.h"
 #include "model/cmdline.h"
 #include "model/comm_drv_factory.h"  //FIXME(dave) this one goes away
 #include "model/comm_drv_registry.h"
@@ -83,6 +82,7 @@
 #include "model/plugin_loader.h"
 #include "model/routeman.h"
 #include "model/select.h"
+#include "model/std_icon.h"
 #include "model/sys_events.h"
 #include "model/track.h"
 
@@ -1921,10 +1921,9 @@ void MyFrame::OnCloseWindow(wxCloseEvent &event) {
   }
 
   if (pLayerList) {
-    LayerList::iterator it;
-    while (pLayerList->GetCount()) {
-      Layer *lay = pLayerList->GetFirst()->GetData();
-      delete lay;  // automatically removes the layer from list, see Layer dtor
+    for (auto it = pLayerList->begin(); it != pLayerList->end(); ++it) {
+      delete *it;
+      // automatically removes the layer from list, see Layer dtor
     }
   }
 
@@ -5818,6 +5817,8 @@ void MyFrame::OnFrameTimer1(wxTimerEvent &event) {
   if (!g_btenhertz) bnew_view = DoChartUpdate();
 
   nBlinkerTick++;
+
+  if (g_always_send_rmb_rmc) SendNoRouteRmbRmc(*g_pRouteMan);
 
   // This call sends autopilot output strings to output ports.
   bool bactiveRouteUpdate = RoutemanGui(*g_pRouteMan).UpdateProgress();
