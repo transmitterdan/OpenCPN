@@ -1,9 +1,5 @@
-/***************************************************************************
- *
- * Project:  OpenCPN
- *
- ***************************************************************************
- *   Copyright (C) 2010 by David S. Register                               *
+/**************************************************************************
+ *   Copyright (C) 2021 Alec Leamas                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -19,37 +15,11 @@
  *   along with this program; if not, write to the                         *
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
- ***************************************************************************
- */
-
-#ifndef __OCPNLISTCTRL_H__
-#define __OCPNLISTCTRL_H__
-
-#include <wx/listctrl.h>
-#include <wx/string.h>
-
-#include "ais_target_list_dlg.h"
-#include "ais.h"
-
-class AISTargetListDialog;  // circular
+ **************************************************************************/
 
 /**
- * A custom list control for displaying AIS target information. Extends
- * wxListCtrl to provide specialized functionality for displaying and managing
- * AIS target data in OpenCPN.
+ * \file
+ * Implement gui_vars.h
  */
-class OCPNListCtrl : public wxListCtrl {
-public:
-  OCPNListCtrl(AISTargetListDialog* parent, wxWindowID id, const wxPoint& pos,
-               const wxSize& size, long style);
-  ~OCPNListCtrl();
 
-  wxString OnGetItemText(long item, long column) const;
-  int OnGetItemColumnImage(long item, long column) const;
-
-  wxString GetTargetColumnData(AisTargetData* pAISTarget, long column) const;
-
-  AISTargetListDialog* m_parent;
-};
-
-#endif
+#include "model/gui_vars.h"

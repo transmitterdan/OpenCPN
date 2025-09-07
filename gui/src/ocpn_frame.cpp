@@ -91,9 +91,9 @@
 #include "about.h"
 #include "ais.h"
 #include "ais_info_gui.h"
-#include "AISTargetAlertDialog.h"
-#include "AISTargetListDialog.h"
-#include "AISTargetQueryDialog.h"
+#include "ais_target_alert_dlg.h"
+#include "ais_target_list_dlg.h"
+#include "ais_target_query_dlg.h"
 #include "CanvasConfig.h"
 #include "chartbase.h"
 #include "chart_ctx_factory.h"
@@ -913,6 +913,26 @@ MyFrame::~MyFrame() {
   // FIXME (dave)  Was in some datastream file?
   // Disconnect(wxEVT_OCPN_THREADMSG,
   //            (wxObjectEventFunction)(wxEventFunction)&MyFrame::OnEvtTHREADMSG);
+}
+
+void MyFrame::FreezeCharts() {
+  // ..For each canvas,
+#ifndef __WXMAC__
+  for (unsigned int i = 0; i < g_canvasArray.GetCount(); i++) {
+    ChartCanvas *cc = g_canvasArray.Item(i);
+    if (cc) cc->Freeze();
+  }
+#endif
+}
+
+void MyFrame::ThawCharts() {
+  // ..For each canvas,
+#ifndef __WXMAC__
+  for (unsigned int i = 0; i < g_canvasArray.GetCount(); i++) {
+    ChartCanvas *cc = g_canvasArray.Item(i);
+    if (cc) cc->Thaw();
+  }
+#endif
 }
 
 void MyFrame::OnSENCEvtThread(OCPN_BUILDSENC_ThreadEvent &event) {
@@ -2655,6 +2675,11 @@ void MyFrame::OnToolLeftClick(wxCommandEvent &event) {
       break;
     }
 
+    case ID_RELOAD_CHARTS: {
+      ReloadAllVP();
+      break;
+    }
+
     case ID_MENU_SETTINGS_BASIC: {
 #ifdef __ANDROID__
       /// LoadS57();
@@ -2933,6 +2958,12 @@ bool MyFrame::SetGlobalToolbarViz(bool viz) {
   }
 
   return viz_now;
+}
+
+void MyFrame::ScheduleReloadCharts() {
+  wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED);
+  evt.SetId(ID_RELOAD_CHARTS);
+  GetEventHandler()->AddPendingEvent(evt);
 }
 
 void MyFrame::ScheduleDeleteSettingsDialog() {
@@ -4117,6 +4148,7 @@ void MyFrame::PrepareOptionsClose(options *settings,
   androidRestoreFullScreen();
   androidEnableRotation();
 #endif
+  ThawCharts();
 }
 
 void MyFrame::DoOptionsDialog() {
@@ -4339,7 +4371,8 @@ void MyFrame::ProcessOptionsDialog(int rr, ArrayOfCDI *pNewDirArray) {
       false;  // since we don't want to pan to an unknown cursor position
 
   //  This is needed to recognise changes in zoom-scale factors
-  GetPrimaryCanvas()->ZoomCanvasSimple(1.0001);
+  if (!GetPrimaryCanvas()->IsFrozen())
+    GetPrimaryCanvas()->ZoomCanvasSimple(1.0001);
   g_bEnableZoomToCursor = ztc;
 
   //  Pick up chart object icon size changes (g_ChartScaleFactorExp)
@@ -4412,6 +4445,8 @@ void MyFrame::ProcessOptionsDialog(int rr, ArrayOfCDI *pNewDirArray) {
 
   // Reset chart scale factor trigger
   g_last_ChartScaleFactor = g_ChartScaleFactor;
+
+  if (rr & FORCE_RELOAD) ScheduleReloadCharts();
 
   return;
 }
