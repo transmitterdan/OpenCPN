@@ -70,7 +70,7 @@
 #include "timers.h"
 #include "tide_time.h"
 #include "glTextureDescriptor.h"
-#include "ChInfoWin.h"
+#include "ch_info_win.h"
 #include "Quilt.h"
 #include "model/select_item.h"
 #include "model/select.h"
@@ -106,6 +106,8 @@ extern sigjmp_buf env;  // the context saved by sigsetjmp();
 #endif
 
 #include <vector>
+
+ColorScheme global_color_scheme = GLOBAL_COLOR_SCHEME_DAY;
 
 // ----------------------------------------------------------------------------
 // Useful Prototypes

@@ -1,5 +1,5 @@
-/***************************************************************************
- *   Copyright (C) 2019 Alec Leamas                                        *
+/**************************************************************************
+ *   Copyright (C) 2018 by David S. Register                               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -13,35 +13,13 @@
  *                                                                         *
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, see <https://www.gnu.org/licenses/>. *
- ***************************************************************************/
+ **************************************************************************/
 
 /**
  * \file
- *
- * Catalog options dialog, by default disabled.
+ * Implement ocpn_gl_options.h -- It's silly, but still...
  */
 
-#ifndef CATALOG_MGR_H__
-#define CATALOG_MGR_H__
+#include "ocpn_gl_options.h"
 
-#include <wx/dialog.h>
-#include <wx/frame.h>
-
-/** Catalog options GUI.  */
-class AdvancedCatalogDialog : public wxFrame {
-public:
-  /**
-   * Invoke the advanced catalog dialog after a status check.
-   */
-  AdvancedCatalogDialog(wxWindow* parent);
-};
-
-class SimpleCatalogDialog : public wxDialog {
-public:
-  /**
-   * Perform a simple catalog update without options.
-   */
-  SimpleCatalogDialog(wxWindow* parent);
-};
-
-#endif  // CATALOG_MGR_H__
+ocpnGLOptions g_GLOptions;

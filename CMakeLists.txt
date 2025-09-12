@@ -779,9 +779,9 @@ set(GUI_HDRS
     ${GUI_HDR_DIR}/ais_target_alert_dlg.h
     ${GUI_HDR_DIR}/ais_target_list_dlg.h
     ${GUI_HDR_DIR}/ais_target_query_dlg.h
-    ${GUI_HDR_DIR}/CanvasConfig.h
-    ${GUI_HDR_DIR}/canvasMenu.h
-    ${GUI_HDR_DIR}/CanvasOptions.h
+    ${GUI_HDR_DIR}/canvas_config.h
+    ${GUI_HDR_DIR}/canvas_menu.h
+    ${GUI_HDR_DIR}/canvas_options.h
     ${GUI_HDR_DIR}/catalog_mgr.h
     ${GUI_HDR_DIR}/cat_settings.h
     ${GUI_HDR_DIR}/chartbase.h
@@ -790,12 +790,11 @@ set(GUI_HDRS
     ${GUI_HDR_DIR}/chartdbs.h
     ${GUI_HDR_DIR}/chartimg.h
     ${GUI_HDR_DIR}/chcanv.h
-    ${GUI_HDR_DIR}/ChInfoWin.h
+    ${GUI_HDR_DIR}/ch_info_win.h
     ${GUI_HDR_DIR}/color_handler.h
-    ${GUI_HDR_DIR}/comm_overflow_dlg.h
     ${GUI_HDR_DIR}/compass.h
     ${GUI_HDR_DIR}/concanv.h
-    ${GUI_HDR_DIR}/ConfigMgr.h
+    ${GUI_HDR_DIR}/config_mgr.h
     ${GUI_HDR_DIR}/connection_edit.h
     ${GUI_HDR_DIR}/connections_dlg.h
     ${GUI_HDR_DIR}/conn_params_panel.h
@@ -828,6 +827,7 @@ set(GUI_HDRS
     ${GUI_HDR_DIR}/ocpndc.h
     ${GUI_HDR_DIR}/ocpn_app.h
     ${GUI_HDR_DIR}/ocpn_frame.h
+    ${GUI_HDR_DIR}/ocpn_gl_options.h
     ${GUI_HDR_DIR}/OCPNListCtrl.h
     ${GUI_HDR_DIR}/ocpn_pixel.h
     ${GUI_HDR_DIR}/OCPNPlatform.h
@@ -901,22 +901,21 @@ set(GUI_SRC
     ${GUI_SRC_DIR}/ais_target_alert_dlg.cpp
     ${GUI_SRC_DIR}/ais_target_list_dlg.cpp
     ${GUI_SRC_DIR}/ais_target_query_dlg.cpp
-    ${GUI_SRC_DIR}/CanvasConfig.cpp
-    ${GUI_SRC_DIR}/canvasMenu.cpp
-    ${GUI_SRC_DIR}/CanvasOptions.cpp
+    ${GUI_SRC_DIR}/canvas_config.cpp
+    ${GUI_SRC_DIR}/canvas_menu.cpp
+    ${GUI_SRC_DIR}/canvas_options.cpp
     ${GUI_SRC_DIR}/catalog_mgr.cpp
     ${GUI_SRC_DIR}/cat_settings.cpp
     ${GUI_SRC_DIR}/chartdb.cpp
     ${GUI_SRC_DIR}/chartdbs.cpp
     ${GUI_SRC_DIR}/chartimg.cpp
     ${GUI_SRC_DIR}/chcanv.cpp
-    ${GUI_SRC_DIR}/ChInfoWin.cpp
+    ${GUI_SRC_DIR}/ch_info_win.cpp
     ${GUI_SRC_DIR}/cm93.cpp
     ${GUI_SRC_DIR}/color_handler.cpp
-    ${GUI_SRC_DIR}/comm_overflow_dlg.cpp
     ${GUI_SRC_DIR}/compass.cpp
     ${GUI_SRC_DIR}/concanv.cpp
-    ${GUI_SRC_DIR}/ConfigMgr.cpp
+    ${GUI_SRC_DIR}/config_mgr.cpp
     ${GUI_SRC_DIR}/connection_edit.cpp
     ${GUI_SRC_DIR}/connections_dlg.cpp
     ${GUI_SRC_DIR}/conn_params_panel.cpp
@@ -959,6 +958,7 @@ set(GUI_SRC
     ${GUI_SRC_DIR}/ocpn_pixel.cpp
     ${GUI_SRC_DIR}/OCPNPlatform.cpp
     ${GUI_SRC_DIR}/OCPNRegion.cpp
+    ${GUI_SRC_DIR}/ocpn_gl_options.cpp
     ${GUI_SRC_DIR}/options.cpp
     ${GUI_SRC_DIR}/Osenc.cpp
     ${GUI_SRC_DIR}/peer_client_dlg.cpp

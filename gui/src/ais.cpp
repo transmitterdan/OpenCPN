@@ -64,7 +64,6 @@
 extern MyFrame *gFrame;
 extern OCPNPlatform *g_Platform;
 
-int g_ais_cog_predictor_width;
 extern AISTargetQueryDialog *g_pais_query_dialog_active;
 
 int ImportanceSwitchPoint = 100;
@@ -1751,7 +1750,7 @@ static void AISDrawTarget(AisTargetData *td, ocpnDC &dc, ViewPort &vp,
         dc.SetTextForeground(FontMgr::Get().GetFontColor(_("AIS Target Name")));
 
         int w, h;
-        dc.GetTextExtent(_T("W"), &w, &h);
+        dc.GetTextExtent("W", &w, &h);
         h *= g_Platform->GetDisplayDIPMult(gFrame);
         w *= g_Platform->GetDisplayDIPMult(gFrame);
 

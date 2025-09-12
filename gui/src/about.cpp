@@ -17,6 +17,7 @@
 
 /**
  * \file
+ *
  * Implement about.h
  */
 
@@ -241,26 +242,26 @@ void About::Populate(void) {
 
     pLicenseHTMLCtl->SetFonts( face, face, sizes );
 
-    wxTextFile license_filea( m_DataLocn + _T("license.txt") );
+    wxTextFile license_filea( m_DataLocn + "license.txt" );
     if ( license_filea.Open() ) {
         for ( wxString str = license_filea.GetFirstLine(); !license_filea.Eof() ; str = license_filea.GetNextLine() )
-            licenseText.Append( str + _T("<br>") );
+            licenseText.Append( str + "<br>" );
         license_filea.Close();
     } else {
-        wxLogMessage( _T("Could not open License file: ") + m_DataLocn );
+        wxLogMessage( "Could not open License file: " + m_DataLocn );
     }
 
     wxString suppLicense = g_Platform->GetSupplementalLicenseString();
 
-    wxStringTokenizer st(suppLicense, _T("\n"), wxTOKEN_DEFAULT);
+    wxStringTokenizer st(suppLicense, "\n", wxTOKEN_DEFAULT);
     while( st.HasMoreTokens() )
     {
         wxString s1 = st.GetNextToken();
-        licenseText.Append( s1 + _T("<br>") );
+        licenseText.Append( s1 + "<br>" );
     }
 
         // The HTML Footer
-    licenseText.Append( _T("</font></body></html>") );
+    licenseText.Append( "</font></body></html>" );
 
     pLicenseHTMLCtl->SetPage( licenseText );
 #endif
@@ -308,7 +309,7 @@ void About::CreateControls(void) {
   mainSizer->Add(pST1, 0, wxALL | wxEXPAND, 8);
 
   bool orient = m_displaySize.x < m_displaySize.y;
-#ifndef __OCPN__ANDROID__
+#ifndef __ANDROID__
   wxBoxSizer* buttonSizer = new wxBoxSizer(orient ? wxVERTICAL : wxHORIZONTAL);
   mainSizer->Add(buttonSizer, 0, wxALL, 0);
 
