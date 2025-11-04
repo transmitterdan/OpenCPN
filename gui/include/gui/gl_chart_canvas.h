@@ -53,7 +53,6 @@
 #include "LLRegion.h"
 #include "ocpndc.h"
 #include "ocpn_gl_options.h"
-#include "ocpndc.h"
 #include "ocpn_region.h"
 #include "TexFont.h"
 #include "viewport.h"
@@ -97,6 +96,67 @@ public:
   ~glTestCanvas() {};
 };
 
+#if !defined(NDEBUG)
+class functionTimer {
+public:
+  functionTimer() : callCounter(0) {
+    m_total = std::chrono::nanoseconds::zero();
+  }
+  functionTimer(int init) : callCounter(0) {
+    m_total = std::chrono::nanoseconds(init);
+  }
+
+  ~functionTimer() { LogMessageOnce(getTotal()); }
+
+  // Assignment operators
+  functionTimer &operator=(const functionTimer &rhs) {
+    if (this != &rhs) {
+      m_start = rhs.m_start;
+      m_total = rhs.m_total;
+      callCounter = rhs.callCounter;
+    }
+    return *this;
+  }
+
+  functionTimer &operator=(functionTimer &&rhs) noexcept {
+    if (this != &rhs) {
+      m_start = rhs.m_start;
+      m_total = rhs.m_total;
+      callCounter = rhs.callCounter;
+    }
+    return *this;
+  }
+
+  long long getTotal() const { return m_total.count(); }
+
+  void LogMessageOnce(long long duration) {
+    wxLogMessage(
+        "Integrated glFinish() time is: %lld nS, total calls = %d, average "
+        "%lld "
+        "nS/call.\n",
+        duration, callCounter, duration / callCounter);
+  }
+
+  // Start and Stop methods
+  // Default start time is now
+  inline void Start(std::chrono::high_resolution_clock::time_point init =
+                        std::chrono::high_resolution_clock::now()) {
+    m_start = init;
+  }
+
+  inline void Stop() {
+    auto end = std::chrono::high_resolution_clock::now();
+    m_total += end - m_start;
+    callCounter++;
+  }
+
+private:
+  std::chrono::high_resolution_clock::time_point m_start;
+  std::chrono::nanoseconds m_total;
+  int callCounter;
+};
+#endif
+
 /**
  * OpenGL chart rendering canvas. Implements OpenGL-based rendering of charts
  * and overlays. Handles initialization of OpenGL context, rendering loop,
@@ -131,7 +191,7 @@ public:
   static bool s_b_useFBO;
   static std::unordered_map<wxPenStyle, std::array<wxDash, 2>> dash_map;
 
-  void SendJSONConfigMessage();
+  void SendJSONConfigMessage() const;
 
   glChartCanvas(wxWindow *parent, wxGLCanvas *share = NULL);
 
@@ -139,10 +199,10 @@ public:
 
   void Init();
   void SetContext(wxGLContext *pcontext) { m_pcontext = pcontext; }
-  int GetCanvasIndex() { return m_pParentCanvas->m_canvasIndex; }
+  int GetCanvasIndex() const { return m_pParentCanvas->m_canvasIndex; }
 
-  int GetGLCanvasWidth() { return m_glcanvas_width; }
-  int GetGLCanvasHeight() { return m_glcanvas_height; }
+  int GetGLCanvasWidth() const { return m_glcanvas_width; }
+  int GetGLCanvasHeight() const { return m_glcanvas_height; }
 
   void OnPaint(wxPaintEvent &event);
   void OnEraseBG(wxEraseEvent &evt);
@@ -196,10 +256,10 @@ public:
   void ShipDraw(ocpnDC &dc);
 
   void SetupCompression();
-  bool CanAcceleratePanning() { return m_b_BuiltFBO; }
-  bool UsingFBO() { return m_b_BuiltFBO; }
+  bool CanAcceleratePanning() const { return m_b_BuiltFBO; }
+  bool UsingFBO() const { return m_b_BuiltFBO; }
 
-  bool isInGesture() { return m_binGesture; }
+  bool isInGesture() const { return m_binGesture; }
   void ResetGridFont() { m_gridfont.Delete(); }
   time_t m_last_render_time;
 
@@ -236,7 +296,7 @@ protected:
                    int transparency = 255);
   // void RenderNoDTA(ViewPort &vp, ChartBase *chart);
   void RenderWorldChart(ocpnDC &dc, ViewPort &vp, wxRect &rect,
-                        bool &world_view);
+                        bool &world_view) const;
 
   void DrawFloatingOverlayObjects(ocpnDC &dc);
   void DrawGroundedOverlayObjects(ocpnDC &dc, ViewPort &vp);
@@ -352,6 +412,30 @@ protected:
   ViewPort m_texVP;
   float m_zoom_inc;
 
+#if !defined(NDEBUG)
+private:
+  functionTimer *glFinishTimer;
+  int old_duration = 0;
+  void glChartCanvas::glFinish() {
+    // Start timing and ensure Stop() is called on all returns
+    // Sometimes the OS sends a flood of OnSize events. This can cause the GPU
+    // to get flooded with tasks that are often OBE. By putting a blocking
+    // call here, we make sure the GPU is done before we begin processing this
+    // event. The event loop handler is smart enought to discard any OnSize
+    // events that we might have missed as a result of this call. But that's
+    // ok because any missed event is, by definition, OBE.
+    glFinishTimer->Start();
+    ::glFinish();
+    glFinishTimer->Stop();
+#if !defined(NDEBUG)
+    auto res = glGetError();
+    wxASSERT(res == GL_NO_ERROR);
+#endif
+  }
+#else
+  inline void glFinish() { ::glFinish(); }
+#endif
+protected:
   DECLARE_EVENT_TABLE()
 };
 

@@ -321,6 +321,9 @@ glChartCanvas::glChartCanvas(wxWindow *parent, wxGLCanvas *share)
 {
   m_pParentCanvas = dynamic_cast<ChartCanvas *>(parent);
 
+#if !defined(NDEBUG)
+  glFinishTimer = new functionTimer(0);
+#endif
   Init();
 }
 
@@ -480,6 +483,9 @@ void glChartCanvas::Init() {
 }
 
 glChartCanvas::~glChartCanvas() {
+#if !defined(NDEBUG)
+  delete glFinishTimer;
+#endif
 #ifdef __ANDROID__
   unloadShaders();
 #endif
@@ -515,6 +521,8 @@ void glChartCanvas::OnSize(wxSizeEvent &event) {
     SetSize(GetSize().x, GetSize().y);
     event.Skip();
     return;
+  } else {
+    glFinish();
   }
 
   // this is also necessary to update the context on some platforms
@@ -527,7 +535,7 @@ void glChartCanvas::OnSize(wxSizeEvent &event) {
   // SetSize(m_pParentCanvas->GetClientSize());
 
   if (m_bsetup) {
-    wxLogMessage("BuildFBO 3");
+    wxLogDebug("BuildFBO 3");
     BuildFBO();
   }
 
@@ -972,7 +980,7 @@ void glChartCanvas::BuildFBO() {
 
   wxString msg;
   msg.Printf("OpenGL-> Framebuffer OK, size = %d", m_cache_tex_x);
-  wxLogMessage(msg);
+  wxLogDebug(msg);
 
   /* invalidate cache */
   Invalidate();
@@ -1245,7 +1253,7 @@ void glChartCanvas::SetupOpenGL() {
   SendJSONConfigMessage();
 }
 
-void glChartCanvas::SendJSONConfigMessage() {
+void glChartCanvas::SendJSONConfigMessage() const {
   if (g_pi_manager) {
     wxJSONValue v;
     v["setupComplete"] = m_bsetup;
@@ -3016,13 +3024,13 @@ void glChartCanvas::RenderRasterChartRegionGL(ChartBase *chart, ViewPort &vp,
   //    Look for the texture factory for this chart
   wxString key = chart->GetHashKey();
 
-  glTexFactory *pTexFact;
+  std::shared_ptr<glTexFactory> pTexFact;
   ChartPathHashTexfactType &hash = g_glTextureManager->m_chart_texfactory_hash;
   ChartPathHashTexfactType::iterator ittf = hash.find(key);
 
   //    Not Found ?
   if (ittf == hash.end()) {
-    hash[key] = new glTexFactory(chart, g_raster_format);
+    hash[key] = std::make_shared<glTexFactory>(chart, g_raster_format);
     hash[key]->SetHashKey(key);
   }
 
@@ -3549,7 +3557,7 @@ void glChartCanvas::RenderNoDTA(ViewPort &vp, const LLRegion &region,
 
 /* render world chart, but only in this rectangle */
 void glChartCanvas::RenderWorldChart(ocpnDC &dc, ViewPort &vp, wxRect &rect,
-                                     bool &world_view) {
+                                     bool &world_view) const {
   // set gl color to water
   wxColour water = m_pParentCanvas->pWorldBackgroundChart->water;
 
@@ -3904,6 +3912,8 @@ void glChartCanvas::Render() {
     mat4x4_translate_in_place((float(*)[4])vp->vp_matrix_transform,
                               -vp->pix_width / 2, -vp->pix_height / 2, 0);
   }
+
+  glFinish();
 
   // @todo: If the intention was to work with the same ViewPort object, use a
   // reference instead. Making a copy of VPoint here means that any changes to
@@ -4561,7 +4571,8 @@ void glChartCanvas::Render() {
   g_glTextureManager->TextureCrunch(0.8);
   g_glTextureManager->FactoryCrunch(0.6);
 
-  m_pParentCanvas->PaintCleanup();
+  // Unless we are shutting down, clean up the paint
+  if (!g_bquiting) m_pParentCanvas->PaintCleanup();
   m_bforcefull = false;
 
   // if (m_binPinch)

@@ -121,7 +121,7 @@ CatalogEntry::CatalogEntry(int level, int x0, int y0, ColorScheme colorscheme) {
 
 int CatalogEntry::GetSerialSize() { return CATALOG_ENTRY_SERIAL_SIZE; }
 
-void CatalogEntry::Serialize(unsigned char *t) {
+void CatalogEntry::Serialize(unsigned char *t) const {
   uint32_t *p = (uint32_t *)t;
 
   *p++ = k.mip_level;
@@ -188,8 +188,7 @@ glTexFactory::glTexFactory(ChartBase *chart, int raster_format) {
 
   m_stride = m_nx_tex;
   m_ntex = m_nx_tex * m_ny_tex;
-  m_td_array =
-      (glTextureDescriptor **)calloc(m_ntex, sizeof(glTextureDescriptor *));
+  m_td_array.assign(m_ntex, nullptr);
 
   m_prepared_projection_type = 0;
 }
@@ -210,21 +209,20 @@ glTexFactory::~glTexFactory() {
     }
   }
 
-  free(m_td_array);  // array is empty
-
   if (m_tiles)
     for (int i = 0; i < m_ntex; i++) delete m_tiles[i];
   delete[] m_tiles;
 }
 
-glTextureDescriptor *glTexFactory::GetpTD(wxRect &rect) {
+std::shared_ptr<glTextureDescriptor> glTexFactory::GetpTD(wxRect &rect) {
+  if (m_td_array.size() == 0) return nullptr;
   int array_index = ArrayIndex(rect.x, rect.y);
   return m_td_array[array_index];
 }
 
 bool glTexFactory::OnTimer() {
-  for (int i = 0; i < m_ntex; i++) {
-    glTextureDescriptor *ptd = m_td_array[i];
+  for (int i = 0; i < m_td_array.size(); i++) {
+    std::shared_ptr<glTextureDescriptor> ptd = m_td_array[i];
     // sometimes compressed data is produced but by the time
     // it arrives it is no longer needed, so with a timeout
     // of 5 seconds free this memory to avoid ram use buildup
@@ -250,7 +248,7 @@ bool glTexFactory::OnTimer() {
 
                 for(int x = 0; x<m_nx_tex; x++) {
                     int i = ArrayIndex(x, y);
-                    glTextureDescriptor *ptd = m_td_array[i];
+                    std::shared_ptr<glTextureDescriptor> ptd = m_td_array[i];
 
                     if( !ptd )
                         goto keeplines;
@@ -272,8 +270,8 @@ bool glTexFactory::OnTimer() {
 
   // write doubly compressed data to disk
   if (g_GLOptions.m_bTextureCompressionCaching)
-    for (int i = 0; i < m_ntex; i++) {
-      glTextureDescriptor *ptd = m_td_array[i];
+    for (int i = 0; i < m_td_array.size(); i++) {
+      std::shared_ptr<glTextureDescriptor> ptd = m_td_array[i];
       if (ptd && ptd->IsCompCompArrayComplete(0)) {
         int dim = g_GLOptions.m_iTextureDimension;
         UpdateCacheAllLevels(wxRect(ptd->x, ptd->y, dim, dim),
@@ -298,7 +296,7 @@ bool glTexFactory::OnTimer() {
     if( bGLMemCrunch ){
         for(wxTextureListNode *node = m_texture_list.GetFirst(); node;
             node = node->GetNext()) {
-            glTextureDescriptor *ptd = node->GetData();
+            std::shared_ptr<glTextureDescriptor> ptd = node->GetData();
             if(ptd->nGPU_compressed == GPU_TEXTURE_UNCOMPRESSED){
                 DeleteSingleTexture(ptd);
             }
@@ -309,8 +307,8 @@ bool glTexFactory::OnTimer() {
 
 void glTexFactory::AccumulateMemStatistics(int &map_size, int &comp_size,
                                            int &compcomp_size) {
-  for (int i = 0; i < m_ntex; i++) {
-    glTextureDescriptor *ptd = m_td_array[i];
+  for (int i = 0; i < m_td_array.size(); i++) {
+    std::shared_ptr<glTextureDescriptor> ptd = m_td_array[i];
     if (ptd) {
       map_size += ptd->GetMapArrayAlloc();
       comp_size += ptd->GetCompArrayAlloc();
@@ -322,7 +320,7 @@ void glTexFactory::AccumulateMemStatistics(int &map_size, int &comp_size,
 void glTexFactory::DeleteTexture(const wxRect &rect) {
   //    Is this texture tile defined?
   int array_index = ArrayIndex(rect.x, rect.y);
-  glTextureDescriptor *ptd = m_td_array[array_index];
+  std::shared_ptr<glTextureDescriptor> ptd = m_td_array[array_index];
 
   if (ptd && ptd->tex_name > 0) {
     DeleteSingleTexture(ptd);
@@ -334,8 +332,8 @@ void glTexFactory::DeleteAllTextures() {
   // and delete the OpenGL texture from the GPU
   // but keep the private texture descriptor for now
 
-  for (int i = 0; i < m_ntex; i++) {
-    glTextureDescriptor *ptd = m_td_array[i];
+  for (int i = 0; i < m_td_array.size(); i++) {
+    std::shared_ptr<glTextureDescriptor> ptd = m_td_array[i];
 
     if (ptd) {
       //            if(ptd->tex_name && bthread_debug)
@@ -354,8 +352,8 @@ void glTexFactory::DeleteSomeTextures(long target) {
   // until the target g_tex_mem_used is reached
   // but keep the private texture descriptor for now
 
-  for (int i = 0; i < m_ntex; i++) {
-    glTextureDescriptor *ptd = m_td_array[i];
+  for (int i = 0; i < m_td_array.size(); i++) {
+    std::shared_ptr<glTextureDescriptor> ptd = m_td_array[i];
 
     if (ptd) {
       //            if(ptd->tex_name && bthread_debug)
@@ -371,8 +369,8 @@ void glTexFactory::DeleteSomeTextures(long target) {
 }
 
 void glTexFactory::FreeSome(long target) {
-  for (int i = 0; i < m_ntex; i++) {
-    glTextureDescriptor *ptd = m_td_array[i];
+  for (int i = 0; i < m_td_array.size(); i++) {
+    std::shared_ptr<glTextureDescriptor> ptd = m_td_array[i];
 
     if (ptd) ptd->FreeMap();
   }
@@ -381,9 +379,9 @@ void glTexFactory::FreeSome(long target) {
 void glTexFactory::DeleteAllDescriptors() {
   // iterate over all the texture descriptors
 
-  for (int i = 0; i < m_ntex; i++) {
-    glTextureDescriptor *ptd = m_td_array[i];
-    delete ptd;
+  for (int i = 0; i < m_td_array.size(); i++) {
+    std::shared_ptr<glTextureDescriptor> ptd = m_td_array[i];
+    ptd.reset();
     m_td_array[i] = 0;
   }
 }
@@ -397,7 +395,8 @@ void glTexFactory::PurgeBackgroundCompressionPool() {
   g_glTextureManager->PurgeJobList(m_ChartPath);
 }
 
-void glTexFactory::DeleteSingleTexture(glTextureDescriptor *ptd) {
+void glTexFactory::DeleteSingleTexture(
+    std::shared_ptr<glTextureDescriptor> ptd) {
   if (!ptd->tex_name) return;
 
   g_tex_mem_used -= ptd->tex_mem_used;
@@ -425,7 +424,6 @@ CatalogEntryValue *glTexFactory::GetCacheEntryValue(int level, int x, int y,
   if (v == 0) return 0;
 
   int array_index = ArrayIndex(x, y);
-  if (array_index >= m_ntex) return 0;
 
   CatalogEntryValue *r = &v[array_index];
   if (r->compressed_size == 0) return 0;
@@ -447,10 +445,12 @@ bool glTexFactory::IsLevelInCache(int level, const wxRect &rect,
   return b_ret;
 }
 
-glTextureDescriptor *glTexFactory::GetOrCreateTD(const wxRect &rect) {
+std::shared_ptr<glTextureDescriptor> glTexFactory::GetOrCreateTD(
+    const wxRect &rect) {
   int array_index = ArrayIndex(rect.x, rect.y);
   if (!m_td_array[array_index]) {
-    glTextureDescriptor *p = new glTextureDescriptor();
+    std::shared_ptr<glTextureDescriptor> p =
+        (std::make_shared<glTextureDescriptor>());
 
     p->x = rect.x;
     p->y = rect.y;
@@ -484,8 +484,8 @@ static void CreateTexture(GLuint &tex_name, bool b_use_mipmaps) {
 #endif
 }
 
-bool glTexFactory::BuildTexture(glTextureDescriptor *ptd, int base_level,
-                                const wxRect &rect) {
+bool glTexFactory::BuildTexture(std::shared_ptr<glTextureDescriptor> ptd,
+                                int base_level, const wxRect &rect) {
   bool busy_shown = false;
 
   // the quality is only slightly worse because linear_mipmap_linear
@@ -584,8 +584,9 @@ bool glTexFactory::BuildTexture(glTextureDescriptor *ptd, int base_level,
     if (GL_COMPRESSED_RGB_FXT1_3DFX == g_raster_format &&
         g_GLOptions.m_bTextureCompression) {
       // this version avoids re-uploading the data
-      g_glTextureManager->ScheduleJob(this, rect, base_level, true, false, true,
-                                      true);
+      g_glTextureManager->ScheduleJob(
+          std::shared_ptr<glTexFactory>(this, [](glTexFactory *) {}), rect,
+          base_level, true, false, true, true);
       ptd->FreeMap();
       ptd->nGPU_compressed = GPU_TEXTURE_COMPRESSED;
       b_use_mipmaps = b_use_compressed_mipmaps;
@@ -628,7 +629,7 @@ bool glTexFactory::BuildTexture(glTextureDescriptor *ptd, int base_level,
 
 bool glTexFactory::PrepareTexture(int base_level, const wxRect &rect,
                                   ColorScheme color_scheme, int mem_used) {
-  glTextureDescriptor *ptd = NULL;
+  std::shared_ptr<glTextureDescriptor> ptd = NULL;
 
   try {
     ptd = GetOrCreateTD(rect);
@@ -645,8 +646,9 @@ bool glTexFactory::PrepareTexture(int base_level, const wxRect &rect,
         ptd->nGPU_compressed == GPU_TEXTURE_UNCOMPRESSED) {
       // scheduling at base_level reduces vram usage but is slower overall
       // probably shouldn't be used for caching until it can cache each level
-      g_glTextureManager->ScheduleJob(this, rect, 0 /*base_level*/, true, false,
-                                      true, false);
+      g_glTextureManager->ScheduleJob(
+          std::shared_ptr<glTexFactory>(this, [](glTexFactory *) {}), rect,
+          0 /*base_level*/, true, false, true, false);
       if (GL_COMPRESSED_RGB_FXT1_3DFX == g_raster_format)
         glBindTexture(GL_TEXTURE_2D, ptd->tex_name);  // reset texture binding
 
@@ -899,8 +901,9 @@ bool glTexFactory::UpdateCacheAllLevels(const wxRect &rect,
   return work;
 }
 
-int glTexFactory::GetTextureLevel(glTextureDescriptor *ptd, const wxRect &rect,
-                                  int level, ColorScheme color_scheme) {
+int glTexFactory::GetTextureLevel(std::shared_ptr<glTextureDescriptor> ptd,
+                                  const wxRect &rect, int level,
+                                  ColorScheme color_scheme) {
   //  Already available in the texture descriptor?
   if (g_GLOptions.m_bTextureCompression) {
     if (ptd->comp_array[level]) return COMPRESSED_BUFFER_OK;

@@ -76,7 +76,7 @@ public:
   ~CatalogEntry();
   CatalogEntry(int level, int x0, int y0, ColorScheme colorscheme);
   int GetSerialSize();
-  void Serialize(unsigned char *);
+  void Serialize(unsigned char *) const;
   void DeSerialize(unsigned char *);
   CatalogEntryKey k;
   CatalogEntryValue v;
@@ -110,13 +110,13 @@ public:
   glTexFactory(ChartBase *chart, int raster_format);
   ~glTexFactory();
 
-  glTextureDescriptor *GetOrCreateTD(const wxRect &rect);
-  bool BuildTexture(glTextureDescriptor *ptd, int base_level,
+  std::shared_ptr<glTextureDescriptor> GetOrCreateTD(const wxRect &rect);
+  bool BuildTexture(std::shared_ptr<glTextureDescriptor> ptd, int base_level,
                     const wxRect &rect);
   bool PrepareTexture(int base_level, const wxRect &rect,
                       ColorScheme color_scheme, int mem_used);
-  int GetTextureLevel(glTextureDescriptor *ptd, const wxRect &rect, int level,
-                      ColorScheme color_scheme);
+  int GetTextureLevel(std::shared_ptr<glTextureDescriptor> ptd,
+                      const wxRect &rect, int level, ColorScheme color_scheme);
   bool UpdateCacheAllLevels(const wxRect &rect, ColorScheme color_scheme,
                             unsigned char **compcomp_array, int *compcomp_size);
   bool IsLevelInCache(int level, const wxRect &rect, ColorScheme color_scheme);
@@ -133,18 +133,18 @@ public:
   bool BackgroundCompressionAsJob() const;
   void PurgeBackgroundCompressionPool();
   void SetLRUTime(int lru) { m_LRUtime = lru; }
-  int GetLRUTime() { return m_LRUtime; }
+  int GetLRUTime() const { return m_LRUtime; }
   void FreeSome(long target);
   void FreeIfCached();
 
-  glTextureDescriptor *GetpTD(wxRect &rect);
+  std::shared_ptr<glTextureDescriptor> GetpTD(wxRect &rect);
 
   void PrepareTiles(const ViewPort &vp, bool use_norm_vp, ChartBase *pChart);
   glTexTile **GetTiles(int &num) {
     num = m_ntex;
     return m_tiles;
   }
-  void GetCenter(double &lat, double &lon) { lat = m_clat, lon = m_clon; }
+  void GetCenter(double &lat, double &lon) const { lat = m_clat, lon = m_clon; }
 
 private:
   bool LoadCatalog(void);
@@ -157,7 +157,7 @@ private:
   bool UpdateCacheLevel(const wxRect &rect, int level, ColorScheme color_scheme,
                         unsigned char *data, int size);
 
-  void DeleteSingleTexture(glTextureDescriptor *ptd);
+  void DeleteSingleTexture(std::shared_ptr<glTextureDescriptor> ptd);
 
   CatalogEntryValue *GetCacheEntryValue(int level, int x, int y,
                                         ColorScheme color_scheme);
@@ -182,6 +182,7 @@ private:
 
   bool m_catalogCorrupted;
 
+  // TODO make m_fs a smart pointer
   wxFFile *m_fs;
   uint32_t m_chart_date_binary;
   uint32_t m_chartfile_date_binary;
@@ -197,7 +198,8 @@ private:
 
   int m_LRUtime;
 
-  glTextureDescriptor **m_td_array;
+  // make m_td_array a vector for easier management
+  std::vector<std::shared_ptr<glTextureDescriptor> > m_td_array;
 
   double m_clat, m_clon;
   glTexTile **m_tiles;

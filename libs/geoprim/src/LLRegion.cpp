@@ -568,11 +568,7 @@ void LLRegion::InitPoints(size_t n, const double *points) {
     // reverse in-place without <algorithm> to avoid adding includes
     size_t a = 0, b = pts.size() - 1;
     while (a < b) {
-      contour_pt t = pts[a];
-      pts[a] = pts[b];
-      pts[b] = t;
-      ++a;
-      --b;
+      std::swap(pts[a++], pts[b--]);
     }
   }
 
