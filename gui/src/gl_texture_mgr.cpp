@@ -282,8 +282,8 @@ static bool CompressUsingGPU(const unsigned char *data, int dim, int size,
 #endif
 }
 
-static void GetLevel0Map(glTextureDescriptor *ptd, const wxRect &rect,
-                         wxString &chart_path) {
+static void GetLevel0Map(std::shared_ptr<glTextureDescriptor> ptd,
+                         const wxRect &rect, wxString &chart_path) {
   // Load level 0 uncompressed data
   wxRect ncrect(rect);
   ptd->map_array[0] = 0;
@@ -312,7 +312,7 @@ static void GetLevel0Map(glTextureDescriptor *ptd, const wxRect &rect,
   }
 }
 
-void GetFullMap(glTextureDescriptor *ptd, const wxRect &rect,
+void GetFullMap(std::shared_ptr<glTextureDescriptor> ptd, const wxRect &rect,
                 wxString chart_path, int level) {
   //  Confirm that the uncompressed bits are all available, get them if not
   //  there yet
@@ -596,7 +596,7 @@ public:
   SE_Exception() {}
   SE_Exception(unsigned int n) : nSE(n) {}
   ~SE_Exception() {}
-  unsigned int getSeNumber() { return nSE; }
+  unsigned int getSeNumber() const { return nSE; }
 };
 
 void my_translate(unsigned int code, _EXCEPTION_POINTERS *ep) {
@@ -706,6 +706,9 @@ void *CompressionPoolThread::Entry() {
 glTextureManager::glTextureManager() {
   // ideally we would use the cpu count -1, and only launch jobs
   // when the idle load average is sufficient (greater than 1)
+  // Limit CPU usage to 8 because more is problematic for the
+  // full rebuild dialog box and probably not a lot more
+  // can be gained as the threads will be I/O bound.
   int nCPU = wxMax(1, wxThread::GetCPUCount());
   if (g_nCPUCount > 0) nCPU = g_nCPUCount;
 
@@ -713,8 +716,7 @@ glTextureManager::glTextureManager() {
     // obviously there's at least one CPU!
     nCPU = 1;
 
-  // m_max_jobs = wxMax(nCPU, 1);
-  m_max_jobs = wxMax(nCPU / 2, 1);
+  m_max_jobs = wxMin(8, wxMax(nCPU / 2, 1));
 
   m_prevMemUsed = 0;
 
@@ -750,12 +752,14 @@ glTextureManager::~glTextureManager() {
   }
   progList.clear();
   for (auto hash : m_chart_texfactory_hash) {
-    delete hash.second;
+    hash.second.reset();
   }
   m_chart_texfactory_hash.clear();
 }
 
 #define NBAR_LENGTH 40
+
+static int maxMsgLen = 0;
 
 void glTextureManager::OnEvtThread(OCPN_CompressionThreadEvent &event) {
   JobTicket *ticket = event.GetTicket();
@@ -794,7 +798,7 @@ void glTextureManager::OnEvtThread(OCPN_CompressionThreadEvent &event) {
         int bar_length = NBAR_LENGTH;
         if (m_bcompact) bar_length = 20;
 
-        msgx += "\n[";
+        msgx += "[";
         wxString block = wxString::Format("%c", 0x2588);
         float cutoff = -1.;
         if (event.nstat_max != 0)
@@ -823,9 +827,18 @@ void glTextureManager::OnEvtThread(OCPN_CompressionThreadEvent &event) {
 
     // Ready to compose
     wxString msg;
-    for (auto tnode = progList.begin(); tnode != progList.end(); tnode++) {
+    auto tnode = progList.begin();
+    while (tnode != progList.end()) {
       item = *tnode;
-      msg += item->msgx + "\n";
+      maxMsgLen = wxMax(item->msgx.length(), maxMsgLen);
+      int fillerCount = maxMsgLen - item->msgx.length();
+      msg += "\n" + item->msgx + wxString().Pad(fillerCount, ' ');
+      tnode++;
+      if (tnode != progList.end()) {
+        item = *tnode;
+        msg += "  " + item->msgx;
+        tnode++;
+      }
     }
 
     if (m_skipout) m_progMsg = "Skipping, please wait...\n\n";
@@ -848,7 +861,8 @@ void glTextureManager::OnEvtThread(OCPN_CompressionThreadEvent &event) {
           ticket->ident, GetRunningJobCount(), (unsigned long)todo_list.size());
   } else if (!ticket->b_inCompressAll) {
     //   Normal completion from here
-    glTextureDescriptor *ptd = ticket->pFact->GetpTD(ticket->m_rect);
+    std::shared_ptr<glTextureDescriptor> ptd(
+        ticket->pFact->GetpTD(ticket->m_rect));
     if (ptd) {
       for (int i = 0; i < g_mipmap_max_level + 1; i++)
         ptd->comp_array[i] = ticket->comp_bits_array[i];
@@ -879,7 +893,7 @@ void glTextureManager::OnEvtThread(OCPN_CompressionThreadEvent &event) {
     ChartBase *pchart =
         ChartData->OpenChartFromDB(ticket->m_ChartPath, FULL_INIT);
     ChartData->DeleteCacheChart(pchart);
-    delete ticket->pFact;
+    ticket->pFact.reset();
   }
 
   for (auto tnode = progList.begin(); tnode != progList.end(); ++tnode) {
@@ -906,7 +920,7 @@ void glTextureManager::OnTimer(wxTimerEvent &event) {
     for (ChartPathHashTexfactType::iterator itt =
              m_chart_texfactory_hash.begin();
          itt != m_chart_texfactory_hash.end(); ++itt) {
-      glTexFactory *ptf = itt->second;
+      std::shared_ptr<glTexFactory> ptf = itt->second;
       if (ptf && ptf->OnTimer()) {
         // break;
       }
@@ -940,10 +954,10 @@ void glTextureManager::OnTimer(wxTimerEvent &event) {
 #endif
 }
 
-bool glTextureManager::ScheduleJob(glTexFactory *client, const wxRect &rect,
-                                   int level, bool b_throttle_thread,
-                                   bool b_nolimit, bool b_postZip,
-                                   bool b_inplace) {
+bool glTextureManager::ScheduleJob(std::shared_ptr<glTexFactory> client,
+                                   const wxRect &rect, int level,
+                                   bool b_throttle_thread, bool b_nolimit,
+                                   bool b_postZip, bool b_inplace) {
   wxString chart_path = client->GetChartPath();
   if (!b_nolimit) {
     if (todo_list.size() >= 50) {
@@ -981,7 +995,7 @@ bool glTextureManager::ScheduleJob(glTexFactory *client, const wxRect &rect,
   pt->pFact = client;
   pt->m_rect = rect;
   pt->level_min_request = level;
-  glTextureDescriptor *ptd = client->GetOrCreateTD(pt->m_rect);
+  std::shared_ptr<glTextureDescriptor> ptd(client->GetOrCreateTD(pt->m_rect));
   pt->ident = (ptd->tex_name << 16) + level;
   pt->b_throttle = b_throttle_thread;
   pt->m_ChartPath = chart_path;
@@ -1041,7 +1055,8 @@ bool glTextureManager::StartTopJob() {
   auto found = std::find(todo_list.begin(), todo_list.end(), ticket);
   if (found != todo_list.end()) todo_list.erase(found);
 
-  glTextureDescriptor *ptd = ticket->pFact->GetpTD(ticket->m_rect);
+  std::shared_ptr<glTextureDescriptor> ptd(
+      ticket->pFact->GetpTD(ticket->m_rect));
   // don't need the job if we already have the compressed data
   if (ptd->comp_array[0]) {
     delete ticket;
@@ -1136,9 +1151,8 @@ void glTextureManager::ClearAllRasterTextures() {
   ChartPathHashTexfactType::iterator itt;
   for (itt = m_chart_texfactory_hash.begin();
        itt != m_chart_texfactory_hash.end(); ++itt) {
-    glTexFactory *ptf = itt->second;
-
-    delete ptf;
+    std::shared_ptr<glTexFactory> ptf = itt->second;
+    ptf.reset();
   }
   m_chart_texfactory_hash.clear();
 
@@ -1153,13 +1167,13 @@ bool glTextureManager::PurgeChartTextures(ChartBase *pc, bool b_purge_factory) {
 
   //    Found ?
   if (ittf != m_chart_texfactory_hash.end()) {
-    glTexFactory *pTexFact = ittf->second;
+    std::shared_ptr<glTexFactory> pTexFact = ittf->second;
 
     if (pTexFact) {
       if (b_purge_factory) {
         m_chart_texfactory_hash.erase(ittf);  // This chart  becoming invalid
 
-        delete pTexFact;
+        pTexFact.reset();
       }
 
       return true;
@@ -1182,7 +1196,7 @@ bool glTextureManager::TextureCrunch(double factor) {
   ChartPathHashTexfactType::iterator it0;
   for (it0 = m_chart_texfactory_hash.begin();
        it0 != m_chart_texfactory_hash.end(); ++it0) {
-    glTexFactory *ptf = it0->second;
+    std::shared_ptr<glTexFactory> ptf = it0->second;
     if (!ptf) continue;
     wxString chart_full_path = ptf->GetChartPath();
 
@@ -1239,11 +1253,11 @@ bool glTextureManager::FactoryCrunch(double factor) {
   //  Need more, so delete the oldest factory
   //      Find the oldest unused factory
   int lru_oldest = 2147483647;
-  glTexFactory *ptf_oldest = NULL;
+  std::shared_ptr<glTexFactory> ptf_oldest = NULL;
 
   for (it0 = m_chart_texfactory_hash.begin();
        it0 != m_chart_texfactory_hash.end(); ++it0) {
-    glTexFactory *ptf = it0->second;
+    std::shared_ptr<glTexFactory> ptf = it0->second;
     if (!ptf) continue;
     wxString chart_full_path = ptf->GetChartPath();
 
@@ -1296,7 +1310,7 @@ bool glTextureManager::FactoryCrunch(double factor) {
   m_chart_texfactory_hash.erase(
       ptf_oldest->GetHashKey());  // This chart  becoming invalid
 
-  delete ptf_oldest;
+  ptf_oldest.reset();
 
   return true;
 }
@@ -1462,7 +1476,8 @@ void glTextureManager::BuildCompressedCache() {
     ChartBaseBSB *pBSBChart = dynamic_cast<ChartBaseBSB *>(pchart);
     if (pBSBChart == 0) continue;
 
-    glTexFactory *tex_fact = new glTexFactory(pchart, g_raster_format);
+    std::shared_ptr<glTexFactory> tex_fact =
+        std::make_shared<glTexFactory>(pchart, g_raster_format);
 
     m_progMsg.Printf(_("Distance from Ownship:  %4.0f NMi"), distance);
     m_progMsg += "\n";
@@ -1471,7 +1486,7 @@ void glTextureManager::BuildCompressedCache() {
     if (m_skipout) {
       g_glTextureManager->PurgeJobList();
       ChartData->DeleteCacheChart(pchart);
-      delete tex_fact;
+      tex_fact.reset();
       break;
     }
 
@@ -1502,7 +1517,7 @@ void glTextureManager::BuildCompressedCache() {
     //  Nothing to do
     //  Free all possible memory
     ChartData->DeleteCacheChart(pchart);
-    delete tex_fact;
+    tex_fact.reset();
     yield++;
     if (yield == 200) {
       ::wxYield();
@@ -1529,7 +1544,7 @@ void glTextureManager::BuildCompressedCache() {
     if (m_skipout) {
       g_glTextureManager->PurgeJobList();
       ChartData->DeleteCacheChart(pchart);
-      delete tex_fact;
+      tex_fact.reset();
       break;
     }
   }

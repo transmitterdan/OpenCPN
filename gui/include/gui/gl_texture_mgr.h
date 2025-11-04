@@ -26,6 +26,7 @@
 #define __GLTEXTUREMANAGER_H__
 
 #include <list>
+#include <memory>
 
 #include <wx/event.h>
 #include <wx/string.h>
@@ -88,7 +89,9 @@ public:
   bool DoJob();
   bool DoJob(const wxRect &rect);
 
-  glTexFactory *pFact;
+  // make pFact a shared pointer
+  std::shared_ptr<glTexFactory> pFact;
+
   wxRect m_rect;
   int level_min_request;
   int ident;
@@ -107,8 +110,10 @@ public:
   bool b_inCompressAll;
 };
 
-//      This is a hashmap with Chart full path as key, and glTexFactory as value
-WX_DECLARE_STRING_HASH_MAP(glTexFactory *, ChartPathHashTexfactType);
+//      This is a hashmap with Chart full path as key, and glTexFactory pointer
+//      as value
+WX_DECLARE_STRING_HASH_MAP(std::shared_ptr<glTexFactory>,
+                           ChartPathHashTexfactType);
 
 //      glTextureManager Definition
 class glTextureManager : public wxEvtHandler {
@@ -118,9 +123,9 @@ public:
 
   void OnEvtThread(OCPN_CompressionThreadEvent &event);
   void OnTimer(wxTimerEvent &event);
-  bool ScheduleJob(glTexFactory *client, const wxRect &rect, int level_min,
-                   bool b_throttle_thread, bool b_nolimit, bool b_postZip,
-                   bool b_inplace);
+  bool ScheduleJob(std::shared_ptr<glTexFactory> client, const wxRect &rect,
+                   int level_min, bool b_throttle_thread, bool b_nolimit,
+                   bool b_postZip, bool b_inplace);
 
   int GetRunningJobCount() { return running_list.size(); }
   int GetJobCount() { return GetRunningJobCount() + todo_list.size(); }
@@ -135,7 +140,7 @@ public:
 
   //    This is a hash table
   //    key is Chart full path
-  //    Value is glTexFactory*
+  //    Value is glTexFactory pointer
   ChartPathHashTexfactType m_chart_texfactory_hash;
 
 private:
@@ -161,7 +166,7 @@ private:
 };
 
 class glTextureDescriptor;
-void GetFullMap(glTextureDescriptor *ptd, const wxRect &rect,
+void GetFullMap(std::shared_ptr<glTextureDescriptor> ptd, const wxRect &rect,
                 wxString chart_path, int level);
 int TextureDim(int level);
 int TextureTileSize(int level, bool compressed);
