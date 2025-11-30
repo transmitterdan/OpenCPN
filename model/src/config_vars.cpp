@@ -121,6 +121,7 @@ bool g_kiosk_startup = false;
 double g_COGAvg = 0.0;
 double g_defaultBoatSpeed = 0.0;
 double g_display_size_mm = 0.0;
+double g_gammaExp = 1.0;
 double g_mouse_zoom_sensitivity = 0.0;
 double g_n_arrival_circle_radius = 0.0;
 double g_n_gps_antenna_offset_x = 0.0;

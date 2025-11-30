@@ -1022,6 +1022,7 @@ bool ConfigMgr::CheckTemplate(wxString fileName) {
   CHECK_INT("UseMagAPB", &g_bMagneticAPB);
 
   CHECK_INT("ScreenBrightness", &g_nbrightness);
+  CHECK_FLT("GammaExponent", &g_gammaExp, 0.1);
 
   CHECK_INT("MemFootprintTargetMB", &g_MemFootMB);
 

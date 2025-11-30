@@ -144,6 +144,7 @@ extern double g_plus_minus_zoom_factor;
 extern double g_TrackDeltaDistance;
 extern double g_TrackIntervalSeconds;
 extern double g_UserVar;
+extern double g_gammaExp;
 
 extern float g_fNavAidRadarRingsStep;
 extern float g_fWaypointRangeRingsStep;

@@ -500,6 +500,9 @@ int MyConfig::LoadMyConfigRaw(bool bAsTemplate) {
   if (umv.Len()) umv.ToDouble(&g_UserVar);
 
   Read("ScreenBrightness", &g_nbrightness);
+#ifdef _WIN32
+  Read("GammaExponent", &g_gammaExp, 1.0);
+#endif
 
   Read("MemFootprintTargetMB", &g_MemFootMB);
 
@@ -1900,6 +1903,10 @@ void MyConfig::UpdateSettings() {
     Write("OpenGL", g_bopengl);
   }
   Write("SoftwareGL", g_bSoftwareGL);
+
+#ifdef _WIN32
+  Write("GammaExponent", g_gammaExp);
+#endif
 
   Write("ZoomDetailFactor", g_chart_zoom_modifier_raster);
   Write("ZoomDetailFactorVector", g_chart_zoom_modifier_vector);

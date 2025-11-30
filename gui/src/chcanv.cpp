@@ -14921,6 +14921,39 @@ static HDC AcquireScreenDC() {
   }
   return hDC;
 }
+
+static bool SafeSetGammaRamp(const WORD *ramp) {
+  bool ok = false;
+  if (!g_pSetDeviceGammaRamp) return false;
+  const WORD(*rampInput)[256] = reinterpret_cast<const WORD(*)[256]>(ramp);
+  // Basic validation: monotonic, first entry == 0, last entry == 65535
+  for (int ch = 0; ch < 3; ++ch) {
+    if (rampInput[ch][255] != 65535) return false;
+    if (rampInput[ch][0] != 0) return false;
+    for (int i = 1; i < 256; ++i) {
+      if (rampInput[ch][i] < rampInput[ch][i - 1]) return false;
+    }
+  }
+
+  HDC hDC = AcquireScreenDC();
+  if (hDC) {
+    try {
+      if (g_pSetDeviceGammaRamp(hDC, (LPVOID)ramp))
+        ok = true;
+      else {
+        DWORD gle = GetLastError();
+        wxLogError("SetDeviceGammaRamp failed, gle=%lu", gle);
+      }
+    } catch (...) {
+      DWORD gle = GetLastError();
+      wxLogError("SetDeviceGammaRamp failed, gle=%lu (may be inaccurate)", gle);
+      ok = false;
+    }
+
+    ReleaseDC(nullptr, hDC);
+  }
+  return ok;
+}
 #endif
 
 int InitScreenBrightness() {
@@ -15033,12 +15066,7 @@ int RestoreScreenBrightness() {
 #ifdef _WIN32
 
   if (g_pSavedGammaMap) {
-    HDC hDC = AcquireScreenDC();  // Get the full screen DC
-    if (!hDC) return 0;
-    g_pSetDeviceGammaRamp(hDC,
-                          g_pSavedGammaMap);  // Restore the saved ramp table
-    ReleaseDC(NULL, hDC);                     // Release the DC
-
+    SafeSetGammaRamp(g_pSavedGammaMap);
     free(g_pSavedGammaMap);
     g_pSavedGammaMap = NULL;
   }
@@ -15119,34 +15147,6 @@ static void BuildPowerLawGamma(double gammaR, double gammaG, double gammaB,
   }
 }
 
-static bool SafeSetGammaRamp(const WORD ramp[3][256]) {
-  if (!g_pSetDeviceGammaRamp) return false;
-
-  // Basic validation: monotonic, last entry == 65535
-  for (int ch = 0; ch < 3; ++ch) {
-    if (ramp[ch][255] != 65535) return false;
-    if (ramp[ch][0] != 0) return false;
-    for (int i = 1; i < 256; ++i) {
-      if (ramp[ch][i] < ramp[ch][i - 1]) return false;
-    }
-  }
-
-  HDC hDC = AcquireScreenDC();
-  bool ok = false;
-  try {
-    if (g_pSetDeviceGammaRamp(hDC, (LPVOID)ramp))
-      ok = true;
-    else {
-      DWORD gle = GetLastError();
-      // Optional: log gle
-    }
-  } catch (...) {
-    ok = false;
-  }
-
-  ReleaseDC(nullptr, hDC);
-  return ok;
-}
 #endif  //  _WIN32
 //    Set brightness. [0..100]
 int SetScreenBrightness(int brightness) {
@@ -15193,21 +15193,20 @@ int SetScreenBrightness(int brightness) {
     // Build the Gamma Ramp table
     WORD GammaTable[3][256];
     double gain = wxMax(1, brightness) / 100.0;
-    // FIXME (transmitterdan) make this a configurable item
-    double gammaExp = 1.0;
+    // This is a configurable item
+    // Set to 1.0 for linear ramp
+    // Set to <1 for more contrast at low brightness settings
+    // Set to >1 for less contrast at low brightness settings
+    double gammaExp = ((1.0 - gain) < 0.0001) ? 1.0 : g_gammaExp;
     BuildPowerLawGamma(gammaExp, gammaExp, gammaExp, gain, GammaTable);
-    SafeSetGammaRamp(GammaTable);
+    SafeSetGammaRamp((const WORD *)GammaTable);
     return 1;
   }
 #endif  // ocpnUSE_GL
 
   {
     if (g_pSavedGammaMap) {
-      HDC hDC = ::GetDC(NULL);  // Get the full screen DC
-      if (!hDC) return 0;
-      g_pSetDeviceGammaRamp(hDC,
-                            g_pSavedGammaMap);  // Restore the saved ramp table
-      ReleaseDC(NULL, hDC);                     // Release the DC
+      SafeSetGammaRamp(g_pSavedGammaMap);  // Restore the saved ramp table
     }
 
     if (brightness < 100) {
