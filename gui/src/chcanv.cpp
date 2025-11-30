@@ -15193,8 +15193,8 @@ int SetScreenBrightness(int brightness) {
     // Build the Gamma Ramp table
     WORD GammaTable[3][256];
     double gain = wxMax(1, brightness) / 100.0;
-    double gammaExp =
-        2;  // FIXME (transmitterdan) make this a configurable item
+    // FIXME (transmitterdan) make this a configurable item
+    double gammaExp = 1.0;
     BuildPowerLawGamma(gammaExp, gammaExp, gammaExp, gain, GammaTable);
     SafeSetGammaRamp(GammaTable);
     return 1;
