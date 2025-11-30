@@ -5101,8 +5101,10 @@ bool ChartCanvas::PanCanvas(double dx, double dy) {
     }
 
     if (new_ref_dbIndex == -1) {
+#if defined(__GNUC__)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Warray-bounds"
+#endif
       // The compiler sees a -1 index being used. Does not happen, though.
 
       // for whatever reason, no reference chart is known
@@ -5127,7 +5129,9 @@ bool ChartCanvas::PanCanvas(double dx, double dy) {
                      VPoint.rotation);
         ReloadVP();
       }
+#if defined(__GNUCC__)
 #pragma GCC diagnostic pop
+#endif
     }
   }
 
@@ -14901,8 +14905,22 @@ SetDeviceGammaRamp_ptr_type
     g_pSetDeviceGammaRamp;  // the API entry points in the dll
 GetDeviceGammaRamp_ptr_type g_pGetDeviceGammaRamp;
 
-WORD *g_pSavedGammaMap;
+static WORD *g_pSavedGammaMap;
 
+static HDC AcquireScreenDC() {
+  HDC hDC = NULL;
+  hDC = ::GetDC(nullptr);
+  if (!hDC) {
+    HWND desk = GetDesktopWindow();
+    hDC = ::GetDC(desk);
+  }
+  if (!hDC) {
+    DWORD err = GetLastError();
+    wxLogWarning("GetDC(NULL) failed, err=%lu; disabling brightness control.",
+                 err);
+  }
+  return hDC;
+}
 #endif
 
 int InitScreenBrightness() {
@@ -14937,7 +14955,8 @@ int InitScreenBrightness() {
     if (!g_pSavedGammaMap) {
       g_pSavedGammaMap = (WORD *)malloc(3 * 256 * sizeof(WORD));
 
-      hDC = GetDC(NULL);  // Get the full screen DC
+      hDC = AcquireScreenDC();  // Get the full screen DC
+      if (!hDC) return 0;
       bbr = g_pGetDeviceGammaRamp(
           hDC, g_pSavedGammaMap);  // Get the existing ramp table
       ReleaseDC(NULL, hDC);        // Release the DC
@@ -15014,7 +15033,8 @@ int RestoreScreenBrightness() {
 #ifdef _WIN32
 
   if (g_pSavedGammaMap) {
-    HDC hDC = GetDC(NULL);  // Get the full screen DC
+    HDC hDC = AcquireScreenDC();  // Get the full screen DC
+    if (!hDC) return 0;
     g_pSetDeviceGammaRamp(hDC,
                           g_pSavedGammaMap);  // Restore the saved ramp table
     ReleaseDC(NULL, hDC);                     // Release the DC
@@ -15032,7 +15052,7 @@ int RestoreScreenBrightness() {
   g_brightness_init = false;
   return 1;
 
-#endif
+#endif  // _WIN32
 
 #ifdef BRIGHT_XCALIB
   if (g_brightness_init) {
@@ -15043,11 +15063,91 @@ int RestoreScreenBrightness() {
   }
 
   return 1;
-#endif
+#endif  // BRIGHT_XCALIB
 
   return 0;
 }
 
+#ifdef _WIN32
+// Create gamma tables based on power rule. Supplying gammaX (R, B or G) as 1.0
+// will result in linear interpolation of brightnessScale (0 to 1.0). Avoids
+// 'illegal' tables by ensuring monotonicity and the vector ranges from 0 to
+// 65535 as specified
+static void BuildPowerLawGamma(double gammaR, double gammaG, double gammaB,
+                               double brightnessScale, WORD ramp[3][256]) {
+  auto clamp16 = [](double v) -> WORD {
+    if (v < 0.0) return 0;
+    if (v > 65535.0) return 65535;
+    return static_cast<WORD>(std::lround(v));
+  };
+
+  // Ensure positive parameters
+  gammaR = (gammaR > 0.0) ? gammaR : 1.0;
+  gammaG = (gammaG > 0.0) ? gammaG : 1.0;
+  gammaB = (gammaB > 0.0) ? gammaB : 1.0;
+  // brightnessScale in (0, 1], a scalar applied to the curve except the last
+  // entry
+  if (brightnessScale <= 0.0) brightnessScale = 1.0;
+  if (brightnessScale > 1.0) brightnessScale = 1.0;
+
+  ramp[0][0] = 0;
+  ramp[1][0] = 0;
+  ramp[2][0] = 0;
+  for (int i = 1; i < 256; ++i) {
+    double x = static_cast<double>(i) / 255.0;  // 0..1
+    // Power-law response
+    double yR = std::pow(x, gammaR);
+    double yG = std::pow(x, gammaG);
+    double yB = std::pow(x, gammaB);
+
+    // Apply brightness shaping but keep full white at 65535
+    double scale = (i == 255) ? 1.0 : brightnessScale;
+
+    ramp[0][i] = clamp16(yR * 65535.0 * scale);
+    ramp[1][i] = clamp16(yG * 65535.0 * scale);
+    ramp[2][i] = clamp16(yB * 65535.0 * scale);
+  }
+
+  // Guarantee full dynamic range and monotonicity
+  ramp[0][255] = ramp[1][255] = ramp[2][255] = 65535;
+  for (int ch = 0; ch < 3; ++ch) {
+    for (int i = 1; i < 256; ++i) {
+      if (ramp[ch][i] < ramp[ch][i - 1]) {
+        ramp[ch][i] = ramp[ch][i - 1];  // enforce non-decreasing
+      }
+    }
+  }
+}
+
+static bool SafeSetGammaRamp(const WORD ramp[3][256]) {
+  if (!g_pSetDeviceGammaRamp) return false;
+
+  // Basic validation: monotonic, last entry == 65535
+  for (int ch = 0; ch < 3; ++ch) {
+    if (ramp[ch][255] != 65535) return false;
+    if (ramp[ch][0] != 0) return false;
+    for (int i = 1; i < 256; ++i) {
+      if (ramp[ch][i] < ramp[ch][i - 1]) return false;
+    }
+  }
+
+  HDC hDC = AcquireScreenDC();
+  bool ok = false;
+  try {
+    if (g_pSetDeviceGammaRamp(hDC, (LPVOID)ramp))
+      ok = true;
+    else {
+      DWORD gle = GetLastError();
+      // Optional: log gle
+    }
+  } catch (...) {
+    ok = false;
+  }
+
+  ReleaseDC(nullptr, hDC);
+  return ok;
+}
+#endif  //  _WIN32
 //    Set brightness. [0..100]
 int SetScreenBrightness(int brightness) {
 #ifdef _WIN32
@@ -15090,43 +15190,21 @@ int SetScreenBrightness(int brightness) {
       }
     }
 
-    HDC hDC = GetDC(NULL);  // Get the full screen DC
-
-    /*
-     int cmcap = GetDeviceCaps(hDC, COLORMGMTCAPS);
-     if (cmcap != CM_GAMMA_RAMP)
-     {
-     wxLogMessage("    Video hardware does not support brightness control by
-     gamma ramp adjustment."); return false;
-     }
-     */
-
-    int increment = brightness * 256 / 100;
-
     // Build the Gamma Ramp table
     WORD GammaTable[3][256];
-
-    int table_val = 0;
-    for (int i = 0; i < 256; i++) {
-      GammaTable[0][i] = r_gamma_mult * (WORD)table_val;
-      GammaTable[1][i] = g_gamma_mult * (WORD)table_val;
-      GammaTable[2][i] = b_gamma_mult * (WORD)table_val;
-
-      table_val += increment;
-
-      if (table_val > 65535) table_val = 65535;
-    }
-
-    g_pSetDeviceGammaRamp(hDC, GammaTable);  // Set the ramp table
-    ReleaseDC(NULL, hDC);                    // Release the DC
-
+    double gain = wxMax(1, brightness) / 100.0;
+    double gammaExp =
+        2;  // FIXME (transmitterdan) make this a configurable item
+    BuildPowerLawGamma(gammaExp, gammaExp, gammaExp, gain, GammaTable);
+    SafeSetGammaRamp(GammaTable);
     return 1;
   }
-#endif
+#endif  // ocpnUSE_GL
 
   {
     if (g_pSavedGammaMap) {
-      HDC hDC = GetDC(NULL);  // Get the full screen DC
+      HDC hDC = ::GetDC(NULL);  // Get the full screen DC
+      if (!hDC) return 0;
       g_pSetDeviceGammaRamp(hDC,
                             g_pSavedGammaMap);  // Restore the saved ramp table
       ReleaseDC(NULL, hDC);                     // Release the DC
@@ -15152,7 +15230,7 @@ int SetScreenBrightness(int brightness) {
     return 1;
   }
 
-#endif
+#endif  // _WIN32
 
 #ifdef BRIGHT_XCALIB
 
@@ -15200,11 +15278,11 @@ int SetScreenBrightness(int brightness) {
     wxExecute(cmd, wxEXEC_ASYNC);
   }
 
-#endif
+#endif  // __OPCPN_USEICC__
 
   last_brightness = brightness;
 
-#endif
+#endif  // BRIGHT_XCALIB
 
   return 0;
 }
