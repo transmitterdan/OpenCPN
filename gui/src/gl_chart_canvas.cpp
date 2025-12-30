@@ -179,7 +179,7 @@ private:
 extern bool g_running;  ///< Android only
 
 //    For VBO(s)
-static bool g_b_needFinish;  // Need glFinish() call on each frame?
+static bool g_b_needFinish = true;  // Need glFinish() call on each frame?
 
 static wxColor s_regionColor;
 static float g_GLMinCartographicLineWidth;
@@ -525,6 +525,7 @@ void glChartCanvas::OnSize(wxSizeEvent &event) {
   }
 
   // SetSize(m_pParentCanvas->GetClientSize());
+  if (g_b_needFinish) glFinish();
 
   wxLogDebug("BuildFBO 3");
   BuildFBO();
@@ -4294,6 +4295,7 @@ void glChartCanvas::Render() {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 #else
+    if (g_b_needFinish) glFinish();
     // Render the cached texture as quad to screen
     glBindTexture(g_texture_rectangle_format, m_cache_tex[m_cache_page]);
     glEnable(g_texture_rectangle_format);
@@ -4551,8 +4553,6 @@ void glChartCanvas::Render() {
 
   //  Some older MSW OpenGL drivers are generally very unstable.
   //  This helps...
-
-  if (g_b_needFinish) glFinish();
 
   SwapBuffers();
 
