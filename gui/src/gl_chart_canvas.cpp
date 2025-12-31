@@ -179,7 +179,7 @@ private:
 extern bool g_running;  ///< Android only
 
 //    For VBO(s)
-static bool g_b_needFinish;  // Need glFinish() call on each frame?
+static bool g_b_needFinish = true;  // Need glFinish() call on each frame?
 
 static wxColor s_regionColor;
 static float g_GLMinCartographicLineWidth;
@@ -525,6 +525,11 @@ void glChartCanvas::OnSize(wxSizeEvent &event) {
   }
 
   // SetSize(m_pParentCanvas->GetClientSize());
+
+  //  Some older MSW OpenGL drivers are generally very unstable.
+  //  This helps...
+
+  if (g_b_needFinish) glFinish();
 
   wxLogDebug("BuildFBO 3");
   BuildFBO();
