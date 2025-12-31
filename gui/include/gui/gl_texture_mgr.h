@@ -57,7 +57,7 @@ public:
   JobTicket();
   ~JobTicket() {
     free(level0_bits);
-    pFactCLose();
+    pFactClose();
   }
   bool DoJob();
   bool DoJob(const wxRect &rect);
@@ -65,7 +65,7 @@ public:
     pFact = newFactory;
     newFactory->AddRef();
   }
-  bool pFactCLose() {
+  bool pFactClose() {
     if (pFact)
       if (pFact->Release()) pFact = NULL;
     return (pFact == NULL);
@@ -80,9 +80,9 @@ public:
   unsigned char *level0_bits;
   unsigned char *comp_bits_array[10];
   wxString m_ChartPath;
-  bool b_abort;
-  bool b_isaborted;
-  bool b_jobCompleted;
+  std::atomic<bool> b_abort;
+  std::atomic<bool> b_isaborted;
+  std::atomic<bool> b_jobCompleted;
   bool bpost_zip_compress;
   bool binplace;
   unsigned char *compcomp_bits_array[10];

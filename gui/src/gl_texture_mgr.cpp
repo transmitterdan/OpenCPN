@@ -201,7 +201,8 @@ JobTicket::JobTicket() {
 
 /* return malloced data which is the etc compressed texture of the source */
 static void CompressDataETC(const unsigned char *data, int dim, int size,
-                            unsigned char *tex_data, volatile bool &b_abort) {
+                            unsigned char *tex_data,
+                            std::atomic<bool> &b_abort) {
   wxASSERT(dim * dim == 2 * size || (dim < 4 && size == 8));  // must be 4bpp
   uint64_t *tex_data64 = (uint64_t *)tex_data;
 
@@ -851,7 +852,7 @@ void glTextureManager::OnEvtThread(OCPN_CompressionThreadEvent &event) {
       ChartBase *pchart =
           ChartData->OpenChartFromDB(ticket->m_ChartPath, FULL_INIT);
       ChartData->DeleteCacheChart(pchart);
-      ticket->pFactCLose();
+      ticket->pFactClose();
     }
 
     for (auto tnode = progList.begin(); tnode != progList.end(); ++tnode) {

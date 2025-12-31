@@ -165,7 +165,6 @@ glTexFactory::glTexFactory(ChartBase *chart, int raster_format) {
 
   m_catalogCorrupted = false;
 
-  m_fs = 0;
   m_LRUtime = 0;
   m_ntex = 0;
   m_tiles = NULL;
@@ -196,10 +195,6 @@ glTexFactory::glTexFactory(ChartBase *chart, int raster_format) {
 }
 
 glTexFactory::~glTexFactory() {
-  if (m_fs && m_fs->IsOpened()) {
-    m_fs->Close();
-    delete m_fs;
-  }
   PurgeBackgroundCompressionPool();
   DeleteAllTextures();
   DeleteAllDescriptors();
@@ -925,7 +920,7 @@ int glTexFactory::GetTextureLevel(glTextureDescriptor *ptd, const wxRect &rect,
       if (p != 0) {
         int size = TextureTileSize(level, true);
 
-        if (m_fs->IsOpened()) {
+        if (IsFileValid()) {
           m_fs->Seek(p->texture_offset);
           ptd->comp_array[level] = (unsigned char *)malloc(size);
           int max_compressed_size = LZ4_COMPRESSBOUND(g_tile_size);
@@ -957,8 +952,8 @@ bool glTexFactory::LoadHeader() {
   bool need_new = false;
 
   if (wxFileName::FileExists(m_CompressedCacheFilePath)) {
-    m_fs = new wxFFile(m_CompressedCacheFilePath, "rb+");
-    if (m_fs->IsOpened()) {
+    m_fs = std::make_unique<wxFFile>(m_CompressedCacheFilePath, "rb+");
+    if (IsFileValid()) {
       CompressedCacheHeader hdr;
 
       //  Header is located at the end of the file
@@ -972,8 +967,8 @@ bool glTexFactory::LoadHeader() {
             hdr.chartfile_size != m_chartfile_size ||
             hdr.format != g_raster_format) {
           //  Bad header signature
-          delete m_fs;
           need_new = true;
+          m_fs.reset();
         } else {  // good header
           n_catalog_entries = hdr.m_nentries;
           m_catalog_offset = hdr.catalog_offset;
@@ -986,8 +981,8 @@ bool glTexFactory::LoadHeader() {
     }  // is open
 
     else {  // some problem opening file, probably permissions on Win7
-      delete m_fs;
       need_new = true;
+      m_fs.reset();
       wxRemoveFile(m_CompressedCacheFilePath);
     }
 
@@ -1001,13 +996,22 @@ bool glTexFactory::LoadHeader() {
 
   if (need_new) {
     //  Create new file, with empty catalog, and correct header
-    m_fs = new wxFFile(m_CompressedCacheFilePath, "wb");
+    m_fs = std::make_unique<wxFFile>(m_CompressedCacheFilePath, "wb");
+    if (!IsFileValid()) {
+      wxLogMessage("Cannot create cache file %s",
+                   m_CompressedCacheFilePath.c_str());
+      return false;
+    }
     n_catalog_entries = 0;
     m_catalog_offset = 0;
     WriteCatalogAndHeader();
-    delete m_fs;
 
-    m_fs = new wxFFile(m_CompressedCacheFilePath, "rb+");
+    m_fs = std::make_unique<wxFFile>(m_CompressedCacheFilePath, "rb+");
+    if (!IsFileValid()) {
+      wxLogMessage("Cannot reopen cache file %s",
+                   m_CompressedCacheFilePath.c_str());
+      return false;
+    }
   }
   m_hdrOK = true;
   return true;
@@ -1044,7 +1048,11 @@ bool glTexFactory::LoadCatalog() {
     m_newCatalog = true;
     return true;
   }
-
+  if (!IsFileValid()) {
+    wxLogMessage("LoadCatalog: File not valid for: %s",
+                 m_CompressedCacheFilePath.c_str());
+    return false;
+  }
   m_fs->Seek(m_catalog_offset);
 
   CatalogEntry ps;
@@ -1070,7 +1078,7 @@ bool glTexFactory::LoadCatalog() {
 }
 
 bool glTexFactory::WriteCatalogAndHeader() {
-  if (m_fs && m_fs->IsOpened()) {
+  if (IsFileValid()) {
     m_fs->Seek(m_catalog_offset);
 
     CatalogEntry ps;
@@ -1129,30 +1137,28 @@ bool glTexFactory::UpdateCachePrecomp(unsigned char *data, int data_size,
   if (GetCacheEntryValue(level, rect.x, rect.y, color_scheme) != 0)
     return false;
 
-  // Make sure the file exists
-  wxASSERT(m_fs != 0);
+  if (IsFileValid()) {
+    //      Create a new catalog entry
+    CatalogEntry p(level, rect.x, rect.y, color_scheme);
 
-  if (!m_fs->IsOpened()) return false;
+    //      Write the compressed data to disk
+    p.v.texture_offset = m_catalog_offset;
 
-  //      Create a new catalog entry
-  CatalogEntry p(level, rect.x, rect.y, color_scheme);
+    p.v.compressed_size = data_size;
+    AddCacheEntryValue(p);
+    n_catalog_entries++;
 
-  //      Write the compressed data to disk
-  p.v.texture_offset = m_catalog_offset;
+    //      We write the new data at the current catalog offset, overwriting the
+    //      old catalog
+    m_fs->Seek(m_catalog_offset);
+    m_fs->Write(data, data_size);
 
-  p.v.compressed_size = data_size;
-  AddCacheEntryValue(p);
-  n_catalog_entries++;
+    //      Write the catalog and Header (which follows the catalog at the end
+    //      of the file
+    m_catalog_offset += data_size;
+    if (write_catalog) WriteCatalogAndHeader();
 
-  //      We write the new data at the current catalog offset, overwriting the
-  //      old catalog
-  m_fs->Seek(m_catalog_offset);
-  m_fs->Write(data, data_size);
-
-  //      Write the catalog and Header (which follows the catalog at the end of
-  //      the file
-  m_catalog_offset += data_size;
-  if (write_catalog) WriteCatalogAndHeader();
-
-  return true;
+    return true;
+  } else
+    return false;
 }

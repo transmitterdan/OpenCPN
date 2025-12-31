@@ -122,9 +122,7 @@ public:
   glTexFactory &operator=(const glTexFactory &) = delete;
 
   // Reference counting methods used by job manager
-  void AddRef() noexcept {
-    int prev = m_refCount.fetch_add(1, std::memory_order_relaxed);
-  }
+  void AddRef() noexcept { m_refCount.fetch_add(1, std::memory_order_relaxed); }
 
   bool Release() noexcept {
     int prev = m_refCount.fetch_sub(1, std::memory_order_acq_rel);
@@ -216,7 +214,7 @@ private:
   bool m_newCatalog;
   bool m_catalogCorrupted;
 
-  wxFFile *m_fs;
+  std::unique_ptr<wxFFile> m_fs;
   uint32_t m_chart_date_binary;
   uint32_t m_chartfile_date_binary;
   uint32_t m_chartfile_size;
@@ -243,6 +241,8 @@ private:
   // Destructor is private, use Release() instead and it will delete when ref
   // count reaches zero
   ~glTexFactory();
+
+  bool IsFileValid() const { return m_fs && m_fs->IsOpened(); }
 };
 
 #ifdef _MSC_VER
