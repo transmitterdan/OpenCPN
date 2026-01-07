@@ -41,6 +41,7 @@
 #include "model/ocpn_types.h"
 #include "model/track.h"
 #include "model/comm_appmsg_bus.h"
+#include "model/rest_server.h"
 
 #include "bbox.h"
 #include "chartbase.h"
@@ -101,6 +102,8 @@
 
 #define MAX_COG_AVERAGE_SECONDS 60
 #define MAX_COGSOG_FILTER_SECONDS 60
+
+using OpenFileFunc = std::function<bool(const std::string& path)>;
 //----------------------------------------------------------------------------
 // fwd class declarations
 //----------------------------------------------------------------------------
@@ -138,8 +141,9 @@ void LoadS57();
  */
 class MyFrame : public wxFrame {
 public:
-  MyFrame(wxFrame* frame, const wxString& title, const wxPoint& pos,
-          const wxSize& size, long style, wxAuiDefaultDockArt* pauidockart);
+  MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size,
+          RestServer& rest_server, wxAuiDefaultDockArt* pauidockart,
+          OpenFileFunc open_gpx_file);
 
   ~MyFrame();
 
@@ -463,6 +467,8 @@ private:
   unsigned int last_canvasConfig;
   DataMonitor* m_data_monitor;
   wxAuiDefaultDockArt* m_pauidockart;
+  RestServer& m_rest_server;
+  OpenFileFunc m_open_gpx_file;
 
   void CenterAisTarget(const std::shared_ptr<const AisTargetData>& ais_target);
 

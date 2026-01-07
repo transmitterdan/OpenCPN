@@ -1298,9 +1298,6 @@ bool MyApp::OnInit() {
   }
   /// CheckDongleAccess(gFrame);
 
-  // Initialize the CommBridge
-  m_comm_bridge.Initialize();
-
   std::vector<std::string> ipv4_addrs = get_local_ipv4_addresses();
 
   // If network connection is available, start the server and mDNS client
@@ -1439,10 +1436,6 @@ void MyApp::BuildMainFrame() {
     new_frame_size.Set(800, 400);
 #endif
 
-  //  For Windows and GTK, provide the expected application Minimize/Close bar
-  long app_style = wxDEFAULT_FRAME_STYLE;
-  app_style |= wxWANTS_CHARS;
-
   // Create the main frame window
 
   // Strip the commit SHA number from the string to be shown in frame title.
@@ -1464,8 +1457,9 @@ void MyApp::BuildMainFrame() {
   auto dockart = new wxAuiDefaultDockArt;
   g_pauimgr->SetArtProvider(dockart);
 
-  gFrame = new MyFrame(NULL, myframe_window_title, position, new_frame_size,
-                       app_style, dockart);
+  gFrame = new MyFrame(myframe_window_title, position, new_frame_size,
+                       m_rest_server, dockart,
+                       [&](const std::string &path) { return OpenFile(path); });
 
   //  Initialize the Plugin Manager
   g_pi_manager = new PlugInManager(gFrame);

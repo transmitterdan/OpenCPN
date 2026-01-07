@@ -62,6 +62,7 @@
 #include "model/ais_target_data.h"
 #include "model/autopilot_output.h"
 #include "model/cmdline.h"
+#include "model/comm_bridge.h"
 #include "model/comm_drv_factory.h"  //FIXME(dave) this one goes away
 #include "model/comm_drv_registry.h"
 #include "model/comm_n0183_output.h"
@@ -90,6 +91,7 @@
 #include "model/std_icon.h"
 #include "model/sys_events.h"
 #include "model/track.h"
+#include "model/usb_watch_daemon.h"
 
 #include "ais_info_gui.h"
 #include "dialog_alert.h"
@@ -125,11 +127,10 @@
 #include "mui_bar.h"
 #include "N2KParser.h"
 #include "navutil.h"
-#include "ocpn_app.h"
-#include "ocpn_plugin.h"
 #include "ocpn_aui_manager.h"
 #include "ocpn_frame.h"
 #include "ocpn_platform.h"
+#include "ocpn_plugin.h"
 #include "o_senc.h"
 #include "options.h"
 #include "pluginmanager.h"
@@ -153,6 +154,9 @@
 #ifdef __ANDROID__
 #include "androidUTIL.h"
 #endif
+
+//  For Windows and GTK, provide the expected application Minimize/Close bar
+static constexpr long kFrameStyle = wxDEFAULT_FRAME_STYLE | wxWANTS_CHARS;
 
 //------------------------------------------------------------------------------
 //      Static variable definition
@@ -525,14 +529,15 @@ static NmeaLog *GetDataMonitor() {
   return dynamic_cast<NmeaLog *>(w);
 }
 
-// My frame constructor
-MyFrame::MyFrame(wxFrame *frame, const wxString &title, const wxPoint &pos,
-                 const wxSize &size, long style,
-                 wxAuiDefaultDockArt *pauidockart)
-    : wxFrame(frame, -1, title, pos, size, style, kTopLevelWindowName),
+MyFrame::MyFrame(const wxString &title, const wxPoint &pos, const wxSize &size,
+                 RestServer &rest_server, wxAuiDefaultDockArt *pauidockart,
+                 OpenFileFunc open_gpx_file)
+    : wxFrame(nullptr, -1, title, pos, size, kFrameStyle, kTopLevelWindowName),
       m_connections_dlg(nullptr),
       m_data_monitor(new DataMonitor(this)),
-      m_pauidockart(pauidockart) {
+      m_pauidockart(pauidockart),
+      m_rest_server(rest_server),
+      m_open_gpx_file(open_gpx_file) {
   g_current_monitor = wxDisplay::GetFromWindow(this);
 #ifdef __WXOSX__
   // On retina displays there is a difference between the physical size of the
@@ -1749,8 +1754,7 @@ void MyFrame::OnCloseWindow(wxCloseEvent &event) {
     g_pi_manager = NULL;
   }
 
-  MyApp &app = wxGetApp();
-  app.m_comm_bridge.SaveConfig();
+  CommBridge::GetInstance().SaveConfig();
 
   delete pConfig;  // All done
   pConfig = NULL;
@@ -4872,7 +4876,7 @@ void MyFrame::OnInitTimer(wxTimerEvent &event) {
   wxLog::FlushActive();
 
   RefreshAllCanvas(true);
-  wxGetApp().m_usb_watcher.Start();
+  UsbWatchDaemon::GetInstance().Start();
 }
 
 wxDEFINE_EVENT(EVT_BASIC_NAV_DATA, ObservedEvt);
@@ -4912,10 +4916,9 @@ void MyFrame::InitApiListeners() {
   auto &server = LocalServerApi::GetInstance();
   m_on_raise_listener.Init(server.on_raise, [&](ObservedEvt) { Raise(); });
   m_on_quit_listener.Init(server.on_quit, [&](ObservedEvt) { FastClose(); });
-  server.SetGetRestApiEndpointCb(
-      [&] { return wxGetApp().m_rest_server.GetEndpoint(); });
-  server.open_file_cb = [](const std::string &path) {
-    return wxGetApp().OpenFile(path);
+  server.SetGetRestApiEndpointCb([&] { return m_rest_server.GetEndpoint(); });
+  server.open_file_cb = [&](const std::string &path) {
+    return m_open_gpx_file(path);
   };
 }
 
