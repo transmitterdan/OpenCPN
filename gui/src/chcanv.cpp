@@ -1531,7 +1531,9 @@ bool ChartCanvas::DoCanvasUpdate() {
   if (!ChartData) return false;
 
   if (ChartData->IsBusy()) return false;
+  // Do not disturb any existing animations
   if (m_chart_drag_inertia_active) return false;
+  if (m_animationActive) return false;
 
   //    Startup case:
   //    Quilting is enabled, but the last chart seen was not quiltable
@@ -1724,17 +1726,7 @@ bool ChartCanvas::DoCanvasUpdate() {
       double pixlg = fabs(vpLon - m_vLon) * 1852 * 60 * GetVPScale();
       if (wxMax(pixlt, pixlg) > GetCanvasWidth()) super_jump = true;
     }
-#if 0
-    if (m_bFollow && g_btenhertz && !super_jump && !m_bLookAhead && !g_btouch && !m_bzooming) {
-      int nstep = 5;
-      if (blong_jump) nstep = 20;
-      StartTimedMovementVP(vpLat, vpLon, nstep);
-    } else
-#endif
-    {
-      bNewView |= SetViewPoint(vpLat, vpLon, GetVPScale(), 0, GetVPRotation());
-    }
-
+    bNewView |= SetViewPoint(vpLat, vpLon, GetVPScale(), 0, GetVPRotation());
     goto update_finish;
   }
 
