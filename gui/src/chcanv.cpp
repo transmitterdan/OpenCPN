@@ -8687,7 +8687,7 @@ bool ChartCanvas::MouseEventProcessObjects(wxMouseEvent &event) {
                                            // route?
                     dmsg = _("Insert this route in the new route?");
 
-                  if (tail->GetIndexOf(pMousePoint) != 1) {  // Anything to do?
+                  if (tail->GetIndexOf(pMousePoint) > 0) {  // Anything to do?
                     dlg_return = OCPNMessageBox(
                         this, dmsg, _("OpenCPN Route Create"),
                         (long)wxYES_NO | wxCANCEL | wxYES_DEFAULT);
@@ -8747,9 +8747,8 @@ bool ChartCanvas::MouseEventProcessObjects(wxMouseEvent &event) {
 
         if (m_pMouseRoute) {
           if (m_routeState == 1) {
-            // First point in the route.
+            // First point in the new route.
             m_pMouseRoute->AddPoint(pMousePoint);
-            // NavObj_dB::GetInstance().UpdateRoute(m_pMouseRoute);
           } else {
             if (m_pMouseRoute->m_NextLegGreatCircle) {
               double rhumbBearing, rhumbDist, gcBearing, gcDist;
@@ -8841,7 +8840,7 @@ bool ChartCanvas::MouseEventProcessObjects(wxMouseEvent &event) {
         if (appending ||
             inserting) {  // Appending a route or making a new route
           int connect = tail->GetIndexOf(pMousePoint);
-          if (connect == 1) {
+          if (connect == 0) {
             inserting = false;  // there is nothing to insert
             appending = true;   // so append
           }
@@ -8854,10 +8853,9 @@ bool ChartCanvas::MouseEventProcessObjects(wxMouseEvent &event) {
             stop = length;
           } else {  // inserting
             start = 1;
-            stop = connect;
-            m_pMouseRoute->RemovePoint(
-                m_pMouseRoute
-                    ->GetLastPoint());  // Remove the first and only point
+            stop = connect + 1;
+            // Remove the first and only point of the new route
+            m_pMouseRoute->RemovePoint(m_pMouseRoute->GetLastPoint());
           }
           for (i = start; i <= stop; i++) {
             m_pMouseRoute->AddPointAndSegment(tail->GetPoint(i), false);
