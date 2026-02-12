@@ -5762,7 +5762,8 @@ void MyFrame::OnFrameTimer1(wxTimerEvent &event) {
           // Rotation is handled by 10Hz timer, do not duplicate here
           bool b_rotate = cc->GetUpMode() != NORTH_UP_MODE;
           if (!b_rotate) {
-            if (!g_btenhertz) {
+            if ((!g_btenhertz) ||
+                (g_btenhertz && (std::isnan(gCog) || std::isnan(gSog)))) {
               if (cc->m_bFollow) {
                 cc->DoCanvasUpdate();
                 if (bnew_view)
