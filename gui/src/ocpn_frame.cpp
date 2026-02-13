@@ -5456,7 +5456,8 @@ void MyFrame::OnFrameTenHzTimer(wxTimerEvent &event) {
       if (cc) {
         if (g_bopengl) {
           if (cc->GetUpMode() != NORTH_UP_MODE || cc->m_bFollow) {
-            cc->DoCanvasUpdate();
+            bool bnew = cc->DoCanvasUpdate();
+            if (!bnew) cc->UpdateShips();  // Ensure ownship HDT is rendered.
           } else
             cc->Refresh(false);  // Process ownship motion at 10 Hz.
         }
@@ -5762,8 +5763,7 @@ void MyFrame::OnFrameTimer1(wxTimerEvent &event) {
           // Rotation is handled by 10Hz timer, do not duplicate here
           bool b_rotate = cc->GetUpMode() != NORTH_UP_MODE;
           if (!b_rotate) {
-            if ((!g_btenhertz) ||
-                (g_btenhertz && (std::isnan(gCog) || std::isnan(gSog)))) {
+            if ((!g_btenhertz)) {
               if (cc->m_bFollow) {
                 cc->DoCanvasUpdate();
                 if (bnew_view)
