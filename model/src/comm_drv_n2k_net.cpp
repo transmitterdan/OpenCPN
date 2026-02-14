@@ -233,7 +233,7 @@ CommDriverN2KNet::CommDriverN2KNet(const ConnectionParams* params,
   m_circle = new circular_buffer(RX_BUFFER_SIZE_NET);
 
   fast_messages = new FastMessageMap();
-  m_order = 0;  // initialize the fast message order bits, for TX
+  m_order = 0;  // initialize the fast message sequence ID bits, for TX
   m_n2k_format = N2KFormat_YD_RAW;
 
   // Establish the power events response
@@ -1829,7 +1829,6 @@ std::vector<std::vector<unsigned char>> CommDriverN2KNet::GetTxVector(
           tx_vector.push_back(ovec);
           ovec.clear();
         }
-        m_order += 16;
         break;
       }
     }
@@ -1845,7 +1844,8 @@ std::vector<std::vector<unsigned char>> CommDriverN2KNet::GetTxVector(
       break;
   }
 
-  m_order += 16;  // update the fast message order bits
+  // update the fast message Sequence ID bits
+  m_order = (m_order + 0x20) & 0xE0;
 
   return tx_vector;
 }
