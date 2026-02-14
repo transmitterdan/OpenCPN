@@ -229,6 +229,18 @@ CommDriverResult WriteCommDriverN2K(
   uint64_t _PGN;
   _PGN = PGN;
 
+  wxString m1;
+  m1.Printf("WriteCommDriverN2K...  PGN: 0x%0X, Destination Address:  0x%0X",
+            PGN, destinationCANAddress);
+  wxLogMessage(m1);
+  wxString m2 = "Payload: ";
+  for (uint8_t& d : *payload) {
+    wxString m3;
+    m3.Printf(" 0x%02X", d);
+    m2 += m3;
+  }
+  wxLogMessage(m2);
+
   // Find the driver from the handle
   auto& registry = CommDriverRegistry::GetInstance();
   auto& drivers = registry.GetDrivers();
