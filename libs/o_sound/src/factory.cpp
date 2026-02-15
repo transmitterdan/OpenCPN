@@ -50,7 +50,7 @@ Sound *g_anchorwatch_sound = Factory();
 #if defined(__ANDROID__)
 Sound* Factory(const char* not_used) { return new AndroidSound(); }
 
-#elif defined(xHAVE_PORTAUDIO)
+#elif defined(HAVE_PORTAUDIO)
 Sound* Factory(const char* not_used) { return new PortAudioSound(); }
 
 #elif defined(HAVE_SYSTEM_CMD_SOUND)
