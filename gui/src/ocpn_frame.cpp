@@ -1429,7 +1429,7 @@ bool MyFrame::DropMarker(bool atOwnShip) {
   return true;
 }
 
-void MyFrame::SwitchKBFocus(ChartCanvas *pCanvas) {
+void MyFrame::SwitchKBFocusCanvas(ChartCanvas *pCanvas) {
   if (g_canvasConfig != 0) {  // multi-canvas?
     canvasConfig *cc;
     int nTarget = -1;
