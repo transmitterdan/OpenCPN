@@ -162,7 +162,7 @@ public:
   }
 
   void SwitchKBFocus(AbstractChartCanvas* acc) override {
-    return SwitchKBFocus(dynamic_cast<ChartCanvas*>(acc));
+    return SwitchKBFocusCanvas(dynamic_cast<ChartCanvas*>(acc));
   }
 
   double GetCanvasTrueScale() override {
@@ -276,7 +276,7 @@ public:
   wxString GetGlVersionString() override { return ""; }
   wxGLCanvas* GetWxGlCanvas() override { return nullptr; }
 #endif
-  void SwitchKBFocus(ChartCanvas* pCanvas);
+  void SwitchKBFocusCanvas(ChartCanvas* pCanvas);
   int GetNextToolbarToolId() override {
     return m_next_available_plugin_tool_id;
   }
