@@ -1772,8 +1772,10 @@ std::vector<std::vector<unsigned char>> CommDriverN2KNet::GetTxVector(
           uint16_t attr = 0;
           uint8_t len = 8;
           if (i == nframes - 1) {
-            len = msg->payload.size() + 1 - 6 - (nframes - 2) * 7;
+            // TODO Check this
+            // len = msg->payload.size() + 1 - 6 - (nframes - 2) * 7;
           }
+
           attr |= ((uint16_t)((uint8_t)msg->priority & 0x07)) << 12;
           attr |= ((uint16_t)len) << 8;
           attr |= (uint16_t)dest_addr->address;
@@ -1793,6 +1795,16 @@ std::vector<std::vector<unsigned char>> CommDriverN2KNet::GetTxVector(
             payload.push_back(msg->payload[cur]);
             cur++;
           }
+
+          // Buffer the data to 7 bytes, if necessary, buffer at start.
+          int psize = payload.size();
+          while ((i > 0) && (psize < 7)) {
+            ovec.push_back('F');
+            ovec.push_back('F');
+            psize++;
+          }
+
+          // Buffer the actual payload bytes
           for (auto rit = payload.rbegin(); rit != payload.rend(); ++rit) {
             snprintf(tv, 3, "%02X", *rit);
             ovec.push_back(tv[0]);
