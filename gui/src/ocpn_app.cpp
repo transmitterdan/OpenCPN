@@ -1011,12 +1011,6 @@ bool MyApp::OnInit() {
   InitBaseConfig(pConfig);
   pConfig->LoadMyConfig();
 
-  if (g_kiosk_startup) {
-    g_wallpaper = new WallpaperFrame();
-    g_wallpaper->ShowFullScreen(true);  // For a kiosk app, make it fullscreen
-    g_wallpaper->Show();
-  }
-
   //  Override for some safe and nice default values if the config file was
   //  created from scratch
   if (b_initial_load) g_Platform->SetDefaultOptions();
@@ -1250,14 +1244,11 @@ bool MyApp::OnInit() {
 #endif
 
   // Create and initialize the main application frame.
-  if (!g_kiosk_startup) {
-    BuildMainFrame();
-    SetTopWindow(gFrame);  // Set the main frame as the new top window.
-    gFrame->Show();
-    gFrame->Raise();
-  } else {
-    wxTheApp->CallAfter(&MyApp::OnWallpaperStable);
-  }
+  BuildMainFrame();
+  // if (g_kiosk_startup) gFrame->ShowFullScreen(true);
+  SetTopWindow(gFrame);  // Set the main frame as the new top window.
+  gFrame->Show();
+  gFrame->Raise();
 
   OCPNPlatform::Initialize_4();
 
