@@ -1011,6 +1011,13 @@ bool MyApp::OnInit() {
   InitBaseConfig(pConfig);
   pConfig->LoadMyConfig();
 
+  if (g_kiosk_startup) {
+    g_wallpaper = new WallpaperFrame();
+    g_wallpaper->ShowFullScreen(true);  // For a kiosk app, make it fullscreen
+    g_wallpaper->Show();
+    g_bFullscreen = true;  // override config value
+  }
+
   //  Override for some safe and nice default values if the config file was
   //  created from scratch
   if (b_initial_load) g_Platform->SetDefaultOptions();
@@ -1245,7 +1252,7 @@ bool MyApp::OnInit() {
 
   // Create and initialize the main application frame.
   BuildMainFrame();
-  // if (g_kiosk_startup) gFrame->ShowFullScreen(true);
+  if (g_kiosk_startup) gFrame->ShowFullScreen(true);
   SetTopWindow(gFrame);  // Set the main frame as the new top window.
   gFrame->Show();
   gFrame->Raise();
@@ -1365,6 +1372,8 @@ void MyApp::BuildMainFrame() {
     new_frame_size.Set(g_nframewin_x, g_nframewin_y);
   else
     new_frame_size.Set(cw * 7 / 10, ch * 7 / 10);
+
+  if (g_kiosk_startup) new_frame_size.Set(cw, ch);
 
   //  Try to detect any change in physical screen configuration
   //  This can happen when drivers are changed, for instance....
