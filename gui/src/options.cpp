@@ -178,8 +178,6 @@ static inline wxString ttCoordFormat() {
 
 #define ID_CHOICE_NMEA wxID_HIGHEST + 1
 
-using CBList = std::list<wxCheckBox*>;
-
 options* g_options;   // global instance
 options* g_pOptions;  // Duplicate to be removed FIXME (leamas)
 
@@ -610,7 +608,7 @@ public:
 private:
   wxBoxSizer* m_sizer;
 
-  CBList m_list;
+  std::vector<wxCheckBox*> m_list;
 };
 
 bool OCPNCheckedListCtrl::Create(wxWindow* parent, wxWindowID id,
@@ -644,24 +642,19 @@ unsigned int OCPNCheckedListCtrl::Append(wxString& label, bool benable,
 }
 
 void OCPNCheckedListCtrl::Check(int index, bool val) {
-  auto it = m_list.begin();
-  std::advance(it, index);
-  wxCheckBox* cb = *it;
-
+  wxCheckBox* cb = m_list[index];
   if (cb) cb->SetValue(val);
 }
 
 bool OCPNCheckedListCtrl::IsChecked(int index) {
-  auto it = m_list.begin();
-  std::advance(it, index);
-  wxCheckBox* cb = *it;
-
+  wxCheckBox* cb = m_list[index];
   return cb ? cb->GetValue() : false;
 }
 
 void OCPNCheckedListCtrl::RunLayout() { m_sizer->Layout(); }
 
 void OCPNCheckedListCtrl::Clear() {
+  for (auto cb : m_list) delete cb;
   m_list.clear();
   Scroll(0, 0);
 }
