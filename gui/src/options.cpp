@@ -6612,6 +6612,8 @@ void options::resetMarStdList(bool bsetConfig, bool bsetStd) {
     ps57CtlListBox->Clear();
     marinersStdXref.clear();
 
+    ps57CtlListBox->Freeze();
+
     for (unsigned int iPtr = 0; iPtr < ps52plib->pOBJLArray->GetCount();
          iPtr++) {
       OBJLElement* pOLE = (OBJLElement*)(ps52plib->pOBJLArray->Item(iPtr));
@@ -6661,6 +6663,7 @@ void options::resetMarStdList(bool bsetConfig, bool bsetStd) {
 
       ps57CtlListBox->Check(newpos, bviz);
     }
+    ps57CtlListBox->Thaw();
 
     // Deferred layout instead of after every appended checkbox
     ps57CtlListBox->RunLayout();
