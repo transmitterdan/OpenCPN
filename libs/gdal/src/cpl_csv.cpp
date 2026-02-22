@@ -64,7 +64,7 @@ typedef struct ctb {
 } CSVTable;
 */
 
-static CSVTable *psCSVTableList = NULL;
+static thread_local CSVTable *psCSVTableList = NULL;
 
 /************************************************************************/
 /*                             CSVAccess()                              */
@@ -859,10 +859,10 @@ const char *CSVGetField( const char * pszFilename,
 const char * GDALDefaultCSVFilename( const char *pszBasename )
 
 {
-    static char         szPath[512];
+    static thread_local char szPath[512];
     FILE    *fp = NULL;
     const char *pszResult;
-    static int bFinderInitialized = FALSE;
+    static thread_local int bFinderInitialized = FALSE;
 
     pszResult = CPLFindFile( "epsg_csv", pszBasename );
 
@@ -909,7 +909,7 @@ const char * GDALDefaultCSVFilename( const char *pszBasename )
 /*      eventually be something the application can override.           */
 /************************************************************************/
 
-static const char *(*pfnCSVFilenameHook)(const char *) = NULL;
+static const thread_local char *(*pfnCSVFilenameHook)(const char *) = NULL;
 
 const char * CSVFilename( const char *pszBasename )
 

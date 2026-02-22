@@ -17,6 +17,8 @@
 
 #include <wx/app.h>
 
+#include <mutex>
+
 #include "model/cmdline.h"
 #include "model/gui_vars.h"
 
@@ -30,6 +32,12 @@
 #include "s57registrar_mgr.h"
 
 void LoadS57() {
+  if (ps52plib)  // already loaded?
+    return;
+
+  static std::mutex loadS57Mutex;
+  std::lock_guard<std::mutex> guard(loadS57Mutex);
+
   if (ps52plib)  // already loaded?
     return;
 

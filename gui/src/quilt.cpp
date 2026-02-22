@@ -66,29 +66,26 @@
 
 WX_DEFINE_LIST(PatchList);
 
-static int CompareScales(int i1, int i2) {
-  if (!ChartData) return 0;
+static bool CompareScales(int i1, int i2) {
+  if (!ChartData) return false;
 
   const ChartTableEntry &cte1 = ChartData->GetChartTableEntry(i1);
   const ChartTableEntry &cte2 = ChartData->GetChartTableEntry(i2);
 
-  if (cte1.Scale_eq(cte2.GetScale())) {  // same scales, so sort on dbIndex
-    float lat1, lat2;
-    lat1 = cte1.GetLatMax();
-    lat2 = cte2.GetLatMax();
-    if (roundf(lat1 * 100.) == roundf(lat2 * 100.)) {
-      float lon1, lon2;
-      lon1 = cte1.GetLonMin();
-      lon2 = cte2.GetLonMin();
-      if (lon1 == lon2) {
-        return i1 - i2;
-      } else
-        return (lon1 < lon2) ? -1 : 1;
-    } else
-      return (lat1 < lat2) ? 1 : -1;
-  } else
-    return cte1.GetScale() - cte2.GetScale();
+  // order by scale first
+  if (!cte1.Scale_eq(cte2.GetScale())) return cte1.GetScale() < cte2.GetScale();
+
+  // then tie‑break by lat, lon, and index to make it stable/deterministic
+  float lat1 = cte1.GetLatMax(), lat2 = cte2.GetLatMax();
+  if (roundf(lat1 * 100.f) != roundf(lat2 * 100.f))
+    return lat1 > lat2;  // note: original logic swapped sense
+
+  float lon1 = cte1.GetLonMin(), lon2 = cte2.GetLonMin();
+  if (lon1 != lon2) return lon1 < lon2;
+
+  return i1 < i2;
 }
+
 static bool CompareScalesStd(int i1, int i2) {
   return CompareScales(i1, i2) < 0;
 }

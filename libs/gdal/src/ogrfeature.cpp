@@ -966,8 +966,8 @@ double OGR_F_GetFieldAsDouble( OGRFeatureH hFeat, int iField )
 const char *OGRFeature::GetFieldAsString( int iField )
 
 {
-    OGRFieldDefn        *poFDefn = poDefn->GetFieldDefn( iField );
-    static char         szTempBuffer[160];
+    OGRFieldDefn              *poFDefn = poDefn->GetFieldDefn( iField );
+    static thread_local char  szTempBuffer[160];
     unsigned int max_line = 80;
 
     CPLAssert( poFDefn != NULL || iField == -1 );
