@@ -30,7 +30,6 @@
 
 #include "cpl_conv.h"
 #include "cpl_string.h"
-#include <mutex>
 
 static thread_local char **papszConfigOptions = NULL;
 
