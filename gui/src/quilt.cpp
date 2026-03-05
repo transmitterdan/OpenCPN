@@ -77,19 +77,6 @@ static int CompareScales(const int i1, const int i2) {
   // Primary: scale (smaller scale value means larger scale chart)
   return cte1.GetScale() - cte2.GetScale();
 }
-#endif
-
-// Compare chart Z stack based on scale
-// Equal scale charts will be stacked indiscriminately
-static int CompareScales(const int i1, const int i2) {
-  if (!ChartData) return 0;
-
-  const ChartTableEntry &cte1 = ChartData->GetChartTableEntry(i1);
-  const ChartTableEntry &cte2 = ChartData->GetChartTableEntry(i2);
-
-  // Primary: scale (smaller scale value means larger scale chart)
-  return cte1.GetScale() - cte2.GetScale();
-}
 
 static bool CompareScalesStd(int i1, int i2) {
   return CompareScales(i1, i2) < 0;
