@@ -100,3 +100,5 @@ msgfmt --version  >nul 2>&1 || (echo [ERROR] msgfmt missing after install & exit
 xgettext --version >nul 2>&1 || (echo [ERROR] xgettext missing after install & exit /b 1)
 
 echo [OK] GetText tools installed and available in PATH.
+
+exit /b 0
