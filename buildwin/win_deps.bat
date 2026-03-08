@@ -10,26 +10,6 @@ if errorlevel 1 (
   set "PATH=%PATH%;C:\Program Files (x86)\Poedit\Gettexttools\bin"
 )
 
-REM --- Detect GetText installation ---
-SET "GETTEXT_DIR=C:\ProgramData\chocolatey\lib\gettext\tools\bin"
-SET "MSGFMT_EXE=%GETTEXT_DIR%\msgfmt.exe"
-
-IF NOT EXIST "%MSGFMT_EXE%" (
-    echo [INFO] GetText not found. Installing via Chocolatey...
-    choco install gettext -y --no-progress
-)
-refreshenv
-where xgettext
-
-where xgettext >nul 2>&1 || (echo [ERROR] xgettext missing after install & exit /b 1)
-where msgfmt   >nul 2>&1 || (echo [ERROR] msgfmt missing after install & exit /b 1)
-
-REM --- Verify tools are actually available ---
-msgfmt --version  >nul 2>&1 || (echo [ERROR] msgfmt missing after install & exit /b 1)
-xgettext --version >nul 2>&1 || (echo [ERROR] xgettext missing after install & exit /b 1)
-
-echo [OK] GetText tools installed and available in PATH.
-
 :: Install git if required.
 git --version >nul 2>&1
 if errorlevel 1 (
@@ -92,3 +72,26 @@ wget -nv -O !CACHE_DIR!\QuickStartGuide.zip ^
        https://dl.cloudsmith.io/public/david-register/opencpn-docs/raw/files/QuickStartGuide-v0.4.zip
 if not exist %CACHE_DIR%\..\data\doc\local (mkdir %CACHE_DIR%\..\data\doc\local)
 7z x -y !CACHE_DIR!\QuickStartGuide.zip  -o%CACHE_DIR%\..\data\doc\local
+
+REM --- Detect GetText installation ---
+SET "GETTEXT_DIR=C:\ProgramData\chocolatey\lib\gettext\tools\bin"
+SET "MSGFMT_EXE=%GETTEXT_DIR%\msgfmt.exe"
+
+IF NOT EXIST "%MSGFMT_EXE%" (
+    echo [INFO] GetText not found. Installing via Chocolatey...
+    choco install gettext -y --no-progress
+)
+refreshenv
+echo PATH=%PATH%
+
+where msgfmt
+where GetText
+
+where xgettext >nul 2>&1 || (echo [ERROR] xgettext missing after install & exit /b 1)
+where msgfmt   >nul 2>&1 || (echo [ERROR] msgfmt missing after install & exit /b 1)
+
+REM --- Verify tools are actually available ---
+msgfmt --version  >nul 2>&1 || (echo [ERROR] msgfmt missing after install & exit /b 1)
+xgettext --version >nul 2>&1 || (echo [ERROR] xgettext missing after install & exit /b 1)
+
+echo [OK] GetText tools installed and available in PATH.
