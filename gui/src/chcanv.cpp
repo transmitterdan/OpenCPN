@@ -22,6 +22,8 @@
  */
 
 #include <vector>
+#include <memory>
+#include <type_traits>
 
 #include "gl_headers.h"  // Must be included before anything using GL stuff
 
@@ -49,6 +51,7 @@
 #include "model/gui.h"
 #include "model/gui_vars.h"
 #include "model/idents.h"
+#include "model/logger.h"
 #include "model/multiplexer.h"
 #include "model/notification_manager.h"
 #include "model/nav_object_database.h"
@@ -10499,6 +10502,29 @@ void ChartCanvas::LostMouseCapture(wxMouseCaptureLostEvent &event) {
   SetCursor(*pCursorArrow);
 }
 
+// generic deleter: calls Clear() if available, then deletes
+template <typename T>
+struct ClearDeletingDeleter {
+  void operator()(T *p) const {
+    if (!p) return;
+    ClearIfSupported(p, 0);
+    delete p;
+  }
+
+private:
+  // preferred overload: uses SFINAE to call Clear() when it exists
+  template <typename U>
+  static auto ClearIfSupported(U *p, int) -> decltype(p->Clear(), void()) {
+    p->Clear();
+  }
+
+  // fallback when Clear() is not available
+  static void ClearIfSupported(T *, ...) {}
+};
+
+template <typename T>
+using clear_unique_ptr = std::unique_ptr<T, ClearDeletingDeleter<T>>;
+
 void ChartCanvas::ShowObjectQueryWindow(int x, int y, float zlat, float zlon) {
   ChartPlugInWrapper *target_plugin_chart = NULL;
   s57chart *Chs57 = NULL;
@@ -10632,22 +10658,23 @@ void ChartCanvas::ShowObjectQueryWindow(int x, int y, float zlat, float zlon) {
     if (!lightsVis) SetShowENCLights(true);
     ;
 
-    ListOfObjRazRules *rule_list = NULL;
-    ListOfPI_S57Obj *pi_rule_list = NULL;
-    if (Chs57)
-      rule_list =
-          Chs57->GetObjRuleListAtLatLon(zlat, zlon, SelectRadius, &GetVP());
-    else if (target_plugin_chart)
-      pi_rule_list = g_pi_manager->GetPlugInObjRuleListAtLatLon(
-          target_plugin_chart, zlat, zlon, SelectRadius, GetVP());
+    clear_unique_ptr<ListOfObjRazRules> rule_list;
+    clear_unique_ptr<ListOfObjRazRules> overlay_rule_list;
+    clear_unique_ptr<ListOfPI_S57Obj> pi_rule_list;
 
-    ListOfObjRazRules *overlay_rule_list = NULL;
+    if (Chs57)
+      rule_list.reset(
+          Chs57->GetObjRuleListAtLatLon(zlat, zlon, SelectRadius, &GetVP()));
+    else if (target_plugin_chart)
+      pi_rule_list.reset(g_pi_manager->GetPlugInObjRuleListAtLatLon(
+          target_plugin_chart, zlat, zlon, SelectRadius, GetVP()));
+
     ChartBase *overlay_chart = GetOverlayChartAtCursor();
     s57chart *CHs57_Overlay = dynamic_cast<s57chart *>(overlay_chart);
 
     if (CHs57_Overlay) {
-      overlay_rule_list = CHs57_Overlay->GetObjRuleListAtLatLon(
-          zlat, zlon, SelectRadius, &GetVP());
+      overlay_rule_list.reset(CHs57_Overlay->GetObjRuleListAtLatLon(
+          zlat, zlon, SelectRadius, &GetVP()));
     }
 
     if (!lightsVis) SetShowENCLights(false);
@@ -10689,7 +10716,7 @@ void ChartCanvas::ShowObjectQueryWindow(int x, int y, float zlat, float zlon) {
     if (wxFONTSTYLE_ITALIC == dFont->GetStyle()) objText += "<i>";
 
     if (overlay_rule_list && CHs57_Overlay) {
-      objText << CHs57_Overlay->CreateObjDescriptions(overlay_rule_list);
+      objText << CHs57_Overlay->CreateObjDescriptions(overlay_rule_list.get());
       objText << "<hr noshade>";
     }
 
@@ -10706,10 +10733,15 @@ void ChartCanvas::ShowObjectQueryWindow(int x, int y, float zlat, float zlon) {
     }
 
     if (Chs57)
-      objText << Chs57->CreateObjDescriptions(rule_list);
+      objText << Chs57->CreateObjDescriptions(rule_list.get());
     else if (target_plugin_chart)
       objText << g_pi_manager->CreateObjDescriptions(target_plugin_chart,
-                                                     pi_rule_list);
+                                                     pi_rule_list.get());
+
+    if (overlay_rule_list && CHs57_Overlay) {
+      objText << CHs57_Overlay->CreateObjDescriptions(overlay_rule_list.get());
+      objText << "<hr noshade>";
+    }
 
     if (wxFONTSTYLE_ITALIC == dFont->GetStyle()) objText << "</i>";
 
@@ -10728,30 +10760,35 @@ void ChartCanvas::ShowObjectQueryWindow(int x, int y, float zlat, float zlon) {
       file.Normalize();
       file.Assign(file.GetPath(), "");
       wxDir dir(file.GetFullPath());
-      wxString filename;
-      bool cont = dir.GetFirst(&filename, "", wxDIR_FILES);
-      while (cont) {
-        file.Assign(dir.GetNameWithSep().append(filename));
-        wxString FormatString =
-            "<td valign=top><font size=-2><a "
-            "href=\"%s\">%s</a></font></td>";
-        if (g_ObjQFileExt.Find(file.GetExt().Lower()) != wxNOT_FOUND) {
-          filenameOK = file.GetFullPath();  // remember last valid name
-          // we are making a 3 columns table. New row only every third file
-          if (3 * ((int)filecount / 3) == filecount)
-            FormatString.Prepend("<tr>");  // new row
-          else
-            FormatString.Prepend(
-                "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>");  // an empty
-                                                            // spacer column
+      if (dir.IsOpened()) {
+        wxString filename;
+        bool cont = dir.GetFirst(&filename, "", wxDIR_FILES);
+        while (cont) {
+          file.Assign(dir.GetNameWithSep().append(filename));
+          wxString FormatString =
+              "<td valign=top><font size=-2><a "
+              "href=\"%s\">%s</a></font></td>";
+          if (g_ObjQFileExt.Find(file.GetExt().Lower()) != wxNOT_FOUND) {
+            filenameOK = file.GetFullPath();  // remember last valid name
+            // we are making a 3 columns table. New row only every third file
+            if (3 * ((int)filecount / 3) == filecount)
+              FormatString.Prepend("<tr>");  // new row
+            else
+              FormatString.Prepend(
+                  "<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp</td>");  // an empty
+                                                              // spacer column
 
-          AddFiles << wxString::Format(FormatString, file.GetFullPath(),
-                                       file.GetFullName());
-          filecount++;
+            AddFiles << wxString::Format(FormatString, file.GetFullPath(),
+                                         file.GetFullName());
+            filecount++;
+          }
+          cont = dir.GetNext(&filename);
         }
-        cont = dir.GetNext(&filename);
+        objText << AddFiles << "</table>";
+      } else {
+        MESSAGE_LOG << "Could not find shape file folder: "
+                    << file.GetFullPath();
       }
-      objText << AddFiles << "</table>";
     }
     objText << "</font>";
     objText << "</body></html>";
@@ -10766,15 +10803,6 @@ void ChartCanvas::ShowObjectQueryWindow(int x, int y, float zlat, float zlon) {
       wxHtmlLinkEvent hle(1, hli);
       g_pObjectQueryDialog->OnHtmlLinkClicked(hle);
     }
-
-    if (rule_list) rule_list->Clear();
-    delete rule_list;
-
-    if (overlay_rule_list) overlay_rule_list->Clear();
-    delete overlay_rule_list;
-
-    if (pi_rule_list) pi_rule_list->Clear();
-    delete pi_rule_list;
 
     SetCursor(wxCURSOR_ARROW);
   }

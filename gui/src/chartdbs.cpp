@@ -1838,8 +1838,7 @@ bool ChartDatabase::Update(ArrayOfCDI &dir_array, bool bForce,
     }
     if (dir_info.fullpath.Find("OSMSHP") != wxNOT_FOUND) {
       if (!wxDir::FindFirst(dir_info.fullpath, "basemap_*.shp").empty()) {
-        gWorldShapefileLocation =
-            dir_info.fullpath + wxFileName::GetPathSeparator();
+        gWorldShapefileLocation = wxEmptyString;
         gShapeBasemap.Reset();
       }
     }

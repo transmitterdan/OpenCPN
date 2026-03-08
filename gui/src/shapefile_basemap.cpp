@@ -217,11 +217,20 @@ void ShapeBaseChartSet::Reset() {
   if (gWorldShapefileLocation.empty()) {
     basemap_dir = g_Platform->GetSharedDataDir();
     basemap_dir.Append("basemap_shp");
+    if (wxDirExists(basemap_dir))
+      gWorldShapefileLocation = g_Platform->NormalizePath(basemap_dir);
   } else {
     basemap_dir = gWorldShapefileLocation;
   }
 
-  LoadBasemaps(basemap_dir.ToStdString());
+  if (wxDirExists(basemap_dir)) {
+    LoadBasemaps(basemap_dir.ToStdString());
+  } else {
+    MESSAGE_LOG << "Basemap directory is missing: " << basemap_dir;
+  }
+  if (!_loaded)
+    MESSAGE_LOG << "Basemap directory '" << basemap_dir
+                << "' does not contain valid shape files.";
 }
 void ShapeBaseChartSet::LoadBasemaps(const std::string &dir) {
   _loaded = false;
@@ -232,32 +241,36 @@ void ShapeBaseChartSet::LoadBasemaps(const std::string &dir) {
                             300000000, land_color);
     c._dmod = 10;
     _basemap_map.insert(std::make_pair(Quality::crude, c));
+    _loaded = true;
   }
 
   if (fs::exists(ShapeBaseChart::ConstructPath(dir, "low"))) {
     _basemap_map.insert(std::make_pair(
         Quality::low, ShapeBaseChart(ShapeBaseChart::ConstructPath(dir, "low"),
                                      15000000, land_color)));
+    _loaded = true;
   }
   if (fs::exists(ShapeBaseChart::ConstructPath(dir, "medium"))) {
     _basemap_map.insert(std::make_pair(
         Quality::medium,
         ShapeBaseChart(ShapeBaseChart::ConstructPath(dir, "medium"), 1000000,
                        land_color)));
+    _loaded = true;
   }
   if (fs::exists(ShapeBaseChart::ConstructPath(dir, "high"))) {
     _basemap_map.insert(std::make_pair(
         Quality::high,
         ShapeBaseChart(ShapeBaseChart::ConstructPath(dir, "high"), 300000,
                        land_color)));
+    _loaded = true;
   }
   if (fs::exists(ShapeBaseChart::ConstructPath(dir, "full"))) {
     _basemap_map.insert(std::make_pair(
         Quality::full,
         ShapeBaseChart(ShapeBaseChart::ConstructPath(dir, "full"), 10000,
                        land_color)));
+    _loaded = true;
   }
-  _loaded = true;
   // if(_basemap_map.size())
   // LowestQualityBaseMap().LoadSHP();
 }

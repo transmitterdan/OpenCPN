@@ -453,6 +453,8 @@ if [%ocpn_clean%]==[1] (
 if [%ocpn_debug%]==[1] (
   if not exist "%OCPN_DIR%\build\.Debug" (
     mkdir "%OCPN_DIR%\build\.Debug"
+  )
+  if exist "%OCPN_DIR%\build\.Debug" (
     if [%ocpn_package%]==[1] (mkdir "%OCPN_DIR%\build\.Debug\.Pack")
     if [%ocpn_cmake%]==[1] (mkdir "%OCPN_DIR%\build\.Debug\.CMake")
   )
