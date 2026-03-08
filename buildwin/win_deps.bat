@@ -10,6 +10,29 @@ if errorlevel 1 (
   set "PATH=%PATH%;C:\Program Files (x86)\Poedit\Gettexttools\bin"
 )
 
+REM --- Detect GetText installation ---
+SET "GETTEXT_DIR=C:\ProgramData\chocolatey\lib\gettext\tools\bin"
+SET "MSGFMT_EXE=%GETTEXT_DIR%\msgfmt.exe"
+
+IF NOT EXIST "%MSGFMT_EXE%" (
+    echo [INFO] GetText not found. Installing via Chocolatey...
+    choco install gettext -y --no-progress
+)
+
+REM --- Ensure PATH includes the GetText bin directory ---
+IF EXIST "%GETTEXT_DIR%" (
+    SET "PATH=%GETTEXT_DIR%;%PATH%"
+) ELSE (
+    echo [ERROR] Expected GetText directory not found: %GETTEXT_DIR%
+    exit /b 1
+)
+
+REM --- Verify tools are actually available ---
+msgfmt --version  >nul 2>&1 || (echo [ERROR] msgfmt missing after install & exit /b 1)
+xgettext --version >nul 2>&1 || (echo [ERROR] xgettext missing after install & exit /b 1)
+
+echo [OK] GetText tools installed and available in PATH.
+
 :: Install git if required.
 git --version >nul 2>&1
 if errorlevel 1 (
