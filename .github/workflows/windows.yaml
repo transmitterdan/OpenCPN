@@ -52,7 +52,10 @@ jobs:
         shell: cmd
         env:
           VSCMD_DEBUG: 3
-        run: ci\appveyor.bat
+        run: |
+          echo CD = %CD%
+          type .\ci\appveyor.bat
+          ci\appveyor.bat
 
       - name: "Check build results"
         shell: bash
