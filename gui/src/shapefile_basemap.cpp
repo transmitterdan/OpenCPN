@@ -228,9 +228,10 @@ void ShapeBaseChartSet::Reset() {
   } else {
     MESSAGE_LOG << "Basemap directory is missing: " << basemap_dir;
   }
-  if (!_loaded)
+  if (!_loaded) {
     MESSAGE_LOG << "Basemap directory '" << basemap_dir
                 << "' does not contain valid shape files.";
+  }
 }
 void ShapeBaseChartSet::LoadBasemaps(const std::string &dir) {
   _loaded = false;
