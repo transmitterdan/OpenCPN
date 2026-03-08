@@ -18,14 +18,11 @@ IF NOT EXIST "%MSGFMT_EXE%" (
     echo [INFO] GetText not found. Installing via Chocolatey...
     choco install gettext -y --no-progress
 )
+refreshenv
+where xgettext
 
-REM --- Ensure PATH includes the GetText bin directory ---
-IF EXIST "%GETTEXT_DIR%" (
-    SET "PATH=%GETTEXT_DIR%;%PATH%"
-) ELSE (
-    echo [ERROR] Expected GetText directory not found: %GETTEXT_DIR%
-    exit /b 1
-)
+where xgettext >nul 2>&1 || (echo [ERROR] xgettext missing after install & exit /b 1)
+where msgfmt   >nul 2>&1 || (echo [ERROR] msgfmt missing after install & exit /b 1)
 
 REM --- Verify tools are actually available ---
 msgfmt --version  >nul 2>&1 || (echo [ERROR] msgfmt missing after install & exit /b 1)
