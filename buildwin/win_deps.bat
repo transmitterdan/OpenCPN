@@ -7,7 +7,7 @@ setlocal enabledelayedexpansion
 msgmerge --version >nul 2>&1
 if errorlevel 1 (
   choco install -y poedit
-  set "PATH=%PATH%;C:\%PROGRAMFILES%\Poedit\Gettexttools\bin"
+  set "PATH=%PATH%;%PROGRAMFILES%\Poedit\Gettexttools\bin"
 )
 
 :: Install git if required.
