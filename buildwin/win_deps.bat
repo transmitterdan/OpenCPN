@@ -84,12 +84,12 @@ IF NOT EXIST "%MSGFMT_EXE%" (
 
 echo Chocolatey root: %ChocolateyInstall%
 echo GetText package dir: %ChocolateyInstall%\lib\gettext
-where /R "%ChocolateyInstall%\lib\gettext" msgfmt.exe
-where /R "%ChocolateyInstall%\lib\gettext" xgettext.exe
+where /R "%ChocolateyInstall%" msgfmt.exe
+where /R "%ChocolateyInstall%" xgettext.exe
 
 where /R \ msgfmt.exe
-where /R %PROGRAMFILES% msgfmt.exe
-where /R %PROGRAMFILES(x86)% msgfmt.exe
+where /R "%PROGRAMFILES%" msgfmt.exe
+where /R "%PROGRAMFILES(x86)%" msgfmt.exe
 
 refreshenv
 
