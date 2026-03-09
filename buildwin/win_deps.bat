@@ -87,7 +87,7 @@ echo GetText package dir: %ChocolateyInstall%\lib\gettext
 where /R "%ChocolateyInstall%" msgfmt.exe
 where /R "%ChocolateyInstall%" xgettext.exe
 
-where /R \ msgfmt.exe
+where /R C:\ msgfmt.exe
 where /R "%PROGRAMFILES%" msgfmt.exe
 where /R "%PROGRAMFILES(x86)%" msgfmt.exe
 
