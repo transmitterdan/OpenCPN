@@ -7,7 +7,7 @@ setlocal enabledelayedexpansion
 msgmerge --version >nul 2>&1
 if errorlevel 1 (
   choco install -y poedit
-  set "PATH=%PATH%;C:\Program Files (x86)\Poedit\Gettexttools\bin"
+  set "PATH=%PATH%;C:\%PROGRAMFILES%\Poedit\Gettexttools\bin"
 )
 
 :: Install git if required.
@@ -81,30 +81,12 @@ IF NOT EXIST "%MSGFMT_EXE%" (
     echo [INFO] GetText not found. Installing via Chocolatey...
     choco install gettext -y --verbose
 )
-refreshenv
 
 
-echo Chocolatey root: %ChocolateyInstall%
-echo GetText package dir: %ChocolateyInstall%\lib\gettext
-where /R "%ChocolateyInstall%" msgfmt.exe
-where /R "%ChocolateyInstall%" xgettext.exe
-
-where /R C:\ msgfmt.exe
 where /R "%PROGRAMFILES%" msgfmt.exe
 where /R "%PROGRAMFILES(x86)%" msgfmt.exe
 
 @echo PATH=%PATH%
 
-where msgfmt
-where GetText
-
-where xgettext >nul 2>&1 || (echo [ERROR] xgettext missing after install & exit /b 1)
-where msgfmt   >nul 2>&1 || (echo [ERROR] msgfmt missing after install & exit /b 1)
-
-REM --- Verify tools are actually available ---
-msgfmt --version  >nul 2>&1 || (echo [ERROR] msgfmt missing after install & exit /b 1)
-xgettext --version >nul 2>&1 || (echo [ERROR] xgettext missing after install & exit /b 1)
-
-echo [OK] GetText tools installed and available in PATH.
 
 exit /b 0
