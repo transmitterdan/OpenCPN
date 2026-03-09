@@ -81,6 +81,8 @@ IF NOT EXIST "%MSGFMT_EXE%" (
     echo [INFO] GetText not found. Installing via Chocolatey...
     choco install gettext -y --verbose
 )
+refreshenv
+
 
 echo Chocolatey root: %ChocolateyInstall%
 echo GetText package dir: %ChocolateyInstall%\lib\gettext
@@ -90,8 +92,6 @@ where /R "%ChocolateyInstall%" xgettext.exe
 where /R C:\ msgfmt.exe
 where /R "%PROGRAMFILES%" msgfmt.exe
 where /R "%PROGRAMFILES(x86)%" msgfmt.exe
-
-refreshenv
 
 @echo PATH=%PATH%
 
