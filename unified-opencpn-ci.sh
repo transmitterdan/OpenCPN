@@ -84,6 +84,8 @@ restore_master() {
   echo "------------------------------------------------------------"
 
   current_branch=$(git rev-parse --abbrev-ref HEAD)
+  echo "Current branch detected: $current_branch"
+  echo
 
   echo "Setting CLOUDSMITH_REPO for restore mode..."
   gh secret set CLOUDSMITH_REPO --repo transmitterdan/OpenCPN --body "dan-dickey/opencpn-github"
