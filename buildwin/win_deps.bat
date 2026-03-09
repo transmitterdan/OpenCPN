@@ -8,13 +8,15 @@ msgmerge --version >nul 2>&1
 if errorlevel 1 (
   choco install -y poedit
   set "PATH=%PATH%;%PROGRAMFILES%\Poedit\Gettexttools\bin"
+  msgmerge --version
 )
 
 :: Install git if required.
 git --version >nul 2>&1
 if errorlevel 1 (
   choco install -y git
-  set "PATH=%PATH%;C:\Program Files\Git\bin"
+  set "PATH=%PATH%;%PROGRAMFILES%\Git\bin"
+  git --version
 )
 
 :: install wget as required
@@ -73,20 +75,5 @@ wget -nv -O !CACHE_DIR!\QuickStartGuide.zip ^
 if not exist %CACHE_DIR%\..\data\doc\local (mkdir %CACHE_DIR%\..\data\doc\local)
 7z x -y !CACHE_DIR!\QuickStartGuide.zip  -o%CACHE_DIR%\..\data\doc\local
 
-REM --- Detect GetText installation ---
-SET "GETTEXT_DIR=C:\ProgramData\chocolatey\lib\gettext\tools\bin"
-SET "MSGFMT_EXE=%GETTEXT_DIR%\msgfmt.exe"
 
-IF NOT EXIST "%MSGFMT_EXE%" (
-    echo [INFO] GetText not found. Installing via Chocolatey...
-    choco install gettext -y --verbose
-)
-
-
-where /R "%PROGRAMFILES%" msgfmt.exe
-where /R "%PROGRAMFILES(x86)%" msgfmt.exe
-
-@echo PATH=%PATH%
-
-
-exit /b 0
+set PATH=%PATH%
