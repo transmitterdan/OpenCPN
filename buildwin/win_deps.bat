@@ -81,4 +81,6 @@ if not exist %CACHE_DIR%\..\data\doc\local (mkdir %CACHE_DIR%\..\data\doc\local)
 7z x -y !CACHE_DIR!\QuickStartGuide.zip  -o%CACHE_DIR%\..\data\doc\local
 
 
-set PATH=%PATH%
+@echo PATH=%PATH%
+
+@echo VCINSTALLDIR=%VCINSTALLDIR%
