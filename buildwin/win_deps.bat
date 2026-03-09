@@ -7,20 +7,25 @@ setlocal enabledelayedexpansion
 msgmerge --version >nul 2>&1
 if errorlevel 1 (
   choco install -y poedit
-  set "PATH=%PATH%;%PROGRAMFILES%\Poedit\Gettexttools\bin"
-  msgmerge --version
 )
+@echo PATH=%PATH%
+msgmerge --version
+set "PATH=%PROGRAMFILES%\Poedit\Gettexttools\bin;%PATH%"
+msgmerge --version
 
 :: Install git if required.
 git --version >nul 2>&1
 if errorlevel 1 (
   choco install -y git
-  set "PATH=%PATH%;%PROGRAMFILES%\Git\bin"
-  git --version
 )
+@echo PATH=%PATH%
+git --version
+set "%PROGRAMFILES%\Git\bin;PATH=%PATH%"
+git --version
 
 :: install wget as required
 wget --version >nul 2>&1 || choco install -y wget
+@echo PATH=%PATH%
 
 :: If needed, download wxWidgets binary build.
 set "CACHE_DIR=%~dp0..\cache"
