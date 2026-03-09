@@ -83,6 +83,8 @@ restore_master() {
   echo " OPERATION: Restore real master from upstream/master"
   echo "------------------------------------------------------------"
 
+  current_branch=$(git rev-parse --abbrev-ref HEAD)
+
   echo "Setting CLOUDSMITH_REPO for restore mode..."
   gh secret set CLOUDSMITH_REPO --repo transmitterdan/OpenCPN --body "dan-dickey/opencpn-github"
   echo "CLOUDSMITH_REPO updated for restore mode."
@@ -99,6 +101,9 @@ restore_master() {
 
   echo "Force pushing clean master back to origin/master..."
   git push origin master --force
+
+  echo "Going back to $current_branch..."
+  git checkout "$current_branch"
 
   echo
   echo "Master successfully restored."

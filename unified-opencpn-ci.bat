@@ -71,6 +71,11 @@ echo ------------------------------------------------------------
 echo  OPERATION: Restore real master from upstream/master
 echo ------------------------------------------------------------
 
+REM Detect current branch
+for /f "delims=" %%b in ('git rev-parse --abbrev-ref HEAD') do set CURRENT_BRANCH=%%b
+echo Current branch detected: %CURRENT_BRANCH%
+echo.
+
 REM Update GitHub secret for real master builds
 echo Setting CLOUDSMITH_REPO for restore mode...
 gh secret set CLOUDSMITH_REPO --repo transmitterdan/OpenCPN --body "dan-dickey/opencpn-github"
@@ -92,11 +97,12 @@ REM Push clean master back to origin
 echo Force pushing clean master back to origin/master...
 git push origin master --force
 
+echo Going back to %CURRENT_BRANCH%..."
+git checkout %CURRENT_BRANCH%
+
 echo.
 echo Master successfully restored.
 goto :eof
-
-
 
 :usage
 echo.
