@@ -1890,9 +1890,9 @@ bool chartdldr_pi::ExtractLibArchiveFiles(const wxString &aArchiveFile,
     goto cleanup;
   }
 #else
-  wxCharBuffer archiveFileUtf8 = aArchiveFile.ToUTF8();
-  if (!archiveFileUtf8 || !archiveFileUtf8.data() ||
-      archive_read_open_filename(a, archiveFileUtf8.data(), 10240) !=
+  wxCharBuffer archiveFilePath = aArchiveFile.mb_str();
+  if (!archiveFilePath || !archiveFilePath.data() || !*archiveFilePath.data() ||
+      archive_read_open_filename(a, archiveFilePath.data(), 10240) !=
           ARCHIVE_OK) {
     wxLogError(wxString::Format("Chartdldr_pi: LibArchive open error: %s",
                                 archive_error_string(a)));
@@ -1917,15 +1917,18 @@ bool chartdldr_pi::ExtractLibArchiveFiles(const wxString &aArchiveFile,
     }
 
     wxString entryName;
+#ifdef _WIN32
     const char *rawUtf8 = archive_entry_pathname_utf8(entry);
-
     if (rawUtf8 && *rawUtf8) {
       entryName = wxString::FromUTF8(rawUtf8);
-    }
-#ifdef _WIN32
-    else {
+    } else {
       const wchar_t *rawWide = archive_entry_pathname_w(entry);
       if (rawWide && *rawWide) entryName = wxString(rawWide);
+    }
+#else
+    const char *rawPath = archive_entry_pathname(entry);
+    if (rawPath && *rawPath) {
+      entryName = wxString::From8BitData(rawPath);
     }
 #endif
 
@@ -1956,13 +1959,13 @@ bool chartdldr_pi::ExtractLibArchiveFiles(const wxString &aArchiveFile,
 #ifdef _WIN32
     archive_entry_copy_pathname_w(entry, outputPath.wc_str());
 #else
-    wxCharBuffer outputPathUtf8 = outputPath.ToUTF8();
-    if (!outputPathUtf8 || !outputPathUtf8.data() || !*outputPathUtf8.data()) {
-      wxLogWarning(_T("Skipping archive entry with invalid UTF-8 pathname: ") +
+    wxCharBuffer outputPathMb = outputPath.mb_str();
+    if (!outputPathMb || !outputPathMb.data() || !*outputPathMb.data()) {
+      wxLogWarning(_T("Skipping archive entry with invalid pathname: ") +
                    outputPath);
       continue;
     }
-    archive_entry_copy_pathname_utf8(entry, outputPathUtf8.data());
+    archive_entry_copy_pathname(entry, outputPathMb.data());
 #endif
 
     if (aMTime.IsValid()) {
