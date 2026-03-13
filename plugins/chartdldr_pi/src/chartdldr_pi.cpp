@@ -1890,13 +1890,13 @@ bool chartdldr_pi::ExtractLibArchiveFiles(const wxString &aArchiveFile,
     goto cleanup;
   }
 #else
-  wxCharBuffer archiveFilePath = aArchiveFile.mb_str();
-  if (!archiveFilePath || !archiveFilePath.data() || !*archiveFilePath.data() ||
-      archive_read_open_filename(a, archiveFilePath.data(), 10240) !=
-          ARCHIVE_OK) {
-    wxLogError(wxString::Format("Chartdldr_pi: LibArchive open error: %s",
-                                archive_error_string(a)));
-    goto cleanup;
+  {
+    if (archive_read_open_filename(a, aArchiveFile.mb_str().data(), 10240) !=
+        ARCHIVE_OK) {
+      wxLogError(wxString::Format("Chartdldr_pi: LibArchive open error: %s",
+                                  archive_error_string(a)));
+      goto cleanup;
+    }
   }
 #endif
 
@@ -1959,13 +1959,15 @@ bool chartdldr_pi::ExtractLibArchiveFiles(const wxString &aArchiveFile,
 #ifdef _WIN32
     archive_entry_copy_pathname_w(entry, outputPath.wc_str());
 #else
-    wxCharBuffer outputPathMb = outputPath.mb_str();
-    if (!outputPathMb || !outputPathMb.data() || !*outputPathMb.data()) {
-      wxLogWarning(_T("Skipping archive entry with invalid pathname: ") +
-                   outputPath);
-      continue;
+    {
+      wxCharBuffer outputPathMb = outputPath.mb_str();
+      if (!outputPathMb || !outputPathMb.data() || !*outputPathMb.data()) {
+        wxLogWarning(_T("Skipping archive entry with invalid pathname: ") +
+                     outputPath);
+        continue;
+      }
+      archive_entry_copy_pathname(entry, outputPathMb.data());
     }
-    archive_entry_copy_pathname(entry, outputPathMb.data());
 #endif
 
     if (aMTime.IsValid()) {
@@ -2027,6 +2029,7 @@ cleanup:
 #endif
 }
 #endif  // DLDR_USE_LIBARCHIVE
+
 #if defined(CHARTDLDR_RAR_UNARR) || !defined(DLDR_USE_LIBARCHIVE)
 ar_archive *ar_open_any_archive(ar_stream *stream, const char *fileext) {
   ar_archive *ar = ar_open_rar_archive(stream);
