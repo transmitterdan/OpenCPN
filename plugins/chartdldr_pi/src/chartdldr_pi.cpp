@@ -1959,15 +1959,7 @@ bool chartdldr_pi::ExtractLibArchiveFiles(const wxString &aArchiveFile,
 #ifdef _WIN32
     archive_entry_copy_pathname_w(entry, outputPath.wc_str());
 #else
-    {
-      wxCharBuffer outputPathMb = outputPath.mb_str();
-      if (!outputPathMb || !outputPathMb.data() || !*outputPathMb.data()) {
-        wxLogWarning(_T("Skipping archive entry with invalid pathname: ") +
-                     outputPath);
-        continue;
-      }
-      archive_entry_copy_pathname(entry, outputPathMb.data());
-    }
+    archive_entry_copy_pathname(entry, outputPath.mb_str().data());
 #endif
 
     if (aMTime.IsValid()) {
