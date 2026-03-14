@@ -1858,9 +1858,6 @@ bool chartdldr_pi::ExtractLibArchiveFiles(const wxString &aArchiveFile,
 #ifdef ARCHIVE_EXTRACT_SECURE_NODOTDOT
   flags |= ARCHIVE_EXTRACT_SECURE_NODOTDOT;
 #endif
-#ifdef ARCHIVE_EXTRACT_SECURE_NOABSOLUTEPATHS
-  flags |= ARCHIVE_EXTRACT_SECURE_NOABSOLUTEPATHS;
-#endif
 #ifdef ARCHIVE_EXTRACT_SECURE_SYMLINKS
   flags |= ARCHIVE_EXTRACT_SECURE_SYMLINKS;
 #endif
@@ -1928,7 +1925,10 @@ bool chartdldr_pi::ExtractLibArchiveFiles(const wxString &aArchiveFile,
 #else
     const char *rawPath = archive_entry_pathname(entry);
     if (rawPath && *rawPath) {
-      entryName = wxString::From8BitData(rawPath);
+      entryName = wxString::FromUTF8(rawPath);
+      if (entryName.IsEmpty()) {
+        entryName = wxString::From8BitData(rawPath);
+      }
     }
 #endif
 
@@ -1959,7 +1959,7 @@ bool chartdldr_pi::ExtractLibArchiveFiles(const wxString &aArchiveFile,
 #ifdef _WIN32
     archive_entry_copy_pathname_w(entry, outputPath.wc_str());
 #else
-    archive_entry_copy_pathname(entry, outputPath.mb_str().data());
+    archive_entry_copy_pathname(entry, outputPath.fn_str().data());
 #endif
 
     if (aMTime.IsValid()) {

@@ -146,19 +146,23 @@ void SendMessageToAllPlugins(const wxString& message_id,
 }
 
 void SendJSONMessageToAllPlugins(const wxString& message_id, wxJSONValue v) {
+  static int logCount = 0;
   wxJSONWriter w(wxJSONWRITER_NO_LINEFEEDS | wxJSONWRITER_STYLED);
   wxString out;
   w.Write(v, out);
   auto msg =
       std::make_shared<PluginMsg>(message_id.ToStdString(), out.ToStdString());
   SendMessageToAllPlugins(message_id, out);
-  wxLogDebug(message_id);
-  wxLogDebug(out);
-  LogMessage(msg, "Json message ");
+  if (logCount++ < 1000) {
+    wxLogDebug(message_id);
+    wxLogDebug(out);
+    LogMessage(msg, "Json message ");
+  }
 }
 
 void SendAISSentenceToAllPlugIns(const wxString& sentence) {
   // decouple 'const wxString &' to keep interface.
+  static int logCount = 0;
   wxString decouple_sentence(sentence);
   auto plugin_array = PluginLoader::GetInstance()->GetPlugInArray();
   for (unsigned int i = 0; i < plugin_array->GetCount(); i++) {
@@ -168,9 +172,11 @@ void SendAISSentenceToAllPlugIns(const wxString& sentence) {
         pic->m_pplugin->SetAISSentence(decouple_sentence);
     }
   }
-  auto msg =
-      std::make_shared<PluginMsg>("AIS", JoinLines(sentence.ToStdString()));
-  LogMessage(msg, "AIS data ");
+  if (logCount++ < 1000) {
+    auto msg =
+        std::make_shared<PluginMsg>("AIS", JoinLines(sentence.ToStdString()));
+    LogMessage(msg, "AIS data ");
+  }
 }
 
 void SendPositionFixToAllPlugIns(GenericPosDatEx* ppos) {

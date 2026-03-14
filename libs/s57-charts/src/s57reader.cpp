@@ -26,6 +26,7 @@
  */
 
 #include <assert.h>
+#include <wx/log.h>
 #include "gdal/cpl_conv.h"
 #include "gdal/cpl_string.h"
 #include "gdal/ogr_api.h"
@@ -2426,6 +2427,7 @@ int S57Reader::FindAndApplyUpdates(const char *pszPath)
       if (update_ret) {
         ret_code = update_ret;
         bSuccess = false;     // Stop the loop
+        wxLogDebug("Abandoning further updates: %s", CPLGetLastErrorMsg());
       }
     }
   }
