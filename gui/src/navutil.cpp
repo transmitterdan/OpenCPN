@@ -2282,9 +2282,7 @@ void MyConfig::UpdateSettings() {
   Write("GPXIODir", g_gpx_path);
   Write("TCDataDir", g_TCData_Dir);
   Write("BasemapDir", g_Platform->NormalizePath(gWorldMapLocation));
-  if (gWorldShapefileLocation.IsEmpty())
-    Write("BaseShapefileDir", gWorldShapefileLocation);
-  else
+  if (gWorldShapefileLocation.Length())
     Write("BaseShapefileDir",
           g_Platform->NormalizePath(gWorldShapefileLocation));
   Write("pluginInstallDir", g_Platform->NormalizePath(g_winPluginDir));
