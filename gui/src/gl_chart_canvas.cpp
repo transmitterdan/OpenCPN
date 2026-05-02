@@ -235,8 +235,7 @@ bool g_true_zoom;
 #if defined(USE_ANDROID_GLES2) || defined(ocpnUSE_GLSL)
 static int s_tess_vertex_idx;
 static int s_tess_vertex_idx_this;
-static int s_tess_buf_len;
-static GLfloat *s_tess_work_buf;
+std::vector<GLfloat> s_tess_work_buf;
 static GLenum s_tess_mode;
 static int s_nvertex;
 static ViewPort s_tessVP;
@@ -2755,18 +2754,35 @@ static void combineCallbackD(GLdouble coords[3], GLdouble *vertex_data[4],
 
 #if defined(USE_ANDROID_GLES2) || defined(ocpnUSE_GLSL)
 void vertexCallbackD_GLSL(GLvoid *vertex) {
-  // Grow the work buffer if necessary
-  if (s_tess_vertex_idx > s_tess_buf_len - 8) {
-    int new_buf_len = s_tess_buf_len + 100;
-    GLfloat *tmp = s_tess_work_buf;
+  static int nBufGrow = 1;
+  // Grow the work buffer if necessary, but increase the growth each time, to
+  // avoid too many reallocs.
+  if ((s_tess_vertex_idx + 2) > s_tess_work_buf.size()) {
+    const int primary_growth = 1000 * nBufGrow++;
+    const int primary_new_len = s_tess_work_buf.size() + primary_growth;
 
-    s_tess_work_buf =
-        (GLfloat *)realloc(s_tess_work_buf, new_buf_len * sizeof(GLfloat));
-    if (NULL == s_tess_work_buf) {
-      free(tmp);
-      tmp = NULL;
-    } else
-      s_tess_buf_len = new_buf_len;
+    try {
+      s_tess_work_buf.resize(primary_new_len);
+      wxLogDebug("Increase s_tess_work_buf size to %d GLfloats.",
+                 s_tess_work_buf.size());
+    } catch (const std::bad_alloc &) {
+      // Retry with the smallest useful growth for this callback path.
+      // We require at least 2 spare floats due to the guard condition.
+      const int minimal_new_len = s_tess_work_buf.size() + 2;
+
+      try {
+        s_tess_work_buf.resize(minimal_new_len);
+        wxLogWarning("Fallback: increase s_tess_work_buf size to %d GLfloats.",
+                     s_tess_work_buf.size());
+      } catch (const std::bad_alloc &) {
+        wxLogError(
+            "OpenGL tessellation buffer realloc failed: "
+            "idx=%d len=%d primary_new_len=%d fallback_new_len=%d",
+            s_tess_vertex_idx, s_tess_work_buf.size(), primary_new_len,
+            minimal_new_len);
+        throw;  // Intentionally crash if fallback allocation also fails.
+      }
+    }
   }
 
   GLdouble *pointer = (GLdouble *)vertex;
