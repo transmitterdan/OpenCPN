@@ -2755,9 +2755,10 @@ static void combineCallbackD(GLdouble coords[3], GLdouble *vertex_data[4],
 
 #if defined(USE_ANDROID_GLES2) || defined(ocpnUSE_GLSL)
 void vertexCallbackD_GLSL(GLvoid *vertex) {
+  static int nBufGrow = 1;
   // Grow the work buffer if necessary
   if (s_tess_vertex_idx > s_tess_buf_len - 8) {
-    int new_buf_len = s_tess_buf_len + 100;
+    int new_buf_len = s_tess_buf_len + 1000 * nBufGrow++;
     GLfloat *tmp = s_tess_work_buf;
 
     s_tess_work_buf =
@@ -2765,8 +2766,10 @@ void vertexCallbackD_GLSL(GLvoid *vertex) {
     if (NULL == s_tess_work_buf) {
       free(tmp);
       tmp = NULL;
-    } else
+    } else {
       s_tess_buf_len = new_buf_len;
+      wxLogMessage("Increase s_tess_buf_len to %d GLfloats.", s_tess_buf_len);
+    }
   }
 
   GLdouble *pointer = (GLdouble *)vertex;
