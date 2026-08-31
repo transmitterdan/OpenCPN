@@ -31,6 +31,30 @@
 
 // S57ClassRegistrar *OGRS57DataSource::poRegistrar = NULL;
 
+static bool IsSencPath(const char *pszPath) {
+  if (pszPath == NULL) return false;
+
+  const char *pszSegment = pszPath;
+  while (*pszSegment != '\0') {
+    while (*pszSegment == '/' || *pszSegment == '\\') pszSegment++;
+
+    if (*pszSegment == '\0') break;
+
+    const char *pszSegmentEnd = pszSegment;
+    while (*pszSegmentEnd != '\0' && *pszSegmentEnd != '/' &&
+           *pszSegmentEnd != '\\')
+      pszSegmentEnd++;
+
+    if (pszSegmentEnd - pszSegment == 4 &&
+        EQUALN(pszSegment, "SENC", 4))
+      return true;
+
+    pszSegment = pszSegmentEnd;
+  }
+
+  return false;
+}
+
 /************************************************************************/
 /*                          OGRS57DataSource()                          */
 /************************************************************************/
@@ -85,6 +109,11 @@ OGRS57DataSource::~OGRS57DataSource()
     delete papoModules[i];
   }
   CPLFree(papoModules);
+
+  // Check if file name is in SENC subfolder
+  // If it is then we know it is a cached copy of the original
+  // cell file so we should remove it.
+  if (IsSencPath(pszName)) unlink(pszName);
 
   CPLFree(pszName);
 

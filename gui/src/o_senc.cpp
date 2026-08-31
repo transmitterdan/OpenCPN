@@ -71,9 +71,6 @@ sigjmp_buf env_osenc_ogrf;  // the context saved by sigsetjmp();
 
 static std::mutex m;
 
-static std::vector<std::string> files2Delete;
-static void fileCleanup();
-
 static bool g_OsencVerbose;
 
 /************************************************************************/
@@ -1198,20 +1195,7 @@ int Osenc::ingestCell(OGRS57DataSource *poS57DS, const wxString &FullPath000,
   poReader->SetOptions(papszReaderOptions);
   CSLDestroy(papszReaderOptions);
 
-  files2Delete.push_back(s0_file.ToStdString());
-
   return 0;
-}
-
-void fileCleanup() {
-  for (auto it = files2Delete.begin(); it != files2Delete.end();) {
-    if (wxRemoveFile(wxString::FromUTF8(it->c_str()))) {
-      it = files2Delete.erase(
-          it);  // removed from disk, so remove from retry list
-    } else {
-      ++it;  // keep in vector for later retry
-    }
-  }
 }
 
 int Osenc::ValidateAndCountUpdates(const wxFileName file000,
@@ -1760,7 +1744,6 @@ int Osenc::createSenc200(const wxString &FullPath000,
     //      Create and write the Connected NodeTable
     CreateSENCVectorConnectedTableRecord200(stream, poReader);
   }
-
   //          All done, so clean up
   stream->Close();
   delete m_pOutstream;
@@ -1795,8 +1778,6 @@ int Osenc::createSenc200(const wxString &FullPath000,
 #endif
 
   lockCR.unlock();
-
-  fileCleanup();
 
   return ret_code;
 }
