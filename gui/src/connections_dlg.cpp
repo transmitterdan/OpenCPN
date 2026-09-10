@@ -67,7 +67,7 @@ static wxString UtfArrowDown() { return wxString::FromUTF8(u8"\u25bc"); }
 static wxString UtfArrowRight() { return wxString::FromUTF8(u8"\u25ba"); }
 static wxString UtfFilledCircle() { return wxString::FromUTF8(u8"\u2b24"); }
 
-static const auto TopScrollWindowName = "TopScroll";
+static constexpr auto TopScrollWindowName = "TopScroll";
 
 static const char* kInfoHeader = _("OpenCPN help").c_str();
 static const char* kInfo = _(R"---(
@@ -113,7 +113,7 @@ static std::string BitsToDottedMask(const unsigned bits) {
   return ss.str();
 }
 
-static ConnectionParams* FindConnectionByIface(ConnectionParams* new_cp) {
+static ConnectionParams* FindConnectionByIface(const ConnectionParams* new_cp) {
   for (const auto& cp : TheConnectionParams()) {
     if (cp->Type != new_cp->Type) continue;
     switch (cp->Type) {
@@ -311,7 +311,8 @@ private:
   ColorScheme m_cs;
 };
 
-/** std::sort support: Compare two ConnectionParams w r t given column */
+/** std::sort support: Compare twSetInitialSettingso ConnectionParams w r t
+ * given column */
 class ConnCompare {
 public:
   explicit ConnCompare(int col) : m_col(col) {}
@@ -324,7 +325,7 @@ public:
       case 1:
         return p1->GetCommProtocol() < p2->GetCommProtocol();
       case 2:
-        return p1->GetIOTypeValueStr() < p2->GetIOTypeValueStr();
+        return p1->GetPortDirectionValueStr() < p2->GetPortDirectionValueStr();
       case 3:
         return p1->GetStrippedDSPort() < p2->GetStrippedDSPort();
       default:
@@ -485,7 +486,7 @@ public:
         m_tooltips[row][0] = _("Disabled, click to enable");
       std::string protocol = NavAddr::BusToString((*it)->GetCommProtocol());
       SetCellValue(row, 1, protocol);
-      SetCellValue(row, 2, (*it)->GetIOTypeValueStr());
+      SetCellValue(row, 2, (*it)->GetPortDirectionValueStr());
       SetCellValue(row, 3, (*it)->GetStrippedDSPort());
       m_tooltips[row][3] = (*it)->UserComment;
       SetCellRenderer(row, 5, new BitmapCellRenderer(m_icons.settings, m_cs));
@@ -502,7 +503,8 @@ public:
         wxString sp(protocol);
         unsigned size = sp.Length() * wxWindow::GetCharWidth();
         m_header_column_widths[1] = std::max(m_header_column_widths[1], size);
-        size = (*it)->GetIOTypeValueStr().Length() * wxWindow::GetCharWidth();
+        size = (*it)->GetPortDirectionValueStr().Length() *
+               wxWindow::GetCharWidth();
         m_header_column_widths[2] = std::max(m_header_column_widths[2], size);
         sp = wxString((*it)->GetStrippedDSPort());
         size = sp.Length() * wxWindow::GetCharWidth();
@@ -1212,6 +1214,7 @@ public:
     m_edit_panel->SetDefaultConnectionParams();
     m_edit_panel->SetNewMode(true);
     m_edit_panel->AddOKCancelButtons();
+    m_edit_panel->InitiateNewConnection();
     SwitchToEditor();
   }
 
@@ -1221,7 +1224,6 @@ public:
     DimeControl(m_edit_panel);
     m_edit_panel->Show();
     g_options->ShowOKButtons(false);
-
     Layout();
   }
 
@@ -1253,7 +1255,8 @@ public:
     }
     //  OK from NEW mode
     else {
-      if (ConnectionParams* cp = m_edit_panel->GetParamsFromControls()) {
+      ConnectionParams* cp = m_edit_panel->GetParamsFromControls();
+      if (cp) {
         if (FindConnectionByIface(cp)) {
           wxMessageDialog dialog(this, kInterfaceExistsMessage,
                                  _("Driver creation warning"),
@@ -1261,7 +1264,9 @@ public:
           dialog.ShowModal();
         }
         if (cp->GetValidPort()) {
-          cp->b_IsSetup = false;  // Trigger new stream
+          // Trigger new stream
+          cp->b_IsSetup = false;
+          // transfer ownership FIXME use smart pointers
           TheConnectionParams().push_back(cp);
         } else {
           wxString msg =
@@ -1270,6 +1275,7 @@ public:
           auto& noteman = NotificationManager::GetInstance();
           noteman.AddNotification(NotificationSeverity::kWarning,
                                   msg.ToStdString(), 60);
+          delete cp;
         }
       }
       UpdateDatastreams();

@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (C) 2014  ALec Leamas                                       *
+ *   Copyright (C) 2026 Alec Leamas                                        *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -13,26 +13,36 @@
  *                                                                         *
  *   You should have received a copy of the GNU General Public License     *
  *   along with this program; if not, see <https://www.gnu.org/licenses/>. *
- ***************************************************************************/
+ **************************************************************************/
 
 /**
- * \file
- *
- * Implement ds_porttype.h -- port type definition and support
+ * A wxTextCtrl with an initial italics help text, removed when user starts
+ * typing.   \image html ./text_entry_help.png
  */
+class TextCtrlWithHelp : public wxTextCtrl {
+public:
+  TextCtrlWithHelp(wxWindow* parent, const std::string& help_text);
 
-#include <cassert>
+  /** Ignored if pristine, use ChangeValue if need be. */
+  void SetValue(const wxString& value) override;
 
-#include "model/ds_porttype.h"
+  /** Falsify pristine state. */
+  void ChangeValue(const wxString& value) override;
 
-#include <unordered_map>
+  /** Restore help text to initial value, enter pristine state */
+  void RestoreHelp() ;
 
-std::string PortDirectionToString(PortDirection pd) {
-  static const std::unordered_map<PortDirection, std::string> kNameByDirection =
-      {{PortDirection::kOutput, "OUT"},
-       {PortDirection::kInput, "IN"},
-       {PortDirection::kInOut, "IN/OUT"},
-       {PortDirection::kUpload, "UPLOAD"}};
-  if (static_cast<size_t>(pd) >= kNameByDirection.size()) return "???";
-  return kNameByDirection.at(pd);
-}
+  /** Set help text, enter pristine state */
+  void SetHelp(const std::string& help_text);
+
+  /** Return true if user has not entered anything. */
+  bool IsPristine() const { return !m_is_inited; }
+
+private:
+  const wxFont m_font;
+  bool m_is_inited;
+  std::string m_help;
+
+  void OnKeypress(wxCommandEvent& ev);
+
+};

@@ -66,7 +66,11 @@ using namespace std::literals::chrono_literals;
 /** Return true iff addr has all host bits set to 1. IPv4 only. */
 static bool IsBroadcastAddr(unsigned addr, unsigned netmask_bits) {
   assert(netmask_bits <= 32);
+#if defined(_MSC_VER) || __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+  uint32_t netmask = 0xffffffff >> (32 - netmask_bits);
+#else
   uint32_t netmask = 0xffffffff << (32 - netmask_bits);
+#endif
   uint32_t host_mask = ~netmask;
   return (addr & host_mask) == host_mask;
 }
@@ -129,7 +133,7 @@ CommDriverN0183Net::CommDriverN0183Net(const ConnectionParams* params,
   this->attributes["netAddress"] = params->NetworkAddress.ToStdString();
   this->attributes["netPort"] = std::to_string(params->NetworkPort);
   this->attributes["userComment"] = params->UserComment.ToStdString();
-  this->attributes["ioDirection"] = DsPortTypeToString(params->IOSelect);
+  this->attributes["ioDirection"] = PortDirectionToString(params->direction);
   m_driver_stats.driver_bus = NavAddr::Bus::N0183;
   m_driver_stats.driver_iface = params->GetStrippedDSPort();
 
@@ -181,7 +185,8 @@ void CommDriverN0183Net::Open() {
 }
 
 void CommDriverN0183Net::OpenNetworkUdp(unsigned int addr) {
-  if (m_params.IOSelect != DS_TYPE_OUTPUT) {
+  if (m_params.direction != PortDirection::kOutput &&
+      m_params.direction != PortDirection::kUpload) {
     // We need a local (bindable) address to create the Datagram receive socket
     // Set up the reception socket
     wxIPV4address conn_addr;
@@ -209,7 +214,7 @@ void CommDriverN0183Net::OpenNetworkUdp(unsigned int addr) {
   }
 
   // Set up another socket for transmit
-  if (m_params.IOSelect != DS_TYPE_INPUT) {
+  if (m_params.direction != PortDirection::kInput) {
     wxIPV4address tconn_addr;
     tconn_addr.Service(0);  // use ephemeral out port
     tconn_addr.AnyAddress();
@@ -239,15 +244,16 @@ void CommDriverN0183Net::OpenNetworkTcp(unsigned int addr) {
     m_socket_server->SetNotify(wxSOCKET_CONNECTION_FLAG);
     m_socket_server->Notify(TRUE);
     m_socket_server->SetTimeout(1);  // Short timeout
+    m_driver_stats.available = m_socket_server->IsOk();
   } else {
     MESSAGE_LOG << "Opening TCP connection to " << m_params.NetworkAddress
                 << ":" << m_params.NetworkPort;
     m_sock = new wxSocketClient();
     m_sock->SetEventHandler(*this, DS_SOCKET_ID);
     int notify_flags = (wxSOCKET_CONNECTION_FLAG | wxSOCKET_LOST_FLAG);
-    if (m_params.IOSelect != DS_TYPE_INPUT)
+    if (m_params.direction != PortDirection::kInput)
       notify_flags |= wxSOCKET_OUTPUT_FLAG;
-    if (m_params.IOSelect != DS_TYPE_OUTPUT)
+    if (m_params.direction != PortDirection::kOutput)
       notify_flags |= wxSOCKET_INPUT_FLAG;
     m_sock->SetNotify(notify_flags);
     m_sock->Notify(true);
@@ -255,8 +261,8 @@ void CommDriverN0183Net::OpenNetworkTcp(unsigned int addr) {
 
     m_rx_connect_event = false;
     m_socket_timer.Start(100, wxTIMER_ONE_SHOT);  // schedule a connection
+    m_driver_stats.available = m_sock->IsOk();
   }
-
   // In case the connection is lost before acquired....
   m_connect_time = std::chrono::steady_clock::now();
 }
@@ -324,7 +330,8 @@ void CommDriverN0183Net::OnTimerSocket() {
         m_is_conn_err_reported = true;
         m_driver_stats.error_count++;
       }
-    }
+    };
+    m_driver_stats.available = tcp_socket->IsOk();
   }
 }
 
@@ -387,7 +394,7 @@ void CommDriverN0183Net::OnSocketEvent(wxSocketEvent& event) {
     }
 
     case wxSOCKET_LOST: {
-      m_driver_stats.available = false;
+      m_driver_stats.available = GetSock()->IsOk();
       using namespace std::chrono;
       if (m_params.NetProtocol == TCP || m_params.NetProtocol == GPSD) {
         if (m_rx_connect_event) {
@@ -433,13 +440,13 @@ void CommDriverN0183Net::OnSocketEvent(wxSocketEvent& event) {
                     << m_params.GetDSPort();
 
         m_dog_value = N_DOG_TIMEOUT;  // feed the dog
-        if (m_params.IOSelect != DS_TYPE_OUTPUT) {
+        if (m_params.direction != PortDirection::kOutput) {
           // start the DATA watchdog only if NODATA Reconnect is desired
           if (GetParams().NoDataReconnect)
             m_socketread_watchdog_timer.Start(1000);
         }
 
-        if (m_params.IOSelect != DS_TYPE_INPUT && GetSock()->IsOk())
+        if (m_params.direction != PortDirection::kInput && GetSock()->IsOk())
           (void)SetOutputSocketOptions(m_sock);
         m_socket_timer.Stop();
         m_rx_connect_event = true;
@@ -465,11 +472,11 @@ void CommDriverN0183Net::OnServerSocketEvent(wxSocketEvent& event) {
         //        GetSock()->SetFlags(wxSOCKET_BLOCK);
         m_sock->SetEventHandler(*this, DS_SOCKET_ID);
         int notify_flags = (wxSOCKET_CONNECTION_FLAG | wxSOCKET_LOST_FLAG);
-        if (m_params.IOSelect != DS_TYPE_INPUT) {
+        if (m_params.direction != PortDirection::kInput) {
           notify_flags |= wxSOCKET_OUTPUT_FLAG;
           (void)SetOutputSocketOptions(m_sock);
         }
-        if (m_params.IOSelect != DS_TYPE_OUTPUT)
+        if (m_params.direction != PortDirection::kOutput)
           notify_flags |= wxSOCKET_INPUT_FLAG;
         m_sock->SetNotify(notify_flags);
         m_sock->Notify(true);
@@ -509,9 +516,9 @@ bool CommDriverN0183Net::SendSentenceNetwork(const wxString& payload) {
           ret = false;
         }
 
-      } else
+      } else {
         ret = false;
-      m_driver_stats.available = ret;
+      }
 
       break;
     case UDP:
