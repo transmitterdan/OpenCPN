@@ -31,30 +31,6 @@
 
 // S57ClassRegistrar *OGRS57DataSource::poRegistrar = NULL;
 
-static bool IsSencPath(const char *pszPath) {
-  if (pszPath == NULL) return false;
-
-  const char *pszSegment = pszPath;
-  while (*pszSegment != '\0') {
-    while (*pszSegment == '/' || *pszSegment == '\\') pszSegment++;
-
-    if (*pszSegment == '\0') break;
-
-    const char *pszSegmentEnd = pszSegment;
-    while (*pszSegmentEnd != '\0' && *pszSegmentEnd != '/' &&
-           *pszSegmentEnd != '\\')
-      pszSegmentEnd++;
-
-    if (pszSegmentEnd - pszSegment == 4 &&
-        EQUALN(pszSegment, "SENC", 4))
-      return true;
-
-    pszSegment = pszSegmentEnd;
-  }
-
-  return false;
-}
-
 /************************************************************************/
 /*                          OGRS57DataSource()                          */
 /************************************************************************/
@@ -110,9 +86,9 @@ OGRS57DataSource::~OGRS57DataSource()
   }
   CPLFree(papoModules);
 
-  // Check if file name is in SENC subfolder
+  // Check if file name is in an OpenCPN SENC subfolder.
   // If it is then we know it is a cached copy of the original
-  // cell file so we should remove it.
+  // cell file so we can safely remove it.
   if (IsSencPath(pszName)) unlink(pszName);
 
   CPLFree(pszName);
@@ -603,6 +579,29 @@ int OGRS57DataSource::OpenMin(const char *pszFilename, int bTestOpen)
       }
   */
   return TRUE;
+}
+
+/************************************************************************/
+/*                          IsSencPath()                                */
+/*                                                                      */
+/*  OpenCPN copies new cell files into a cache directory named "SENC".  */
+/*  pszPath may be either a directory path ending in a separator or a   */
+/*  full file path; in the latter case the parent directory is checked. */
+/*  If directory component matches pszSuffix, it may be treated as an   */
+/*  OpenCPN SENC cache path and removed after ingesting.                */
+/************************************************************************/
+
+bool OGRS57DataSource::IsSencPath(const char *pszPath, const char *pszSuffix) {
+  if (pszPath == NULL || pszSuffix == NULL) return false;
+
+  size_t nSuffixLen = strlen(pszSuffix);
+  char *pszDirName = CPLStrdup(CPLGetDirname(pszPath));
+  const char *pszTarget = CPLGetFilename(pszDirName);
+  bool bIsMatch = strlen(pszTarget) == nSuffixLen &&
+                  EQUALN(pszTarget, pszSuffix, nSuffixLen);
+
+  CPLFree(pszDirName);
+  return bIsMatch;
 }
 
 /************************************************************************/
