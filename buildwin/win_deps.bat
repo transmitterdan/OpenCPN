@@ -79,12 +79,15 @@ echo %DBGRUNTIME_DIR%
 
 copy "%DBGRUNTIME_DIR%\api-ms-win*.dll" !CACHE_DIR!\buildwintemp\OCPNWindowsCoreBuildSupport-0.5\buildwin\vc /Y
 
-for /F "delims=" %%A in ('dir /S /B "%VSINSTALLDIR%\vccorlib140.dll" 2^>nul ^| findstr /R "onecore\\x86\\Microsoft.VC143.CRT"') do (
-    set "MSVCRUNTIME_DIR=%%~dpA"
-)
-echo %MSVCRUNTIME_DIR%
+:: Let's get the official MS runtime dlls from the VS install directory.
+set REDIST_URL=https://aka.ms/vs/17/release/vc_redist.x86.exe
+set REDIST_EXE=vc_redist.x86.exe
+echo Downloading VC Redistributable for %ARCH%...
+wget -O %REDIST_EXE% %REDIST_URL%
 
-copy "%MSVCRUNTIME_DIR%\*.dll" !CACHE_DIR!\buildwintemp\OCPNWindowsCoreBuildSupport-0.5\buildwin\vc /Y
+REM === Extract redistributable DLLs ===
+echo Extracting redistributable DLLs...
+%REDIST_EXE% /quiet /extract:!CACHE_DIR!\buildwintemp\OCPNWindowsCoreBuildSupport-0.5\buildwin\vc
 
 wget -nv -O !CACHE_DIR!\QuickStartGuide.zip ^
        https://dl.cloudsmith.io/public/david-register/opencpn-docs/raw/files/QuickStartGuide-v0.4.zip
