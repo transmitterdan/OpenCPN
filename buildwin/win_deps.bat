@@ -72,20 +72,22 @@ if not exist %CACHE_DIR%\buildwin\libcurl.dll (
 :: The following code finds the correct location of the V143 runtime and copies it to the buildwin directory. It overwrites any
 :: existing files in the buildwin directory, which is fine since we want to ensure we have the correct version of the runtime dlls.
 
-for /F "delims=" %%A in ('dir /S /B "%VSINSTALLDIR%\api-ms-win-core-console-l1-1-0.dll" 2^>nul ^| findstr /R "Common7\\IDE\\Remote Debugger\\x86"') do (
-    set "DBGRUNTIME_DIR=%%~dpA"
-)
-echo %DBGRUNTIME_DIR%
+:: for /F "delims=" %%A in ('dir /S /B "%VSINSTALLDIR%\api-ms-win-core-console-l1-1-0.dll" 2^>nul ^| findstr /R "Common7\\IDE\\Remote Debugger\\x86"') do (
+::     set "DBGRUNTIME_DIR=%%~dpA"
+:: )
 
+set "DBGRUNTIME_DIR=%VSINSTALLDIR%\\Common7\\IDE\\Remote Debugger\\x86"
+echo %DBGRUNTIME_DIR%
 copy "%DBGRUNTIME_DIR%\api-ms-win*.dll" !CACHE_DIR!\buildwintemp\OCPNWindowsCoreBuildSupport-0.5\buildwin\vc /Y
 
 :: Let's get the latest official MS runtime dlls.
 
-for /F "delims=" %%A in ('dir /S /B "%VSINSTALLDIR%\\VC\\Redist\\MSVC\\vcruntime140.dll" 2^>nul ^| findstr /R "x86\Microsoft.VC143.CRT"') do (
-    set "VCRUNTIME_DIR=%%~dpA"
+for /F "delims=" %%A in ('dir /S /B "%VSINSTALLDIR%\\VC\\Redist\\MSVC\\vcruntime140.dll" 2^>nul ^| findstr /R "x86\\Microsoft.VC143.CRT"') do (
+  set "VCRUNTIME_DIR=%%~dpA"
 )
+echo VCRUNTIME_DIR=%VCRUNTIME_DIR%
 
-copy "%VCRUNTIME_DIR%\*.*" !CACHE_DIR!\buildwintemp\OCPNWindowsCoreBuildSupport-0.5\buildwin\vc /Y
+copy "%VCRUNTIME_DIR%\*.dll" !CACHE_DIR!\buildwintemp\OCPNWindowsCoreBuildSupport-0.5\buildwin\vc /Y
 
 wget -nv -O !CACHE_DIR!\QuickStartGuide.zip ^
        https://dl.cloudsmith.io/public/david-register/opencpn-docs/raw/files/QuickStartGuide-v0.4.zip
