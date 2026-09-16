@@ -77,15 +77,15 @@ if not exist %CACHE_DIR%\buildwin\libcurl.dll (
 :: )
 
 set "DBGRUNTIME_DIR=%VSINSTALLDIR%\\Common7\\IDE\\Remote Debugger\\x86"
-echo %DBGRUNTIME_DIR%
+echo DBGRUNTIME_DIR = %DBGRUNTIME_DIR%
 copy "%DBGRUNTIME_DIR%\api-ms-win*.dll" !CACHE_DIR!\buildwintemp\OCPNWindowsCoreBuildSupport-0.5\buildwin\vc /Y
 
 :: Let's get the latest official MS runtime dlls.
 
-for /F "delims=" %%A in ('dir /S /B "%VSINSTALLDIR%\\VC\\Redist\\MSVC\\vcruntime140.dll" 2^>nul ^| findstr /R "x86\\Microsoft.VC143.CRT"') do (
+for /F "delims=" %%A in ('dir /S /B "%VSINSTALLDIR%\\VC\\Redist\\MSVC\\*\\x86\\Microsoft.VC143.CRT\\vcruntime140.dll" 2^>nul ^| findstr /R "x86\\Microsoft.VC143.CRT"') do (
   set "VCRUNTIME_DIR=%%~dpA"
 )
-echo VCRUNTIME_DIR=%VCRUNTIME_DIR%
+echo VCRUNTIME_DIR = %VCRUNTIME_DIR%
 
 copy "%VCRUNTIME_DIR%\*.dll" !CACHE_DIR!\buildwintemp\OCPNWindowsCoreBuildSupport-0.5\buildwin\vc /Y
 
