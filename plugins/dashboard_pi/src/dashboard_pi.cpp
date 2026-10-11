@@ -27,6 +27,10 @@
 
 #include <cassert>
 #include <cmath>
+#include <ctime>
+#include <iomanip>
+#include <string>
+#include <sstream>
 #include <typeinfo>
 
 #ifndef WX_PRECOMP
@@ -113,6 +117,163 @@ static const long long lNaN = 0xfff8000000000000;
 #ifdef __ANDROID__
 #include "qdebug.h"
 #endif
+
+// UtcRolloverTime stores a UTC timestamp (time_t) and updates it using
+// incoming time-of-day values (seconds or "HHMMSS").
+//
+// It is designed for streams where only time-of-day is provided:
+// if a new time is less than the current time-of-day, the class assumes
+// UTC midnight rollover and advances the date by one day.
+//
+// The class also supports explicit date updates ("MMDDYY"), preserving
+// the current century from the stored timestamp and keeping UTC semantics.
+//
+// Utility getters provide formatted UTC strings for time ("HHMMSS")
+// and date ("MMDDYY"), plus direct access to the underlying time_t.
+class UtcRolloverTime {
+public:
+  std::time_t GetTime() const { return m_time_t; }
+
+  UtcRolloverTime() : m_time_t(std::time(nullptr)) {}
+
+  explicit UtcRolloverTime(double seconds)
+      : m_time_t(BuildFromCurrentUtcDate(seconds)) {}
+
+  UtcRolloverTime(const UtcRolloverTime &) = default;
+  UtcRolloverTime &operator=(const UtcRolloverTime &) = default;
+
+  // Core updater (now double-based)
+  void UpdateTime(double newSeconds) {
+    const int newSec = NormalizeSecondsOfDay(newSeconds);
+    const int curSec = SecondsOfDay(m_time_t);
+
+    std::time_t dayStart = UtcDayStart(m_time_t);
+    if (newSec < curSec) {
+      dayStart += kSecondsPerDay;  // UTC day rollover
+    }
+
+    m_time_t = dayStart + newSec;
+  }
+
+  // Keep float overload for compatibility
+  void UpdateTime(float newSeconds) {
+    UpdateTime(static_cast<double>(newSeconds));
+  }
+
+  // 5) "HHMMSS"
+  std::string GetTimeHHMMSS() const {
+    std::tm tmUtc = *std::gmtime(&m_time_t);
+    std::ostringstream oss;
+    oss << std::setfill('0') << std::setw(2) << tmUtc.tm_hour << std::setw(2)
+        << tmUtc.tm_min << std::setw(2) << tmUtc.tm_sec;
+    return oss.str();
+  }
+
+  // 6) "MMDDYY"
+  std::string GetDateMMDDYY() const {
+    std::tm tmUtc = *std::gmtime(&m_time_t);
+    std::ostringstream oss;
+    oss << std::setfill('0') << std::setw(2) << (tmUtc.tm_mon + 1)
+        << std::setw(2) << tmUtc.tm_mday << std::setw(2)
+        << ((tmUtc.tm_year + 1900) % 100);
+    return oss.str();
+  }
+  // 7) "HHMMSS" overload -> seconds -> UpdateTime(double)
+  bool UpdateTime(const std::string &hhmmss) {
+    if (hhmmss.size() < 6 ||
+        !std::isdigit(static_cast<unsigned char>(hhmmss[0])) ||
+        !std::isdigit(static_cast<unsigned char>(hhmmss[1])) ||
+        !std::isdigit(static_cast<unsigned char>(hhmmss[2])) ||
+        !std::isdigit(static_cast<unsigned char>(hhmmss[3])) ||
+        !std::isdigit(static_cast<unsigned char>(hhmmss[4])) ||
+        !std::isdigit(static_cast<unsigned char>(hhmmss[5]))) {
+      return false;
+    }
+
+    const int hh = std::stoi(hhmmss.substr(0, 2));
+    const int mm = std::stoi(hhmmss.substr(2, 2));
+    const int ss = std::stoi(hhmmss.substr(4, 2));
+
+    if (mm > 59 || ss > 59) {
+      return false;
+    }
+
+    const double totalSeconds = static_cast<double>(hh * 3600 + mm * 60 + ss);
+    UpdateTime(totalSeconds);
+    return true;
+  }
+
+  bool UpdateDate(const std::string &mmddyy) {
+    if (mmddyy.size() != 6 || !AllDigitsAscii(mmddyy)) return false;
+
+    const int mm = std::stoi(mmddyy.substr(0, 2));
+    const int dd = std::stoi(mmddyy.substr(2, 2));
+    const int yy = std::stoi(mmddyy.substr(4, 2));
+
+    if (mm < 1 || mm > 12 || dd < 1 || dd > 31) {
+      return false;
+    }
+
+    // Keep existing century from m_time_t
+    std::tm tmUtc = *std::gmtime(&m_time_t);
+    const int currentYear = tmUtc.tm_year + 1900;
+    const int centuryBase = (currentYear / 100) * 100;
+    const int fullYear = centuryBase + yy;
+
+    // Preserve current HH:MM:SS
+    tmUtc.tm_year = fullYear - 1900;
+    tmUtc.tm_mon = mm - 1;
+    tmUtc.tm_mday = dd;
+
+#if defined(__WXMSW__)
+    // Windows UTC mktime equivalent
+    std::time_t t = _mkgmtime(&tmUtc);
+#else
+    // POSIX UTC mktime equivalent
+    std::time_t t = timegm(&tmUtc);
+#endif
+
+    if (t == static_cast<std::time_t>(-1)) {
+      return false;
+    }
+
+    m_time_t = t;
+    return true;
+  }
+
+private:
+  std::time_t m_time_t{};
+
+  static constexpr std::time_t kSecondsPerDay = 24 * 60 * 60;
+
+  static int NormalizeSecondsOfDay(double seconds) {
+    long long s = static_cast<long long>(std::floor(seconds));
+    long long mod = s % kSecondsPerDay;
+    if (mod < 0) mod += kSecondsPerDay;
+    return static_cast<int>(mod);
+  }
+
+  static int SecondsOfDay(std::time_t t) {
+    long long mod = static_cast<long long>(t % kSecondsPerDay);
+    if (mod < 0) mod += kSecondsPerDay;
+    return static_cast<int>(mod);
+  }
+
+  static std::time_t UtcDayStart(std::time_t t) { return t - SecondsOfDay(t); }
+
+  static std::time_t BuildFromCurrentUtcDate(double seconds) {
+    std::time_t now = std::time(nullptr);
+    return UtcDayStart(now) + NormalizeSecondsOfDay(seconds);
+  }
+
+  bool AllDigitsAscii(const std::string &s) {
+    for (unsigned char c : s)
+      if (c < '0' || c > '9') return false;
+    return true;
+  }
+};
+
+UtcRolloverTime g_Time;
 
 // the class factories, used to create and destroy instances of the PlugIn
 
@@ -1075,7 +1236,8 @@ void dashboard_pi::SetNMEASentence(wxString &sentence) {
                m_pri_position, m_pri_sat_used,
                m_nmea0183.Gga.NumberOfSatellitesInUse,
                m_nmea0183.Gga.AntennaAltitudeMeters);
-      if (m_pri_alt >= 3 && (m_pri_position >= 1 || m_pri_sat_used >= 1)) {
+      if (m_pri_alt >= 3 && (m_pri_position >= 4 || m_pri_sat_used >= 3 ||
+                             m_pri_date_time >= 4)) {
         if (m_nmea0183.Parse()) {
           if (m_nmea0183.Gga.GPSQuality > 0 &&
               m_nmea0183.Gga.NumberOfSatellitesInUse >= 5) {
@@ -1088,7 +1250,7 @@ void dashboard_pi::SetNMEASentence(wxString &sentence) {
           }
         }
       }
-      if (m_pri_position >= 4 || m_pri_sat_used >= 3) {
+      if (m_pri_position >= 4 || m_pri_sat_used >= 3 || m_pri_date_time >= 4) {
         if (m_nmea0183.Parse()) {
           if (m_nmea0183.Gga.GPSQuality > 0) {
             if (m_pri_position >= 4) {
@@ -1121,19 +1283,20 @@ void dashboard_pi::SetNMEASentence(wxString &sentence) {
               m_sats_used_wdog = gps_watchdog_timeout_ticks;
             }
 
-            // if( mPriDateTime >= 4 ) {
-            //    // Not in use, we need the date too.
-            //    //mPriDateTime = 4;
-            //    //mUTCDateTime.ParseFormat( m_NMEA0183.Gga.UTCTime.c_str(),
-            //    "%H%M%S" );
-            //}
+            if (m_pri_date_time >= 4) {
+              m_pri_date_time = 4;
+              g_Time.UpdateTime(m_nmea0183.Gga.UTCTime.ToStdString());
+              std::string dt = g_Time.GetDateMMDDYY() + g_Time.GetTimeHHMMSS();
+              m_utc_date_time.ParseFormat(dt.c_str(), "%d%m%y%H%M%S");
+              m_utc_watchdog = gps_watchdog_timeout_ticks;
+            }
           }
         }
       }
     }
 
     else if (m_nmea0183.LastSentenceIDReceived == "GLL") {
-      if (m_pri_position >= 3) {
+      if (m_pri_position >= 3 || m_pri_date_time >= 5) {
         if (m_nmea0183.Parse()) {
           if (m_nmea0183.Gll.IsDataValid == NTrue) {
             double lat, lon;
@@ -1158,12 +1321,13 @@ void dashboard_pi::SetNMEASentence(wxString &sentence) {
             m_pri_position = 3;
           }
 
-          // if( mPriDateTime >= 5 ) {
-          //    // Not in use, we need the date too.
-          //    //mPriDateTime = 5;
-          //    //mUTCDateTime.ParseFormat( m_NMEA0183.Gll.UTCTime.c_str(),
-          //    "%H%M%S" );
-          //}
+          if (m_pri_date_time >= 5) {
+            m_pri_date_time = 5;
+            g_Time.UpdateTime(m_nmea0183.Gll.UTCTime.ToStdString());
+            std::string dt = g_Time.GetDateMMDDYY() + g_Time.GetTimeHHMMSS();
+            m_utc_date_time.ParseFormat(dt.c_str(), "%d%m%y%H%M%S");
+            m_utc_watchdog = gps_watchdog_timeout_ticks;
+          }
         }
       }
     }
@@ -1595,7 +1759,12 @@ void dashboard_pi::SetNMEASentence(wxString &sentence) {
 
             if (m_pri_date_time >= 3) {
               m_pri_date_time = 3;
-              wxString dt = m_nmea0183.Rmc.Date + m_nmea0183.Rmc.UTCTime;
+              // Call UpdateTime first, as UpdateTime might change the date
+              // if the time rolls over midnight. Then call UpdateDate to set
+              // the date to the RMC date.
+              g_Time.UpdateTime(m_nmea0183.Rmc.UTCTime.ToStdString());
+              g_Time.UpdateDate(m_nmea0183.Rmc.Date.ToStdString());
+              std::string dt = g_Time.GetDateMMDDYY() + g_Time.GetTimeHHMMSS();
               m_utc_date_time.ParseFormat(dt.c_str(), "%d%m%y%H%M%S");
               m_utc_watchdog = gps_watchdog_timeout_ticks;
             }
