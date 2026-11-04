@@ -169,8 +169,10 @@ SET "CACHE_DIR=%OCPN_DIR%\cache"
 SET "DATA_DIR=%OCPN_DIR%\data"
 set "wxWidgetsURL=https://github.com/wxWidgets/wxWidgets"
 set "wxMajor=v3.2"
-set "wxMinor=9"
+set "wxMinor=12"
 set "wxVER=%wxMajor%.%wxMinor%"
+set "wxVersionString=%wxMajor:v=%"
+set "wxVersionString=%wxVersionString:.=%"
 if [%VisualStudioVersion%]==[16.0] (
   set VCver=16
   set "VCstr=Visual Studio 16 2019"
@@ -315,6 +317,7 @@ set "wxWidgets_LIB_DIR=%wxBuildDir%\lib\vc_dll"
 @echo set "wxBuildDir=%wxBuildDir%" >> "%OCPN_DIR%\buildwin\configdev.bat"
 @echo set "wxWidgets_ROOT_DIR=%wxWidgets_ROOT_DIR%" >> "%OCPN_DIR%\buildwin\configdev.bat"
 @echo set "wxWidgets_LIB_DIR=%wxWidgets_LIB_DIR%" >> "%OCPN_DIR%\buildwin\configdev.bat"
+@echo set "wxVersionString=%wxVersionString%" >> "%OCPN_DIR%\buildwin\configdev.bat"
 @echo set "VCver=%VCver%" >> "%OCPN_DIR%\buildwin\configdev.bat"
 @echo set "VCstr=%VCstr%" >> "%OCPN_DIR%\buildwin\configdev.bat"
 @echo set "gitcmd=%gitcmd%" >> "%OCPN_DIR%\buildwin\configdev.bat"
@@ -435,6 +438,7 @@ if [%ocpn_clean%]==[1] (
   set "target=%wxDIR%\build\msw\*.obj" & call :removeTarget
   set "target=%buildWINtmp%" & call :removeTarget
   set "target=%OCPN_DIR%\.git\hooks\pre-commit" & call :removeTarget
+  set "target=%OCPN_DIR%\build\CMakeCache.txt" & call :removeTarget
   if not [%quiet%]==[Y] (timeout /T 5)
 )
 ::-------------------------------------------------------------
@@ -754,7 +758,7 @@ if "[%ocpn_cmake%]"=="[1]" (
   if ERRORLEVEL 1 goto :buildErr
   rem If debug is required build it now
   if exist "%OCPN_DIR%\build\.Debug" (
-    cmake --build %wxBuildDir% --config=Debug -- /v:%wxVerb% /m:%NUMBER_OF_PROCESSORS% /p:UseMultiToolTask=true;BuildPassReferences=true;EnableClServerMode=true;wxVendor=14x;wxVersionString=32;wxToolKitDllNameSuffix=_vc14x ^
+    cmake --build %wxBuildDir% --config=Debug -- /v:%wxVerb% /m:%NUMBER_OF_PROCESSORS% /p:UseMultiToolTask=true;BuildPassReferences=true;EnableClServerMode=true;wxVendor=14x;wxVersionString=%wxVersionString%;wxToolKitDllNameSuffix=_vc14x ^
         /l:FileLogger,Microsoft.Build.Engine;logfile="%wxSourceDir%\MSBuild_Debug_WIN32.log"
     if ERRORLEVEL 1 (
       if not [%quiet%]==[Y] pause
@@ -762,7 +766,7 @@ if "[%ocpn_cmake%]"=="[1]" (
     )
   )
   rem Always build config RelWithDebInfo
-  cmake --build %wxBuildDir% --config=RelWithDebInfo -- /v:%wxVerb% /m:%NUMBER_OF_PROCESSORS% /p:UseMultiToolTask=true;BuildPassReferences=true;EnableClServerMode=true;wxVendor=14x;wxVersionString=32;wxToolKitDllNameSuffix=_vc14x ^
+  cmake --build %wxBuildDir% --config=RelWithDebInfo -- /v:%wxVerb% /m:%NUMBER_OF_PROCESSORS% /p:UseMultiToolTask=true;BuildPassReferences=true;EnableClServerMode=true;wxVendor=14x;wxVersionString=%wxVersionString%;wxToolKitDllNameSuffix=_vc14x ^
       /l:FileLogger,Microsoft.Build.Engine;logfile="%wxSourceDir%\MSBuild_RelWithDebInfo_WIN32.log"
   if ERRORLEVEL 1 (
     if not [%quiet%]==[Y] pause
@@ -785,7 +789,7 @@ if "[%ocpn_cmake%]"=="[1]" (
       -property:EnableClServerMode=true ^
       -property:BuildPassReferences=true ^
       -property:"Configuration=DLL Debug";Platform=Win32 ^
-      -property:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix=_vc14x ^
+      -property:wxVendor=14x;wxVersionString=%wxVersionString%;wxToolkitDllNameSuffix=_vc14x ^
       -logger:FileLogger,Microsoft.Build.Engine;logfile="%wxSourceDir%\MSBuild_DEBUG_WIN32.log"
     if errorlevel 1 (
       echo wxWidgets Debug build [101;93mNOT OK[0m
@@ -803,7 +807,7 @@ if "[%ocpn_cmake%]"=="[1]" (
     -property:EnableClServerMode=true ^
     -property:BuildPassReferences=true ^
     -property:"Configuration=DLL Release";Platform=Win32 ^
-    -property:wxVendor=14x;wxVersionString=32;wxToolkitDllNameSuffix=_vc14x ^
+    -property:wxVendor=14x;wxVersionString=%wxVersionString%;wxToolkitDllNameSuffix=_vc14x ^
     -logger:FileLogger,Microsoft.Build.Engine;logfile="%wxSourceDir%\MSBuild_RELEASE_WIN32.log"
   if errorlevel 1 (
     echo wxWidgets Release build [101;93mNOT OK[0m
@@ -811,30 +815,31 @@ if "[%ocpn_cmake%]"=="[1]" (
   )
   echo wxWidgets Release build OK
 )
-robocopy "%wxBuildDir%\lib\vc_dll" "%CACHE_DIR%\buildwin\wxWidgets" wxmsw32*.dll /S /E /NFL /NDL /NJH /NJS /NP >NUL
+del "%OCPN_DIR%\CMakeCache.txt" /s >nul 2>&1
+robocopy "%wxBuildDir%\lib\vc_dll" "%CACHE_DIR%\buildwin\wxWidgets" wxmsw%wxVersionString%*.dll /S /E /NFL /NDL /NJH /NJS /NP >NUL
 if %errorlevel% GEQ 8 (
-  @echo Error: robocopy "%wxBuildDir%\lib\vc_dll" "%CACHE_DIR%\buildwin\wxWidgets" wxmsw32*.dll /S /E /NFL /NDL /NJH /NJS /NP
+  @echo Error: robocopy "%wxBuildDir%\lib\vc_dll" "%CACHE_DIR%\buildwin\wxWidgets" wxmsw%wxVersionString%*.dll /S /E /NFL /NDL /NJH /NJS /NP
   @echo wxWidgets is broken and [101;93mNOT OK[0m
   if not [%quiet%]==[Y] pause
   goto :buildErr
 )
-robocopy "%wxBuildDir%\lib\vc_dll" "%CACHE_DIR%\buildwin\wxWidgets" wxbase32*.dll /S /E /NFL /NDL /NJH /NJS /NP >NUL
+robocopy "%wxBuildDir%\lib\vc_dll" "%CACHE_DIR%\buildwin\wxWidgets" wxbase%wxVersionString%*.dll /S /E /NFL /NDL /NJH /NJS /NP >NUL
 if %errorlevel% GEQ 8 (
-  @echo Error: robocopy "%wxBuildDir%\lib\vc_dll" "%CACHE_DIR%\buildwin\wxWidgets" wxbase32*.dll /S /E /NFL /NDL /NJH /NJS /NP
+  @echo Error: robocopy "%wxBuildDir%\lib\vc_dll" "%CACHE_DIR%\buildwin\wxWidgets" wxbase%wxVersionString%*.dll /S /E /NFL /NDL /NJH /NJS /NP
   @echo wxWidgets is broken and [101;93mNOT OK[0m
   if not [%quiet%]==[Y] pause
   goto :buildErr
 )
-robocopy "%wxBuildDir%\lib\vc_dll" "%CACHE_DIR%\buildwin\wxWidgets" wxmsw32*.pdb /S /E /NFL /NDL /NJH /NJS /NP >NUL
+robocopy "%wxBuildDir%\lib\vc_dll" "%CACHE_DIR%\buildwin\wxWidgets" wxmsw%wxVersionString%*.pdb /S /E /NFL /NDL /NJH /NJS /NP >NUL
 if %errorlevel% GEQ 8 (
-  @echo Error: robocopy "%wxBuildDir%\lib\vc_dll" "%CACHE_DIR%\buildwin\wxWidgets" wxmsw32*.pdb /S /E /NFL /NDL /NJH /NJS /NP
+  @echo Error: robocopy "%wxBuildDir%\lib\vc_dll" "%CACHE_DIR%\buildwin\wxWidgets" wxmsw%wxVersionString%*.pdb /S /E /NFL /NDL /NJH /NJS /NP
   @echo wxWidgets is broken and [101;93mNOT OK[0m
   if not [%quiet%]==[Y] pause
   goto :buildErr
 )
-robocopy "%wxBuildDir%\lib\vc_dll" "%CACHE_DIR%\buildwin\wxWidgets" wxbase32*.pdb /S /E /NFL /NDL /NJH /NJS /NP >NUL
+robocopy "%wxBuildDir%\lib\vc_dll" "%CACHE_DIR%\buildwin\wxWidgets" wxbase%wxVersionString%*.pdb /S /E /NFL /NDL /NJH /NJS /NP >NUL
 if %errorlevel% GEQ 8 (
-  @echo Error: robocopy "%wxBuildDir%\lib\vc_dll" "%CACHE_DIR%\buildwin\wxWidgets" wxbase32*.pdb /S /E /NFL /NDL /NJH /NJS /NP
+  @echo Error: robocopy "%wxBuildDir%\lib\vc_dll" "%CACHE_DIR%\buildwin\wxWidgets" wxbase%wxVersionString%*.pdb /S /E /NFL /NDL /NJH /NJS /NP
   @echo wxWidgets is broken and [101;93mNOT OK[0m
   if not [%quiet%]==[Y] pause
   goto :buildErr
@@ -1238,7 +1243,7 @@ if errorlevel 1 (
   @echo xcopy /Q /Y "%~dp0..\build\%folder%\*.log.log" [101;93mNOT OK[0m
   if not [%quiet%]==[Y] pause
 ) else (
-  echo xcopy /Q /Y "%~dp0..\build\%folder%\*.log.log" OK
+  echo xcopy /Q /Y "%~dp0..\build\%folder%\*.log.log" "%~dp0..\tmp\%folder%" OK
 )
 xcopy /Q /Y "%~dp0..\build\%folder%\*.log" "%~dp0..\tmp\%folder%"
 if errorlevel 1 (
