@@ -42,7 +42,9 @@ endif ()
 set(
   LIBDNET_PATCH
   ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in-Fix-wrong-return-type.patch
+  ${CMAKE_CURRENT_SOURCE_DIR}/os.h-ssize_t.patch
 )
+list(JOIN LIBDNET_PATCH ";" LIBDNET_PATCH_LIST)
 ExternalProject_Add(
   _libdnet EXCLUDE_FROM_ALL
   DOWNLOAD_COMMAND
@@ -50,7 +52,7 @@ ExternalProject_Add(
       ${CMAKE_CURRENT_SOURCE_DIR}/libdnet-libdnet-1.18.0  ${LIBDNET_SRC}
   UPDATE_COMMAND ""
   PATCH_COMMAND
-      ${CMAKE_COMMAND} -Dpatch:FILEPATH=${LIBDNET_PATCH}
+      ${CMAKE_COMMAND} "-Dpatch:STRING=${LIBDNET_PATCH_LIST}"
       -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/PatchFile.cmake
   CMAKE_ARGS
       -G${CMAKE_GENERATOR}

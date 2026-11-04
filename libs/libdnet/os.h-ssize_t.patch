@@ -1,0 +1,15 @@
+diff --git a/include/dnet/os.h b/include/dnet/os.h
+--- a/include/dnet/os.h
++++ b/include/dnet/os.h
+@@ -23,7 +23,10 @@
+   typedef u_short	uint16_t;
+   typedef u_int		uint32_t;
+ # ifndef __CYGWIN__
+-  typedef ptrdiff_t 	ssize_t;
++#  if !defined(_SSIZE_T_DEFINED) && !defined(_SSIZE_T_)
++  typedef SSIZE_T 	ssize_t;
++#   define _SSIZE_T_DEFINED
++#  endif
+ # endif
+ #else
+ # include <sys/param.h>

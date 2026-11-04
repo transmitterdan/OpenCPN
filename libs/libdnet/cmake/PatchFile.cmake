@@ -29,32 +29,34 @@ find_package(Git REQUIRED)
 
 set(CMAKE_EXECUTE_PROCESS_COMMAND_ECHO STDOUT)
 
-cmake_path(GET patch FILENAME patch_name)
+foreach (_patch IN LISTS patch)
+  cmake_path(GET _patch FILENAME patch_name)
 
-execute_process(
-  COMMAND ${GIT_EXECUTABLE} --git-dir=${PROJECT_SOURCE_DIR}
-      apply -p1 --ignore-whitespace "${patch}"
-  RESULT_VARIABLE ret
-  ERROR_VARIABLE err
-  TIMEOUT 5
-)
-# if patch already applied - will fail
-
-if (NOT ret EQUAL 0)
   execute_process(
     COMMAND ${GIT_EXECUTABLE} --git-dir=${PROJECT_SOURCE_DIR}
-        apply -p1 --ignore-whitespace --check -R "${patch}"
-    RESULT_VARIABLE ret1
-    ERROR_VARIABLE err1
+        apply -p1 --ignore-whitespace "${_patch}"
+    RESULT_VARIABLE ret
+    ERROR_VARIABLE err
     TIMEOUT 5
   )
-  # if succeeds - patch sucessfully applied - conf OK
+  # if patch already applied - will fail
 
-  if (NOT ret1 EQUAL 0)
-    message(
-      FATAL_ERROR "Patch ${patch} failed to apply:
-      ${ret} ${err}
-      ${ret1} ${err1}"
+  if (NOT ret EQUAL 0)
+    execute_process(
+      COMMAND ${GIT_EXECUTABLE} --git-dir=${PROJECT_SOURCE_DIR}
+          apply -p1 --ignore-whitespace --check -R "${_patch}"
+      RESULT_VARIABLE ret1
+      ERROR_VARIABLE err1
+      TIMEOUT 5
     )
+    # if succeeds - patch sucessfully applied - conf OK
+
+    if (NOT ret1 EQUAL 0)
+      message(
+        FATAL_ERROR "Patch ${patch_name} failed to apply:
+        ${ret} ${err}
+        ${ret1} ${err1}"
+      )
+    endif ()
   endif ()
-endif ()
+endforeach ()
